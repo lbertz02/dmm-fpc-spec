@@ -1,0 +1,138 @@
+
+module ietf-dmm-fpcbase {
+    namespace "urn:ietf:params:xml:ns:yang:fpcbase";
+    prefix fpcbase;
+
+    organization "IETF DMM Working Group";
+    contact "Satoru Matsushima <satoru.matsushima@g.softbank.co.jp>";
+
+    description
+    "This module contains YANG definition for
+     Forwarding Policy Configuration Protocol.(FPCP)";
+
+    revision 2016-07-23 {
+        description "Changes based on -04 version of FPC draft.";
+        reference "draft-ietf-dmm-fpc-cpdp-04";
+    }
+
+    typedef fpcp-name-type {
+        type string;
+        description "FPCP common name type";
+    }
+
+    // Descriptor Structure
+    typedef fpc-descriptor-id {
+        type uint32;
+        description "Rule-ID";
+    }
+
+    identity fpc-descriptor-type {
+        description
+          "A traffic descriptor";
+    }
+
+    grouping fpc-descriptor {
+        leaf descriptor-type {
+          type identityref {
+            base "fpc-descriptor-type";
+          }
+          description "Descriptor Type";
+        }
+        choice descriptor-value {
+          case all-traffic {
+            leaf all-traffic {
+              type empty;
+            }
+          }
+        }
+    }
+
+    // Action Structure
+    typedef fpc-action-id {
+        type uint32;
+        description "Rule-ID";
+    }
+
+    identity fpc-action-type {
+        description
+          "Action Type";
+    }
+
+    grouping fpc-action {
+        leaf action-type {
+          type identityref {
+            base "fpc-action-type";
+          }
+          description "Action Type";
+        }
+        choice action-value {
+          case drop {
+            leaf drop {
+              type empty;
+            }
+          }
+        }
+    }
+
+    // Rule Structure
+    typedef fpc-rule-id {
+        type uint32;
+    }
+
+    grouping fpc-rule {
+        description
+          "FPC Rule";
+        leaf rule-id {
+            type fpcbase:fpc-rule-id;
+        }
+        list action {
+          key action-id;
+          leaf action-id {
+              type fpcbase:fpc-action-id;
+          }
+          leaf order {
+              type uint32;
+          }
+          uses fpcbase:fpc-action;
+        }
+        list descriptor {
+          key descriptor-id;
+          leaf descriptor-id {
+              type fpcbase:fpc-descriptor-id;
+          }
+          uses fpcbase:fpc-descriptor;
+        }
+    }
+
+    // Policy Structures
+    typedef fpc-policy-id {
+        type uint32;
+    }
+
+    grouping policy {
+        leaf policy-id {
+            type fpcbase:fpc-policy-id;
+        }
+        list rule {
+            key rule-id;
+            uses fpcbase:fpc-rule;
+            leaf order {
+              type uint32;
+            }
+        }
+    }
+
+    // Policy Group
+    typedef fpc-policy-group-id {
+        type uint32;
+    }
+
+    grouping policy-group {
+        leaf policy-group-id {
+            type fpcbase:fpc-policy-group-id;
+        }
+        leaf-list policy {
+            type fpcbase:fpc-policy-id;
+        }
+    }
+}

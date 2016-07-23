@@ -1,0 +1,179 @@
+module ietf-dmm-fpcp-pmip {
+    namespace "urn:ietf:params:xml:ns:yang:ietf-dmm-fpcp-pmip";
+    prefix fpcp-pmip;
+
+    import ietf-inet-types {
+    	prefix inet;
+    	revision-date 2013-07-15;
+    }
+    import ietf-dmm-fpcbase { prefix fpcp-base; }
+    import ietf-pmip-qos { prefix qos-pmip; }
+    import ietf-traffic-selector-types { prefix traffic-selectors; }
+
+    organization "IETF DMM Working Group";
+    contact "Satoru Matsushima <satoru.matsushima@g.softbank.co.jp>";
+
+    description
+    "This module contains YANG definition for
+     Forwarding Policy Configuration Protocol.(FPCP)";
+
+    revision 2016-01-19 {
+        description "Changes based on -01 version of FPCP draft.";
+        reference "draft-ietf-dmm-fpc-cpdp-01";
+    }
+
+    identity fpcp-qos-index-pmip {
+        base "fpcp-base:fpcp-qos-index-type";
+    }
+
+    identity traffic-selector-mip6 {
+        base "fpcp-base:traffic-descriptor-type";
+    }
+
+    grouping qosattribute-pmip {
+        leaf dscp {
+            type inet:dscp;
+        }
+        list attributes {
+            key attributetype;
+            min-elements 1;
+            leaf attributetype {
+                type identityref {
+                    base qos-pmip:qos-attribute-type;
+                }
+                mandatory true;
+                description "the attribute type";
+            }
+            choice attribute-choice {
+                case per-mn-agg-max-dl-case {
+                    when "../attributetype = 'Per-MN-Agg-Max-DL-Bit-Rate-type'";
+                    leaf per-mn-agg-max-dl {
+                        type qos-pmip:Per-MN-Agg-Max-DL-Bit-Rate-Value;
+                    }
+                }
+                case per-mn-agg-max-ul-case {
+                    when "../attributetype = 'Per-MN-Agg-Max-UL-Bit-Rate-type'";
+                    leaf per-mn-agg-max-ul {
+                        type qos-pmip:Per-MN-Agg-Max-UL-Bit-Rate-Value;
+                    }
+                }
+                case per-session-agg-max-dl-case {
+                    when "../attributetype = 'Per-Session-Agg-Max-DL-Bit-Rate-type'";
+                    container per-session-agg-max-dl {
+                        uses qos-pmip:Per-Session-Agg-Max-Bit-Rate-Value;
+                    }
+                }
+                case per-session-agg-max-ul-case {
+                    when "../attributetype = 'Per-Session-Agg-Max-UL-Bit-Rate-type'";
+                    container per-session-agg-max-ul {
+                        uses qos-pmip:Per-Session-Agg-Max-Bit-Rate-Value;
+                    }
+                }
+                case agg-max-dl-case {
+                    when "../attributetype = 'Aggregate-Max-DL-Bit-Rate-type'";
+                    leaf agg-max-dl {
+                        type qos-pmip:Aggregate-Max-DL-Bit-Rate-Value;
+                    }
+                }
+                case agg-max-ul-case {
+                    when "../attributetype = 'Aggregate-Max-UL-Bit-Rate-type'";
+                    leaf agg-max-ul {
+                        type qos-pmip:Aggregate-Max-UL-Bit-Rate-Value;
+                    }
+                }
+                case gbr-dl-case {
+                    when "../attributetype = 'Guaranteed-DL-Bit-Rate-type'";
+                    leaf gbr-dl {
+                        type qos-pmip:Guaranteed-DL-Bit-Rate-Value;
+                    }
+                }
+                case gbr-ul-case {
+                    when "../attributetype = 'Guaranteed-UL-Bit-Rate-type'";
+                    leaf gbr-ul {
+                        type qos-pmip:Guaranteed-UL-Bit-Rate-Value;
+                    }
+                }
+            }
+        }
+    }
+
+    // Configuration choice augmentation in the fpcp-base under the fpcp-carriers/carrier/qosprofile.
+    augment "/fpcp-base:fpcp-carriers/fpcp-base:carrier/fpcp-base:qos-profile/fpcp-base:index-type" {
+        case pmip {
+            when "/fpcp-base:fpcp-carriers/fpcp-base:carrier/fpcp-base:qos-profile/fpcp-base:qos-index-type = 'fpcp-qos-index-pmip'";
+            uses qosattribute-pmip;
+        }
+    }
+
+    // Configuration choice augmentation in the fpcp-base under the fpcp-carriers/carrier/traffic-descriptor.
+    augment "/fpcp-base:fpcp-carriers/fpcp-base:carrier/fpcp-base:traffic-descriptor/fpcp-base:descriptor-value" {
+        case traffic-selector-mip6 {
+            when "/fpcp-base:fpcp-carriers/fpcp-base:carrier/fpcp-base:traffic-descriptor/fpcp-base:traffic-descriptor-type = 'traffic-selector-mip6'";
+            uses traffic-selectors:traffic-selector;
+        }
+    }
+
+    // Operational choice augmentation in the fpcp-base under the port-entries/port-entry/property.
+    augment "/fpcp-base:port-entries/fpcp-base:port-entry/fpcp-base:property/fpcp-base:value/fpcp-base:qos/fpcp-base:qos/fpcp-base:index-type" {
+        case pmip {
+            when "/fpcp-base:port-entries/fpcp-base:port-entry/fpcp-base:property/fpcp-base:value/fpcp-base:qos/fpcp-base:qos/fpcp-base:qos-index-type = 'fpcp-qos-index-pmip'";
+            uses qosattribute-pmip;
+        }
+    }
+
+    // Operational choice augmentation in the fpcp-base under the port-entries/port-entry/forwarding-rule.
+    augment "/fpcp-base:port-entries/fpcp-base:port-entry/fpcp-base:forwarding-rule/fpcp-base:descriptor-value" {
+        case traffic-selector-mip6 {
+            when "/fpcp-base:port-entries/fpcp-base:port-entry/fpcp-base:forwarding-rule/fpcp-base:traffic-descriptor-type = 'traffic-selector-mip6'";
+            uses traffic-selectors:traffic-selector;
+        }
+    }
+
+    // RPC choice augmentation in the fpcp-base under "port_add" rpc.
+    augment "/fpcp-base:port_add/fpcp-base:input/fpcp-base:adding-port/fpcp-base:property/fpcp-base:value/fpcp-base:qos/fpcp-base:qos/fpcp-base:index-type" {
+        case pmip {
+            when "/fpcp-base:port_add/fpcp-base:input/fpcp-base:adding-port/fpcp-base:property/fpcp-base:value/fpcp-base:qos/fpcp-base:qos/fpcp-base:qos-index-type = 'fpcp-qos-index-pmip'";
+            uses qosattribute-pmip;
+        }
+    }
+
+    augment "/fpcp-base:port_add/fpcp-base:input/fpcp-base:adding-port/fpcp-base:forwarding-rule/fpcp-base:descriptor-value" {
+        case traffic-selector-mip6 {
+            when "/fpcp-base:port_add/fpcp-base:input/fpcp-base:adding-port/fpcp-base:forwarding-rule/fpcp-base:traffic-descriptor-type = 'traffic-selector-mip6'";
+            uses traffic-selectors:traffic-selector;
+        }
+    }
+
+    // RPC choice augmentation in the fpcp-base under "port_property_add" rpc.
+    augment "/fpcp-base:port_property_add/fpcp-base:input/fpcp-base:adding-property/fpcp-base:property/fpcp-base:value/fpcp-base:qos/fpcp-base:qos/fpcp-base:index-type" {
+        case pmip {
+            when "/fpcp-base:port_property_add/fpcp-base:input/fpcp-base:adding-property/fpcp-base:property/fpcp-base:value/fpcp-base:qos/fpcp-base:qos/fpcp-base:qos-index-type = 'fpcp-qos-index-pmip'";
+            uses qosattribute-pmip;
+        }
+    }
+
+    // RPC choice augmentation in the fpcp-base under "port_property_modify" rpc.
+    augment "/fpcp-base:port_property_modify/fpcp-base:input/fpcp-base:modifying-property/fpcp-base:property/fpcp-base:value/fpcp-base:qos/fpcp-base:qos/fpcp-base:index-type" {
+        case pmip {
+            when "/fpcp-base:port_property_modify/fpcp-base:input/fpcp-base:modifying-property/fpcp-base:property/fpcp-base:value/fpcp-base:qos/fpcp-base:qos/fpcp-base:qos-index-type = 'fpcp-qos-index-pmip'";
+            uses qosattribute-pmip;
+        }
+    }
+
+    // RPC choice augmentation in the fpcp-base under "rule_add" rpc.
+    augment "/fpcp-base:rule_add/fpcp-base:input/fpcp-base:adding-rule/fpcp-base:forwarding-rule/fpcp-base:descriptor-value" {
+        case traffic-selector-mip6 {
+            when "/fpcp-base:rule_add/fpcp-base:input/fpcp-base:adding-rule/fpcp-base:forwarding-rule/fpcp-base:traffic-descriptor-type = 'traffic-selector-mip6'";
+            uses traffic-selectors:traffic-selector;
+        }
+    }
+
+    // RPC choice augmentation in the fpcp-base under "rule_modify" rpc.
+    augment "/fpcp-base:rule_modify/fpcp-base:input/fpcp-base:modifying-rule/fpcp-base:forwarding-rule/fpcp-base:descriptor-value" {
+        case traffic-selector-mip6 {
+            when "/fpcp-base:rule_modify/fpcp-base:input/fpcp-base:modifying-rule/fpcp-base:forwarding-rule/fpcp-base:traffic-descriptor-type = 'traffic-selector-mip6'";
+            uses traffic-selectors:traffic-selector;
+        }
+    }
+
+}
