@@ -1,0 +1,114 @@
+module ietf-dmm-fpcagent {
+    namespace "urn:ietf:params:xml:ns:yang:fpcagent";
+    prefix fpcagent;
+
+    import ietf-dmm-fpcbase { prefix fpcbase; revision-date 2016-08-03; }
+
+    organization "IETF DMM Working Group";
+    contact "Satoru Matsushima <satoru.matsushima@g.softbank.co.jp>";
+
+    description
+    "This module contains YANG definition for
+     Forwarding Policy Configuration Protocol.(FPCP)";
+
+    revision 2016-08-03 {
+        description "Changes based on -04 version of FPC draft.";
+        reference "draft-ietf-dmm-fpc-cpdp-04";
+    }
+
+    feature basic-agent {
+        description "This is an agent co-located with a DPN.  In this case
+        only DPN Peer Groups, the DPN Id and Control Protocols are exposed
+        along with the core structures.";
+    }
+
+    feature multi-dpn {
+        description "The agent supports multiple DPNs.";
+    }
+
+    // Top Level Structures
+    list contexts {
+        key context-id;
+        uses fpcbase:fpc-context;
+    }
+    list ports {
+        key port-id;
+        uses fpcbase:fpc-port;
+    }
+    list policy-groups {
+        key "policy-group-id";
+        uses fpcbase:fpc-policy-group;
+    }
+    list policies {
+        key "policy-id";
+        uses fpcbase:fpc-policy;
+    }
+    list descriptors {
+      key descriptor-id;
+      leaf descriptor-id {
+        type fpcbase:fpc-descriptor-id;
+      }
+      uses fpcbase:fpc-descriptor;
+    }
+    list actions {
+        key action-id;
+        leaf action-id {
+          type fpcbase:fpc-action-id;
+        }
+        uses fpcbase:fpc-action;
+    }
+
+    // Basic Agent Structures
+    list dpn-group-peers {
+        if-feature basic-agent;
+        key "remote-dpn-group-id";
+        uses fpcbase:fpc-dpn-peer-group;
+    }
+    leaf dpn-id {
+      if-feature basic-agent;
+      type fpcbase:fpc-dpn-id;
+    }
+    leaf-list control-protocols {
+      if-feature basic-agent;
+      type identityref {
+        base "fpcbase:fpc-dpn-control-protocol";
+      }
+    }
+
+    // Multi-DPN Agent Structures
+    grouping fpc-dpn-group {
+        leaf group-id {
+            type fpcbase:fpc-dpn-group-id;
+        }
+        leaf fowarding-role {
+            type identityref {
+                base "fpcbase:fpc-forwaridingplane-role";
+            }
+        }
+        leaf access-type {
+            type identityref {
+                base "fpcbase:fpc-access-type";
+            }
+        }
+        leaf mobility-profile {
+            type identityref {
+                base "fpcbase:fpc-mobility-profile-type";
+            }
+        }
+        list dpn-group-peers {
+            key "remote-dpn-group-id";
+            uses fpcbase:fpc-dpn-peer-group;
+        }
+    }
+
+    list dpn-groups {
+        if-feature multi-dpn;
+        key group-id;
+        uses fpcagent:fpc-dpn-group;
+    }
+    list dpns {
+        if-feature multi-dpn;
+        key dpn-id;
+        uses fpcbase:fpc-dpn;
+    }
+}

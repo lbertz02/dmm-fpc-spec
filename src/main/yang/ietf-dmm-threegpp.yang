@@ -3,6 +3,7 @@ module ietf-dmm-threegpp {
     prefix threegpp;
 
     import ietf-inet-types { prefix inet; revision-date 2013-07-15; }
+    import ietf-dmm-fpcagent { prefix fpcagent; }
     import ietf-dmm-fpcbase { prefix fpcbase; revision-date 2016-08-03; }
     import ietf-traffic-selector-types { prefix traffic-selectors; revision-date 2016-01-14; }
     import ietf-pmip-qos { prefix pmipqos; revision-date 2016-02-10; }
@@ -220,38 +221,38 @@ module ietf-dmm-threegpp {
       }
     }
 
-    augment "/fpcbase:descriptors/fpcbase:descriptor-value" {
+    augment "/fpcagent:descriptors/fpcagent:descriptor-value" {
       case threegpp-tft {
           uses threegpp:tft;
       }
     }
 
-    augment "/fpcbase:dpn-groups/fpcbase:dpn-group-peers/fpcbase:profile-parameters" {
+    augment "/fpcagent:dpn-groups/fpcagent:dpn-group-peers/fpcagent:profile-parameters" {
       case threegpp-tunnel {
           uses threegpp:threeGPP-tunnel;
           uses threegpp:tft;
       }
     }
-    augment "/fpcbase:contexts/fpcbase:ul/fpcbase:mobility-profile/fpcbase:profile-parameters" {
+    augment "/fpcagent:contexts/fpcagent:ul/fpcagent:mobility-profile/fpcagent:profile-parameters" {
       case threegpp-tunnel {
           uses threegpp:threeGPP-tunnel;
           uses threegpp:tft;
       }
     }
-    augment "/fpcbase:contexts/fpcbase:dl/fpcbase:mobility-profile/fpcbase:profile-parameters" {
+    augment "/fpcagent:contexts/fpcagent:dl/fpcagent:mobility-profile/fpcagent:profile-parameters" {
       case threegpp-tunnel {
           uses threegpp:threeGPP-tunnel;
           uses threegpp:tft;
       }
     }
-    augment "/fpcbase:contexts/fpcbase:dpns/fpcbase:mobility-profile/fpcbase:profile-parameters" {
+    augment "/fpcagent:contexts/fpcagent:dpns/fpcagent:mobility-profile/fpcagent:profile-parameters" {
       case threegpp-tunnel {
           uses threegpp:threeGPP-tunnel;
           uses threegpp:tft;
       }
     }
 
-    augment "/fpcbase:contexts/fpcbase:ul/fpcbase:qos-profile/fpcbase:value" {
+    augment "/fpcagent:contexts/fpcagent:ul/fpcagent:qos-profile/fpcagent:value" {
       case threegpp-qos {
           uses threegpp:threeGPP-QoS;
       }

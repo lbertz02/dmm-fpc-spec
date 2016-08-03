@@ -3,6 +3,7 @@ module ietf-dmm-fpc-pmip {
     prefix fpc-pmip;
 
     import ietf-dmm-fpcbase { prefix fpcbase; }
+    import ietf-dmm-fpcagent { prefix fpcagent; }
     import ietf-pmip-qos { prefix qos-pmip; }
     import ietf-traffic-selector-types { prefix traffic-selectors; }
 
@@ -56,38 +57,38 @@ module ietf-dmm-fpc-pmip {
         }
     }
 
-    augment "/fpcbase:descriptors/fpcbase:descriptor-value" {
+    augment "/fpcagent:descriptors/fpcagent:descriptor-value" {
       case pmip-selector {
           uses traffic-selectors:traffic-selector;
       }
     }
 
-    augment "/fpcbase:dpn-groups/fpcbase:dpn-group-peers/fpcbase:profile-parameters" {
+    augment "/fpcagent:dpn-groups/fpcagent:dpn-group-peers/fpcagent:profile-parameters" {
       case pmip-tunnel {
         uses fpc-pmip:pmip-mobility;
         uses traffic-selectors:traffic-selector;
       }
     }
-    augment "/fpcbase:contexts/fpcbase:ul/fpcbase:mobility-profile/fpcbase:profile-parameters" {
+    augment "/fpcagent:contexts/fpcagent:ul/fpcagent:mobility-profile/fpcagent:profile-parameters" {
       case pmip-tunnel {
         uses fpc-pmip:pmip-mobility;
         uses traffic-selectors:traffic-selector;
       }
     }
-    augment "/fpcbase:contexts/fpcbase:dl/fpcbase:mobility-profile/fpcbase:profile-parameters" {
+    augment "/fpcagent:contexts/fpcagent:dl/fpcagent:mobility-profile/fpcagent:profile-parameters" {
       case pmip-tunnel {
         uses fpc-pmip:pmip-mobility;
         uses traffic-selectors:traffic-selector;
       }
     }
-    augment "/fpcbase:contexts/fpcbase:dpns/fpcbase:mobility-profile/fpcbase:profile-parameters" {
+    augment "/fpcagent:contexts/fpcagent:dpns/fpcagent:mobility-profile/fpcagent:profile-parameters" {
       case pmip-tunnel {
         uses fpc-pmip:pmip-mobility;
         uses traffic-selectors:traffic-selector;
       }
     }
 
-    augment "/fpcbase:contexts/fpcbase:ul/fpcbase:qos-profile/fpcbase:value" {
+    augment "/fpcagent:contexts/fpcagent:ul/fpcagent:qos-profile/fpcagent:value" {
       case qos-pmip {
           uses qos-pmip:qosattribute;
       }
