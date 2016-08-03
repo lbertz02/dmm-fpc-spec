@@ -1,10 +1,8 @@
-
 module ietf-dmm-fpcbase {
     namespace "urn:ietf:params:xml:ns:yang:fpcbase";
     prefix fpcbase;
 
     import ietf-inet-types { prefix inet; revision-date 2013-07-15; }
-    //import ietf-pmip-qos { prefix qos-pmip; }
 
     organization "IETF DMM Working Group";
     contact "Satoru Matsushima <satoru.matsushima@g.softbank.co.jp>";
@@ -13,14 +11,9 @@ module ietf-dmm-fpcbase {
     "This module contains YANG definition for
      Forwarding Policy Configuration Protocol.(FPCP)";
 
-    revision 2016-07-23 {
+    revision 2016-08-03 {
         description "Changes based on -04 version of FPC draft.";
         reference "draft-ietf-dmm-fpc-cpdp-04";
-    }
-
-    typedef fpcp-name-type {
-        type string;
-        description "FPCP common name type";
     }
 
     typedef fpc-identity {
@@ -35,12 +28,9 @@ module ietf-dmm-fpcbase {
         type fpcbase:fpc-identity;
         description "Rule-ID";
     }
-
     identity fpc-descriptor-type {
-        description
-          "A traffic descriptor";
+        description "A traffic descriptor";
     }
-
     grouping fpc-descriptor {
         leaf descriptor-type {
           type identityref {
@@ -62,12 +52,9 @@ module ietf-dmm-fpcbase {
         type fpcbase:fpc-identity;
         description "Rule-ID";
     }
-
     identity fpc-action-type {
-        description
-          "Action Type";
+        description "Action Type";
     }
-
     grouping fpc-action {
         leaf action-type {
           type identityref {
@@ -88,7 +75,6 @@ module ietf-dmm-fpcbase {
     typedef fpc-rule-id {
         type fpcbase:fpc-identity;
     }
-
     grouping fpc-rule {
         description
           "FPC Rule";
@@ -115,7 +101,6 @@ module ietf-dmm-fpcbase {
     typedef fpc-policy-id {
         type fpcbase:fpc-identity;
     }
-
     grouping fpc-policy {
         leaf policy-id {
             type fpcbase:fpc-policy-id;
@@ -133,7 +118,6 @@ module ietf-dmm-fpcbase {
     typedef fpc-policy-group-id {
         type fpcbase:fpc-identity;
     }
-
     grouping fpc-policy-group {
         leaf policy-group-id {
             type fpcbase:fpc-policy-group-id;
@@ -148,7 +132,6 @@ module ietf-dmm-fpcbase {
     typedef fpc-port-id {
         type fpcbase:fpc-identity;
     }
-
     grouping fpc-port {
         leaf port-id {
             type fpcbase:fpc-port-id;
@@ -163,7 +146,6 @@ module ietf-dmm-fpcbase {
     typedef fpc-context-id {
         type fpcbase:fpc-identity;
     }
-
     grouping fpc-context-profile {
         description "A profile that applies to a specific direction";
         leaf remote-address {
@@ -202,7 +184,6 @@ module ietf-dmm-fpcbase {
          enum downlink;
        }
     }
-
     grouping fpc-context {
         leaf context-id {
             type fpcbase:fpc-context-id;
@@ -237,9 +218,6 @@ module ietf-dmm-fpcbase {
     // Mobility (Tunnel) Information
     grouping mobility-info {
         choice profile-parameters {
-            case threeGPP-tunnel {
-                uses fpcbase:threeGPP-tunnel;
-            }
             case pmip-tunnel {
                 uses fpcbase:pmip-mobility;
             }
@@ -250,19 +228,15 @@ module ietf-dmm-fpcbase {
     identity pmip-tunnel-type {
         description "PMIP Tunnel Type";
     }
-
     identity grev1 {
         base "fpcbase:pmip-tunnel-type";
     }
-
     identity grev2 {
         base "fpcbase:pmip-tunnel-type";
     }
-
     identity ipinip {
         base "fpcbase:pmip-tunnel-type";
     }
-
     grouping pmip-mobility {
         leaf type {
             type identityref {
@@ -303,66 +277,10 @@ module ietf-dmm-fpcbase {
         }
     }
 
-    // threeGPP Structures
-    identity threeGPP-tunnel-type {
-        description "Base Tunnel Type";
-    }
-
-    identity gtpv1 {
-        base "fpcbase:threeGPP-tunnel-type";
-    }
-
-    identity gtpv2 {
-        base "fpcbase:threeGPP-tunnel-type";
-    }
-
-    grouping threeGPP-tunnel {
-        leaf tunnel-type {
-            type identityref  {
-              base "fpcbase:threeGPP-tunnel-type";
-            }
-        }
-        leaf tunnel-identifier {
-            description "TEID";
-            type uint32;
-        }
-    }
-
-    identity threeGPP-QoS-Profile {
-        base "fpcbase:fpc-qos-type";
-    }
-
-    typedef fpc-qos-class-identifier {
-        type uint8 {
-            range "1..9";
-        }
-        description "QCI";
-    }
-
-    grouping threeGPP-QoS {
-        leaf qci {
-            type fpc-qos-class-identifier;
-        }
-        leaf gbr {
-            type uint32;
-        }
-        leaf mbr {
-            type uint32;
-        }
-        leaf apn-ambr {
-            type uint32;
-        }
-        leaf ue-ambr {
-            type uint32;
-        }
-    }
-
     // QoS Information
     identity fpc-qos-type {
-        description
-        "Base identity from which specific uses of QoS types are derived.";
+        description "Base identity from which specific uses of QoS types are derived.";
     }
-
     grouping fpc-qos-profile {
         leaf qos-type {
             type identityref {
@@ -371,9 +289,6 @@ module ietf-dmm-fpcbase {
             description "the profile type";
         }
         choice value {
-              case threeGPP {
-                  uses fpcbase:threeGPP-QoS;
-              }
         }
     }
 
@@ -381,7 +296,6 @@ module ietf-dmm-fpcbase {
     identity vendor-specific-type {
         description "Vendor Specific Attribute Type";
     }
-
     grouping vendor-attributes {
         leaf vendor-id {
             type fpcbase:fpc-identity;
@@ -405,11 +319,9 @@ module ietf-dmm-fpcbase {
         type fpcbase:fpc-identity;
         description "DPN Identifier";
     }
-
     identity fpc-dpn-control-protocol {
         description "DPN Control Protocol";
     }
-
     grouping fpc-dpn {
         leaf dpn-id {
             type fpcbase:fpc-dpn-id;
@@ -431,23 +343,15 @@ module ietf-dmm-fpcbase {
         type fpcbase:fpc-identity;
         description "DPN Group Identifier";
     }
-
     identity fpc-forwaridingplane-role {
         description "Role of DPN Group in the Forwarding Plane";
     }
-
     identity fpc-access-type {
         description "Access Type of the DPN Group";
     }
-
     identity fpc-mobility-profile-type {
         description "Mobility Profile Type";
     }
-
-    identity threeGPP-mobility {
-        base "fpcbase:fpc-mobility-profile-type";
-    }
-
     identity ietf-pmip {
         base "fpcbase:fpc-mobility-profile-type";
     }
