@@ -256,5 +256,4 @@ module ietf-dmm-threegpp {
           uses threegpp:threeGPP-QoS;
       }
     }
-
 }

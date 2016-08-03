@@ -218,38 +218,6 @@ module ietf-dmm-fpcbase {
     // Mobility (Tunnel) Information
     grouping mobility-info {
         choice profile-parameters {
-            case pmip-tunnel {
-                uses fpcbase:pmip-mobility;
-            }
-        }
-    }
-
-    // IETF - PMIP Mobility
-    identity pmip-tunnel-type {
-        description "PMIP Tunnel Type";
-    }
-    identity grev1 {
-        base "fpcbase:pmip-tunnel-type";
-    }
-    identity grev2 {
-        base "fpcbase:pmip-tunnel-type";
-    }
-    identity ipinip {
-        base "fpcbase:pmip-tunnel-type";
-    }
-    grouping pmip-mobility {
-        leaf type {
-            type identityref {
-                base "fpcbase:pmip-tunnel-type";
-            }
-        }
-        choice value {
-            case gre {
-                leaf key {
-                    type uint32;
-                    description "GRE_KEY";
-                }
-            }
         }
     }
 
@@ -257,11 +225,9 @@ module ietf-dmm-fpcbase {
     identity fpc-nexthop-type {
         description "Next Hop Type";
     }
-
     identity fpc-nexthop-ip {
         base "fpcbase:fpc-nexthop-type";
     }
-
     grouping fpc-nexthop {
         leaf nexthop-type {
             type identityref {
@@ -351,9 +317,6 @@ module ietf-dmm-fpcbase {
     }
     identity fpc-mobility-profile-type {
         description "Mobility Profile Type";
-    }
-    identity ietf-pmip {
-        base "fpcbase:fpc-mobility-profile-type";
     }
 
     grouping fpc-dpn-peer-group {

@@ -1,0 +1,95 @@
+module ietf-dmm-fpc-pmip {
+    namespace "urn:ietf:params:xml:ns:yang:ietf-dmm-fpc-pmip";
+    prefix fpc-pmip;
+
+    import ietf-dmm-fpcbase { prefix fpcbase; }
+    import ietf-pmip-qos { prefix qos-pmip; }
+    import ietf-traffic-selector-types { prefix traffic-selectors; }
+
+    organization "IETF DMM Working Group";
+    contact "Satoru Matsushima <satoru.matsushima@g.softbank.co.jp>";
+
+    description
+    "This module contains YANG definition for
+     Forwarding Policy Configuration Protocol.(FPCP)";
+
+    revision 2016-01-19 {
+        description "Changes based on -01 version of FPCP draft.";
+        reference "draft-ietf-dmm-fpc-cpdp-01";
+    }
+
+    identity fpcp-qos-index-pmip {
+        base "fpcbase:fpc-qos-type";
+    }
+    identity traffic-selector-mip6 {
+        base "fpcbase:fpc-descriptor-type";
+    }
+    identity ietf-pmip {
+        base "fpcbase:fpc-mobility-profile-type";
+    }
+
+    identity pmip-tunnel-type {
+        description "PMIP Tunnel Type";
+    }
+    identity grev1 {
+        base "fpc-pmip:pmip-tunnel-type";
+    }
+    identity grev2 {
+        base "fpc-pmip:pmip-tunnel-type";
+    }
+    identity ipinip {
+        base "fpc-pmip:pmip-tunnel-type";
+    }
+    grouping pmip-mobility {
+        leaf type {
+            type identityref {
+                base "fpc-pmip:pmip-tunnel-type";
+            }
+        }
+        choice value {
+            case gre {
+                leaf key {
+                    type uint32;
+                    description "GRE_KEY";
+                }
+            }
+        }
+    }
+
+    augment "/fpcbase:descriptors/fpcbase:descriptor-value" {
+      case pmip-selector {
+          uses traffic-selectors:traffic-selector;
+      }
+    }
+
+    augment "/fpcbase:dpn-groups/fpcbase:dpn-group-peers/fpcbase:profile-parameters" {
+      case pmip-tunnel {
+        uses fpc-pmip:pmip-mobility;
+        uses traffic-selectors:traffic-selector;
+      }
+    }
+    augment "/fpcbase:contexts/fpcbase:ul/fpcbase:mobility-profile/fpcbase:profile-parameters" {
+      case pmip-tunnel {
+        uses fpc-pmip:pmip-mobility;
+        uses traffic-selectors:traffic-selector;
+      }
+    }
+    augment "/fpcbase:contexts/fpcbase:dl/fpcbase:mobility-profile/fpcbase:profile-parameters" {
+      case pmip-tunnel {
+        uses fpc-pmip:pmip-mobility;
+        uses traffic-selectors:traffic-selector;
+      }
+    }
+    augment "/fpcbase:contexts/fpcbase:dpns/fpcbase:mobility-profile/fpcbase:profile-parameters" {
+      case pmip-tunnel {
+        uses fpc-pmip:pmip-mobility;
+        uses traffic-selectors:traffic-selector;
+      }
+    }
+
+    augment "/fpcbase:contexts/fpcbase:ul/fpcbase:qos-profile/fpcbase:value" {
+      case qos-pmip {
+          uses qos-pmip:qosattribute;
+      }
+    }
+}
