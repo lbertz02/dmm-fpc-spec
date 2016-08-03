@@ -3,6 +3,9 @@ module ietf-dmm-fpcbase {
     namespace "urn:ietf:params:xml:ns:yang:fpcbase";
     prefix fpcbase;
 
+    import ietf-inet-types { prefix inet; revision-date 2013-07-15; }
+    //import ietf-pmip-qos { prefix qos-pmip; }
+
     organization "IETF DMM Working Group";
     contact "Satoru Matsushima <satoru.matsushima@g.softbank.co.jp>";
 
@@ -20,9 +23,16 @@ module ietf-dmm-fpcbase {
         description "FPCP common name type";
     }
 
+    typedef fpc-identity {
+        type union {
+            type uint32;
+            type string;
+        }
+    }
+
     // Descriptor Structure
     typedef fpc-descriptor-id {
-        type uint32;
+        type fpcbase:fpc-identity;
         description "Rule-ID";
     }
 
@@ -49,7 +59,7 @@ module ietf-dmm-fpcbase {
 
     // Action Structure
     typedef fpc-action-id {
-        type uint32;
+        type fpcbase:fpc-identity;
         description "Rule-ID";
     }
 
@@ -76,15 +86,12 @@ module ietf-dmm-fpcbase {
 
     // Rule Structure
     typedef fpc-rule-id {
-        type uint32;
+        type fpcbase:fpc-identity;
     }
 
     grouping fpc-rule {
         description
           "FPC Rule";
-        leaf rule-id {
-            type fpcbase:fpc-rule-id;
-        }
         list action {
           key action-id;
           leaf action-id {
@@ -106,33 +113,428 @@ module ietf-dmm-fpcbase {
 
     // Policy Structures
     typedef fpc-policy-id {
-        type uint32;
+        type fpcbase:fpc-identity;
     }
 
-    grouping policy {
+    grouping fpc-policy {
         leaf policy-id {
             type fpcbase:fpc-policy-id;
         }
         list rule {
-            key rule-id;
-            uses fpcbase:fpc-rule;
+            key order;
             leaf order {
               type uint32;
             }
+            uses fpcbase:fpc-rule;
         }
     }
 
     // Policy Group
     typedef fpc-policy-group-id {
-        type uint32;
+        type fpcbase:fpc-identity;
     }
 
-    grouping policy-group {
+    grouping fpc-policy-group {
         leaf policy-group-id {
             type fpcbase:fpc-policy-group-id;
         }
         leaf-list policy {
             type fpcbase:fpc-policy-id;
         }
+    }
+
+    // Mobility Structures
+    // Port Group
+    typedef fpc-port-id {
+        type fpcbase:fpc-identity;
+    }
+
+    grouping fpc-port {
+        leaf port-id {
+            type fpcbase:fpc-port-id;
+        }
+        list policy-groups {
+            key policy-group-id;
+            uses fpcbase:fpc-policy-group;
+        }
+    }
+
+    // Context Group
+    typedef fpc-context-id {
+        type fpcbase:fpc-identity;
+    }
+
+    grouping fpc-context-profile {
+        description "A profile that applies to a specific direction";
+        leaf remote-address {
+            type inet:ip-address;
+            description "Uplink endpoint address of the DPN which agent exists.";
+        }
+        leaf local-address {
+            type inet:ip-address;
+            description "Uplink endpoint address of the DPN which agent exists.";
+        }
+        leaf mtu {
+            type uint32;
+            description "Tunnel MTU size";
+        }
+        container mobility-profile {
+            description "Specifies profile specific uplink tunnel parameters to the DPN which the agent exists. The profiles includes GTP/TEID for 3gpp profile, GRE/Key for ietf-pmip profile, or new profile if anyone will define it.";
+            uses fpcbase:mobility-info;
+        }
+        container nexthop {
+            uses fpcbase:fpc-nexthop;
+        }
+        container qos-profile {
+            uses fpcbase:fpc-qos-profile;
+        }
+        container dpn-parameters {
+        }
+        list vendor-params {
+            key "vendor-id vendor-type";
+            uses fpcbase:vendor-attributes;
+        }
+    }
+
+    typedef fpc-direction {
+       type enumeration {
+         enum uplink;
+         enum downlink;
+       }
+    }
+
+    grouping fpc-context {
+        leaf context-id {
+            type fpcbase:fpc-context-id;
+        }
+        leaf-list ports {
+            type fpcbase:fpc-port-id;
+        }
+        leaf-list delegating-ip-prefixes {
+            type inet:ip-prefix;
+        }
+        container ul {
+            uses fpcbase:fpc-context-profile;
+        }
+        container dl {
+            uses fpcbase:fpc-context-profile;
+        }
+        leaf parent-context {
+            type fpcbase:fpc-context-id;
+        }
+        list dpns {
+            key dpn-id;
+            leaf dpn-id {
+                type fpcbase:fpc-dpn-id;
+            }
+            leaf direction {
+                type fpcbase:fpc-direction;
+            }
+            uses fpcbase:fpc-context-profile;
+        }
+    }
+
+    // Mobility (Tunnel) Information
+    grouping mobility-info {
+        choice profile-parameters {
+            case threeGPP-tunnel {
+                uses fpcbase:threeGPP-tunnel;
+            }
+            case pmip-tunnel {
+                uses fpcbase:pmip-mobility;
+            }
+        }
+    }
+
+    // IETF - PMIP Mobility
+    identity pmip-tunnel-type {
+        description "PMIP Tunnel Type";
+    }
+
+    identity grev1 {
+        base "fpcbase:pmip-tunnel-type";
+    }
+
+    identity grev2 {
+        base "fpcbase:pmip-tunnel-type";
+    }
+
+    identity ipinip {
+        base "fpcbase:pmip-tunnel-type";
+    }
+
+    grouping pmip-mobility {
+        leaf type {
+            type identityref {
+                base "fpcbase:pmip-tunnel-type";
+            }
+        }
+        choice value {
+            case gre {
+                leaf key {
+                    type uint32;
+                    description "GRE_KEY";
+                }
+            }
+        }
+    }
+
+    // Next Hop Structures
+    identity fpc-nexthop-type {
+        description "Next Hop Type";
+    }
+
+    identity fpc-nexthop-ip {
+        base "fpcbase:fpc-nexthop-type";
+    }
+
+    grouping fpc-nexthop {
+        leaf nexthop-type {
+            type identityref {
+              base "fpcbase:fpc-nexthop-type";
+            }
+        }
+        choice nexthop-value {
+            case ip {
+                leaf ip {
+                  type inet:ip-address;
+                }
+            }
+        }
+    }
+
+    // threeGPP Structures
+    identity threeGPP-tunnel-type {
+        description "Base Tunnel Type";
+    }
+
+    identity gtpv1 {
+        base "fpcbase:threeGPP-tunnel-type";
+    }
+
+    identity gtpv2 {
+        base "fpcbase:threeGPP-tunnel-type";
+    }
+
+    grouping threeGPP-tunnel {
+        leaf tunnel-type {
+            type identityref  {
+              base "fpcbase:threeGPP-tunnel-type";
+            }
+        }
+        leaf tunnel-identifier {
+            description "TEID";
+            type uint32;
+        }
+    }
+
+    identity threeGPP-QoS-Profile {
+        base "fpcbase:fpc-qos-type";
+    }
+
+    typedef fpc-qos-class-identifier {
+        type uint8 {
+            range "1..9";
+        }
+        description "QCI";
+    }
+
+    grouping threeGPP-QoS {
+        leaf qci {
+            type fpc-qos-class-identifier;
+        }
+        leaf gbr {
+            type uint32;
+        }
+        leaf mbr {
+            type uint32;
+        }
+        leaf apn-ambr {
+            type uint32;
+        }
+        leaf ue-ambr {
+            type uint32;
+        }
+    }
+
+    // QoS Information
+    identity fpc-qos-type {
+        description
+        "Base identity from which specific uses of QoS types are derived.";
+    }
+
+    grouping fpc-qos-profile {
+        leaf qos-type {
+            type identityref {
+                base fpcbase:fpc-qos-type;
+            }
+            description "the profile type";
+        }
+        choice value {
+              case threeGPP {
+                  uses fpcbase:threeGPP-QoS;
+              }
+        }
+    }
+
+    // Vendor Specific Attributes
+    identity vendor-specific-type {
+        description "Vendor Specific Attribute Type";
+    }
+
+    grouping vendor-attributes {
+        leaf vendor-id {
+            type fpcbase:fpc-identity;
+        }
+        leaf vendor-type {
+            type identityref {
+                base "fpcbase:vendor-specific-type";
+            }
+        }
+        choice value {
+            case empty-type {
+                leaf empty-type {
+                    type empty;
+                }
+            }
+        }
+    }
+
+    // Topology
+    typedef fpc-dpn-id {
+        type fpcbase:fpc-identity;
+        description "DPN Identifier";
+    }
+
+    identity fpc-dpn-control-protocol {
+        description "DPN Control Protocol";
+    }
+
+    grouping fpc-dpn {
+        leaf dpn-id {
+            type fpcbase:fpc-dpn-id;
+        }
+        leaf address {
+            type inet:ip-address;
+        }
+        leaf-list control-protocols {
+            type identityref {
+                base "fpcbase:fpc-dpn-control-protocol";
+            }
+        }
+        leaf-list dpn-groups {
+            type fpcbase:fpc-dpn-group-id;
+        }
+    }
+
+    typedef fpc-dpn-group-id {
+        type fpcbase:fpc-identity;
+        description "DPN Group Identifier";
+    }
+
+    identity fpc-forwaridingplane-role {
+        description "Role of DPN Group in the Forwarding Plane";
+    }
+
+    identity fpc-access-type {
+        description "Access Type of the DPN Group";
+    }
+
+    identity fpc-mobility-profile-type {
+        description "Mobility Profile Type";
+    }
+
+    identity threeGPP-mobility {
+        base "fpcbase:fpc-mobility-profile-type";
+    }
+
+    identity ietf-pmip {
+        base "fpcbase:fpc-mobility-profile-type";
+    }
+
+    grouping fpc-dpn-peer-group {
+        leaf remote-dpn-group-id {
+            type fpcbase:fpc-dpn-group-id;
+        }
+        leaf remote-endpoint-address {
+            type inet:ip-address;
+        }
+        leaf local-endpoint-address {
+            type inet:ip-address;
+        }
+        leaf mtu-size {
+            type uint32;
+        }
+        uses fpcbase:mobility-info;
+        leaf fowarding-role {
+            type identityref {
+                base "fpcbase:fpc-forwaridingplane-role";
+            }
+        }
+    }
+
+    grouping fpc-dpn-group {
+        leaf group-id {
+            type fpcbase:fpc-dpn-group-id;
+        }
+        leaf fowarding-role {
+            type identityref {
+                base "fpcbase:fpc-forwaridingplane-role";
+            }
+        }
+        leaf access-type {
+            type identityref {
+                base "fpcbase:fpc-access-type";
+            }
+        }
+        leaf mobility-profile {
+            type identityref {
+                base "fpcbase:fpc-mobility-profile-type";
+            }
+        }
+        list dpn-group-peers {
+            key "remote-dpn-group-id";
+            uses fpcbase:fpc-dpn-peer-group;
+        }
+    }
+
+    // Top Level Structures
+    list dpn-groups {
+        key group-id;
+        uses fpcbase:fpc-dpn-group;
+    }
+    list dpns {
+        key dpn-id;
+        uses fpcbase:fpc-dpn;
+    }
+    list contexts {
+        key context-id;
+        uses fpcbase:fpc-context;
+    }
+    list ports {
+        key port-id;
+        uses fpcbase:fpc-port;
+    }
+    list policy-groups {
+        key "policy-group-id";
+        uses fpcbase:fpc-policy-group;
+    }
+    list policies {
+        key "policy-id";
+        uses fpcbase:fpc-policy;
+    }
+    list descriptors {
+      key descriptor-id;
+      leaf descriptor-id {
+        type fpcbase:fpc-descriptor-id;
+      }
+      uses fpcbase:fpc-descriptor;
+    }
+    list actions {
+        key action-id;
+        leaf action-id {
+          type fpcbase:fpc-action-id;
+        }
+        uses fpcbase:fpc-action;
     }
 }
