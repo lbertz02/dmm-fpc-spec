@@ -26,12 +26,15 @@ module ietf-dmm-fpcbase {
     // Descriptor Structure
     typedef fpc-descriptor-id {
         type fpcbase:fpc-identity;
-        description "Rule-ID";
+        description "Descriptor-ID";
     }
     identity fpc-descriptor-type {
         description "A traffic descriptor";
     }
     grouping fpc-descriptor {
+        leaf descriptor-id {
+              type fpcbase:fpc-descriptor-id;
+        }
         leaf descriptor-type {
           type identityref {
             base "fpc-descriptor-type";
@@ -50,12 +53,15 @@ module ietf-dmm-fpcbase {
     // Action Structure
     typedef fpc-action-id {
         type fpcbase:fpc-identity;
-        description "Rule-ID";
+        description "Action-ID";
     }
     identity fpc-action-type {
         description "Action Type";
     }
     grouping fpc-action {
+        leaf action-id {
+            type fpcbase:fpc-action-id;
+        }
         leaf action-type {
           type identityref {
             base "fpc-action-type";
@@ -72,17 +78,11 @@ module ietf-dmm-fpcbase {
     }
 
     // Rule Structure
-    typedef fpc-rule-id {
-        type fpcbase:fpc-identity;
-    }
     grouping fpc-rule {
         description
           "FPC Rule";
         list action {
           key action-id;
-          leaf action-id {
-              type fpcbase:fpc-action-id;
-          }
           leaf order {
               type uint32;
           }
@@ -90,9 +90,6 @@ module ietf-dmm-fpcbase {
         }
         list descriptor {
           key descriptor-id;
-          leaf descriptor-id {
-              type fpcbase:fpc-descriptor-id;
-          }
           uses fpcbase:fpc-descriptor;
         }
     }
@@ -222,10 +219,20 @@ module ietf-dmm-fpcbase {
     }
 
     // Next Hop Structures
+    typedef fpcp-service-path-id {
+        type uint32 {
+            range "0..33554431";
+        }
+        description "SERVICE_PATH_ID";
+    }
+
     identity fpc-nexthop-type {
         description "Next Hop Type";
     }
     identity fpc-nexthop-ip {
+        base "fpcbase:fpc-nexthop-type";
+    }
+    identity fpc-nexthop-servicepath {
         base "fpcbase:fpc-nexthop-type";
     }
     grouping fpc-nexthop {
@@ -238,6 +245,11 @@ module ietf-dmm-fpcbase {
             case ip {
                 leaf ip {
                   type inet:ip-address;
+                }
+            }
+            case servicepath {
+                leaf servicepath {
+                    type fpcbase:fpcp-service-path-id;
                 }
             }
         }

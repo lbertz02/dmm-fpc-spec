@@ -16,14 +16,31 @@ module ietf-dmm-fpcagent {
         reference "draft-ietf-dmm-fpc-cpdp-04";
     }
 
-    feature basic-agent {
+    feature fpc-basic-agent {
         description "This is an agent co-located with a DPN.  In this case
         only DPN Peer Groups, the DPN Id and Control Protocols are exposed
         along with the core structures.";
     }
-
-    feature multi-dpn {
+    feature fpc-multi-dpn {
         description "The agent supports multiple DPNs.";
+    }
+    feature fpc-cloning {
+      description "An ability to support cloning in the RPC.";
+    }
+    feature fpc-basename-registry {
+      description "Ability to track Base Names already provisioned on the Agent";
+    }
+    feature fpc-bundles {
+      description "Ability for Client to send multiple bundles of actions to
+        an Agent";
+    }
+
+    typedef agent-identifier {
+        type fpcbase:fpc-identity;
+    }
+
+    typedef client-identifier {
+        type fpcbase:fpc-identity;
     }
 
     // Top Level Structures
@@ -45,31 +62,41 @@ module ietf-dmm-fpcagent {
     }
     list descriptors {
       key descriptor-id;
-      leaf descriptor-id {
-        type fpcbase:fpc-descriptor-id;
-      }
       uses fpcbase:fpc-descriptor;
     }
     list actions {
         key action-id;
-        leaf action-id {
-          type fpcbase:fpc-action-id;
-        }
         uses fpcbase:fpc-action;
     }
 
+    // General Agent Structures
+   /* container agent-info {
+      leaf-list features {
+        choice agent-base-type {
+          case basic {
+            uses fpcagent:fpc-basic-agent;
+          }
+          case mulit-dpn {
+            uses fpcagent:fpc-multi-dpn;
+          }
+        }
+        uses fpcagent:fpc-cloning;
+      }
+
+    }
+*/
     // Basic Agent Structures
     list dpn-group-peers {
-        if-feature basic-agent;
+        if-feature fpc-basic-agent;
         key "remote-dpn-group-id";
         uses fpcbase:fpc-dpn-peer-group;
     }
     leaf dpn-id {
-      if-feature basic-agent;
+      if-feature fpc-basic-agent;
       type fpcbase:fpc-dpn-id;
     }
     leaf-list control-protocols {
-      if-feature basic-agent;
+      if-feature fpc-basic-agent;
       type identityref {
         base "fpcbase:fpc-dpn-control-protocol";
       }
@@ -102,13 +129,145 @@ module ietf-dmm-fpcagent {
     }
 
     list dpn-groups {
-        if-feature multi-dpn;
+        if-feature fpc-multi-dpn;
         key group-id;
         uses fpcagent:fpc-dpn-group;
     }
     list dpns {
-        if-feature multi-dpn;
+        if-feature fpc-multi-dpn;
         key dpn-id;
         uses fpcbase:fpc-dpn;
+    }
+
+    // Base Name Registry Feature
+    list basename-registry {
+        description "A registy for multiple clients operating upon the same base,
+          e.g. '/mcc:01/mnc:01' to determine if a Client has already provisioned
+          common Policy on the Agent / DPN";
+        if-feature fpcagent:fpc-basename-registry;
+        key basename;
+        leaf basename {
+            type fpcbase:fpc-identity;
+        }
+        leaf state {
+            type string;
+        }
+        leaf version {
+            type string;
+        }
+    }
+
+    // RPC
+    // RPC Specific Structures
+    //Input Structures
+    typedef admin-status {
+        type enumeration {
+            enum enabled { value 0; }
+            enum disabled { value 1; }
+            enum virtual { value 2; }
+        }
+    }
+
+    typedef session-status {
+        type enumeration {
+            enum complete { value 0; }
+            enum incomplete { value 1; }
+            enum outdated { value 2; }
+        }
+    }
+
+    typedef operation-delay {
+        type uint32;
+    }
+
+    typedef op-identifier {
+        type uint64;
+    }
+
+    grouping op-header {
+      leaf client-id {
+        type fpcagent:client-identifier;
+      }
+      leaf delay {
+        type operation-delay;
+      }
+      leaf session-state {
+        type session-status;
+      }
+      leaf admin-state {
+        type admin-status;
+      }
+      leaf op-type {
+        type enumeration {
+          enum create { value 0; }
+          enum update { value 1; }
+          enum query { value 2; }
+          enum delete { value 3; }
+        }
+      }
+    }
+
+    grouping clone-ref {
+      leaf entity {
+        type fpcbase:fpc-identity;
+      }
+      leaf source {
+        type fpcbase:fpc-identity;
+      }
+    }
+
+    // Output Structure
+    typedef result {
+        type enumeration {
+            enum ok { value 0; }
+            enum err { value 1; }
+        }
+    }
+
+    grouping op-input {
+      uses fpcagent:op-header;
+      leaf id {
+        type op-identifier;
+      }
+      list clones {
+        if-feature fpc-cloning;
+        key entity;
+        uses fpcagent:clone-ref;
+      }
+      list descriptors {
+        uses fpcbase:fpc-descriptor;
+      }
+      list actions {
+        uses fpcbase:fpc-action;
+      }
+      list policies {
+        uses fpcbase:fpc-policy;
+      }
+      list policy-groups {
+        uses fpcbase:fpc-policy-group;
+      }
+      list ports {
+        uses fpcbase:fpc-port;
+      }
+      list contexts {
+        uses fpcbase:fpc-context;
+      }
+    }
+
+    // Common RPCs
+    rpc configure {
+      input {
+        uses fpcagent:op-input;
+      }
+    }
+
+    rpc configure-bundles {
+      if-feature fpc-bundles;
+      input {
+        list bundles {
+          key id;
+          uses fpcagent:op-input;
+        }
+      }
     }
 }
