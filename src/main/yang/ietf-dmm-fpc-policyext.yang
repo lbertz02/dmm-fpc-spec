@@ -2,6 +2,7 @@ module ietf-dmm-fpc-policyext {
     namespace "urn:ietf:params:xml:ns:yang:fpcpolicyext";
     prefix fpcpolicyext;
 
+    import ietf-dmm-fpcbase { prefix fpcbase; revision-date 2016-08-03; }
     import ietf-dmm-fpcagent { prefix fpcagent; revision-date 2016-08-03; }
     import ietf-inet-types { prefix inet; revision-date 2013-07-15; }
 
@@ -19,47 +20,68 @@ module ietf-dmm-fpc-policyext {
     }
 
     identity service-function {
+        base "fpcbase:fpc-descriptor-type";
         description "Base Identifier for Service Functions.";
     }
+
     identity napt-service {
         base "service-function";
     }
+    grouping simple-nat {
+      leaf outbound-nat-address {
+        type inet:ip-address;
+      }
+    }
+
     identity nat-service {
         base "service-function";
     }
+    grouping simple-napt {
+      leaf source-port {
+        type inet:port-number;
+      }
+      leaf outbound-napt-address {
+        type inet:ip-address;
+      }
+      leaf destination-port {
+        type inet:port-number;
+      }
+    }
 
-    grouping rewriting-properties {
-        description
-        "Basic Header Rewrite";
-        leaf type {
-            type identityref {
-                base service-function;
-            }
-            description "The type of service-function";
-        }
+    identity copy-forward {
+      base "fpcbase:fpc-descriptor-type";
+      description "Copies a packet then forwards to a specific destination";
+    }
+    grouping copy-forward {
+      container destination {
         choice value {
-            case simple-nat {
-                leaf outbound-nat-address {
-                    type inet:ip-address;
-                }
+          case port-ref {
+            leaf port-ref {
+              type leafref {
+                path "/fpcagent:ports/fpcagent:port-id";
+              }
             }
-            case simple-napt {
-                leaf source-port {
-                    type inet:port-number;
-                }
-                leaf outbound-napt-address {
-                    type inet:ip-address;
-                }
-                leaf destination-port {
-                    type inet:port-number;
-                }
+          }
+          case context-ref {
+            leaf context-ref {
+              type leafref {
+                path "/fpcagent:contexts/fpcagent:context-id";
+              }
             }
+          }
         }
+      }
     }
 
     augment "/fpcagent:actions/fpcagent:action-value" {
-      case prefix-descriptor {
-          uses fpcpolicyext:rewriting-properties;
+      case simple-nat {
+          uses fpcpolicyext:simple-nat;
+      }
+      case simple-napt {
+          uses fpcpolicyext:simple-napt;
+      }
+      case copy-forward {
+          uses fpcpolicyext:copy-forward;
       }
     }
 
