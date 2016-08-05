@@ -3,6 +3,7 @@ module ietf-dmm-fpcagent {
     prefix fpcagent;
 
     import ietf-dmm-fpcbase { prefix fpcbase; revision-date 2016-08-03; }
+    import ietf-inet-types { prefix inet; revision-date 2013-07-15; }
 
     organization "IETF DMM Working Group";
     contact "Satoru Matsushima <satoru.matsushima@g.softbank.co.jp>";
@@ -33,6 +34,12 @@ module ietf-dmm-fpcagent {
     feature fpc-bundles {
       description "Ability for Client to send multiple bundles of actions to
         an Agent";
+    }
+    feature fpc-client-binding {
+      description "Allows a FPC Client to bind a DPN to an Topology Object";
+    }
+    feature fpc-auto-binding {
+      description "Allows a FPC Agent to advertise Topology Objects that could be DPNs";
     }
 
     typedef agent-identifier {
@@ -217,13 +224,6 @@ module ietf-dmm-fpcagent {
     }
 
     // Output Structure
-    typedef result {
-        type enumeration {
-            enum ok { value 0; }
-            enum err { value 1; }
-        }
-    }
-
     grouping op-input {
       uses fpcagent:op-header;
       leaf id {
@@ -254,20 +254,122 @@ module ietf-dmm-fpcagent {
       }
     }
 
+    typedef result {
+      type enumeration {
+        enum ok { value 0; }
+        enum err { value 1; }
+        enum ok-notify-follows { value 2; }
+      }
+    }
+
+    identity error-type {
+      description "Base Error Type";
+    }
+
+    grouping op-result {
+        leaf result {
+          type result;
+        }
+        leaf error-type {
+          type identityref {
+            base "fpcagent:error-type";
+          }
+        }
+        leaf error-info {
+          type string;
+        }
+    }
+
     // Common RPCs
     rpc configure {
       input {
         uses fpcagent:op-input;
       }
+      output {
+        uses fpcagent:op-result;
+      }
     }
 
     rpc configure-bundles {
-      if-feature fpc-bundles;
+      if-feature fpcagent:fpc-bundles;
       input {
         list bundles {
           key id;
           uses fpcagent:op-input;
         }
       }
+      output {
+        list bundles {
+          key id;
+          leaf id {
+            type op-identifier;
+          }
+          uses fpcagent:op-result;
+        }
+      }
+    }
+
+    rpc bind-dpn {
+      if-feature fpcagent:fpc-client-binding;
+      input {
+        leaf node-id {
+          type inet:uri;
+        }
+        uses fpcbase:fpc-dpn;
+      }
+      output {
+        uses fpcagent:op-result;
+      }
+    }
+    rpc unbind-dpn {
+      if-feature fpcagent:fpc-client-binding;
+      input {
+        leaf dpn-id {
+          type fpcbase:fpc-dpn-id;
+        }
+      }
+      output {
+        uses fpcagent:op-result;
+      }
+    }
+
+    rpc event_register {
+        description "Used to registered parameters";
+    }
+
+    identity event-type {
+        description "Base Event Type";
+    }
+
+    notification notify {
+        description "A new Topology Object appears that could be uses as a DPN";
+        leaf event-type {
+            type identityref {
+              base "fpcagent:event-type";
+            }
+        }
+        choice value {
+            case dpn-candidate-available {
+              if-feature fpcagent:fpc-auto-binding;
+              leaf node-id {
+                type inet:uri;
+              }
+              leaf-list access-types {
+                type identityref {
+                  base "fpcbase:fpc-access-type";
+                }
+              }
+              leaf-list mobility-profiles {
+                type identityref {
+                  base "fpcbase:fpc-mobility-profile-type";
+                }
+              }
+              leaf-list forwarding-plane-roles {
+                type identityref {
+                  base "fpcbase:fpc-forwaridingplane-role";
+                }
+              }
+            }
+        }
     }
 }

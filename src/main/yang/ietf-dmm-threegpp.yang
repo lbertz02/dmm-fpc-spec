@@ -84,6 +84,12 @@ module ietf-dmm-threegpp {
         }
     }
 
+    typedef ebi-type {
+      type uint8 {
+        range "0..15";
+      }
+    }
+
    // From 3GPP TS 24.008 version 13.5.0 Release 13
    typedef component-type-enum {
         type enumeration {
@@ -221,6 +227,10 @@ module ietf-dmm-threegpp {
       }
     }
 
+    typedef imsi-type {
+        type uint64;
+    }
+
     augment "/fpcagent:descriptors/fpcagent:descriptor-value" {
       case threegpp-tft {
           uses threegpp:tft;
@@ -255,6 +265,15 @@ module ietf-dmm-threegpp {
     augment "/fpcagent:contexts/fpcagent:ul/fpcagent:qos-profile/fpcagent:value" {
       case threegpp-qos {
           uses threegpp:threeGPP-QoS;
+      }
+    }
+
+    augment "/fpcagent:contexts" {
+      leaf imsi {
+        type threegpp:imsi-type;
+      }
+      leaf ebi {
+        type threegpp:ebi-type;
       }
     }
 }
