@@ -223,6 +223,11 @@ module ietf-dmm-fpcagent {
       }
     }
 
+
+    identity command-set {
+      description "protocol specific commands";
+    }
+
     // Output Structure
     grouping op-input {
       uses fpcagent:op-header;
