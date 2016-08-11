@@ -322,4 +322,26 @@ module ietf-dmm-threegpp {
           }
       }
     }
+    augment "/fpcagent:configure-bundles/fpcagent:input/fpcagent:bundles/fpcagent:instructions/fpcagent:instr-type" {
+      case threegpp-mobility-instr {
+          leaf instr-3gpp-mob {
+              type threegpp:threegpp-instr;
+          }
+      }
+    }
+    augment "/fpcagent:configure-bundles/fpcagent:input/fpcagent:bundles/fpcagent:contexts/fpcagent:instructions/fpcagent:instr-type" {
+      case threegpp-mobility-instr {
+          leaf instr-3gpp-mob {
+              type threegpp:threegpp-instr;
+          }
+      }
+    }
+    augment "/fpcagent:configure-bundles/fpcagent:input/fpcagent:bundles/fpcagent:ports/fpcagent:instructions/fpcagent:instr-type" {
+      case threegpp-mobility-instr {
+          leaf instr-3gpp-mob {
+              type threegpp:threegpp-instr;
+          }
+      }
+    }
+
 }
