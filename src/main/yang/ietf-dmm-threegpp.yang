@@ -231,6 +231,30 @@ module ietf-dmm-threegpp {
         type uint64;
     }
 
+    typedef threegpp-instr {
+      description "Instruction Set for 3GPP R11";
+      type bits {
+        bit assign-ip {
+          position 0;
+        }
+        bit assign-fteid-ip {
+          position 1;
+        }
+        bit assign-fteid-teid {
+          position 2;
+        }
+        bit session {
+          position 3;
+        }
+        bit uplink {
+          position 4;
+        }
+        bit downlink {
+          position 5;
+        }
+      }
+    }
+
     augment "/fpcagent:descriptors/fpcagent:descriptor-value" {
       case threegpp-tft {
           uses threegpp:tft;
@@ -274,6 +298,28 @@ module ietf-dmm-threegpp {
       }
       leaf ebi {
         type threegpp:ebi-type;
+      }
+    }
+
+    augment "/fpcagent:configure/fpcagent:input/fpcagent:instructions/fpcagent:instr-type" {
+      case threegpp-mobility-instr {
+          leaf instr-3gpp-mob {
+              type threegpp:threegpp-instr;
+          }
+      }
+    }
+    augment "/fpcagent:configure/fpcagent:input/fpcagent:contexts/fpcagent:instructions/fpcagent:instr-type" {
+      case threegpp-mobility-instr {
+          leaf instr-3gpp-mob {
+              type threegpp:threegpp-instr;
+          }
+      }
+    }
+    augment "/fpcagent:configure/fpcagent:input/fpcagent:ports/fpcagent:instructions/fpcagent:instr-type" {
+      case threegpp-mobility-instr {
+          leaf instr-3gpp-mob {
+              type threegpp:threegpp-instr;
+          }
       }
     }
 }

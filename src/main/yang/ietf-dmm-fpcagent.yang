@@ -41,6 +41,9 @@ module ietf-dmm-fpcagent {
     feature fpc-auto-binding {
       description "Allows a FPC Agent to advertise Topology Objects that could be DPNs";
     }
+    feature instruction-bitset {
+      description "Allows the expression of instructions (bit sets) over FPC.";
+    }
 
     typedef agent-identifier {
         type fpcbase:fpc-identity;
@@ -77,21 +80,10 @@ module ietf-dmm-fpcagent {
     }
 
     // General Agent Structures
-   /* container agent-info {
-      leaf-list features {
-        choice agent-base-type {
-          case basic {
-            uses fpcagent:fpc-basic-agent;
-          }
-          case mulit-dpn {
-            uses fpcagent:fpc-multi-dpn;
-          }
-        }
-        uses fpcagent:fpc-cloning;
-      }
-
+    leaf-list agent-features {
+      type inet:uri;
     }
-*/
+
     // Basic Agent Structures
     list dpn-group-peers {
         if-feature fpc-basic-agent;
@@ -191,6 +183,14 @@ module ietf-dmm-fpcagent {
         type uint64;
     }
 
+    grouping instructions {
+      container instructions {
+        if-feature instruction-bitset;
+        choice instr-type {
+        }
+      }
+    }
+
     grouping op-header {
       leaf client-id {
         type fpcagent:client-identifier;
@@ -212,6 +212,7 @@ module ietf-dmm-fpcagent {
           enum delete { value 3; }
         }
       }
+      uses fpcagent:instructions;
     }
 
     grouping clone-ref {
@@ -222,7 +223,6 @@ module ietf-dmm-fpcagent {
         type fpcbase:fpc-identity;
       }
     }
-
 
     identity command-set {
       description "protocol specific commands";
@@ -250,12 +250,15 @@ module ietf-dmm-fpcagent {
       }
       list policy-groups {
         uses fpcbase:fpc-policy-group;
+        uses fpcagent:instructions;
       }
       list ports {
         uses fpcbase:fpc-port;
+        uses fpcagent:instructions;
       }
       list contexts {
         uses fpcbase:fpc-context;
+        uses fpcagent:instructions;
       }
     }
 

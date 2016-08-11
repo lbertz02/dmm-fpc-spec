@@ -57,6 +57,30 @@ module ietf-dmm-fpc-pmip {
         }
     }
 
+    typedef pmip-instr {
+      description "Instruction Set for PMIP";
+      type bits {
+        bit assign-ip {
+          position 0;
+        }
+        bit assign-fteid-ip {
+          position 1;
+        }
+        bit assign-fteid-teid {
+          position 2;
+        }
+        bit session {
+          position 3;
+        }
+        bit uplink {
+          position 4;
+        }
+        bit downlink {
+          position 5;
+        }
+      }
+    }
+
     augment "/fpcagent:descriptors/fpcagent:descriptor-value" {
       case pmip-selector {
           uses traffic-selectors:traffic-selector;
@@ -91,6 +115,28 @@ module ietf-dmm-fpc-pmip {
     augment "/fpcagent:contexts/fpcagent:ul/fpcagent:qos-profile/fpcagent:value" {
       case qos-pmip {
           uses qos-pmip:qosattribute;
+      }
+    }
+
+    augment "/fpcagent:configure/fpcagent:input/fpcagent:instructions/fpcagent:instr-type" {
+      case threegpp-mobility-instr {
+          leaf instr-pmip {
+              type fpc-pmip:pmip-instr;
+          }
+      }
+    }
+    augment "/fpcagent:configure/fpcagent:input/fpcagent:contexts/fpcagent:instructions/fpcagent:instr-type" {
+      case threegpp-mobility-instr {
+          leaf instr-pmip {
+              type fpc-pmip:pmip-instr;
+          }
+      }
+    }
+    augment "/fpcagent:configure/fpcagent:input/fpcagent:ports/fpcagent:instructions/fpcagent:instr-type" {
+      case threegpp-mobility-instr {
+          leaf instr-pmip {
+              type fpc-pmip:pmip-instr;
+          }
       }
     }
 }
