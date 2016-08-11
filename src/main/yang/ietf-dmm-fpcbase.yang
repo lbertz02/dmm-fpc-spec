@@ -351,4 +351,87 @@ module ietf-dmm-fpcbase {
             }
         }
     }
+
+    // Monitor Structures
+    typedef fpc-monitor-id {
+      type fpcbase:fpc-identity;
+    }
+
+    identity fpc-monitor-type {
+      description "Monitor Type";
+    }
+    identity fpc-periodic-monitor {
+      base "fpcbase:fpc-monitor-type";
+    }
+    identity fpc-threhold-monitor {
+      base "fpcbase:fpc-monitor-type";
+    }
+    identity fpc-scheduled-monitor {
+      base "fpcbase:fpc-monitor-type";
+    }
+    identity fpc-events-monitor {
+      base "fpcbase:fpc-monitor-type";
+    }
+
+    identity event-type {
+      description "Base Event Type";
+    }
+    identity monitor-notification {
+      description "Monitor Notfication";
+      base "fpcbase:event-type";
+    }
+
+    typedef event-type-id {
+      type uint32;
+    }
+
+    grouping monitor-target {
+      leaf target-container {
+        type fpcbase:fpc-identity;
+      }
+      leaf relpath {
+        type string;
+      }
+    }
+
+    grouping monitor-config {
+      uses fpcbase:monitor-target;
+      choice value {
+        case periodic {
+          leaf period {
+            type uint32;
+          }
+        }
+        case threshold {
+          leaf lo {
+            type uint32;
+          }
+          leaf hi {
+            type uint32;
+          }
+        }
+        case scheduled {
+          leaf schedule {
+            type uint32;
+          }
+        }
+        case events {
+          leaf-list events {
+            type fpcbase:event-type-id;
+          }
+        }
+      }
+    }
+
+    grouping monitor {
+      leaf monitor-id {
+        type fpcbase:fpc-monitor-id;
+      }
+      leaf monitor-type {
+        type identityref {
+          base "fpcbase:fpc-monitor-type";
+        }
+      }
+      uses fpcbase:monitor-config;
+    }
 }

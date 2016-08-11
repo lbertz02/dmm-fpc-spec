@@ -84,6 +84,19 @@ module ietf-dmm-fpcagent {
       type inet:uri;
     }
 
+    // Common Agent Info
+    list supported-events {
+      key event;
+      leaf event {
+        type identityref {
+          base "fpcbase:event-type";
+        }
+      }
+      leaf event-id {
+        type fpcbase:event-type-id;
+      }
+    }
+
     // Basic Agent Structures
     list dpn-group-peers {
         if-feature fpc-basic-agent;
@@ -361,14 +374,7 @@ module ietf-dmm-fpcagent {
       }
     }
 
-    rpc event_register {
-        description "Used to registered parameters";
-    }
-
-    identity event-type {
-        description "Base Event Type";
-    }
-
+    // Notification Messages & Structures
     grouping op-status {
       leaf op-status {
         type enumeration {
@@ -378,24 +384,64 @@ module ietf-dmm-fpcagent {
       }
     }
 
+    rpc event_register {
+      description "Used to registered parameters";
+      input {
+        leaf monitor-id {
+          type fpcbase:fpc-monitor-id;
+        }
+        uses fpcbase:monitor-config;
+      }
+      output {
+        uses fpcagent:op-status;
+      }
+    }
+
+    rpc event_deregister {
+      input {
+        leaf-list monitor-ids {
+          type fpcbase:fpc-monitor-id;
+        }
+        leaf notify-on-dereg {
+          type boolean;
+        }
+      }
+      output {
+        uses fpcagent:op-status;
+      }
+    }
+
+    typedef notification-id {
+      type uint32;
+    }
+
+    notification config-result-notification {
+      leaf notification-id {
+          type fpcagent:notification-id;
+      }
+      choice value {
+        case config-result {
+          uses fpcagent:op-status;
+          uses fpcagent:result-body;
+        }
+        case config-bundle-result {
+          list bundles {
+            uses fpcagent:op-status;
+            uses fpcagent:result-body;
+          }
+        }
+      }
+    }
+
     notification notify {
         description "A new Topology Object appears that could be uses as a DPN";
-        leaf event-type {
-            type identityref {
-              base "fpcagent:event-type";
-            }
+        leaf notification-id {
+          type fpcagent:notification-id;
+        }
+        leaf timestamp {
+          type uint32;
         }
         choice value {
-            case config-result {
-              uses fpcagent:op-status;
-              uses fpcagent:result-body;
-            }
-            case config-bundle-result {
-              list bundles {
-                uses fpcagent:op-status;
-                uses fpcagent:result-body;
-              }
-            }
             case dpn-candidate-available {
               if-feature fpcagent:fpc-auto-binding;
               leaf node-id {
@@ -415,6 +461,16 @@ module ietf-dmm-fpcagent {
                 type identityref {
                   base "fpcbase:fpc-forwaridingplane-role";
                 }
+              }
+            }
+            case monitor-notification {
+              leaf monitor-id {
+                type fpcbase:fpc-monitor-id ;
+              }
+              leaf trigger {
+                type uint32;
+              }
+              choice monitor-notification-value {
               }
             }
         }
