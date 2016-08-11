@@ -285,23 +285,27 @@ module ietf-dmm-fpcagent {
       description "Base Error Type";
     }
 
-    grouping op-result {
-        leaf result {
-          type result;
-        }
-        leaf error-type {
-          type identityref {
-            base "fpcagent:error-type";
+    grouping result-body {
+      leaf id {
+        type op-identifier;
+      }
+      choice result-type {
+        case err {
+          leaf error-type {
+            type identityref {
+              base "fpcagent:error-type";
+            }
+          }
+          leaf error-info {
+            type string;
           }
         }
-        leaf error-info {
-          type string;
+        case config-success {
+          uses fpcagent:payload;
         }
-    }
-
-    grouping config-op-result {
-      uses fpcagent:op-result;
-      uses fpcagent:payload;
+        case empty-case {
+        }
+      }
     }
 
     // Common RPCs
@@ -310,7 +314,10 @@ module ietf-dmm-fpcagent {
         uses fpcagent:op-input;
       }
       output {
-        uses fpcagent:config-op-result;
+        leaf result {
+          type result;
+        }
+        uses fpcagent:result-body;
       }
     }
 
@@ -325,10 +332,7 @@ module ietf-dmm-fpcagent {
       output {
         list bundles {
           key id;
-          leaf id {
-            type op-identifier;
-          }
-          uses fpcagent:config-op-result;
+          uses fpcagent:result-body;
         }
       }
     }
@@ -342,7 +346,7 @@ module ietf-dmm-fpcagent {
         uses fpcbase:fpc-dpn;
       }
       output {
-        uses fpcagent:op-result;
+        uses fpcagent:result-body;
       }
     }
     rpc unbind-dpn {
@@ -353,7 +357,7 @@ module ietf-dmm-fpcagent {
         }
       }
       output {
-        uses fpcagent:op-result;
+        uses fpcagent:result-body;
       }
     }
 
@@ -365,6 +369,15 @@ module ietf-dmm-fpcagent {
         description "Base Event Type";
     }
 
+    grouping op-status {
+      leaf op-status {
+        type enumeration {
+          enum ok { value 0; }
+          enum err { value 1; }
+        }
+      }
+    }
+
     notification notify {
         description "A new Topology Object appears that could be uses as a DPN";
         leaf event-type {
@@ -373,6 +386,16 @@ module ietf-dmm-fpcagent {
             }
         }
         choice value {
+            case config-result {
+              uses fpcagent:op-status;
+              uses fpcagent:result-body;
+            }
+            case config-bundle-result {
+              list bundles {
+                uses fpcagent:op-status;
+                uses fpcagent:result-body;
+              }
+            }
             case dpn-candidate-available {
               if-feature fpcagent:fpc-auto-binding;
               leaf node-id {
