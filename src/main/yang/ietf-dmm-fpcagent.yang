@@ -97,6 +97,18 @@ module ietf-dmm-fpcagent {
       }
     }
 
+    list error-types {
+      key error-type;
+      leaf error-type {
+        type identityref {
+          base "fpcagent:error-type";
+        }
+      }
+      leaf error-type-id {
+        type fpcagent:error-type-id;
+      }
+    }
+
     // Basic Agent Structures
     list dpn-group-peers {
         if-feature fpc-basic-agent;
@@ -164,7 +176,7 @@ module ietf-dmm-fpcagent {
         leaf state {
             type string;
         }
-        leaf version {
+        leaf checkpoint {
             type string;
         }
     }
@@ -265,7 +277,7 @@ module ietf-dmm-fpcagent {
 
     grouping op-input {
       uses fpcagent:op-header;
-      leaf id {
+      leaf op-id {
         type op-identifier;
       }
       list clones {
@@ -297,20 +309,37 @@ module ietf-dmm-fpcagent {
     identity error-type {
       description "Base Error Type";
     }
+    identity name-already-exists {
+      description "Notification that an entity of the same name already exists";
+    }
+
+    typedef error-type-id {
+      description "Integer form of the Error Type";
+      type uint32;
+    }
+
+    grouping op-status {
+      leaf op-status {
+        type enumeration {
+          enum ok { value 0; }
+          enum err { value 1; }
+        }
+      }
+    }
 
     grouping result-body {
-      leaf id {
+      leaf op-id {
         type op-identifier;
       }
       choice result-type {
         case err {
-          leaf error-type {
-            type identityref {
-              base "fpcagent:error-type";
-            }
+          leaf error-type-id {
+            type fpcagent:error-type-id;
           }
           leaf error-info {
-            type string;
+            type string {
+              length "1..1024";
+            }
           }
         }
         case config-success {
@@ -338,13 +367,13 @@ module ietf-dmm-fpcagent {
       if-feature fpcagent:fpc-bundles;
       input {
         list bundles {
-          key id;
+          key op-id;
           uses fpcagent:op-input;
         }
       }
       output {
         list bundles {
-          key id;
+          key op-id;
           uses fpcagent:result-body;
         }
       }
@@ -375,15 +404,6 @@ module ietf-dmm-fpcagent {
     }
 
     // Notification Messages & Structures
-    grouping op-status {
-      leaf op-status {
-        type enumeration {
-          enum ok { value 0; }
-          enum err { value 1; }
-        }
-      }
-    }
-
     rpc event_register {
       description "Used to registered parameters";
       input {
@@ -415,10 +435,17 @@ module ietf-dmm-fpcagent {
       type uint32;
     }
 
-    notification config-result-notification {
+    grouping notification-header {
       leaf notification-id {
           type fpcagent:notification-id;
       }
+      leaf timestamp {
+          type uint32;
+      }
+    }
+
+    notification config-result-notification {
+      uses fpcagent:notification-header;
       choice value {
         case config-result {
           uses fpcagent:op-status;
@@ -434,13 +461,7 @@ module ietf-dmm-fpcagent {
     }
 
     notification notify {
-        description "A new Topology Object appears that could be uses as a DPN";
-        leaf notification-id {
-          type fpcagent:notification-id;
-        }
-        leaf timestamp {
-          type uint32;
-        }
+        uses fpcagent:notification-header;
         choice value {
             case dpn-candidate-available {
               if-feature fpcagent:fpc-auto-binding;
