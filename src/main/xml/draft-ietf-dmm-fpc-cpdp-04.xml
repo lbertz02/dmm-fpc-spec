@@ -378,22 +378,114 @@ commands of a particular DPN is specific to the DPN's technology and the Agent's
     an address matching a particular IP address range can be described using the Traffic Selector or an IP prefix
     traffic descriptor per this specification.</t>
   <section anchor="naming" title="Naming">
-    <t>From the wiki... </t>
+    <t>Names have no official format between the Client and Agent but using unsigned 32 bit integers MUST be supported
+      by Clients and Agents.  Other formats such as strings or URIs MAY be supported. The only requirement is that all
+      names used to identify entities must be unique by Client/Agent pair for each entity type, e.g. Context, Port, etc.
+      This is done by using binary comparison of names at the Agent. If a creation attempt occurs for an entity where the
+      name already exists a NAME_ALREADY_EXISTS error is raised.
+    </t>
   </section>
   <section anchor="policy" title="Policies, Actions and Descriptors">
-    <t>From the wiki...</t>
+    <t>Actions specify the treatment applied to a packet. Actions are assigned an identifier and contain a type and value.</t>
+    <t>Descriptor describes a filter for a packet. If the packet matches (passes) the filter it is said to be consumed by
+      or taken by the Descriptor. Many specifications also used the terms Filter, Traffic Descriptor or Traffic Selector
+      <xref target="RFC6088"/>. A packet that meets the criteria of a Descriptor is said to satisfy, pass or is consumed by
+      the Descriptor. Descriptors are assigned an identifier and contain a type and value.</t>
+    <t>Rules - are a collection of Descriptors and Actions. All Descriptors MUST be satisfied before the Actions are taken.
+      This is known as an AND Descriptor list, i.e. Descriptor 1 AND Descriptor 2 AND ... Descriptor X MUST be satisfied for
+      the rule to apply. These are an internal to the Policy, i.e. it is not a first class, visible object at the top level
+      of an agent. Each Action and Descriptor are given Identifiers to assist in deleting individual list members of the Rule.
+      Every Action also comes with an order value that specifies the execution order of Actions and simplifies DPN
+      processing. A Rule references the Descriptors and Actions by their Identifiers and does not directly contain Action
+      and Descriptor structures.</t>
+    <t>Policies are a collection of Rules. Each Policy has a Policy Identifier and a list of Rules/Order pairs. Unlike the
+      AND filter matching the Policy uses an OR matching to find the first Rule whose Descriptors are satisfied by the packet.
+      The search for a Rule to apply to packet is executed according to the Order values of the Rules. This is an
+      ascending order search, i.e. the Rule with the lowest Order value is tested first and if its Descriptors are not
+      satisfied by the packet the Rule with the next lowest Order value is tested. Policies contain Rules as opposed to
+      references to Rules.</t>
+    <t>Policy Groups are an aggregation of Policies and provide a convenience mechanism for aggregation. Common applications
+      include aggregating Policies that are defined by different functions, e.g. Network Address Translation, Security, etc.
+      The structure has an Identifier and references the Policies via their Identifiers.</t>
   </section>
   <section anchor="portscontext" title="Ports and Context">
-    <t>From the wiki...</t>
+    <t>Ports contain Policy Groups (via reference to their Policy Group Identifiers) and have an Identifier. They may be
+      instantiated on the DPN at the discretion of the Agent. Being Policy based and having the ability to specify Rules
+      with Forwarding related Actions, Ports can take on functions such as network address translation, route selection, etc.</t>
+    <t>Contexts provide Port functionality with a focus on hierarchically related forwarding functions such as Mobility.
+      They have attributes such as uplink/downlink Quality of Service (QoS) and tunnel and assigned IP, e.g. delegating
+      prefixes, as well as the ability to reference parent Contexts. When a parent Context is referenced, the descendant,
+      e.g. child, can inherit required properties and policies. Contexts also have fate sharing - when a Context is deleted
+      all of its descendants are deleted. They are also assigned Data Plane Nodes (DPNs).
+    </t>
+    <t>Although Contexts are hierarchical Ports are not. There are distinct advantages in Contexts for the hierarchical
+      representation including limiting the amount of over the wire information transported and fate sharing during deletion.
+      However, Client MUST avoid creating deep, arbitrary hierarchies as this creates major disadvantages. A two tier
+      hierarchy is common in many mobility solutions but further depths SHOULD be avoided.</t>
   </section>
   <section anchor="toplogy" title="Topology">
-    <t>From the wiki...</t>
+    <t>Data Plane Nodes may be organized into Data Plane Groups. A Context is attached to a DPN Group indirectly (by
+      reference to the DPN Group Identifier) or directly through specification of the structure in the Context.</t>
+    <t>A DPN specifies the connectivity information for the Agent, supported Control Protocols and the DPN Groups
+    it is a part of.</t>
+    <t>DPN Groups specify the Mobility Role, supported access technologies and mobility profiles. It also specifies
+    connected peer groups.</t>
   </section>
 </section>
 <section anchor="protocol" title="Protocol">
   <section anchor="messageandsematics" title="Protocol Messages and Semantics">
+    <t>Two message types are supported:
+      <list>
+        <t>Configure (CONF) - accepts a single operation </t>
+        <t>Configure-bundles (CONF_BUNDLES) - takes multiple operations that are to be executed as a group
+          with partial failures allowed. They are given an execution order.</t>
+      </list>
+    </t>
+    <t>Each operation contains a header with the Client Identifier, an execution delay timer,
+    the state of session related entites after the operation, the adminstrative state of all
+    entities, the type of operation, an optional Command Set (see <xref target="commandsets"/>) and
+    the input (body) of the message.</t>
+    <t>The opeartion input contains an operation identifier, a list of all entities and optional cloning
+    instructions (see <xref target="cloning"/>.</t>
+    <t>An Agent will respond with an error, okay with other data, or an ok with indication that remaining
+    data will be sent via a notify from the Agent to the Client <xref target="Asynchronous"/>.</t>
     <section anchor="op-header" title="Header">
+      <t>Each operation contains a header with the following fields:</t>
+    <texttable anchor="cl_sess_first_i_aa" title="Operation Header Fields">
+    <ttcol align="left">Field</ttcol>
+    <ttcol align="left">Type</ttcol>
+    <ttcol align="left">Description</ttcol>
 
+    <c>CLIENT_ID</c>
+    <c>FPC Identity</c>
+    <c>FPC Client Identifier</c>
+
+    <c>DELAY</c>
+    <c>Unsigned 32</c>
+    <c>Delay in milliseconds from the time received for the operation to take effect/c>
+
+    <c>SESSION_STATE</c>
+    <c>Enumeration</c>
+    <c>Sets the expected state of the Session (entities embedded in the Operation) after successful
+      completion of the operation. This can be 'complete', 'incomplete' or 'outdated'. Any operation
+      that is 'incomplete' MAY NOT result in communication between the Agent and DPN. If the result is
+      'outdated' any new operations on these entities or new references to these entities have unpredictable
+      results.</c>
+
+    <c>ADMIN_STATUS </c>
+    <c>Enumeration</c>
+    <c>FSets the administrative status for all entities. If the status is set to virtual any existing data on the
+      DPN is removed. If the value is set to disabled then an operation will occur on the DPN IF the entity
+      exists on the DPN. If set to 'active' the DPN will be provisioned.</c>
+
+    <c>OP_TYPE</c>
+    <c>Enumeration</c>
+    <c>Create, Update, Query or Delete.</c>
+
+    <c>COMMAND_SET</c>
+    <c>FPC Command Bitset</c>
+    <c>See <xref target="commandset"/></c>
+</texttable>
     </section>
     <section anchor="op-body" title="Body">
 
@@ -435,7 +527,13 @@ commands of a particular DPN is specific to the DPN's technology and the Agent's
       <t>Handover...</t>
       <t>Teardown...</t>
       <section anchor="registry" title="Basename Registry Feature (Optional)">
-
+        <t>The Optional BaseName Registry support feature is provided to permit Clients with common scopes,
+        referred to in this specification as BaseNames, to track the state of provisioned policy information
+        on an Agent. The registry records the BaseName and Checkpoint set by a Client. If a new Client
+        attaches to the Agent it can query the Registry to determine the amount of work that must be
+        executed to configure the Agent to a BaseName / checkpoint revision. A State value is also
+        provided in the registry to help Clients coordinate work on common BaseNames.
+        </t>
       </section>
     </section>
   </section>
