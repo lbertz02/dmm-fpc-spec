@@ -164,7 +164,7 @@ of the mobility Control-Plane, and an Agent function, which is associated with t
 of Data-Plane nodes, according to the Data-Plane rules issued by the mobility Control-Plane.
 The scope of the rules comprises traffic description and treatment of packets in terms of
 encapsulation, IP address re-writing and QoS. Additional protocol semantics are described to
-support the maintenance of the Data-Plane path. 
+support the maintenance of the Data-Plane path.
       </t>
     </abstract>
   </front>
@@ -203,23 +203,27 @@ is specific to the Data-Plane node and type.
 </t>
 
 <t>This specification follows a common functional architecture, which utilizes the FPC
-protocol between the Client and Agent functions, and supports two operational
-models, Model I and Model II.</t>
+protocol between the Client and Agent functions.</t>
 
-<t>A Client supporting Model I interacts with the Agent to build unambiguous rules which are
-to be enforced in the Data-Plane. An Agent supporting Model I translates a rule, which follows the
-data model herein, into one or multiple configuration actions to enforce the
-rule in the Data-Plane.</t>
+<t>A Client interacts with the Agent to build unambiguous rules which are to be enforced in
+the Data-Plane. An Agent translates a rule, which follows the data model herein, into one or
+multiple configuration actions to enforce the rule in the Data-Plane. Distinct collections of
+rulese are defined as Ports in the information Model.</t>
 
-<t>A Client supporting Model II utilizes a sequence of control messages to interact with the Agent,
-where each control message has an unambiguous semantic, e.g. to set up a tunnel interface or to
-configure a policy route in a Data-Plane node. An Agent supporting Model II performs a configuration action
-per the semantics of the received control message.</t>
+<t>The Client interacts with the Agent to build sessions, including mobility sessions, to be
+hosted by teh Data-Plane.  These sessions are referred to as Contexts.
+</t>
 
-<t>The availability of both operational models enables tailored implementation and deployment of Control-/Data-Plane
+<t>A Client utilizes a sequence or grouping of control messages to interact with the Agent, where
+each control message has an unambiguous semantic, e.g. to set up a tunnel interface or to
+configure a policy route in a Data-Plane node. An Agent performs a configuration action
+per the semantics of the received control message or grouping of control messages. Generic messages,
+i.e. create, update, query and delete, are also supported.</t>
+
+<t>The availability of both generic and control messaging enables tailored implementation and deployment of Control-/Data-Plane
 separation in mobile communication gateways, e.g. by having the Mobility Control-Plane directly communicating to
-a Data-Plane node as per Model II, or per Model I by the deployment of a Network Controller in between the Mobility
-Control-Plane and Data-Plane nodes, which are under control of the Network Controller. Support for both the models
+a Data-Plane node using control messages, or by the deployment of a Network Controller in between the Mobility
+Control-Plane and Data-Plane nodes which may support both generic and control messages, which are under control of the Network Controller. Support for multiple deployment models
 enables an operator to transition their network in incremental phases.</t>
 
 <t>The architecture and reference interface specified in this document is not tied to any specific Control-Plane
@@ -239,7 +243,7 @@ These aspects have no direct implication on the FPC interface that is between Co
 
    </section>
 
-   <section anchor="pcmodel" title="Reference Architecture and Deployment Options">
+   <section anchor="pcmodel" title="Reference Architecture and Information Model">
 
    <section anchor="refarch" title="Architecture for DMM Forwarding Policy Configuration">
 
@@ -248,12 +252,9 @@ from the Data-Plane and provides the required control and semantics in between t
 <xref target="fig_usecase"></xref> depicts an exemplary use case where IP traffic between a Correspondent Node (CN)
 and a Mobile Node (MN) traverses multiple DPNs, each applying policies as per the Control-Plane's request.
 Policies in the one or multiple DPNs can result in traffic steering according to a host-route, packet scheduling
-and marking according to a subscriber's QoS profile, or forwarding rules (e.g. encapsulation within GRE or GTP-U tunnel). 
+and marking according to a subscriber's QoS profile, or forwarding rules (e.g. encapsulation within GRE or GTP-U tunnel).
 </t>
-
-
 <t>
-
    <figure anchor="fig_usecase"
               title="Exemplary illustration of DMM traffic steering and policy enforcement
                      at Data Plane Nodes (DPN)">
@@ -267,12 +268,12 @@ and marking according to a subscriber's QoS profile, or forwarding rules (e.g. e
                 |             |         |
          \ /    V             V         V
 +--+     -o-  +---+         +---+     +---+   +--+
-|MN| ---- |---|DPN|<========|DPN|<----|DPN|<--|CN|         
+|MN| ---- |---|DPN|<========|DPN|<----|DPN|<--|CN|
 +--+      |   +---+         +---+     +---+   +--+
              Rules:       Rules:      Rules:
              Encap,Decap, Encap,Decap Policy-Route,
              Forward,QoS  Forward,QoS Forward
-                            
+
           ]]></artwork>
 
         <postamble></postamble>
@@ -282,7 +283,7 @@ and marking according to a subscriber's QoS profile, or forwarding rules (e.g. e
 <t>Mobility Control-Plane functions have the following roles in common: </t>
 
  <t><list style="symbols">
-     <t>Tracking a mobile node's attachment, detachment from the access network</t>
+     <t>Tracking a mobile node's attachment, detachment from the access network.</t>
      <t>Accept requests to set up and maintain mobility-related Data-Plane paths between DPNs,
         enforcing QoS and forwarding policies. Such requests are a result of mobility signaling between different
         Mobility Control-Plane functions.</t>
@@ -297,22 +298,19 @@ and marking according to a subscriber's QoS profile, or forwarding rules (e.g. e
 <t>Mobility Data-Plane functions have the following roles in common: </t>
 
   <t><list style="symbols">
-     <t>Forward and treat traffic according to the policies and directives sent by the Mobility Control-Plane</t>
+     <t>Forward and treat traffic according to the policies and directives sent by the Mobility Control-Plane.</t>
      <t>Provide status information (e.g. load, health, statistics and traffic volume) and events related to service failure
-        upon request</t>
+        upon request.</t>
      <t>Participate in the process of topology acquisition, e.g. by exposing relevant topological and
-        capability information, such as support for QoS differentiation and supported encapsulation protocols
+        capability information, such as support for QoS differentiation and supported encapsulation protocols.
         </t>
   </list></t>
-
-
-
 <t>The protocol for DMM FPC applies to the interface between a FPC Client function and
 a FPC Agent function, as depicted in <xref target="fig_refarch"></xref>. The FPC Client function
 is associated with an application function of the mobility management Control-Plane, e.g. a Local
 Mobility Anchor Control-Plane function per the Proxy Mobile IPv6 protocol.
 The FPC Agent function processes the FPC protocol semantics and translates them into configuration
-commands per the DPN's technology. In one example, an FPC Agent can be co-located with a Network
+commands per the DPN's technology. In one example, a FPC Agent can be co-located with a Network
 Controller, which enforces forwarding rules on a set of Data-plane nodes. In another example, the Agent
 can be co-located with a Data-Plane node to directly interact with interface management and the
 router's RIB Manager. The mapping of the common FPC semantics and policy description to the configuration
@@ -335,7 +333,7 @@ commands of a particular DPN is specific to the DPN's technology and the Agent's
                            | DMM FPC protocol
                            |
                +-----------|-------------+
-               |+----------v------------+|       
+               |+----------v------------+|
                ||  FPC Agent Function   ||
                |+-----------------------+|
                |                         |
@@ -345,140 +343,107 @@ commands of a particular DPN is specific to the DPN's technology and the Agent's
         <postamble></postamble>
       </figure>
 </t>
- 
+</section>
+<section anchor="model1" title="Information Model">
+    <t>To abstract from configuration details of an IP switch or IP router on the FPC protocol interface,
+    the construct of logical ports describe sets of rules for D-Plane processing and contexts describe
+    Session/Mobility based rules and congfiguration.
+    </t>
+    <t>A conext binds one or multiple session/mobility properties, which describe mobliity/session traffic
+    treatment actions, such as a mobility QoS policy or packet encapsulation. Which traffic is treated by the
+    context is determined by one or multiple traffic descriptors, which also bind to that context. A group of
+    one or multiple traffic descriptors, one or multiple properties defining mobility/session based traffic
+    treatment actions and the port identifier make a context. The context identifier serves as key to access
+    the information.</t>
+    <t>A port represents a colleciton of policy groups, a group of rules that can exists independent of the
+    mobility/session lifecycle.  Policy groups are named collections of policies.  Policy groups provide a
+    collection of policies, e.g. a contatenation of the rules in each policy, to provide a second level of
+    rule aggregation often required to separate out technical grouping of rules, e.g. a policy, with the
+    grouping of rules for use cases, e.g. a service level policy.
+    </t>
+    <t>Policies are a collection of rules.  A policy's rules contain traffic descriptors that describe the traffic
+    to which a rule applies and associated treatment actions.  The rules are ordered to ensure an unambiguous
+    traffic matching.
+    </t>
+    <t>Actions, descriptors, policies and policy groups can be viewed as configuration data while ports and contexts
+    are akin to stuctures that are instantiatied on the DPN.  The descriptors, QoS attributes, actions and other
+    structures referenced by a port or context are active, i.e. they can be applied to traffic on a DPN.
+    The other structures are passive and MUST be present on a DPN but MUST also be referenced by a context or
+    port in order to participate in traffic processing.
+    </t>
+    <t>All traffic arriving at a Data-Plane node and matching a traffic descriptor will be treated per
+    the properties bound to the port or context the traffic descriptor is also bound to. For example, Traffic
+    Selectors <xref target="RFC6088"></xref>, which can be bound to a context or port, can identify single or
+    multiple IP flows. Aggregated IP traffic destined toward a given IP address prefix or originated from
+    an address matching a particular IP address range can be described using the Traffic Selector or an IP prefix
+    traffic descriptor per this specification.</t>
+  <section anchor="naming" title="Naming">
+    <t>From the wiki... </t>
+  </section>
+  <section anchor="policy" title="Policies, Actions and Descriptors">
+    <t>From the wiki...</t>
+  </section>
+  <section anchor="portscontext" title="Ports and Context">
+    <t>From the wiki...</t>
+  </section>
+  <section anchor="toplogy" title="Topology">
+    <t>From the wiki...</t>
+  </section>
+</section>
+<section anchor="protocol" title="Protocol">
+  <section anchor="messageandsematics" title="Protocol Messages and Semantics">
+    <section anchor="op-header" title="Header">
+
+    </section>
+    <section anchor="op-body" title="Body">
+
+    </section>
+    <section anchor="single-op" title="Single Operation">
+
+    </section>
+    <section anchor="bundles" title="Bundled Operations">
+
+    </section>
+    <section anchor="commandsets" title"Command Bitsets">
+
+    </section>
+    <section anchor"response" title="Operation Response">
+      <section anchor="immediateresp" title="Immediate Response">
+
+      </section>
+      <section anchor="asyncnotification" title="Asynchronous Notification">
+
+      </section>
+    </section>
+  </section>
+  <section anchor="protoperation" title="Protocol Operation">
+    <section anchor="simple" title="Simple RPC Operation">
+      <t>Inital Connection...</t>
+      <t>Handover...</t>
+      <t>Teardown...</t>
+    </section>
+    <section anchor="optimization" title="Optimization for Current and Subsequent Messages">
+      <t>Inital Connection...</t>
+      <t>Handover...</t>
+      <t>Teardown...</t>
+      <section anchor="cloning" title="Cloning Feature (Optional)">
+        <t>Inital Connection with cloning...</t>
+      </section>
+    </section>
+    <section anchor="preprov" title="Pre-provisioning">
+      <t>Inital Connection...</t>
+      <t>Handover...</t>
+      <t>Teardown...</t>
+      <section anchor="registry" title="Basename Registry Feature (Optional)">
+
+      </section>
+    </section>
   </section>
 
-   <section anchor="model1" title="Model 1">
+</section>
 
+ <section anchor="datastructure" title="Data Structures">
 
-
-  <section anchor="controllertasks" title="Role of the FPC Client Function">
-  <t>The FPC Client function, which follows Model I operation, includes the following tasks:
-  </t>
-
-   <t><list style="symbols">
-     <t>Build one or multiple FPC Control messages/attributes to establish, update or delete rules on one
-        or multiple DPN(s) according to the Mobility Control-Plane's directives</t>
-     <t>Apply a DPN's policy rules (encapsulation, address re-write, QoS, traffic monitoring) on the basis of
-        properties bound to logical ports (similar to the bearer concept in cellular networks)</t>
-     <t>Build, modify or delete logical ports as needed</t>
-     <t>Bind associated policy rules as one or multiple properties to a logical port</t>
-     <t>Apply traffic forwarding rules (e.g. per-IP flow, per-MN, per-IP, per-prefix) on the basis traffic descriptions
-        bound to logical ports</t>
-     <t>Send each generated FPC control message to the FPC Agent</t>
-     <t>Keep record of the configured policy rules and interact with the FPC Agent to ensure proper synchronization
-        between Mobility Control-Plane states and rules configured on the FPC Agent</t>
-     <t>Process received Response, Notification and Query messages issued by a FPC Agent and
-        interact with the Control-Plane to act accordingly</t>
-  </list></t>
-
-
-  </section> 
-
-
-  <section anchor="agentasks" title="Role of the FPC Agent Function">
-  <t>The FPC Agent function, which follows Model I operation, includes the following tasks:
-  </t>
-
-  <t><list style="symbols">
-     <t>Process received Control messages issued by a FPC Client Function</t>
-     <t>Apply received rules to local configuration (e.g. encapsulation, NA(P)T, traffic prioritization
-        and scheduling) in the Data-Plane</t>
-     <t>Maintain administrative data as well as operational data, which describes the status of the
-        rules in the Data-Plane</t>
-     <t>Monitor events (e.g. failure, incomplete rule) and issue an associated
-     message to the FPC Client Function (NOTIFICATION, QUERY)</t>
-  </list></t>
-
-  </section>
-
-  </section>
-
-   <section anchor="model2" title="Model 2">
-
-
-
-  <section anchor="controllertasks2" title="Role of the DMM FPC Client Function">
-  <t>The FPC Client function, which follows Model II operation, includes the following tasks:
-  </t>
-
- <t><list style="symbols">
- <t>The FPC Client offers a set of services to the mobility control plane entities.
-    These services are for activating/deactivating specific configuration on a Data-Plane node
-    supported by a FPC Agent. These services for example are creation/deletion of a layer-3 tunnel;
-    adding/deleting an IP route;</t>
-
- <t>The FPC Client translates the request from the mobile control plane as a FPC message. The message
-    identifies the service name and includes a set of information elements. This message is sent to
-    the FPC Agent over the FPC interface.</t>
-  </list></t>
-
-  </section>
-
-
-  <section anchor="agentasks2" title="Role of the DMM FPC Agent Function">
-  <t>The FPC Agent function, which follows Model II operation, includes the following tasks:
-  </t>
-
-
- <t><list style="symbols">
- <t>FPC Agent offers a set of services to the FPC client. Each of these services have a
-    well-defined meaning and can be invoked by the FPC Client passing a set of parameters.
-    These services for example are creation/deletion of a layer-3 tunnel; adding/deleting an IP route.</t>
- <t>Any FPC Client can invoke a specific service on the FPC Agent through the use of FPC messaging interface.
-    The interface semantics allow the identification of the service request and for inclusion of the parameters
-    relevant for that service request.</t>
- <t>FPC Agent processes a FPC message and identifies the service request. The FPC Agent maps the service request
-    to a local configuration and enables that configuration in the forwarding plane. For example, if there is a
-    service request for Tunnel creation including the relevant parameters such as source IP address, destination
-    IP address and encapsulation type, this request will result in the FPC Agent configuring such tunnel
-    configuration on the Data-Plane node.</t>
- <t>The FPC Agent provides a resulting status code on how the request was executed by the agent.</t>
- </list></t>
-
-  </section>
-
-  </section>
-
-  </section>
-
-
-<!-- Main section -->
-
-<!-- main section start, model I -->
-
- <section anchor="proto_m1" title="Protocol to support Model I">
-
- <section anchor="datastructure_m1" title="Data Structure">
-
-<t>To abstract from configuration details of an IP switch or IP router on the FPC protocol
-interface, Model I adopts the construct of logical ports to describe rules for D-Plane processing.
-A port binds one or multiple properties, which describe traffic treatment actions, such as a QoS policy,
-IP address re-write or packet encapsulation. Which traffic is treated is determined by one or multiple
-traffic descriptors, which also bind to that port. A group of one or multiple traffic descriptors, one
-or multiple properties defining traffic treatment actions and the port identifier make a rule.
-The port identifier serves as key to access the rule.</t> 
-
-<t>All traffic arriving at a Data-Plane node and matching a traffic descriptor will be treated per
-the properties bound to the port the traffic descriptor is also bound to. For example, Traffic
-Selectors <xref target="RFC6088"></xref>, which can be bound to a port, can identify single or
-multiple IP flows. Aggregated IP traffic destined
-toward a given IP address prefix or originated from an address matching a particular
-IP address range can be described using the Traffic Selector or an IP prefix traffic descriptor
-per this specification.</t>
-
-<t>In addition to traffic descriptors and traffic treatment actions, which build a Data-Plane processing rule,
-a port has associated operational data, which tracks the status of rule enforcement in a selected
-Data-Plane node.
-A rule can also have administrative data such as its directionality (uni- or bi-directional) and administrative
-status such as enabled, disabled or virtual. Furthermore, an identifier of the Data-Plane node to which the
-rule applies is kept in the operational data associated with a port.</t>
-
-<t>When the Client desires specific operational state for the port, it may apply administrative state
-properties to the port. This, however, may not take immediate effect on the Data-Plane Node.
-Thus, Client implementations must support situations where differences exist between configured
-and operational state of a port. A Client can request operational data associated with a particular port
-from an Agent.</t>
 <!-- Add: Request Agent to notify operational data -->
 <!-- Add: example enabled/disabled state, virtual state and apply virtual new or existing port -->
 
@@ -559,7 +524,7 @@ traffic detection by longest prefix match.</t>
 +---------------------------------------------------------------------+
 |   PRT_BIDIR    |      BOOLEAN         | Bidirectionality of a port  |
 |                |                      | (cleared = unidirectional)  |
-+----------------+----------------------+-----------------------------+ 
++----------------+----------------------+-----------------------------+
 |  ADMIN_STATUS  |  [8, admin status]   | Requested status for a rule |
 |                |                      | in a Data-Plane node        |
 |                |                      | (enabled, disabled, virtual)|
@@ -663,7 +628,7 @@ of a port to the Agent.</t>
 |   PRT_TD_ID    | [32,PRT_ID]          | Identifies a logical Port   |
 |                | [8,TD_ID]            | and a traffic descriptor    |
 |                |                      | that applies to the port    |
-+----------------+----------------------+-----------------------------+ 
++----------------+----------------------+-----------------------------+
 |    CLI_ID      | [16, Carrier ID]     | Identifies an               |
 |                | [16, Network ID]     | FPC Client function         |
 |                | [32, Client ID]      |                             |
@@ -727,11 +692,11 @@ of a port to the Agent.</t>
 +---------------+----------------------------+-------------------------+
 |   PROP_GW     | [ip address next hop]      | IP address of the Next  |
 |               |                            | Hop to which IP packets |
-|               |                            | should be forwarded     | 
+|               |                            | should be forwarded     |
 +----------------------------------------------------------------------+
 | PROP_CPY_FORW | [PRT_ID]                   | Copy IP packets, treat  |
 |               |                            | the duplicates per the  |
-|               |                            | properties of the       | 
+|               |                            | properties of the       |
 |               |                            | referred port           |
 +----------------------------------------------------------------------+
 |   PROP_DROP   |                            | Drop IP packet          |
@@ -761,14 +726,14 @@ of a port to the Agent.</t>
 |                          Protocol-specific                          |
 +---------------------------------------------------------------------+
 |   IPIP_CONF    |                      | IP-encapsulation            |
-|                |                      | configuration attribute     | 
+|                |                      | configuration attribute     |
 +---------------------------------------------------------------------+
 |   GRE_CONF     | [prototype][seq-#]   | GRE_encapsulation           |
 |                | [key]                | configuration attribute     |
 +---------------------------------------------------------------------+
 |   GTP_CONF     | [TEID_local]         | GTP-U encapsulation         |
 |                | [TEID_remote]        | configuration attribute     |
-|                | [seq-#]              |                             |  
+|                | [seq-#]              |                             |
 +---------------------------------------------------------------------+
       ]]></artwork>
         <postamble></postamble>
@@ -787,7 +752,7 @@ of a port to the Agent.</t>
 +---------------------------------------------------------------------+
 |  TD_CONTAINER  | [PRT_TD_ID]          | Traffic handling priority,  |
 |                | [8, PRIO]            | One or multiple traffic     |
-|                |*[traffic descriptor] | descriptors                 | 
+|                |*[traffic descriptor] | descriptors                 |
 +---------------------------------------------------------------------+
       ]]></artwork>
         <postamble></postamble>
@@ -806,7 +771,7 @@ of a port to the Agent.</t>
 |                         Traffic Descriptors                         |
 +---------------------------------------------------------------------+
 |  TD_DST_IP     | [IP address]         | Aggregated or per-host dst  |
-|                | [Prefix Len]         | IP address/prefix rule      | 
+|                | [Prefix Len]         | IP address/prefix rule      |
 +---------------------------------------------------------------------+
 |  TD_SRC_IP     | [IP address]         | Aggregated or per-host src  |
 |                | [Prefix Len]         | IP address/prefix rule      |
@@ -971,7 +936,7 @@ notify or query the Control-Plane through the Agent and Client functions.</t>
 +---------------------------------------------------------------------+
 |                 Messages issued by the FPC Agent                    |
 +---------------------------------------------------------------------+
-|                 | Notify the Client about the status of a           |          
+|                 | Notify the Client about the status of a           |
 |    NOTIFY       | monitored attribute per the reporting method      |
 |                 | (periodic / event trigger / probed)               |
 +---------------------------------------------------------------------+
@@ -1003,7 +968,7 @@ selects a suitable DPN to enforce a rule and notifies the Client about the selec
 <t>
 <list style="symbols">
 <t>PRT_ADD - Issued by a Client to add a new logical port at an Agent. An Agent receiving the
-   PRT_ADD message identifies the new port according to the included port identifier (PRT_ID). 
+   PRT_ADD message identifies the new port according to the included port identifier (PRT_ID).
    <!-- In case the DPN holds already a registration for a logical port with the same identifier, the Agent should throw an
    error message to the Client. Otherwise the --> The Agent adds a new port into its conceptual data structures using the
    port identifier as key. Optionally, the PRT_ADD message MAY include properties as well as traffic descriptors,
@@ -1049,15 +1014,15 @@ selects a suitable DPN to enforce a rule and notifies the Client about the selec
    (4) Threshold reporting specifies one or both of a low and high threshold. When these values are crossed a corresponding NOTIFY is sent to the Client.
 
    All monitored data can be requested by the Client at any time using the PROBE message. Thus, reporting configuration is optional
-   and when not present only PROBE messages may be used for monitoring. 
+   and when not present only PROBE messages may be used for monitoring.
    If a SCHEDULED or PERIODIC configuration is provided during registration with the time related value (time or period respectively) of 0
    a NOTIFY is immediately sent and the monitor is immediately de-registered. This method should when a MONITOR has not been installed,
-   an immediate NOTIFY is sufficient for the Client's needs and the Client has no further need for the monitor to be registered. 
+   an immediate NOTIFY is sufficient for the Client's needs and the Client has no further need for the monitor to be registered.
    An Agent may reject a registration if it or the DPN has insufficient resources.</t>
 <t>MONITOR_DEREG - Used by a Client to remove a monitor from an Agent. The message identifies one or multiple monitors by including
    the MONITOR_ID. The message also includes an optional Boolean value that, when true, will result in NOTIFY messages being sent for
-   the MONITOR_ID to the Client.    
-   When a monitor has a reporting configuration of SCHEDULED it is automatically de-registered after the NOTIFY occurs. 
+   the MONITOR_ID to the Client.
+   When a monitor has a reporting configuration of SCHEDULED it is automatically de-registered after the NOTIFY occurs.
    An Agent or DPN may temporarily suspend monitoring if insufficient resources exist.  In such a case the Agent MUST notify the Client.
 </t>
 <t>PROBE - Used by a Client to retrieve information about a previously installed monitor. The PROBE message SHOULD
@@ -1179,8 +1144,8 @@ the FPC Agent and the network control function are assumed to be co-located with
  <figure anchor="fig_msc_example"
               title="Exemplary Message Sequence (focus on FPC reference point)">
         <artwork align="center"><![CDATA[
-                                                +-------Router--------+ 
-                        +-----------+           |+-------+ +---------+|                  
+                                                +-------Router--------+
+                        +-----------+           |+-------+ +---------+|
 +------+ +------+     +-----+ FPC   |            | FPC   | |  Anchor |
 |MAG-C1| |MAG-C2|     |LMA-C| Client|            | Agent | |   DPN   |
 +------+ +------+     +-----+-------+            +-------+ +---------+
@@ -1220,7 +1185,7 @@ the FPC Agent and the network control function are assumed to be co-located with
       </figure>
 </t>
 
-<t>After reception of the Proxy Binding Update (PBU) at the LMA Control-Plane function (LMA_C), the 
+<t>After reception of the Proxy Binding Update (PBU) at the LMA Control-Plane function (LMA_C), the
 LMA-C selects a suitable DPN, which serves as Data-Plane anchor to the mobile node's (MN) traffic. The LMA-C
 adds a new logical port to the DPN to treat the MN's traffic (1) and includes a Port Identifier (PRT_ID)
 to the PRT_ADD command. The LMA-C identifies the selected Anchor DPN by including the associated DPN identifier.
@@ -1243,13 +1208,13 @@ to the local configuration.</t>
 
 <t>To reduce the number of protocol handshakes between the LMA-C and the DPN, the LMA-C can
 append properties (PROP_TUN, PROP_QOS) and traffic descriptor attributes to the PRT_ADD message,
-as illustrated in <xref target="fig_msc_aggr_example"></xref>.</t> 
+as illustrated in <xref target="fig_msc_aggr_example"></xref>.</t>
 
 <t>
  <figure anchor="fig_msc_aggr_example"
               title="Example: Sequence for Message Aggregation (focus on FPC reference point)">
         <artwork align="center"><![CDATA[
-                        +-----------+             +-------+ +---------+                  
+                        +-----------+             +-------+ +---------+
 +------+ +------+     +-----+ FPC   |             | FPC   | |  Anchor |
 |MAG-C1| |MAG-C2|     |LMA-C| Client|             | Agent | |   DPN   |
 +------+ +------+     +-----+-------+             +-------+ +---------+
@@ -1310,63 +1275,63 @@ as illustrated in <xref target="fig_msc_aggr_example"></xref>.</t>
 |                        IP Tunnel Attributes                         |
 +---------------------------------------------------------------------+
 |TUN_SRC_IP_ADDR      |[IP address]          | Tunnel Source IP       |
-|                     |                      |                        | 
+|                     |                      |                        |
 +---------------------------------------------------------------------+
 |TUN_DST_IP_ADDR      |[IP address]          | Tunnel Destination IP  |
-|                     |                      |                        | 
+|                     |                      |                        |
 +---------------------------------------------------------------------+
 |TUN_ENCAP_TYPE       |[ENCAP_GRE, ENACP_UDP,| Encapsulation Type     |
-|                     | ENCAP_IP]            |                        | 
+|                     | ENCAP_IP]            |                        |
 +---------------------------------------------------------------------+
 |TUN_TYPE_UDP         |[SRC_PRT, DST_PRT]    | UDP Direction - Source |
-|                     |                      | or Destination         | 
+|                     |                      | or Destination         |
 +---------------------------------------------------------------------+
 |TUN_TYPE_GRE         |[UPLINK_GRE_KEY,      | GRE Tunnel Type        |
-|                     | DOWNLINK_GRE_KEY]    |                        | 
+|                     | DOWNLINK_GRE_KEY]    |                        |
 +---------------------------------------------------------------------+
 |TUN_IF_MTU           |[MTU]                 | Tunnel Interface MTU   |
-|                     |                      |                        | 
+|                     |                      |                        |
 +---------------------------------------------------------------------+
 |TUN_PAYLOAD_TYPE     |[PAYLOAD_IPV4,        | Tunnel Payload Type    |
-|                     | PAYLOAD_IPV6,        |                        | 
+|                     | PAYLOAD_IPV6,        |                        |
 |                     | PAYLOAD_DUAL]        |                        |
 +---------------------------------------------------------------------+
 |TUN_VENDOR_SPEC_PARAM|[OPAQUE]              | Tunnel Vendor Specific |
-|                     |                      | Parameters             | 
+|                     |                      | Parameters             |
 +---------------------------------------------------------------------+
 |                    Route Management Attributes                      |
 +---------------------------------------------------------------------+
 |INPUT_IF             |[IF_INDEX]            |Input Interface         |
-|                     |                      |                        | 
+|                     |                      |                        |
 +---------------------------------------------------------------------+
 |OUTPUT_IF            |[IF_INDEX]            |Output Interface        |
-|                     |                      |                        | 
+|                     |                      |                        |
 +---------------------------------------------------------------------+
 |NEXT_HOP_IP_GW_ADDR  |[IP address]          |Next Hop IP Gateway     |
-|                     |                      |Address                 | 
+|                     |                      |Address                 |
 +---------------------------------------------------------------------+
 |TRAFFIC_SELECTOR_ACL |TBD                   |                        |
-|                     |                      |                        | 
+|                     |                      |                        |
 +---------------------------------------------------------------------+
 |DST_IP_SUBNET        |[IP prefix]           |Destination IP Subnet   |
-|                     |                      |                        | 
+|                     |                      |                        |
 +---------------------------------------------------------------------+
 |DST_IP_SUBNET_MASK   |[IP prefix]           |Destination IP Subnet   |
-|                     |                      |Mask                    | 
+|                     |                      |Mask                    |
 +---------------------------------------------------------------------+
 |                          QoS Attributes                             |
 +---------------------------------------------------------------------+
 |AMBR                 |[Unsigned Integer     |Aggregate Maximum       |
-|                     | (32 bit)]            |Bitrate                 | 
+|                     | (32 bit)]            |Bitrate                 |
 +---------------------------------------------------------------------+
 |GBR                  |[Unsigned Integer     |Guaranteed Bitrate      |
-|                     | (32 bit)]            |                        | 
+|                     | (32 bit)]            |                        |
 +---------------------------------------------------------------------+
 |TCLASS               |[Unsigned Integer     |Traffic Class           |
-|                     | (32 bit)]            |                        | 
+|                     | (32 bit)]            |                        |
 +---------------------------------------------------------------------+
 |TFT                  |TBD                   |Traffic Flow Template   |
-|                     |                      |                        | 
+|                     |                      |                        |
 +---------------------------------------------------------------------+
 |                       Optional Attributes                           |
 +---------------------------------------------------------------------+
@@ -1396,7 +1361,7 @@ as illustrated in <xref target="fig_msc_aggr_example"></xref>.</t>
 +---------------------------------------------------------------------+
 |VRF_ID             |[Unsigned INT]        |VRF Identifier            |
 +---------------------------------------------------------------------+
-|PBR_ID             |[Unsigned INT]        |Policy Based Routing      | 
+|PBR_ID             |[Unsigned INT]        |Policy Based Routing      |
 |                   |                      |Identifier                |
 +---------------------------------------------------------------------+
 |CTRL_PLANE_ID      |IP address            |Control-Plane Identifier  |
@@ -1420,7 +1385,7 @@ as illustrated in <xref target="fig_msc_aggr_example"></xref>.</t>
 
 
  </section>
- 
+
  <section anchor="protomsg_m2" title="Protocol Messages and Semantics">
 
 
@@ -1501,13 +1466,13 @@ as illustrated in <xref target="fig_msc_aggr_example"></xref>.</t>
 
 <t>
 <list style="symbols">
-<t>CREATE_TUNNEL_IF - Message can include TUN_SRC_IP_ADDR, TUN_DST_IP_ADDR, TUN_ENCAP_TYPE, TUN_IF_ID, TUN_TYPE_UDP, TUN_TYPE_GRE, TUN_IF_MTU, TUN_PAYLOAD_TYPE, TUN_VENDOR_SPEC_PARAM, VRF_ID, CTRL_PLANE_ID, CONTEXT_ID. 
+<t>CREATE_TUNNEL_IF - Message can include TUN_SRC_IP_ADDR, TUN_DST_IP_ADDR, TUN_ENCAP_TYPE, TUN_IF_ID, TUN_TYPE_UDP, TUN_TYPE_GRE, TUN_IF_MTU, TUN_PAYLOAD_TYPE, TUN_VENDOR_SPEC_PARAM, VRF_ID, CTRL_PLANE_ID, CONTEXT_ID.
 </t>
 <t>DELETE_TUNNEL_IF - Message can include TUN_SRC_IP_ADDR, TUN_DST_IP_ADDR, TUN_ENCAP_TYPE, TUN_IF_ID, CTRL_PLANE_ID, CONTEXT_ID.
 </t>
 <t>UPDATE_TUNNEL_PARAMETER - Message can include TUN_SRC_IP_ADDR, TUN_DST_IP_ADDR, TUN_ENCAP_TYPE, TUN_IF_ID, TUN_IF_MTU, TUN_PAYLOAD_TYPE, TUN_VENDOR_SPEC_PARAM, CTRL_PLANE_ID, CONTEXT_ID.
 </t>
-<t>QUERY_TUNNEL_IF - 
+<t>QUERY_TUNNEL_IF -
 </t>
 <t>CREATE_POLICY_ROUTE - Message can include INPUT_IF, OUTPUT_IF, NEXT_HOP_IP_GW_ADDR, VRF_ID, PBR_ID, CTRL_PLANE_ID, CONTEXT_ID.
 </t>
@@ -1517,13 +1482,13 @@ as illustrated in <xref target="fig_msc_aggr_example"></xref>.</t>
 </t>
 <t>DELETE_TRAFFIC_SELECTOR - Message can include TRAFFIC_SELECTOR_ACL, PBR_ID, CTRL_PLANE_ID, CONTEXT_ID.
 </t>
-<t>QUERY_POLICY_ROUTE - 
+<t>QUERY_POLICY_ROUTE -
 </t>
-<t>CREATE_IP_ROUTE - Message can include DST_IP_SUBNET, DST_IP_SUBNET_MASK, OUTPUT_IF, VRF_ID, ROUTE_ID, CTRL_PLANE_ID, CONTEXT_ID. 
+<t>CREATE_IP_ROUTE - Message can include DST_IP_SUBNET, DST_IP_SUBNET_MASK, OUTPUT_IF, VRF_ID, ROUTE_ID, CTRL_PLANE_ID, CONTEXT_ID.
 </t>
 <t>DELETE_IP_ROUTE - Message can include ROUTE_ID, CTRL_PLANE_ID, CONTEXT_ID.
 </t>
-<t>QUERY_IP_ROUTE - 
+<t>QUERY_IP_ROUTE -
 </t>
 <t>ALLOCATE_QOS_RESOURCES - Message can include AMBR, GBR, TCLASS, TFT, QOS_SERVICE_ID, CONTEXT_ID.
 </t>
@@ -1582,14 +1547,14 @@ the associated action to create a registry or add registry entries.
 <t>
 Detailed protocol specifications for DMM Forwarding Policy Configuration will follow the information
 model as per this document and can be based on, for example, ReST-like or binary protocol formats.
-Such protocol-specific details will be described in separate documents and may require IANA actions.  
+Such protocol-specific details will be described in separate documents and may require IANA actions.
 </t>
 -->
 
 </section>
 
     <section title="Work Team Participants">
-	
+
     <t>Participants in the FPSM work team discussion include Satoru Matsushima, Danny Moses, Sri Gundavelli, Marco Liebsch,
        Pierrick Seite, Alper Yegin, Carlos Bernardos, Charles Perkins and Fred Templin.
     </t>
@@ -1605,11 +1570,11 @@ Such protocol-specific details will be described in separate documents and may r
     &RFC7333;
     &RFC7429;
     &RFC6088;
- 
+
     </references>
 
     <references title="Informative References">
-    
+
     &RFC5213;
     &RFC3344;
     &RFC7222;
@@ -1629,7 +1594,7 @@ Such protocol-specific details will be described in separate documents and may r
 
 <reference anchor="3GPP-DIAM" target="http://www.3gpp.org">
         <front>
-            <title>3GPP TS 29.272  Mobility Management Entity (MME) and Serving 
+            <title>3GPP TS 29.272  Mobility Management Entity (MME) and Serving
 	      GPRS Support Node (SGSN) related interfaces based on Diameter protocol </title>
             <author initials="" surname="" fullname="">
                 <organization />
@@ -1647,7 +1612,7 @@ Such protocol-specific details will be described in separate documents and may r
 <t>These modules define Model I YANG definitions. Four modules are defined:</t>
 
 <t><list style="symbols">
-<t>ietf-dmm-fpcp-base (fpcp-base) - Defines the base model for Model I FPC as defined in this document</t>  
+<t>ietf-dmm-fpcp-base (fpcp-base) - Defines the base model for Model I FPC as defined in this document</t>
 <t>ietf-pmip-qos (pmip-qos) - Defines proxy mobile IPv6 QoS parameters per RFC 7222</t>
 <t>ietf-traffic-selectors-types (traffic-selectors) - Defines Traffic Selectors per RFC 6088</t>
 <t>ietf-dmm-fpcp-pmip - Augments fpcp-base to include PMIP Traffic Selectors as a Traffic Descriptor
@@ -1658,12 +1623,12 @@ subtype and pmip-qos QoS parameters, where applicable, as properties.</t>
 the draft and will be updated shortly after the IETF95 meeting.</t>
 
 <!-- template for YANG model, start -->
-<!-- 
+<!--
 <t>
  <figure anchor="yangmodel1"
               title="caption1">
         <artwork align="center"><![CDATA[
-      
+
       ]]></artwork>
         <postamble></postamble>
       </figure>
