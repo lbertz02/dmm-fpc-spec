@@ -448,7 +448,7 @@ commands of a particular DPN is specific to the DPN's technology and the Agent's
     <t>The opeartion input contains an operation identifier, a list of all entities and optional cloning
     instructions (see <xref target="cloning"/>.</t>
     <t>An Agent will respond with an error, okay with other data, or an ok with indication that remaining
-    data will be sent via a notify from the Agent to the Client <xref target="Asynchronous"/>.</t>
+    data will be sent via a notify from the Agent to the Client <xref target="asyncnotification"/>.</t>
     <section anchor="op-header" title="Header">
       <t>Each operation contains a header with the following fields:</t>
     <texttable anchor="cl_sess_first_i_aa" title="Operation Header Fields">
@@ -462,7 +462,7 @@ commands of a particular DPN is specific to the DPN's technology and the Agent's
 
     <c>DELAY</c>
     <c>Unsigned 32</c>
-    <c>Delay in milliseconds from the time received for the operation to take effect/c>
+    <c>Delay in milliseconds from the time received for the operation to take effect</c>
 
     <c>SESSION_STATE</c>
     <c>Enumeration</c>
@@ -484,22 +484,65 @@ commands of a particular DPN is specific to the DPN's technology and the Agent's
 
     <c>COMMAND_SET</c>
     <c>FPC Command Bitset</c>
-    <c>See <xref target="commandset"/></c>
-</texttable>
+    <c>See <xref target="commandsets"/></c>
+    </texttable>
     </section>
     <section anchor="op-body" title="Body">
+    <t>An operation body contains an operation identifier an lists of entities.</t>
+    <texttable anchor="op_input" title="Operation Header Fields">
+    <ttcol align="left">Field</ttcol>
+    <ttcol align="left">Type</ttcol>
+    <ttcol align="left">Description</ttcol>
+
+    <c>OP_ID</c>
+    <c>Unsigned 64</c>
+    <c>Operation Identifier</c>
+
+    <c>CLONES</c>
+    <c>*[ CLONE_INSTRUCTIONS ]</c>
+    <c>List of Clone Instructions</c>
+
+    <c>DESCRIPTORS</c>
+    <c>*[ DESCRIPTOR ]</c>
+    <c>List of Descriptors</c>
+
+    <c>ACTIONS</c>
+    <c>*[ ACTION ]</c>
+    <c>List of actions.</c>
+
+    <c>POLICIES</c>
+    <c>*[ POLICY ]</c>
+    <c>List of Policies</c>
+
+    <c>POLICY_GROUPS</c>
+    <c>*[ POLICY_GROUP ]</c>
+    <c>List of Policy-groups.</c>
+
+    <c>PORTS</c>
+    <c>[ PORT, [ COMMAND_SET ] ]</c>
+    <c>List of Ports that may optionally come with Command bitsets.</c>
+
+    <c>CONTEXTS</c>
+    <c>*[ CONTEXT, [ COMMAND_SET ] ]</c>
+    <c>List of Contexts that may optionally come with Command bitsets.</c>
+    </texttable>
+    </section>
+    <section anchor="agent-processing" title="Agent Operation Procesing">
+      <t>The Agent will process entities provided in an operation in the following order: <list>
+  <t>Clone Instructions, if the feature is supported</t>
+  <t>Descriptors</t>
+  <t>Actions</t>
+  <t>Policies</t>
+  <t>Policy-Groups according to COMMAND_SET order processing</t>
+  <t>Ports according to COMMAND_SET order processing</t>
+  <t>Contexts according to COMMAND_SET order processing</t>
+</list></t>
 
     </section>
-    <section anchor="single-op" title="Single Operation">
+    <section anchor="commandsets" title="Command Bitsets">
 
     </section>
-    <section anchor="bundles" title="Bundled Operations">
-
-    </section>
-    <section anchor="commandsets" title"Command Bitsets">
-
-    </section>
-    <section anchor"response" title="Operation Response">
+    <section anchor="response" title="Operation Response">
       <section anchor="immediateresp" title="Immediate Response">
 
       </section>
