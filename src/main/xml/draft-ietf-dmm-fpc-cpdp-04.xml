@@ -434,14 +434,23 @@ commands of a particular DPN is specific to the DPN's technology and the Agent's
 </section>
 <section anchor="protocol" title="Protocol">
   <section anchor="messageandsematics" title="Protocol Messages and Semantics">
-    <t>Two message types are supported:
-      <list>
-        <t>Configure (CONF) - accepts a single operation </t>
-        <t>Configure-bundles (CONF_BUNDLES) - takes multiple operations that are to be executed as a group
-          with partial failures allowed. They are given an execution order.</t>
-      </list>
-    </t>
-    <t>Each operation contains a header with the Client Identifier, an execution delay timer,
+    <t>Two message types are supported:</t>
+    <texttable anchor="messages" title="Messages">
+    <ttcol align="left">Message</ttcol>
+    <ttcol align="left">Type</ttcol>
+    <ttcol align="left">Description</ttcol>
+
+    <c>CONF</c>
+    <c>HEADER BODY</c>
+    <c>Configure processes a single operation.</c>
+
+    <c>CONF_BUNDLES</c>
+    <c>1*[HEADER BODY]</c>
+    <c>Configure-bundles takes multiple operations that are to be executed as a group
+          with partial failures allowed. They are executed according to the OP_ID value
+          in the OP_BODY.</c>
+    </texttable>
+    <t>Each message contains an header with the Client Identifier, an execution delay timer,
     the state of session related entites after the operation, the adminstrative state of all
     entities, the type of operation, an optional Command Set (see <xref target="commandsets"/>) and
     the input (body) of the message.</t>
@@ -451,7 +460,7 @@ commands of a particular DPN is specific to the DPN's technology and the Agent's
     data will be sent via a notify from the Agent to the Client <xref target="asyncnotification"/>.</t>
     <section anchor="op-header" title="Header">
       <t>Each operation contains a header with the following fields:</t>
-    <texttable anchor="cl_sess_first_i_aa" title="Operation Header Fields">
+    <texttable anchor="op-header-tables" title="Message Header Fields">
     <ttcol align="left">Field</ttcol>
     <ttcol align="left">Type</ttcol>
     <ttcol align="left">Description</ttcol>
@@ -489,7 +498,7 @@ commands of a particular DPN is specific to the DPN's technology and the Agent's
     </section>
     <section anchor="op-body" title="Body">
     <t>An operation body contains an operation identifier an lists of entities.</t>
-    <texttable anchor="op_input" title="Operation Header Fields">
+    <texttable anchor="op_input" title="Message Body Fields">
     <ttcol align="left">Field</ttcol>
     <ttcol align="left">Type</ttcol>
     <ttcol align="left">Description</ttcol>
@@ -655,8 +664,80 @@ commands of a particular DPN is specific to the DPN's technology and the Agent's
   </section>
 
 </section>
+    </section>
 
- <section anchor="datastructure" title="Data Structures">
+<section anchor="datastructure" title="Data Structures">
+  <t>A Client may add, modify or delete multiple actions, descriptors, policies, policy-groups, ports and contexts
+  in a single message.</t>
+
+  <t>
+<figure anchor="fig_port" title="Structure of Policies and Ports">
+        <artwork align="center"><![CDATA[
+
+  Descriptor_1 -+          +- Action_1
+                |          |
+  Descriptor_2 -+--<Rule>--+- Action_2
+                  +------+
+                  /Order#/-------------+
+                  +------+             |
+                                       |
+  Descriptor_3 -+          +- Action_3 +-<PolicyID>
+                |          |           |  ^
+  Descriptor_4 -+--<Rule>--+- Action_4 |  |
+                  +------+             | <PolicyGroupID>
+                  /Order#/-------------+  ^
+                  +------+                |
+                                         <PortID>
+
+  +-------------------+     +---------------------+
+  | Bind 1..M traffic |     |  Bind 1..N traffic  |
+  |    templates to   | --> |  treatment actions  |
+  |     a Policy,     |     |      to a Policy,   |
+  | Policy-Group and  |     |   Policy-Group and  |
+  |       Port        |     |       Port          |
+  +-------------------+     +---------------------+
+
+ |                                                 |
+ +-------------- Data-Plane Rule ------------------+
+        ]]></artwork>
+        <postamble></postamble>
+      </figure>
+</t>
+
+   <t>
+<figure anchor="fig_context" title="Structure of Contexts">
+        <artwork align="center"><![CDATA[
+
+  TrafficSelector_1
+           |
+  profile-parameters
+           |
+  mobility-profile-- dl ------+
+                     ^        |
+                     |      qos-profile
+                <ContextID>        |
+                              per-mn-agg-max-dl_2
+
+
+
+  +-------------------+     +---------------------+
+  | Bind 1..M traffic |     |  Bind 1..N traffic  |
+  |    templates to   | --> |  treatment / qos    |
+  |     a Context           |  actions to a       |
+  |                   |     |       Context       |
+  +-------------------+     +---------------------+
+
+ |                                                 |
+ +-------------- Data-Plane Rule ------------------+
+        ]]></artwork>
+        <postamble></postamble>
+      </figure>
+</t>
+
+
+</section>
+
+<section anchor="datastructure2" title="Data Structures - OLD">
 
 <!-- Add: Request Agent to notify operational data -->
 <!-- Add: example enabled/disabled state, virtual state and apply virtual new or existing port -->
@@ -670,38 +751,13 @@ packet's destination IP address from IP_A to IP_B matching an associated Traffic
 Data-Plane via an Agent to implicitly consider matching arriving packet's source IP address against IP_B and
 re-write the source IP address to IP_A.</t>
 
-<t><xref target="fig_abstrrules"></xref> illustrates the generic policy configuration model
+<t><xref target="fig_port"></xref> illustrates the generic policy configuration model
 as used between a FPC Client and a FPC Agent.</t>
 
 
-<t>
-<figure anchor="fig_abstrrules" title="Structure of rules on Client/Agent defining Data-Plane traffic treatment">
-        <artwork align="center"><![CDATA[
-
-  TrafficDescriptor_1-+             +--Property_1
-                      |             |
-  TrafficDescriptor_2-+---<PORT#>---+--Property_2
-         :            |   +--------+|
-         :            :  /Adm Data/ +--Property_3
-         :            | +--------+  :      :
-  TrafficDescriptor_M-+   +-------+ +--Property_N
-                         /OP Data/
-                        +-------+
-  +-------------------+           +---------------------+
-  | Bind 1..M traffic |           |  Bind 1..N traffic  |
-  |    templates to   | --------> |  treatment actions  |
-  |       a port      |           |      to a port      |
-  +-------------------+           +---------------------+
-
- |                                                       |
- +------------------ Data-Plane Rule --------------------+
-        ]]></artwork>
-        <postamble></postamble>
-      </figure>
-</t>
 
 
-<t>As depicted in <xref target="fig_abstrrules"></xref>, the port represents the anchor of a rule. A Client and Agent
+<t>As depicted in <xref target="fig_port"></xref>, the port represents the anchor of a rule. A Client and Agent
 use the identifier of a port to access the rule and perform modifications of traffic descriptors or properties.
 From the viewpoint of packet processing, arriving packets are matched against traffic descriptors and processed
 according to the treatment actions specified in the list of properties associated with the port.</t>
@@ -1458,9 +1514,6 @@ as illustrated in <xref target="fig_msc_aggr_example"></xref>.</t>
 
   </section>
 
-
-
-  </section>
 
 
 
