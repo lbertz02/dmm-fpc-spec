@@ -537,17 +537,80 @@ commands of a particular DPN is specific to the DPN's technology and the Agent's
   <t>Ports according to COMMAND_SET order processing</t>
   <t>Contexts according to COMMAND_SET order processing</t>
 </list></t>
-
-    </section>
+   <t>The following Order Processing occurs when COMMAND Sets are present
+        <list style="numbers">
+        <t>The Entity specific COMMAND_SET is processed according to its bit order unless
+        otherwise specified by the technology specific COMMAND_SET.
+        </t><t>Operation specific COMMAND_SET is processed upon all applicable entities
+        (even if they had Entity specific COMMAND_SET values present) according to its bit
+        order unless otherwise specified by the technology specific COMMAND_SET.
+        </t><t>Operation OP_TYPE is processed for all entities.</t>
+        </list>
+    </t>
+  </section>
     <section anchor="commandsets" title="Command Bitsets">
-
+<t>The COMMAND_SET is a technology specific bitset that allows for a single entity to
+  be sent in an operation with the requested sub-transactions to be completed. For
+  example, a Context could have the Home Network Prefix absent but it is unclear if
+  the Client would like the address to be assigned by the Agent or if this is an error.
+  Rather than creating a specific command for assigning the IP a bit position in a
+  COMMAND_SET is reserved for Agent based IP assignment. Alternatively, an entity
+  could be sent in an update operation that would be considered incomplete, e.g.
+  missing some required data in for the entity, but has sufficient data to complete
+  the instructions provided in the COMMAND_SET.</t>
     </section>
     <section anchor="response" title="Operation Response">
       <section anchor="immediateresp" title="Immediate Response">
-
+    <t>Results will be supplied per operation input. Each result contains the
+      RESULT_STATUS and OP_ID that it corresponds to. RESULT_STATUS values are:
+      <list>
+      <t>OK - SUCCESS
+      </t><t>ERR - An Error has occurred
+      </t><t>OK_NOTIFY_FOLLOWS - The Operation has been accepted by the Agent but
+      further processing is required. A CONFIG_RESULT_NOTIFY will be sent once the
+      processing has succeeded or failed.</t>
+      </list>
+    </t>
+    <t>If the operation is successful, the result MAY contain nothing or a entities created
+      as part of the operation. This includes optional lists of the following entities:
+    <list>
+      <t>Descriptors
+      </t><t>Actions
+      </t><t>Policies
+      </t><t>Policy-Groups
+      </t><t>Ports
+      </t><t>Contexts</t>
+    </list></t>
+    <t>If an error occurs the following information is returned.
+    <list>
+      <t>ERROR_TYPE_ID (Unsigned 32) - The identifier of a specific error type
+      </t><t>ERROR_INFORMATION - An OPTIONAL string of no more than 1024 characters.
+    </t></list>
+    </t>
       </section>
       <section anchor="asyncnotification" title="Asynchronous Notification">
+      <t>A CONFIG_RESULT_NOTIFY occurs after the Agent has completed processing related to a
+        CONFIG or CONFIG_BUNDLES request. It is an asynchronous communication from the
+        Agent to the Client.</t>
 
+        <t>The value includes the following data</t>
+    <texttable anchor="ayncnotify" title="Asynchronous Notification Fields">
+    <ttcol align="left">Field</ttcol>
+    <ttcol align="left">Type</ttcol>
+    <ttcol align="left">Description</ttcol>
+      <c>NOTIFICATION_ID </c>
+      <c>Unsigned 32</c>
+      <c>A Notification Identifier used to determ;ine notification order.</c>
+
+
+      <c>TIMESTAMP</c>
+      <c>Unsigned 32</c>
+      <c>The time that the notification originated from the Agent.</c>
+
+      <c>DATA</c>
+      <c>*[ OP_BODY ]</c>
+      <c>The CONFIG_RESULTS which is a list of Operation Bodies <xref target="op-body"/></c>
+      </texttable>
       </section>
     </section>
   </section>
