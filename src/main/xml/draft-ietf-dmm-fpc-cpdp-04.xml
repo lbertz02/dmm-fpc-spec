@@ -528,7 +528,8 @@ commands of a particular DPN is specific to the DPN's technology and the Agent's
     </texttable>
     </section>
     <section anchor="agent-processing" title="Agent Operation Procesing">
-      <t>The Agent will process entities provided in an operation in the following order: <list>
+      <t>The Agent will process entities provided in an operation in the following order:
+        <list style="numbers">
   <t>Clone Instructions, if the feature is supported</t>
   <t>Descriptors</t>
   <t>Actions</t>
@@ -548,6 +549,15 @@ commands of a particular DPN is specific to the DPN's technology and the Agent's
         </list>
     </t>
   </section>
+    <section anchor="cloning" title="Cloning">
+      <t>Cloning is an optional feature that allows a Client to copy one structure to another
+        in an operation. Cloning is always done first within the operation (see Operation
+        Order of Execution for more detail). If a Client wants to build an object then Clone
+        it using CONFIG_BUNDLES with the first operation being the entities to be copied and
+        a second operation with the Cloning instructions. A CLONE operation takes two arguments,
+        the first is the name of the target to clone and the second is the name of the newly
+        created entity.</t>
+    </section>
     <section anchor="commandsets" title="Command Bitsets">
 <t>The COMMAND_SET is a technology specific bitset that allows for a single entity to
   be sent in an operation with the requested sub-transactions to be completed. For
@@ -624,7 +634,7 @@ commands of a particular DPN is specific to the DPN's technology and the Agent's
       <t>Inital Connection...</t>
       <t>Handover...</t>
       <t>Teardown...</t>
-      <section anchor="cloning" title="Cloning Feature (Optional)">
+      <section anchor="cloningexample" title="Cloning Feature (Optional)">
         <t>Inital Connection with cloning...</t>
       </section>
     </section>
