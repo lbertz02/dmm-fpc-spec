@@ -591,15 +591,37 @@ commands of a particular DPN is specific to the DPN's technology and the Agent's
       </list>
     </t>
     <t>If the operation is successful, the result MAY contain nothing or a entities created
-      as part of the operation. This includes optional lists of the following entities:
-    <list>
-      <t>Descriptors
-      </t><t>Actions
-      </t><t>Policies
-      </t><t>Policy-Groups
-      </t><t>Ports
-      </t><t>Contexts</t>
-    </list></t>
+      as part of the operation as specified in <xref target="op_respbody"/>.</t>
+    <texttable anchor="op_respbody" title="RESPONSE_BODY Fields">
+    <ttcol align="left">Field</ttcol>
+    <ttcol align="left">Type</ttcol>
+    <ttcol align="left">Description</ttcol>
+
+    <c>DESCRIPTORS</c>
+    <c>*[ DESCRIPTOR ]</c>
+    <c>List of Descriptors</c>
+
+    <c>ACTIONS</c>
+    <c>*[ ACTION ]</c>
+    <c>List of actions.</c>
+
+    <c>POLICIES</c>
+    <c>*[ POLICY ]</c>
+    <c>List of Policies</c>
+
+    <c>POLICY_GROUPS</c>
+    <c>*[ POLICY_GROUP ]</c>
+    <c>List of Policy-groups.</c>
+
+    <c>PORTS</c>
+    <c>[ PORT, [ COMMAND_SET ] ]</c>
+    <c>List of Ports that may optionally come with Command bitsets.</c>
+
+    <c>CONTEXTS</c>
+    <c>*[ CONTEXT, [ COMMAND_SET ] ]</c>
+    <c>List of Contexts that may optionally come with Command bitsets.</c>
+    </texttable>
+
     <t>If an error occurs the following information is returned.
     <list>
       <t>ERROR_TYPE_ID (Unsigned 32) - The identifier of a specific error type
@@ -621,14 +643,13 @@ commands of a particular DPN is specific to the DPN's technology and the Agent's
       <c>Unsigned 32</c>
       <c>A Notification Identifier used to determ;ine notification order.</c>
 
-
       <c>TIMESTAMP</c>
       <c>Unsigned 32</c>
       <c>The time that the notification originated from the Agent.</c>
 
       <c>DATA</c>
-      <c>*[ OP_BODY ]</c>
-      <c>The CONFIG_RESULTS which is a list of Operation Bodies <xref target="op-body"/></c>
+      <c>*[ OP_ID RESPONSE_BODY ]</c>
+      <c>The CONFIG_RESULTS which is a list of Operation Bodies <xref target="op_respbody"/></c>
       </texttable>
       </section>
     </section>
@@ -667,8 +688,19 @@ commands of a particular DPN is specific to the DPN's technology and the Agent's
     </section>
 
 <section anchor="datastructure" title="Data Structures">
-  <t>A Client may add, modify or delete multiple actions, descriptors, policies, policy-groups, ports and contexts
-  in a single message.</t>
+  <t>A Client may add, modify or delete multiple actions, descriptors,
+   policies, policy-groups, ports and contexts in a single message. This
+   includes control of the operation of a rule.  As example, a rule which
+   performs re-writing of an arriving packet's destination IP address
+   from IP_A to IP_B matching an associated Descriptro, can be
+   enforced in the Data-Plane via an Agent to implicitly consider
+   matching arriving packet's source IP address against IP_B and re-
+   write the source IP address to IP_A.
+</t>
+
+<t><xref target="fig_port"/> illustrates the generic policy configuration
+   model as used between a FPC Client and a FPC Agent.
+</t>
 
   <t>
 <figure anchor="fig_port" title="Structure of Policies and Ports">
@@ -691,7 +723,7 @@ commands of a particular DPN is specific to the DPN's technology and the Agent's
 
   +-------------------+     +---------------------+
   | Bind 1..M traffic |     |  Bind 1..N traffic  |
-  |    templates to   | --> |  treatment actions  |
+  |  Descriptors to   | --> |  treatment actions  |
   |     a Policy,     |     |      to a Policy,   |
   | Policy-Group and  |     |   Policy-Group and  |
   |       Port        |     |       Port          |
@@ -704,6 +736,25 @@ commands of a particular DPN is specific to the DPN's technology and the Agent's
       </figure>
 </t>
 
+  <t>
+   As depicted in <xref target="fig_port"/>, the port represents the anchor
+   of rules through the policy-group, policy, rule heirarchy.  A
+   Client and Agent use the identifier of the associated policy to directly
+   access the rule and perform modifications of traffic descriptors or action
+   references.  A Client and Agent use the identifiers to access the descriptors
+   or action to perform modifications. From the viewpoint of packet processing,
+   arriving packets are matched against traffic descriptors and processed according
+   to the treatment actions specified in the list of properties associated with the
+   port.
+  </t>
+  <t>
+   A Client complements a rule's descriptors with a match priority
+   value to allow unambiguous traffic matching on the Data-Plane.
+  </t>
+<t><xref target="fig_context"/> illustrates the generic context configuration
+   model as used between a FPC Client and a FPC Agent.
+  </t>
+
    <t>
 <figure anchor="fig_context" title="Structure of Contexts">
         <artwork align="center"><![CDATA[
@@ -715,15 +766,15 @@ commands of a particular DPN is specific to the DPN's technology and the Agent's
   mobility-profile-- dl ------+
                      ^        |
                      |      qos-profile
-                <ContextID>        |
-                              per-mn-agg-max-dl_2
-
-
+                <ContextID1>       |
+                     ^        per-mn-agg-max-dl_2
+                     |
+                <ContextID2>
 
   +-------------------+     +---------------------+
   | Bind 1..M traffic |     |  Bind 1..N traffic  |
-  |    templates to   | --> |  treatment / qos    |
-  |     a Context           |  actions to a       |
+  |    selectors to   | --> |  treatment / qos    |
+  |     a Context     |     |  actions to a       |
   |                   |     |       Context       |
   +-------------------+     +---------------------+
 
@@ -733,8 +784,275 @@ commands of a particular DPN is specific to the DPN's technology and the Agent's
         <postamble></postamble>
       </figure>
 </t>
+<t>
+   As depicted in <xref target="fig_context"/>, the context represents a mobiility
+   session heirarchy.  A Client and Agent directly assigns values such as dowlink
+   traffic descriptors, QoS information, etc.  A Client and Agent use the context
+   identifiers to access the descriptors, qos information, etc. to perform modifications.
+   From the viewpoint of packet processing, arriving packets are matched against traffic
+   descriptors and processed according to the qos or other mobility profile related actions
+   specified in the context's properties. If present, the final action is to use a context's
+   tunnel information to encapsulate and forward the packet.
+  </t>
+<t>A second context also references context1 in the figure.  Based upon the techology a property
+  in a parent context MAY be inherited by its descendants.  This permits concise over the wire
+  representation.  When a Client deletes a parent context all children are also deleted.</t>
 
+  <t>Actions defines how to apply action to classified traffic flow by descriptors,
+    such as traffic management related action such as shaping, policing based on
+    given bandwidth, and connectivity management actions, such as pass, drop,
+    forward to given nexthop. Noted that Actions are extensibly defined by
+    specific profiles which 3gpp, ietf or other SDO produced. QCI (QoS Class
+    Identifier)) from 3gpp, and  rfc7222 from ietf can become action profiles. .
+  </t>
+  <t>The following table shows the Action fields</t>
+  <texttable anchor="action_field" title="Action Fields">
+    <ttcol align="left">Field</ttcol>
+    <ttcol align="left">Type</ttcol>
+    <ttcol align="left">Description</ttcol>
+      <c>ACTION_ID </c>
+      <c>See <xref target="naming"/></c>
+      <c>An Action's Identifier.</c>
 
+      <c>TYPE</c>
+      <c>[32, TYPE]</c>
+      <c>Defines action type how to treat specified traffic flow,
+        such as pass, drop, forward to given nexthop value and shape,
+        police based on given bandwidth value, etc.</c>
+
+      <c>VALUE</c>
+      <c>Type specific</c>
+      <c>The Action's value.</c>
+  </texttable>
+
+  <t>Descriptors define classifiers of specific traffic flow, such as based on
+    source and destination addresses, protocols, port numbers of
+    TCP/UDP/SCTP/DCCP and if any. Noted that Descriptors are extensibly defined
+    by specific profiles which 3gpp, ietf or other SDO produced. TFT (Traffic
+    flow template) from 3gpp, and  rfc6089 from ietf can become descriptor profiles.
+  </t>
+  <t>The following table shows the Descriptor fields</t>
+  <texttable anchor="descriptor_field" title="Descriptor Fields">
+    <ttcol align="left">Field</ttcol>
+    <ttcol align="left">Type</ttcol>
+    <ttcol align="left">Description</ttcol>
+      <c>DESCRIPTOR_ID </c>
+      <c>See <xref target="naming"/></c>
+      <c>A Descriptor's Identifier.</c>
+
+      <c>TYPE</c>
+      <c>[32, TYPE]</c>
+      <c>Defines descriptor type, which classifies specific traffic flow, such as
+        source and destination addresses, protocols, port numbers of
+        TCP/UDP/SCTP/DCCP or if any.</c>
+
+      <c>VALUE</c>
+      <c>Type specific</c>
+      <c>The Descriptor's value.</c>
+  </texttable>
+  <t>Policies contain a list of rules by their order value. Each rule contains descriptors with
+  optional directionality and actions with order values that specifies ordering if the rule
+  has multiple actions.</t>
+  <t>The following table shows the Policy fields</t>
+  <texttable anchor="policy_field" title="Policy Fields">
+    <ttcol align="left">Field</ttcol>
+    <ttcol align="left">Type</ttcol>
+    <ttcol align="left">Description</ttcol>
+      <c>POLICY_ID</c>
+      <c>See <xref target="naming"/></c>
+      <c>A Policy's Identifier.</c>
+
+      <c>RULES</c>
+      <c>*[ RULE ]</c>
+      <c>List of rules. See <xref target="rule_field"/></c>
+  </texttable>
+  <t>Rules consist of the following fields.</t>
+  <texttable anchor="rule_field" title="Rule Fields">
+    <ttcol align="left">Field</ttcol>
+    <ttcol align="left">Type</ttcol>
+    <ttcol align="left">Description</ttcol>
+      <c>ORDER</c>
+      <c>[16, INTEGER]</c>
+      <c>Specifies ordering if the multiple rules are present.</c>
+
+      <c>RULE_DESCRIPTORS</c>
+      <c>*[ DESCRIPTOR_ID DIRECTION ]</c>
+      <c>The DESCRIPTOR_ID refers to a DESCRIPTOR. DIRECTION is a
+        ENUMERTION (uplink, downlink or both) that specifies
+        descriptor to which direction applies, such as upstream or
+        downstream.</c>
+
+      <c>RULE_ACTIONS</c>
+      <c>*[ ACTION_ID ORDER ]</c>
+      <c>The ACTION_ID refers to an ACTION.  ORDER specifies
+        ordering if the rule has multiple actions.</c>
+  </texttable>
+
+  <t>A policy-group refers to  a set of policies which are to apply to
+    ports and contexts. Policy-groups consist of the following fields.</t>
+  <texttable anchor="policygroup_field" title="Policy Group Fields">
+    <ttcol align="left">Field</ttcol>
+    <ttcol align="left">Type</ttcol>
+    <ttcol align="left">Description</ttcol>
+      <c>POLICY_GROUP_ID</c>
+      <c>See <xref target="naming"/></c>
+      <c>A Policy-Groups's Identifier.</c>
+
+      <c>POLICIES</c>
+      <c>*[ POLICY_ID ]</c>
+      <c>Indicates each Policy which the Policy-group includes.</c>
+  </texttable>
+
+  <t>Port is a set of policies which will apply to contexts or any traffic
+    in the Dataplane node. It contains a list of Policy-groups which apply
+    to the port.</t>
+  <texttable anchor="port_field" title="Port Fields">
+    <ttcol align="left">Field</ttcol>
+    <ttcol align="left">Type</ttcol>
+    <ttcol align="left">Description</ttcol>
+      <c>PORT_ID</c>
+      <c>See <xref target="naming"/></c>
+      <c>A Port's Identifier.</c>
+
+      <c>POLICIES</c>
+      <c>*[ POLICY_GROUP_ID ]</c>
+      <c>Indicates each Policy-Group in the list.</c>
+  </texttable>
+
+  <t>An endpoint of a mobility session is abstracted as a context. The fields
+    of a context is shown in table <xref target="context_fields"/></t>
+  <texttable anchor="context_fields" title="Context Fields">
+    <ttcol align="left">Field</ttcol>
+    <ttcol align="left">Type</ttcol>
+    <ttcol align="left">Description</ttcol>
+      <c>CONTEXT_ID</c>
+      <c>See <xref target="naming"/></c>
+      <c>A Context's Identifier.</c>
+
+      <c>PORTS</c>
+      <c>*[ PORT_ID ]</c>
+      <c>List of Ports. When a context is applied to port(s), the context
+        is configured by policies of port(s).</c>
+
+      <c>DELEGATING IP PREFIXES</c>
+      <c>*[ IP_PREFIX ]</c>
+      <c>List of IP prefixes to be delegated to the mobile node of the
+        context. An IP_PREFIX is an IPv4 or IPv6 PREFIX.</c>
+
+      <c>UPLINK</c>
+      <c>TUN_LOCAL_ADDRESS TUN_REMOTE_ADDRESS TUN_MTU
+        [ MOB_PROFILE_TUN_PARAMS ] [ NEXTHOP ] [ QOS_PARAMS ]
+        [ VENDOR_SPECIFIC_PARAMS ] </c>
+      <c>Uplink information. See <xref target="context_link_fields"/>.</c>
+
+      <c>DOWNLINK</c>
+      <c>TUN_LOCAL_ADDRESS TUN_REMOTE_ADDRESS TUN_MTU
+        [ MOB_PROFILE_TUN_PARAMS ] [ NEXTHOP ] [ QOS_PARAMS ]
+        *[ VENDOR_SPECIFIC_PARAM ] </c>
+      <c>Uplink information. See <xref target="context_link_fields"/>.</c>
+
+      <c>PARENT_CONTEXT_ID</c>
+      <c>See <xref target="naming"/></c>
+      <c>Indicates context which this context associated with. This will help to
+        indicate relationships such as default/dedicated bearer relation.</c>
+
+      <c>DPN_GROUP_ID</c>
+      <c>See <xref target="naming"/></c>
+      <c>Indicates DPN-Group in the case of the context is configured to attach
+        to the DPN-group.</c>
+
+      <c>DPNS</c>
+      <c>*[ DPN ]</c>
+      <c>List of the DPNs which the Context accommodates. When DPN-group is indicated,
+        this list is derived from the group definition.  See <xref target="context_dpn_fields"/></c>
+  </texttable>
+
+  <texttable anchor="context_link_fields" title="Context Downlink/Uplink Field Definitions">
+    <ttcol align="left">Field</ttcol>
+    <ttcol align="left">Type</ttcol>
+    <ttcol align="left">Description</ttcol>
+      <c>TUN_LOCAL_ADDRESS</c>
+      <c>IP Address</c>
+      <c>Endpoint address of the DPN. [NOTE 1]</c>
+
+      <c>TUN_REMOTE_ADDRESS</c>
+      <c>IP Address</c>
+      <c>Endpoint address of the remote DPN. [NOTE 1]</c>
+
+      <c>TUN_MTU</c>
+      <c>[32, Unsigned INTEGER]</c>
+      <c>Specifies profile specific direction (uplink/downlink) tunnel's MTU.</c>
+
+      <c>MOB_PROFILE_TUN_PARAMS</c>
+      <c>[ IETF_PMIP_MOB_PROFILE |
+           3GPP_MOB_PROFILE ]</c>
+      <c>Specifies profile specific direction (uplink/downlink) tunnel parameters to the
+        DPN. The profiles includes GTP/TEID for 3gpp profile, GRE/Key for ietf-pmip profile,
+        or new profile if anyone will define it. [NOTE 1]</c>
+
+      <c>NEXTHOP</c>
+      <c>[ IP Address | MAC Address | SPI | MPLS Label | SID ]</c>
+      <c>Indicates nexthop information of downlink in access network or the uplink in external
+        network, such as IP address, MAC address, SPI of service function chain, SID of segment
+        routing, or if any. [NOTE 1]</c>
+
+      <c>QOS_PARAMS</c>
+      <c>[ 3GPP_QOS | PMIP_QOS ]</c>
+      <c>Specifies profile specific QoS parameter of downlink/uplink, such as QCI/TFT for 3gpp profile,
+        rfc6089/7222 for ietf-pmip, or extensions of this specification. [NOTE 1]</c>
+
+      <c>VENDOR_SPECIFIC_PARAM</c>
+      <c> Varies </c>
+      <c>Vendor specific parameter. [NOTE 1]</c>
+      <postamble>
+        NOTE 1 - These parameters are extensible.  The Types may be extended for Field value by
+        future specifications or in the case of Vendor Specific Attributes by enterprises.
+      </postamble>
+  </texttable>
+
+  <texttable anchor="context_dpn_fields" title="Context DPN Fields">
+    <ttcol align="left">Field</ttcol>
+    <ttcol align="left">Type</ttcol>
+    <ttcol align="left">Description</ttcol>
+
+    <c>DPN_ID</c>
+    <c>See <xref target="naming"/></c>
+    <c>DPN Identifier.</c>
+
+    <c>DIRECTION</c>
+    <c>[2, BIT]</c>
+    <c>Indicates if the DPN serves uplink(0), downlink(1) or
+    both(2).</c>
+
+    <c>MOB_PROFILE_PARAMS</c>
+    <c>TUN_LOCAL_ADDRESS TUN_REMOTE_ADDRESS TUN_MTU
+        [ MOB_PROFILE_TUN_PARAMS ] [ NEXTHOP ] [ QOS_PARAMS ]
+        [ VENDOR_SPECIFIC_PARAMS ] </c>
+    <c>Mobility Profile information. See <xref target="context_link_fields"/>.</c>
+
+    <c>DPN_PARAMS</c>
+    <c> Varies </c>
+    <c>Specific parameters, such like if-index, tunnel-if-number
+      that must be unique in the DPN.</c>
+  </texttable>
+
+  <section anchor="ietf-pmip-params" title="PMIP Specific Parameters">
+  <t>This section defines PMIP specific parameers for contexts.</t>
+  <texttable anchor="pmip_tun_fields" title="PMIP Tunnel Fields (IETF_PMIP_MOB_PROFILE)">
+    <ttcol align="left">Field</ttcol>
+    <ttcol align="left">Type</ttcol>
+    <ttcol align="left">Description</ttcol>
+
+    <c>TUN_TYPE</c>
+    <c>[8, INTEGER]</c>
+    <c>This field is extensible. The only defined value is GRE (0).</c>
+
+    <c>TUN_IDENTIFIER</c>
+    <c>GRE-Key</c>
+    <c>Value is based upon the TUN_TYPE.  This field is extensible.  The
+    current defined value is GRE-key.</c>
+  </texttable>
+  </section>
 </section>
 
 <section anchor="datastructure2" title="Data Structures - OLD">
