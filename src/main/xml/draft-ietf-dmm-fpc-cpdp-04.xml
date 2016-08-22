@@ -432,6 +432,7 @@ commands of a particular DPN is specific to the DPN's technology and the Agent's
     connected peer groups.</t>
   </section>
 </section>
+    </section>
 <section anchor="protocol" title="Protocol">
   <section anchor="messageandsematics" title="Protocol Messages and Semantics">
     <t>Two message types are supported:</t>
@@ -450,14 +451,15 @@ commands of a particular DPN is specific to the DPN's technology and the Agent's
           with partial failures allowed. They are executed according to the OP_ID value
           in the OP_BODY.</c>
     </texttable>
-    <t>Each message contains an header with the Client Identifier, an execution delay timer,
+    <t>Each message contains a header with the Client Identifier, an execution delay timer,
     the state of session related entites after the operation, the adminstrative state of all
     entities, the type of operation, an optional Command Set (see <xref target="commandsets"/>) and
     the input (body) of the message.</t>
     <t>The opeartion input contains an operation identifier, a list of all entities and optional cloning
-    instructions (see <xref target="cloning"/>.</t>
-    <t>An Agent will respond with an error, okay with other data, or an ok with indication that remaining
-    data will be sent via a notify from the Agent to the Client <xref target="asyncnotification"/>.</t>
+    instructions (see <xref target="cloning"/>).</t>
+    <t>An Agent will respond with an error, ok, or an ok with indication that remaining
+    data will be sent via a notify from the Agent to the Client <xref target="asyncnotification"/>. When
+    returning an 'ok' of any kind, optional data may be present.</t>
     <section anchor="op-header" title="Header">
       <t>Each operation contains a header with the following fields:</t>
     <texttable anchor="op-header-tables" title="Message Header Fields">
@@ -466,36 +468,39 @@ commands of a particular DPN is specific to the DPN's technology and the Agent's
     <ttcol align="left">Description</ttcol>
 
     <c>CLIENT_ID</c>
-    <c>FPC Identity</c>
+    <c>FPC-Identity (<xref target="naming"/>)</c>
     <c>FPC Client Identifier</c>
 
     <c>DELAY</c>
-    <c>Unsigned 32</c>
-    <c>Delay in milliseconds from the time received for the operation to take effect</c>
+    <c>[32, unsigned integer]</c>
+    <c>Delay, in milliseconds, from the time the operation is received by the Agent for the
+      operation(s) to take effect.</c>
 
     <c>SESSION_STATE</c>
-    <c>Enumeration</c>
-    <c>Sets the expected state of the Session (entities embedded in the Operation) after successful
+    <c>[8, session state] </c>
+    <c>Sets the expected state of the entities embedded in the operation body after successful
       completion of the operation. This can be 'complete', 'incomplete' or 'outdated'. Any operation
       that is 'incomplete' MAY NOT result in communication between the Agent and DPN. If the result is
       'outdated' any new operations on these entities or new references to these entities have unpredictable
       results.</c>
 
-    <c>ADMIN_STATUS </c>
-    <c>Enumeration</c>
-    <c>FSets the administrative status for all entities. If the status is set to virtual any existing data on the
-      DPN is removed. If the value is set to disabled then an operation will occur on the DPN IF the entity
-      exists on the DPN. If set to 'active' the DPN will be provisioned.</c>
+    <c>ADMIN_STATE </c>
+    <c>[8, admin state]</c>
+    <c>Sets the administrative status for all entities. If the status is set to virtual, any existing data on the
+      DPN is removed. If the value is set to disabled, then an operation will occur on the DPN IF the entity
+      exists on the DPN. If set to 'active' the DPN will be provisioned. Values are 'enabled', 'disabled' or
+      'virtual'.</c>
 
     <c>OP_TYPE</c>
-    <c>Enumeration</c>
-    <c>Create, Update, Query or Delete.</c>
+    <c>[8, op type]</c>
+    <c>The type of operation. Valid values are 'create', 'update', 'query' or 'delete'.</c>
 
     <c>COMMAND_SET</c>
     <c>FPC Command Bitset</c>
-    <c>See <xref target="commandsets"/></c>
+    <c>If supported by the Agent. See <xref target="commandsets"/>.</c>
     </texttable>
     </section>
+
     <section anchor="op-body" title="Body">
     <t>An operation body contains an operation identifier an lists of entities.</t>
     <texttable anchor="op_input" title="Message Body Fields">
@@ -504,16 +509,18 @@ commands of a particular DPN is specific to the DPN's technology and the Agent's
     <ttcol align="left">Description</ttcol>
 
     <c>OP_ID</c>
-    <c>Unsigned 64</c>
-    <c>Operation Identifier</c>
+    <c>[64, unsigned integer]</c>
+    <c>Operation identifier which is used in responses and related notifications.</c>
 
     <c>CLONES</c>
-    <c>*[ CLONE_INSTRUCTIONS ]</c>
-    <c>List of Clone Instructions</c>
+    <c>*[ FPC-Identity FPC-Identity ] (<xref target="naming"/>)</c>
+    <c>If supported by the Agent, this is a list of clone instructions.  The first argument
+      is the entity to be cloned and the second argument is the name of the newly cloned entity.
+      See <xref target="cloning"/></c>
 
     <c>DESCRIPTORS</c>
     <c>*[ DESCRIPTOR ]</c>
-    <c>List of Descriptors</c>
+    <c>List of descriptors.</c>
 
     <c>ACTIONS</c>
     <c>*[ ACTION ]</c>
@@ -521,19 +528,21 @@ commands of a particular DPN is specific to the DPN's technology and the Agent's
 
     <c>POLICIES</c>
     <c>*[ POLICY ]</c>
-    <c>List of Policies</c>
+    <c>List of policies.</c>
 
     <c>POLICY_GROUPS</c>
     <c>*[ POLICY_GROUP ]</c>
-    <c>List of Policy-groups.</c>
+    <c>List of policy-groups.</c>
 
     <c>PORTS</c>
     <c>[ PORT, [ COMMAND_SET ] ]</c>
-    <c>List of Ports that may optionally come with Command bitsets.</c>
+    <c>List of ports that may optionally come with Command bitsets, if Command Sets are
+      supported by the Agent. See <xref target="commandsets"/>.</c>
 
     <c>CONTEXTS</c>
     <c>*[ CONTEXT, [ COMMAND_SET ] ]</c>
-    <c>List of Contexts that may optionally come with Command bitsets.</c>
+    <c>List of contexts that may optionally come with Command bitsets, if Command Sets are
+      supported by the Agent. See <xref target="commandsets"/>.</c>
     </texttable>
     </section>
     <section anchor="agent-processing" title="Agent Operation Procesing">
@@ -557,6 +566,8 @@ commands of a particular DPN is specific to the DPN's technology and the Agent's
         </t><t>Operation OP_TYPE is processed for all entities.</t>
         </list>
     </t>
+    <t>When deleting objects it at the top level only their name needs to be provided.</t>
+    <t>When deleting an attribute, a leaf reference should be provided.  This is a path to the attibutes.</t>
   </section>
     <section anchor="cloning" title="Cloning">
       <t>Cloning is an optional feature that allows a Client to copy one structure to another
@@ -639,6 +650,10 @@ commands of a particular DPN is specific to the DPN's technology and the Agent's
     <ttcol align="left">Field</ttcol>
     <ttcol align="left">Type</ttcol>
     <ttcol align="left">Description</ttcol>
+      <c>AGENT_ID </c>
+      <c>FPC Identity</c>
+      <c>FPC Agent Identifier</c>
+
       <c>NOTIFICATION_ID </c>
       <c>Unsigned 32</c>
       <c>A Notification Identifier used to determ;ine notification order.</c>
@@ -685,8 +700,8 @@ commands of a particular DPN is specific to the DPN's technology and the Agent's
   </section>
 
 </section>
-    </section>
 
+<section anchor="proto_message_detail" title="Protocol Message Details">
 <section anchor="datastructure" title="Data Structures">
   <t>A Client may add, modify or delete multiple actions, descriptors,
    policies, policy-groups, ports and contexts in a single message. This
@@ -1053,7 +1068,105 @@ commands of a particular DPN is specific to the DPN's technology and the Agent's
     current defined value is GRE-key.</c>
   </texttable>
   </section>
+
+  <section anchor="topology" title="Topology Structures">
+  <t>This section defines topology structures such as DPNs and DPN Groups.</t>
+  <texttable anchor="dpn_fields" title="DPN Fields">
+    <ttcol align="left">Field</ttcol>
+    <ttcol align="left">Type</ttcol>
+    <ttcol align="left">Description</ttcol>
+
+    <c>DPN_ID</c>
+    <c>See <xref target="naming"/></c>
+    <c>DPN Identifier.</c>
+
+    <c>IP_ADRRESS</c>
+    <c>IP Address</c>
+    <c>DPN's IP Address.</c>
+
+    <c>CONTROL_PROTOCOL</c>
+    <c>Enumeration</c>
+    <c>Specifies control protocol, such as BGP, Netconf, Restconf, FORCES, XMPP,
+      Openflow, if any.</c>
+
+
+    <c>DPN_GROUPS</c>
+    <c>See <xref target="naming"/></c>
+    <c>Indicates DPN-Groups where DPN works as a member of the DPN-Group.</c>
+  </texttable>
+
+  <texttable anchor="dpn_groups" title="DPN Groups" suppress-title="false">
+    <ttcol align="left">Field</ttcol>
+    <ttcol align="left">Type</ttcol>
+    <ttcol align="left">Description</ttcol>
+
+    <c>DPN_GROUP_ID</c>
+    <c>See <xref target="naming"/></c>
+    <c>DPN Group Identifier.</c>
+
+    <c>FORWARDING_PLANE_ROLE</c>
+    <c>Enumeration</c>
+    <c>Defines forwarding-plane role of the DPN-Group, such as access-dpn, L2/L3 anchor-dpn.</c>
+
+    <c>ACCESS_TYPE</c>
+    <c>Enumeration</c>
+    <c>Defines access type which the DPN-Group capable, such as ethernet(802.3/11), 3gpp cellular(S1,
+      RAB), if any. </c>
+
+    <c>MOBILITY_PROFILE</c>
+    <c><xref target="context_link_fields"/></c>
+    <c>Defines supporting mobility profile, such as ietf-pmip, 3gpp, or new profile if anyone will define
+      it. When those profiles are correctly defined, some or all of forwarding-plane parameters of
+      contexts can be automatically derived from the profile by FPC agent.</c>
+
+    <c>PEER_DPN_GROUPS</c>
+    <c>DPN_GROUP_ID REMOTE_ENDPOINT_ADDRESS LOCAL_ENDPOINT_ADDRESS
+    TUN_MTU MOB_PROFILE_TUN_PARAMS FORWARDING_PLANE_ROLE</c>
+    <c>Indicates DPN-Groups where DPN works as a member of the DPN-Group.</c>
+
+    <c>REMOTE_ENDPOINT_ADDRESS</c>
+    <c>IP Address</c>
+    <c>Defines Endpoint address of the peering DPN-Group.</c>
+
+    <c>LOCAL_ENDPOINT_ADDRESS</c>
+    <c>IP Address</c>
+    <c>Defines Endpoint address of its own DPN-Group to peer the remote DPN-Group. </c>
+  </texttable>
+  </section>
 </section>
+
+  <section anchor="mess_attributes" title="Message Attributes">
+
+  </section>
+  <section anchor="mess_messages" title="Messages">
+
+  </section>
+    <section anchor="mess_notifications" title="Notifications">
+
+  </section>
+
+</section>
+<section anchor="derived_attrs" title="Derived Attributes">
+<t>This section notes derived attributes.</t>
+
+  <texttable anchor="derived_attributes" title="Derived Attributes">
+    <ttcol align="left">Field</ttcol>
+    <ttcol align="left">Main Type</ttcol>
+    <ttcol align="left">Type</ttcol>
+    <ttcol align="left">Description</ttcol>
+
+    <c>SERVICE_PATH_ID</c>
+    <c>Next Hop</c>
+    <c>[24-bit identifier]</c>
+    <c>Service Path Identifier</c>
+
+    <c>NSH</c>
+    <c>Next Hop</c>
+    <c>[SERVICE_PATH_ID] [Service Index]</c>
+    <c>Included NSH.</c>
+  </texttable>
+</section>
+
 
 <section anchor="datastructure2" title="Data Structures - OLD">
 
@@ -1100,63 +1213,6 @@ traffic detection by longest prefix match.</t>
 
 <t>Operational information of a port includes the data listed in the following table:</t>
 
-<t>
- <figure anchor="tab_port_admdata"
-              title="Administrative Data associated with a port">
-        <artwork align="center"><![CDATA[
-+---------------------------------------------------------------------+
-|   Admin Data   | Format Clarification |         Description         |
-+=====================================================================+
-|    DPN_ID      |      Sect. 4.2       | Identifies a Data-Plane node|
-|                |                      | to which the rule applies   |
-+---------------------------------------------------------------------+
-|   PRT_BIDIR    |      BOOLEAN         | Bidirectionality of a port  |
-|                |                      | (cleared = unidirectional)  |
-+----------------+----------------------+-----------------------------+
-|  ADMIN_STATUS  |  [8, admin status]   | Requested status for a rule |
-|                |                      | in a Data-Plane node        |
-|                |                      | (enabled, disabled, virtual)|
-+---------------------------------------------------------------------+
-| SESSION_STATUS | [8, session status]  | Status of a session in the  |
-|                |                      | Control-Plane (complete,    |
-|                |                      | incomplete, outdated)       |
-+---------------------------------------------------------------------+
-|  PRT_GROUP_ID  |   [32, group id]     | Identifies a group of ports |
-|                |                      | to which this port belongs  |
-+---------------------------------------------------------------------+
-|    CLI_ID      |      Sect. 4.2       | Identifies the Client which |
-|                |                      | created this port           |
-+---------------------------------------------------------------------+
-|    AGT_ID      |      Sect. 4.2       | Identifies the Agent which  |
-|                |                      | enforces the rule as per    |
-|                |                      | this port                   |
-+---------------------------------------------------------------------+
-      ]]></artwork>
-        <postamble></postamble>
-      </figure>
-</t>
-
-
-<t>
- <figure anchor="tab_port_operdata"
-              title="Operational Data associated with a port">
-        <artwork align="center"><![CDATA[
-+---------------------------------------------------------------------+
-|Operational Data| Format Clarification |         Description         |
-+=====================================================================+
-|  OPER_STATUS   | [8, oper status]     | Status of a rule in a       |
-|                |                      | Data-Plane node (enabled,   |
-|                |                      | disabled, virtual)          |
-+---------------------------------------------------------------------+
-| SERVICE_STATUS | [8, service status]  | Ability of an enabled rule  |
-|                |                      | to serve traffic (complete, |
-|                |                      | incomplete, outdated)       |
-+---------------------------------------------------------------------+
-      ]]></artwork>
-        <postamble></postamble>
-      </figure>
-</t>
-
 
 
 <t>A Client MAY apply an administrative state property to a port indicating the desired
@@ -1176,7 +1232,8 @@ is 'outdated', the Agent MAY notify the Client to update the associated rule on 
 </t>
 
 
-  </section>
+</section>
+
 
  <section anchor="protoattributes_m1" title="Protocol Attributes">
 
@@ -1205,38 +1262,10 @@ of a port to the Agent.</t>
 +=====================================================================+
 |                            Identifiers                              |
 +---------------------------------------------------------------------+
-|    PRT_ID      | [32,PRT_ID]          | Identifies a logical Port   |
-+---------------------------------------------------------------------+
-|  PRT_GROUP_ID  | [32,PRT_GROUP_ID]    | Identifies a group of       |
-|                |                      | logical Ports               |
-+---------------------------------------------------------------------+
-|  PRT_PROP_ID   | [32,PRT_ID]          | Identifies a logical Port   |
-|                | [8,PROP_ID]          | and one of its properties   |
-+---------------------------------------------------------------------+
-|   PRT_TD_ID    | [32,PRT_ID]          | Identifies a logical Port   |
-|                | [8,TD_ID]            | and a traffic descriptor    |
-|                |                      | that applies to the port    |
-+----------------+----------------------+-----------------------------+
-|    CLI_ID      | [16, Carrier ID]     | Identifies an               |
-|                | [16, Network ID]     | FPC Client function         |
-|                | [32, Client ID]      |                             |
-+---------------------------------------------------------------------+
-|    AGT_ID      | [16, Carrier ID]     | Identifies an               |
-|                | [16, Network ID]     | FPC Agent function          |
-|                | [32, Agent ID]       |                             |
-+---------------------------------------------------------------------+
-|    DPN_ID      | [16, Carrier ID]     | Identifies a Data Plane     |
-|                | [16, Network ID]     | Node (DPN)                  |
-|                | [32, DPN ID]         |                             |
-+---------------------------------------------------------------------+
 |   MONITOR_ID   | [32, Monitor ID]     | Identifies a registered     |
 |                |                      | monitor                     |
 +---------------------------------------------------------------------+
 |  EVENT_TYPE_ID | [8, Event Type ID]   | Identifies an event type    |
-+---------------------------------------------------------------------+
-|                        Optional Identifiers                         |
-+---------------------------------------------------------------------+
-| SERVICE_PATH_ID| [24-bit identifier]  | Service Path Identifier     |
 +---------------------------------------------------------------------+
 
       ]]></artwork>
@@ -1278,10 +1307,6 @@ of a port to the Agent.</t>
 |               |                            | MBR applies when being  |
 |               |                            | aggregated              |
 +---------------+----------------------------+-------------------------+
-|   PROP_GW     | [ip address next hop]      | IP address of the Next  |
-|               |                            | Hop to which IP packets |
-|               |                            | should be forwarded     |
-+----------------------------------------------------------------------+
 | PROP_CPY_FORW | [PRT_ID]                   | Copy IP packets, treat  |
 |               |                            | the duplicates per the  |
 |               |                            | properties of the       |
@@ -1293,11 +1318,7 @@ of a port to the Agent.</t>
 |               |                            | the referred port into  |
 |               |                            | the rule                |
 +----------------------------------------------------------------------+
-|                         Optional Properties                          |
-+----------------------------------------------------------------------+
-|   PROP_NSH    | [SERVICE_PATH_ID]          | Include NSH             |
-|               | [Service Index]            |                         |
-+----------------------------------------------------------------------+
+
 
       ]]></artwork>
         <postamble></postamble>
@@ -1327,26 +1348,6 @@ of a port to the Agent.</t>
         <postamble></postamble>
       </figure>
 </t>
-
-
-<t>
- <figure anchor="tab_protoattr_traffic_descr_container"
-              title="Protocol Attributes: Traffic Description Container">
-        <artwork align="center"><![CDATA[
-+---------------------------------------------------------------------+
-|   Attribute    | Format Clarification |         Description         |
-+=====================================================================+
-|                    Traffic Descriptor Container                     |
-+---------------------------------------------------------------------+
-|  TD_CONTAINER  | [PRT_TD_ID]          | Traffic handling priority,  |
-|                | [8, PRIO]            | One or multiple traffic     |
-|                |*[traffic descriptor] | descriptors                 |
-+---------------------------------------------------------------------+
-      ]]></artwork>
-        <postamble></postamble>
-      </figure>
-</t>
-
 
 
 <t>
