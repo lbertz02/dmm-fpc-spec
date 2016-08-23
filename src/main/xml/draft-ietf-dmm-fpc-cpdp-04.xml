@@ -384,6 +384,11 @@ commands of a particular DPN is specific to the DPN's technology and the Agent's
       This is done by using binary comparison of names at the Agent. If a creation attempt occurs for an entity where the
       name already exists a NAME_ALREADY_EXISTS error is raised.
     </t>
+    <t>The naming convention can be used to accommodate heirarchical structures such as virtual routing and fowarding (VRF),
+      Policy Based Routing (PBR), Tunnel Interfaces, Networks, etc.  For example using a string prefix such as "mcc:01/mnc:002",
+      an inteface such as "/if:1/", a VRF route, e.g. "/vrf:xxx/routeid:001" or a service id in a network
+      "mcc:01/mnc:002/sr-id:internet".
+    </t>
   </section>
   <section anchor="policy" title="Policies, Actions and Descriptors">
     <t>Actions specify the treatment applied to a packet. Actions are assigned an identifier and contain a type and value.</t>
@@ -535,12 +540,12 @@ commands of a particular DPN is specific to the DPN's technology and the Agent's
     <c>List of policy-groups.</c>
 
     <c>PORTS</c>
-    <c>[ PORT, [ COMMAND_SET ] ]</c>
+    <c>*[ PORT [ COMMAND_SET ] ]</c>
     <c>List of ports that may optionally come with Command bitsets, if Command Sets are
       supported by the Agent. See <xref target="commandsets"/>.</c>
 
     <c>CONTEXTS</c>
-    <c>*[ CONTEXT, [ COMMAND_SET ] ]</c>
+    <c>*[ CONTEXT [ COMMAND_SET ] ]</c>
     <c>List of contexts that may optionally come with Command bitsets, if Command Sets are
       supported by the Agent. See <xref target="commandsets"/>.</c>
     </texttable>
@@ -625,12 +630,14 @@ commands of a particular DPN is specific to the DPN's technology and the Agent's
     <c>List of Policy-groups.</c>
 
     <c>PORTS</c>
-    <c>[ PORT, [ COMMAND_SET ] ]</c>
-    <c>List of Ports that may optionally come with Command bitsets.</c>
+    <c>*[ PORT [ COMMAND_SET ] ]</c>
+    <c>List of Ports that may optionally come with Command bitsets, if Command Sets are
+      supported by the Agent. See <xref target="commandsets"/>.</c>
 
     <c>CONTEXTS</c>
-    <c>*[ CONTEXT, [ COMMAND_SET ] ]</c>
-    <c>List of Contexts that may optionally come with Command bitsets.</c>
+    <c>*[ CONTEXT [ COMMAND_SET ] ]</c>
+    <c>List of Contexts that may optionally come with Command bitsets, if Command Sets are
+      supported by the Agent. See <xref target="commandsets"/>.</c>
     </texttable>
 
     <t>If an error occurs the following information is returned.
@@ -651,20 +658,20 @@ commands of a particular DPN is specific to the DPN's technology and the Agent's
     <ttcol align="left">Type</ttcol>
     <ttcol align="left">Description</ttcol>
       <c>AGENT_ID </c>
-      <c>FPC Identity</c>
+      <c>FPC-Identity (<xref target="naming"/>)</c>
       <c>FPC Agent Identifier</c>
 
       <c>NOTIFICATION_ID </c>
-      <c>Unsigned 32</c>
+      <c>[32, unsigned integer]</c>
       <c>A Notification Identifier used to determ;ine notification order.</c>
 
       <c>TIMESTAMP</c>
-      <c>Unsigned 32</c>
+      <c>[32, unsigned integer]</c>
       <c>The time that the notification originated from the Agent.</c>
 
       <c>DATA</c>
       <c>*[ OP_ID RESPONSE_BODY ]</c>
-      <c>The CONFIG_RESULTS which is a list of Operation Bodies <xref target="op_respbody"/></c>
+      <c>A list of OP_ID / RESPONSE_BODY (<xref target="op_respbody"/>) pairs.</c>
       </texttable>
       </section>
     </section>
@@ -826,11 +833,11 @@ commands of a particular DPN is specific to the DPN's technology and the Agent's
     <ttcol align="left">Type</ttcol>
     <ttcol align="left">Description</ttcol>
       <c>ACTION_ID </c>
-      <c>See <xref target="naming"/></c>
+      <c>FPC-Identity (<xref target="naming"/>)</c>
       <c>An Action's Identifier.</c>
 
       <c>TYPE</c>
-      <c>[32, TYPE]</c>
+      <c>[32, unsigned integer]</c>
       <c>Defines action type how to treat specified traffic flow,
         such as pass, drop, forward to given nexthop value and shape,
         police based on given bandwidth value, etc.</c>
@@ -847,16 +854,16 @@ commands of a particular DPN is specific to the DPN's technology and the Agent's
     flow template) from 3gpp, and  rfc6089 from ietf can become descriptor profiles.
   </t>
   <t>The following table shows the Descriptor fields</t>
-  <texttable anchor="descriptor_field" title="Descriptor Fields">
+  <texttable anchor="descriptor_field" title="Descriptor Fields" align="left">
     <ttcol align="left">Field</ttcol>
     <ttcol align="left">Type</ttcol>
     <ttcol align="left">Description</ttcol>
       <c>DESCRIPTOR_ID </c>
-      <c>See <xref target="naming"/></c>
+      <c>FPC-Identity (<xref target="naming"/>)</c>
       <c>A Descriptor's Identifier.</c>
 
       <c>TYPE</c>
-      <c>[32, TYPE]</c>
+      <c>[32, unsigned integer]</c>
       <c>Defines descriptor type, which classifies specific traffic flow, such as
         source and destination addresses, protocols, port numbers of
         TCP/UDP/SCTP/DCCP or if any.</c>
@@ -869,12 +876,12 @@ commands of a particular DPN is specific to the DPN's technology and the Agent's
   optional directionality and actions with order values that specifies ordering if the rule
   has multiple actions.</t>
   <t>The following table shows the Policy fields</t>
-  <texttable anchor="policy_field" title="Policy Fields">
+  <texttable anchor="policy_field" title="Policy Fields" align="left">
     <ttcol align="left">Field</ttcol>
     <ttcol align="left">Type</ttcol>
     <ttcol align="left">Description</ttcol>
       <c>POLICY_ID</c>
-      <c>See <xref target="naming"/></c>
+      <c>FPC-Identity (<xref target="naming"/>)</c>
       <c>A Policy's Identifier.</c>
 
       <c>RULES</c>
@@ -882,7 +889,7 @@ commands of a particular DPN is specific to the DPN's technology and the Agent's
       <c>List of rules. See <xref target="rule_field"/></c>
   </texttable>
   <t>Rules consist of the following fields.</t>
-  <texttable anchor="rule_field" title="Rule Fields">
+  <texttable anchor="rule_field" title="Rule Fields" align="left">
     <ttcol align="left">Field</ttcol>
     <ttcol align="left">Type</ttcol>
     <ttcol align="left">Description</ttcol>
@@ -892,25 +899,25 @@ commands of a particular DPN is specific to the DPN's technology and the Agent's
 
       <c>RULE_DESCRIPTORS</c>
       <c>*[ DESCRIPTOR_ID DIRECTION ]</c>
-      <c>The DESCRIPTOR_ID refers to a DESCRIPTOR. DIRECTION is a
-        ENUMERTION (uplink, downlink or both) that specifies
+      <c>The DESCRIPTOR_ID refers to a DESCRIPTOR. DIRECTION [2, unsigned
+        bits] is an ENUMERTION (uplink, downlink or both) that specifies
         descriptor to which direction applies, such as upstream or
         downstream.</c>
 
       <c>RULE_ACTIONS</c>
       <c>*[ ACTION_ID ORDER ]</c>
-      <c>The ACTION_ID refers to an ACTION.  ORDER specifies
-        ordering if the rule has multiple actions.</c>
+      <c>The ACTION_ID refers to an ACTION.  ORDER [8, unsigned integer]
+        specifies action order when multiple actions are present.</c>
   </texttable>
 
   <t>A policy-group refers to  a set of policies which are to apply to
     ports and contexts. Policy-groups consist of the following fields.</t>
-  <texttable anchor="policygroup_field" title="Policy Group Fields">
+  <texttable anchor="policygroup_field" title="Policy Group Fields" align="left">
     <ttcol align="left">Field</ttcol>
     <ttcol align="left">Type</ttcol>
     <ttcol align="left">Description</ttcol>
       <c>POLICY_GROUP_ID</c>
-      <c>See <xref target="naming"/></c>
+      <c>FPC-Identity (<xref target="naming"/>)</c>
       <c>A Policy-Groups's Identifier.</c>
 
       <c>POLICIES</c>
@@ -921,12 +928,12 @@ commands of a particular DPN is specific to the DPN's technology and the Agent's
   <t>Port is a set of policies which will apply to contexts or any traffic
     in the Dataplane node. It contains a list of Policy-groups which apply
     to the port.</t>
-  <texttable anchor="port_field" title="Port Fields">
+  <texttable anchor="port_field" title="Port Fields" align="left">
     <ttcol align="left">Field</ttcol>
     <ttcol align="left">Type</ttcol>
     <ttcol align="left">Description</ttcol>
       <c>PORT_ID</c>
-      <c>See <xref target="naming"/></c>
+      <c>FPC-Identity (<xref target="naming"/>)</c>
       <c>A Port's Identifier.</c>
 
       <c>POLICIES</c>
@@ -935,13 +942,13 @@ commands of a particular DPN is specific to the DPN's technology and the Agent's
   </texttable>
 
   <t>An endpoint of a mobility session is abstracted as a context. The fields
-    of a context is shown in table <xref target="context_fields"/></t>
-  <texttable anchor="context_fields" title="Context Fields">
+    of a context is shown in table <xref target="context_fields"/>.</t>
+  <texttable anchor="context_fields" title="Context Fields" align="left">
     <ttcol align="left">Field</ttcol>
     <ttcol align="left">Type</ttcol>
     <ttcol align="left">Description</ttcol>
       <c>CONTEXT_ID</c>
-      <c>See <xref target="naming"/></c>
+      <c>FPC-Identity (<xref target="naming"/>)</c>
       <c>A Context's Identifier.</c>
 
       <c>PORTS</c>
@@ -955,24 +962,24 @@ commands of a particular DPN is specific to the DPN's technology and the Agent's
         context. An IP_PREFIX is an IPv4 or IPv6 PREFIX.</c>
 
       <c>UPLINK</c>
-      <c>TUN_LOCAL_ADDRESS TUN_REMOTE_ADDRESS TUN_MTU
+      <c>TUN_LOCAL_ADDRESS TUN_REMOTE_ADDRESS TUN_MTU TUN_PAYLOAD_TYPE TUN_TYPE TUN_IF
         [ MOB_PROFILE_TUN_PARAMS ] [ NEXTHOP ] [ QOS_PARAMS ]
         [ VENDOR_SPECIFIC_PARAMS ] </c>
       <c>Uplink information. See <xref target="context_link_fields"/>.</c>
 
       <c>DOWNLINK</c>
-      <c>TUN_LOCAL_ADDRESS TUN_REMOTE_ADDRESS TUN_MTU
+      <c>TUN_LOCAL_ADDRESS TUN_REMOTE_ADDRESS TUN_MTU TUN_PAYLOAD_TYPE TUN_TYPE TUN_IF
         [ MOB_PROFILE_TUN_PARAMS ] [ NEXTHOP ] [ QOS_PARAMS ]
         *[ VENDOR_SPECIFIC_PARAM ] </c>
       <c>Uplink information. See <xref target="context_link_fields"/>.</c>
 
       <c>PARENT_CONTEXT_ID</c>
-      <c>See <xref target="naming"/></c>
+      <c>FPC-Identity (<xref target="naming"/>)</c>
       <c>Indicates context which this context associated with. This will help to
         indicate relationships such as default/dedicated bearer relation.</c>
 
       <c>DPN_GROUP_ID</c>
-      <c>See <xref target="naming"/></c>
+      <c>FPC-Identity (<xref target="naming"/>)</c>
       <c>Indicates DPN-Group in the case of the context is configured to attach
         to the DPN-group.</c>
 
@@ -982,7 +989,7 @@ commands of a particular DPN is specific to the DPN's technology and the Agent's
         this list is derived from the group definition.  See <xref target="context_dpn_fields"/></c>
   </texttable>
 
-  <texttable anchor="context_link_fields" title="Context Downlink/Uplink Field Definitions">
+  <texttable anchor="context_link_fields" title="Context Downlink/Uplink Field Definitions" align="left">
     <ttcol align="left">Field</ttcol>
     <ttcol align="left">Type</ttcol>
     <ttcol align="left">Description</ttcol>
@@ -995,8 +1002,21 @@ commands of a particular DPN is specific to the DPN's technology and the Agent's
       <c>Endpoint address of the remote DPN. [NOTE 1]</c>
 
       <c>TUN_MTU</c>
-      <c>[32, Unsigned INTEGER]</c>
+      <c>[32, unsigned integer]</c>
       <c>Specifies profile specific direction (uplink/downlink) tunnel's MTU.</c>
+
+      <c>TUN_PAYLOAD_TYPE</c>
+      <c>[2, bits]</c>
+      <c>An enumeraiton of the tunnel payload type: payload_ipv4(0), payload_ipv6(1) or payload_dual(2).</c>
+
+      <c>TUN_TYPE</c>
+      <c>[8, unsigned integer]</c>
+      <c>An enumeration that specifies the tunnel subtype. Current values include IP-in-IP(0), UDP(1)
+         GRE(2) and GTP(3).</c>
+
+      <c>INPUT_IF</c>
+      <c>[16, unsigned integer]</c>
+      <c>Input interface index.</c>
 
       <c>MOB_PROFILE_TUN_PARAMS</c>
       <c>[ IETF_PMIP_MOB_PROFILE |
@@ -1006,7 +1026,7 @@ commands of a particular DPN is specific to the DPN's technology and the Agent's
         or new profile if anyone will define it. [NOTE 1]</c>
 
       <c>NEXTHOP</c>
-      <c>[ IP Address | MAC Address | SPI | MPLS Label | SID ]</c>
+      <c>[ IP Address | MAC Address | SPI | MPLS Label | SID | Interface Index ] (See <xref target="nexthop_subtypes"/>).</c>
       <c>Indicates nexthop information of downlink in access network or the uplink in external
         network, such as IP address, MAC address, SPI of service function chain, SID of segment
         routing, or if any. [NOTE 1]</c>
@@ -1025,24 +1045,25 @@ commands of a particular DPN is specific to the DPN's technology and the Agent's
       </postamble>
   </texttable>
 
-  <texttable anchor="context_dpn_fields" title="Context DPN Fields">
+  <texttable anchor="context_dpn_fields" title="Context DPN Fields" align="left">
     <ttcol align="left">Field</ttcol>
     <ttcol align="left">Type</ttcol>
     <ttcol align="left">Description</ttcol>
 
     <c>DPN_ID</c>
-    <c>See <xref target="naming"/></c>
+    <c>FPC-Identity (<xref target="naming"/>)</c>
     <c>DPN Identifier.</c>
 
     <c>DIRECTION</c>
-    <c>[2, BIT]</c>
+    <c>[2, bits]</c>
     <c>Indicates if the DPN serves uplink(0), downlink(1) or
     both(2).</c>
 
     <c>MOB_PROFILE_PARAMS</c>
     <c>TUN_LOCAL_ADDRESS TUN_REMOTE_ADDRESS TUN_MTU
+        TUN_PAYLOAD_TYPE TUN_TYPE
         [ MOB_PROFILE_TUN_PARAMS ] [ NEXTHOP ] [ QOS_PARAMS ]
-        [ VENDOR_SPECIFIC_PARAMS ] </c>
+        [ VENDOR_SPECIFIC_PARAMS ] [ TUN_IF ]</c>
     <c>Mobility Profile information. See <xref target="context_link_fields"/>.</c>
 
     <c>DPN_PARAMS</c>
@@ -1051,33 +1072,15 @@ commands of a particular DPN is specific to the DPN's technology and the Agent's
       that must be unique in the DPN.</c>
   </texttable>
 
-  <section anchor="ietf-pmip-params" title="PMIP Specific Parameters">
-  <t>This section defines PMIP specific parameers for contexts.</t>
-  <texttable anchor="pmip_tun_fields" title="PMIP Tunnel Fields (IETF_PMIP_MOB_PROFILE)">
-    <ttcol align="left">Field</ttcol>
-    <ttcol align="left">Type</ttcol>
-    <ttcol align="left">Description</ttcol>
-
-    <c>TUN_TYPE</c>
-    <c>[8, INTEGER]</c>
-    <c>This field is extensible. The only defined value is GRE (0).</c>
-
-    <c>TUN_IDENTIFIER</c>
-    <c>GRE-Key</c>
-    <c>Value is based upon the TUN_TYPE.  This field is extensible.  The
-    current defined value is GRE-key.</c>
-  </texttable>
-  </section>
-
   <section anchor="topology" title="Topology Structures">
   <t>This section defines topology structures such as DPNs and DPN Groups.</t>
-  <texttable anchor="dpn_fields" title="DPN Fields">
+  <texttable anchor="dpn_fields" title="DPN Fields" align="left">
     <ttcol align="left">Field</ttcol>
     <ttcol align="left">Type</ttcol>
     <ttcol align="left">Description</ttcol>
 
     <c>DPN_ID</c>
-    <c>See <xref target="naming"/></c>
+    <c>FPC-Identity. See <xref target="naming"/></c>
     <c>DPN Identifier.</c>
 
     <c>IP_ADRRESS</c>
@@ -1089,19 +1092,18 @@ commands of a particular DPN is specific to the DPN's technology and the Agent's
     <c>Specifies control protocol, such as BGP, Netconf, Restconf, FORCES, XMPP,
       Openflow, if any.</c>
 
-
     <c>DPN_GROUPS</c>
-    <c>See <xref target="naming"/></c>
+    <c>FPC-Identity. See <xref target="naming"/></c>
     <c>Indicates DPN-Groups where DPN works as a member of the DPN-Group.</c>
   </texttable>
 
-  <texttable anchor="dpn_groups" title="DPN Groups" suppress-title="false">
+  <texttable anchor="dpn_groups" title="DPN Groups" suppress-title="false" align="left">
     <ttcol align="left">Field</ttcol>
     <ttcol align="left">Type</ttcol>
     <ttcol align="left">Description</ttcol>
 
     <c>DPN_GROUP_ID</c>
-    <c>See <xref target="naming"/></c>
+    <c>FPC-Identity. See <xref target="naming"/></c>
     <c>DPN Group Identifier.</c>
 
     <c>FORWARDING_PLANE_ROLE</c>
@@ -1146,94 +1148,142 @@ commands of a particular DPN is specific to the DPN's technology and the Agent's
   </section>
 
 </section>
-<section anchor="derived_attrs" title="Derived Attributes">
+<section anchor="derived_attrs" title="Derived and Subtype Attributes">
 <t>This section notes derived attributes.</t>
-
-  <texttable anchor="derived_attributes" title="Derived Attributes">
+  <texttable anchor="descriptor_subtypes" title="Descriptor Subtypes" align="left">
     <ttcol align="left">Field</ttcol>
-    <ttcol align="left">Main Type</ttcol>
+    <ttcol align="left">Type Value</ttcol>
     <ttcol align="left">Type</ttcol>
     <ttcol align="left">Description</ttcol>
 
+    <c>TO_PREFIX</c>
+    <c>0</c>
+    <c>[IP Address] [ Prefix Len ]</c>
+    <c>Aggregated or per-host destination IP address/prefix descriptor.</c>
+
+    <c>FROM_PREFIX</c>
+    <c>1</c>
+    <c>[IP Address] [ Prefix Len ]</c>
+    <c>Aggregated or per-host source IP address/prefix descriptor.</c>
+
+    <c>TRAFFIC_SELECTOR</c>
+    <c>2</c>
+    <c>Format per specification <xref target="RFC6088"/>.</c>
+    <c>Traffic Selector, format as per <xref target="RFC6088"/>.</c>
+  </texttable>
+
+  <texttable anchor="action_subtypes" title="Action Subtypes" align="left">
+    <ttcol align="left">Field</ttcol>
+    <ttcol align="left">Type Value</ttcol>
+    <ttcol align="left">Type</ttcol>
+    <ttcol align="left">Description</ttcol>
+
+    <c>DROP</c>
+    <c>0</c>
+    <c>Empty</c>
+    <c>Drop the associated packets.</c>
+
+    <c>REWRITE</c>
+    <c>1</c>
+    <c>[in_src_ip] [out_src_ip]
+       [in_dst_ip] [out_dst_ip]
+       [in_src_port] [out_src_port]
+       [in_dst_port] [out_dst_port]</c>
+    <c>Rewrite IP Address (NAT) or IP Address / Port (NAPT).</c>
+
+    <c>COPY_FORWARD</c>
+    <c>2</c>
+    <c>FPC-Identity. See <xref target="naming"/>.</c>
+    <c>Copy all packets and forward them to the provided identity.  The value of the
+    identity MUST be a port or context.</c>
+  </texttable>
+
+  <texttable anchor="nexthop_subtypes" title="Next Hop Subtypes" align="left">
+    <ttcol align="left">Field</ttcol>
+    <ttcol align="left">Type Value</ttcol>
+    <ttcol align="left">Type</ttcol>
+    <ttcol align="left">Description</ttcol>
+
+    <c>IP_ADDR</c>
+    <c>0</c>
+    <c>IP Address</c>
+    <c>An IP Address.</c>
+
+    <c>MAC_ADDR</c>
+    <c>1</c>
+    <c>MAC Address</c>
+    <c>A MAC Address.</c>
+
     <c>SERVICE_PATH_ID</c>
-    <c>Next Hop</c>
-    <c>[24-bit identifier]</c>
-    <c>Service Path Identifier</c>
+    <c>2</c>
+    <c>[24, unsigned integer]</c>
+    <c>Service Path Identifier (SPI)</c>
+
+    <c>MPLS_LABEL</c>
+    <c>3</c>
+    <c>[20, unsigned integer]</c>
+    <c>MPLS Label</c>
 
     <c>NSH</c>
-    <c>Next Hop</c>
-    <c>[SERVICE_PATH_ID] [Service Index]</c>
-    <c>Included NSH.</c>
+    <c>4</c>
+    <c>[SERVICE_PATH_ID] [8, unsigned integer]</c>
+    <c>Included NSH which is a SPI and Service Index (8 bits).</c>
+
+    <c>INTERFACE_INDEX</c>
+    <c>5</c>
+    <c>[16, unsigned integer]</c>
+    <c>Interface Index (an unsigned integer).</c>
+  </texttable>
+
+  <texttable anchor="qos_subtypes" title="QoS Subtypes" align="left">
+    <ttcol align="left">Field</ttcol>
+    <ttcol align="left">Type Value</ttcol>
+    <ttcol align="left">Type</ttcol>
+    <ttcol align="left">Description</ttcol>
+
+    <c>QOS</c>
+    <c>0</c>
+    <c>[qos index type] [index] [DSCP]</c>
+    <c>Refers to a single index and DSCP to write to the packet.</c>
+
+    <c>GBR</c>
+    <c>1</c>
+    <c>[32, unsigned integer]</c>
+    <c>Guaranteed bit rate.</c>
+
+    <c>MBR</c>
+    <c>2</c>
+    <c>[32, unsigned integer]</c>
+    <c>Maximum bit rate.</c>
+
+    <c>PMIP_QOS</c>
+    <c>3</c>
+    <c>Varies by Type</c>
+    <c>A non-traffic selector PMIP QoS Attribute per <xref target="RFC7222"/></c>
+  </texttable>
+
+  <texttable anchor="tunnel_subtypes" title="Tunnel Subtypes" align="left">
+    <ttcol align="left">Field</ttcol>
+    <ttcol align="left">Type Value</ttcol>
+    <ttcol align="left">Type</ttcol>
+    <ttcol align="left">Description</ttcol>
+
+    <c>IPIP_TUN</c>
+    <c>0</c>
+    <c></c>
+    <c>IP in IP Configuration</c>
+
+    <c>UDP_TUN</c>
+    <c>1</c>
+    <c>[src_port] [dst_port]</c>
+    <c>UDP Tunnel - source and/or destination port</c>
+
+    <c>GRE_TUN</c>
+    <c>2</c>
+    <c>[32, GRE Key]</c>
+    <c>GRE Tunnel.</c>
   </texttable>
 </section>
-
-
-<section anchor="datastructure2" title="Data Structures - OLD">
-
-<!-- Add: Request Agent to notify operational data -->
-<!-- Add: example enabled/disabled state, virtual state and apply virtual new or existing port -->
-
-<t>A Client adds, modifies or deletes a rule on an Agent using the FPC protocol messages.
-The protocol enables a Client to provide additional administrative information about a particular port or a group of
-ports to the Agent. This includes control of the operation of a rule, e.g. whether a rule associated with a particular port
-applies only uni-directionally or bi-directionally. In case of bi-directionality, an Agent can apply a rule associated with
-a single port in the Data-Plane to both directions. As example, a rule which performs re-writing of an arriving
-packet's destination IP address from IP_A to IP_B matching an associated Traffic Selector, can be enforced in the
-Data-Plane via an Agent to implicitly consider matching arriving packet's source IP address against IP_B and
-re-write the source IP address to IP_A.</t>
-
-<t><xref target="fig_port"></xref> illustrates the generic policy configuration model
-as used between a FPC Client and a FPC Agent.</t>
-
-
-
-
-<t>As depicted in <xref target="fig_port"></xref>, the port represents the anchor of a rule. A Client and Agent
-use the identifier of a port to access the rule and perform modifications of traffic descriptors or properties.
-From the viewpoint of packet processing, arriving packets are matched against traffic descriptors and processed
-according to the treatment actions specified in the list of properties associated with the port.</t>
-
-<t>A Client can assign an existing or new port to a group of ports using a port group identifier.
-The logic behind grouping multiple ports is up to the Control-Plane. As example, multiple rules associated with
-a single mobile node can be grouped and identified by the port group identifier. In case the Control-Plane needs
-to delete all rules associated with the mobile node, the Client can issue a message to delete a port one and
-identify the group group identifier instead of deleting each port individually. A Client can also apply
-administrative properties to a group of ports by adding the port group ID to the FPC message.</t>
-
-<!-- In case the Control-Plane
-needs to update a property which is common to all ports associated with this mobile node, or the Control-Plane
-needs to delete all rules associated with the mobile node, the Client can issue the FPC message once and identify
-the port group identifier instead of sending the FPC message for each port individually.
--->
-
-<t>A Client can complement a traffic descriptor with a match priority value to allow unambiguous traffic matching
-on the Data-Plane. If the Client does not provide a match priority value with a traffic descriptor or a group
-of traffic descriptors have the same priority value, an Agent enforces the rule in the Data-Plane node to enable
-traffic detection by longest prefix match.</t>
-
-<t>Operational information of a port includes the data listed in the following table:</t>
-
-
-
-<t>A Client MAY apply an administrative state property to a port indicating the desired
-operational status of a port, e.g. enabled, disabled or virtual (not intended to serve traffic but used
-as a template for other ports). Rules specified by an enabled port are enforced in the Data-Plane node.
-A disabled port on an Agent can be useful for pre-configuration, e.g. other operations can be performed on
-the port prior to its enablement. Ultimately, a disabled port is intended to be enabled. Virtual ports
-can serve as a reference to clone new ports, which can then be enabled.
-When creating a cloned port, the Client can update or add properties to suit the rule that should be enforced
-in the Data-Plane.</t>
-
-<t>A Client MAY set a Session state for a particular port or group of ports on the Agent to guide the Agent
-on how to treat local events. As example, an Agent SHOULD refrain from sending an FPC message
-to the Client as result of a local event, which indicates a missing rule, in case the session state is 'incomplete',
-as the Agent can expect the Control-Plane to provide the missing rule unsolicited. In case the session state
-is 'outdated', the Agent MAY notify the Client to update the associated rule on the Agent.
-</t>
-
-
-</section>
-
 
  <section anchor="protoattributes_m1" title="Protocol Attributes">
 
@@ -1274,58 +1324,6 @@ of a port to the Agent.</t>
 </t>
 
 <t>
- <figure anchor="tab_protoattr_traffic_prop"
-              title="Model I Protocol Attributes: Traffic Treatment Properties">
-        <artwork align="center"><![CDATA[
-+----------------------------------------------------------------------+
-|  Attribute    |    Format Clarification    |       Description       |
-+======================================================================+
-|                             Properties                               |
-+----------------------------------------------------------------------+
-|   PROP_TUN    | [type][src][dst]           | Property Encapsulation, |
-|               |                            | indicates type GRE, IP, |
-|               |                            | GTP                     |
-+----------------------------------------------------------------------+
-|  PROP_REWR    | [in_src_ip][out_src_ip]    | Property NAT defines    |
-|               | [in_dst_ip][out_dst_ip]    | IP address and port     |
-|               | [in_src_port][out_src_port]| re-write rules          |
-|               | [in_dst_port][out_dst_port]|                         |
-+----------------------------------------------------------------------+
-|   PROP_QOS    | [QoS index type][index]    | Property QoS refers to  |
-|               | [DSCP]                     | single index and DS Code|
-|               |                            | Point to write          |
-+----------------------------------------------------------------------+
-| PROP_QOS_GBR  | [GBR] *[PRT_ID]            | Guaranteed Bit Rate and |
-|               |                            | single or multiple      |
-|               |                            | PRT_IDs to which the    |
-|               |                            | GBR applies when being  |
-|               |                            | aggregated              |
-+---------------+----------------------------+-------------------------+
-| PROP_QOS_MBR  | [MBR] *[PRT_ID]            | Maximum Bit Rate and    |
-|               |                            | single or multiple      |
-|               |                            | PRT_IDs to which the    |
-|               |                            | MBR applies when being  |
-|               |                            | aggregated              |
-+---------------+----------------------------+-------------------------+
-| PROP_CPY_FORW | [PRT_ID]                   | Copy IP packets, treat  |
-|               |                            | the duplicates per the  |
-|               |                            | properties of the       |
-|               |                            | referred port           |
-+----------------------------------------------------------------------+
-|   PROP_DROP   |                            | Drop IP packet          |
-+----------------------------------------------------------------------+
-|  PROP_CONCAT  | [PRT_ID]                   | Include treatment per   |
-|               |                            | the referred port into  |
-|               |                            | the rule                |
-+----------------------------------------------------------------------+
-
-
-      ]]></artwork>
-        <postamble></postamble>
-      </figure>
-</t>
-
-<t>
  <figure anchor="tab_protoattr_traffic_propdep"
               title="Model I Protocol Attributes: Protocol-specific">
         <artwork align="center"><![CDATA[
@@ -1333,12 +1331,6 @@ of a port to the Agent.</t>
 |   Attribute    | Format Clarification |         Description         |
 +=====================================================================+
 |                          Protocol-specific                          |
-+---------------------------------------------------------------------+
-|   IPIP_CONF    |                      | IP-encapsulation            |
-|                |                      | configuration attribute     |
-+---------------------------------------------------------------------+
-|   GRE_CONF     | [prototype][seq-#]   | GRE_encapsulation           |
-|                | [key]                | configuration attribute     |
 +---------------------------------------------------------------------+
 |   GTP_CONF     | [TEID_local]         | GTP-U encapsulation         |
 |                | [TEID_remote]        | configuration attribute     |
@@ -1349,67 +1341,6 @@ of a port to the Agent.</t>
       </figure>
 </t>
 
-
-<t>
- <figure anchor="tab_protoattr_traffic_descr"
-              title="Protocol Attributes: Traffic Descriptors">
-        <artwork align="center"><![CDATA[
-+---------------------------------------------------------------------+
-|   Attribute    | Format Clarification |         Description         |
-+=====================================================================+
-|                         Traffic Descriptors                         |
-+---------------------------------------------------------------------+
-|  TD_DST_IP     | [IP address]         | Aggregated or per-host dst  |
-|                | [Prefix Len]         | IP address/prefix rule      |
-+---------------------------------------------------------------------+
-|  TD_SRC_IP     | [IP address]         | Aggregated or per-host src  |
-|                | [Prefix Len]         | IP address/prefix rule      |
-+---------------------------------------------------------------------+
-|  TD_TS         | [Traffic Selector]   | Traffic Selector,           |
-|                |                      | Format as per RFC6088       |
-+----------------+----------------------+-----------------------------+
-      ]]></artwork>
-        <postamble></postamble>
-      </figure>
-</t>
-
-
-<t>
- <figure anchor="tab_protoattr_admin_prop"
-              title="Protocol Attributes: Administrative Properties">
-        <artwork align="center"><![CDATA[
-+----------------------------------------------------------------------+
-|  Attribute    |    Format Clarification    |       Description       |
-+======================================================================+
-|                             Properties                               |
-+----------------------------------------------------------------------+
-| ADMIN_STATE   | [state]                    | Administrative state:   |
-|               |                            | enabled, disabled,      |
-|               |                            | virtual                 |
-+----------------------------------------------------------------------+
-| SESSION_STATE | [state]                    | Session state: complete,|
-|               |                            | incomplete, outdated    |
-+----------------------------------------------------------------------+
-| CLONE_REF     | [PRT_ID]                   | Cloning of a rule based |
-|               |                            | on referred port ID     |
-+----------------------------------------------------------------------+
-| ACT_DELAY     | [delay]                    | Delay in ms before an   |
-|               |                            | updated rule takes      |
-|               |                            | effect at the Agent     |
-+----------------------------------------------------------------------+
-| PRT_BIDIR     | [boolean]                  | When set, the rule per  |
-|               |                            | this port is applied    |
-|               |                            | bi-directionally        |
-+----------------------------------------------------------------------+
-| RESULT        | [result]                   | Result of processing    |
-|               |                            | a message:              |
-|               |                            | success, failure        |
-+----------------------------------------------------------------------+
-
-     ]]></artwork>
-        <postamble></postamble>
-      </figure>
-</t>
 
 
 <t>
@@ -1498,22 +1429,6 @@ notify or query the Control-Plane through the Agent and Client functions.</t>
 |     Message     |                    Description                    |
 +=====================================================================+
 |               Messages issued by the FPC Client                     |
-+---------------------------------------------------------------------+
-|    PRT_ADD      | Add a logical port                                |
-+---------------------------------------------------------------------+
-|    PRT_DEL      | Delete a logical port                             |
-+---------------------------------------------------------------------+
-|    PROP_ADD     | Add a property to a logical port                  |
-+---------------------------------------------------------------------+
-|    PROP_MOD     | Modify a property of a logical port               |
-+---------------------------------------------------------------------+
-|    PROP_DEL     | Delete a property from a logical port             |
-+---------------------------------------------------------------------+
-|    TD_ADD       | Add traffic descriptor to a logical port          |
-+---------------------------------------------------------------------+
-|    TD_MOD       | Modify an existing traffic descriptor             |
-+---------------------------------------------------------------------+
-|    TD_DEL       | Delete an existing traffic descriptor             |
 +---------------------------------------------------------------------+
 |  MONITOR_REG    | Install a monitor at an Agent. The message        |
 |                 | includes information about the attribute to       |
@@ -1833,21 +1748,8 @@ as illustrated in <xref target="fig_msc_aggr_example"></xref>.</t>
 
   </section>
 
-
-
-
-<!-- main section end, model I -->
-
-
-
-<!-- main section start, model II -->
-
  <section anchor="proto_m2" title="Protocol to support Model II">
-<!--
- <section anchor="datastructure_m2" title="Data Structure">
 
- </section>
--->
  <section anchor="protoattributes_m2" title="Protocol Attributes">
 
 
@@ -1858,117 +1760,14 @@ as illustrated in <xref target="fig_msc_aggr_example"></xref>.</t>
 +---------------------------------------------------------------------+
 |    Attribute        | Format               |      Description       |
 +=====================================================================+
-|                        IP Tunnel Attributes                         |
-+---------------------------------------------------------------------+
-|TUN_SRC_IP_ADDR      |[IP address]          | Tunnel Source IP       |
-|                     |                      |                        |
-+---------------------------------------------------------------------+
-|TUN_DST_IP_ADDR      |[IP address]          | Tunnel Destination IP  |
-|                     |                      |                        |
-+---------------------------------------------------------------------+
-|TUN_ENCAP_TYPE       |[ENCAP_GRE, ENACP_UDP,| Encapsulation Type     |
-|                     | ENCAP_IP]            |                        |
-+---------------------------------------------------------------------+
-|TUN_TYPE_UDP         |[SRC_PRT, DST_PRT]    | UDP Direction - Source |
-|                     |                      | or Destination         |
-+---------------------------------------------------------------------+
-|TUN_TYPE_GRE         |[UPLINK_GRE_KEY,      | GRE Tunnel Type        |
-|                     | DOWNLINK_GRE_KEY]    |                        |
-+---------------------------------------------------------------------+
-|TUN_IF_MTU           |[MTU]                 | Tunnel Interface MTU   |
-|                     |                      |                        |
-+---------------------------------------------------------------------+
-|TUN_PAYLOAD_TYPE     |[PAYLOAD_IPV4,        | Tunnel Payload Type    |
-|                     | PAYLOAD_IPV6,        |                        |
-|                     | PAYLOAD_DUAL]        |                        |
-+---------------------------------------------------------------------+
-|TUN_VENDOR_SPEC_PARAM|[OPAQUE]              | Tunnel Vendor Specific |
-|                     |                      | Parameters             |
-+---------------------------------------------------------------------+
-|                    Route Management Attributes                      |
-+---------------------------------------------------------------------+
-|INPUT_IF             |[IF_INDEX]            |Input Interface         |
-|                     |                      |                        |
-+---------------------------------------------------------------------+
-|OUTPUT_IF            |[IF_INDEX]            |Output Interface        |
-|                     |                      |                        |
-+---------------------------------------------------------------------+
-|NEXT_HOP_IP_GW_ADDR  |[IP address]          |Next Hop IP Gateway     |
-|                     |                      |Address                 |
-+---------------------------------------------------------------------+
-|TRAFFIC_SELECTOR_ACL |TBD                   |                        |
-|                     |                      |                        |
-+---------------------------------------------------------------------+
-|DST_IP_SUBNET        |[IP prefix]           |Destination IP Subnet   |
-|                     |                      |                        |
-+---------------------------------------------------------------------+
-|DST_IP_SUBNET_MASK   |[IP prefix]           |Destination IP Subnet   |
-|                     |                      |Mask                    |
-+---------------------------------------------------------------------+
-|                          QoS Attributes                             |
-+---------------------------------------------------------------------+
-|AMBR                 |[Unsigned Integer     |Aggregate Maximum       |
-|                     | (32 bit)]            |Bitrate                 |
-+---------------------------------------------------------------------+
-|GBR                  |[Unsigned Integer     |Guaranteed Bitrate      |
-|                     | (32 bit)]            |                        |
-+---------------------------------------------------------------------+
-|TCLASS               |[Unsigned Integer     |Traffic Class           |
-|                     | (32 bit)]            |                        |
-+---------------------------------------------------------------------+
 |TFT                  |TBD                   |Traffic Flow Template   |
 |                     |                      |                        |
 +---------------------------------------------------------------------+
-|                       Optional Attributes                           |
-+---------------------------------------------------------------------+
-|NSH_HEADER           |[Service Path Id]     |NSH Header              |
-|                     | Service Index, TFT]  |                        |
-+---------------------------------------------------------------------+
 
       ]]></artwork>
         <postamble></postamble>
       </figure>
 </t>
-
-
-
-
-<t>
- <figure anchor="tab_protoattrid_model2"
-              title="Model II Protocol Attributes: Identifiers">
-        <artwork align="center"><![CDATA[
-+---------------------------------------------------------------------+
-|    Attribute      |        Format        |          Description     |
-+=====================================================================+
-|                            Identifier                               |
-+---------------------------------------------------------------------+
-|TUNNEL_IF_ID       |[IF_INDEX]            |Tunnel Interface          |
-|                   |                      |Identifier                |
-+---------------------------------------------------------------------+
-|VRF_ID             |[Unsigned INT]        |VRF Identifier            |
-+---------------------------------------------------------------------+
-|PBR_ID             |[Unsigned INT]        |Policy Based Routing      |
-|                   |                      |Identifier                |
-+---------------------------------------------------------------------+
-|CTRL_PLANE_ID      |IP address            |Control-Plane Identifier  |
-+---------------------------------------------------------------------+
-|CONTEXT_ID         |TBD                   |Context Identifier        |
-+---------------------------------------------------------------------+
-|QOS_SERVICE_ID     |[Unsigned INT]        |QoS Service Identifier    |
-+---------------------------------------------------------------------+
-|SESSION_ID         |[Unsigned INT]        |Session Identifier        |
-+---------------------------------------------------------------------+
-|ROUTE_ID           |[Unsigned INT]        |Route Identifier          |
-+---------------------------------------------------------------------+
-|                        Optional Identifiers                         |
-+---------------------------------------------------------------------+
-|SERVICE_PATH_ID    |[24-bit identifier]   |Service Path Identifier   |
-+---------------------------------------------------------------------+
-      ]]></artwork>
-        <postamble></postamble>
-      </figure>
-</t>
-
 
  </section>
 
