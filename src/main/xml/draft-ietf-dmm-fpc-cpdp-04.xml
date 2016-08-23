@@ -1285,7 +1285,7 @@ commands of a particular DPN is specific to the DPN's technology and the Agent's
   </texttable>
 </section>
 
- <section anchor="protoattributes_m1" title="Protocol Attributes">
+ <section anchor="events_propse" title="Events and Probes">
 
   <t>Protocol messages as per <xref target="protomsg_m1"></xref> identify an FPC Client or Agent function,
 as well as a DPN, and carry traffic descriptor attributes, logical port identification and

@@ -280,20 +280,24 @@ module ietf-dmm-fpcagent {
       leaf op-id {
         type op-identifier;
       }
-      list clones {
-        if-feature fpc-cloning;
-        key entity;
-        uses fpcagent:clone-ref;
-      }
-      uses fpcagent:payload {
-        augment policy-groups {
-          uses fpcagent:instructions;
+      choice op_body {
+        case create_or_update {
+          list clones {
+            if-feature fpc-cloning;
+            key entity;
+            uses fpcagent:clone-ref;
+          }
+          uses fpcagent:payload {
+            augment ports {
+              uses fpcagent:instructions;
+            }
+            augment contexts {
+              uses fpcagent:instructions;
+            }
+          }
         }
-        augment ports {
-          uses fpcagent:instructions;
-        }
-        augment contexts {
-          uses fpcagent:instructions;
+        case delete_or_query {
+          uses fpcbase:targets-value;
         }
       }
     }
@@ -404,33 +408,6 @@ module ietf-dmm-fpcagent {
     }
 
     // Notification Messages & Structures
-    rpc event_register {
-      description "Used to registered parameters";
-      input {
-        leaf monitor-id {
-          type fpcbase:fpc-monitor-id;
-        }
-        uses fpcbase:monitor-config;
-      }
-      output {
-        uses fpcagent:op-status;
-      }
-    }
-
-    rpc event_deregister {
-      input {
-        leaf-list monitor-ids {
-          type fpcbase:fpc-monitor-id;
-        }
-        leaf notify-on-dereg {
-          type boolean;
-        }
-      }
-      output {
-        uses fpcagent:op-status;
-      }
-    }
-
     typedef notification-id {
       type uint32;
     }
@@ -460,6 +437,44 @@ module ietf-dmm-fpcagent {
       }
     }
 
+    rpc event_register {
+        description "Used to register monitoring of parameters/events";
+        input {
+          uses fpcbase:monitor-config;
+        }
+        output {
+          leaf monitor-result {
+            type fpcagent:result;
+          }
+        }
+    }
+
+    rpc event_deregister {
+        description "Used to de-register monitoring of parameters/events";
+        input {
+          list monitors {
+            uses fpcbase:monitor-id;
+          }
+        }
+        output {
+          leaf monitor-result {
+            type fpcagent:result;
+          }
+        }
+    }
+
+    rpc probe {
+        description "Probe the status of a registered monitor";
+        input {
+          uses fpcbase:targets-value;
+        }
+        output {
+          leaf monitor-result {
+            type fpcagent:result;
+          }
+        }
+    }
+
     notification notify {
         uses fpcagent:notification-header;
         choice value {
@@ -485,13 +500,15 @@ module ietf-dmm-fpcagent {
               }
             }
             case monitor-notification {
-              leaf monitor-id {
-                type fpcbase:fpc-monitor-id ;
-              }
-              leaf trigger {
-                type uint32;
-              }
               choice monitor-notification-value {
+                case simple-monitor {
+                  uses fpcbase:report;
+                }
+                case bulk-monitors {
+                  list reports {
+                    uses fpcbase:report;
+                  }
+                }
               }
             }
         }
