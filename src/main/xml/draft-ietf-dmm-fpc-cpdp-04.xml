@@ -599,33 +599,45 @@ commands of a particular DPN is specific to the DPN's technology and the Agent's
     <texttable anchor="op_respbody" title="RESPONSE_BODY Fields">
     <ttcol align="left">Field</ttcol>
     <ttcol align="left">Type</ttcol>
+    <ttcol align="left">Operation Types Create(C), Update(U), Query(Q) and Delete(D)</ttcol>
     <ttcol align="left">Description</ttcol>
 
     <c>DESCRIPTORS</c>
     <c>*[ DESCRIPTOR ]</c>
+    <c>C,U</c>
     <c>List of Descriptors</c>
 
     <c>ACTIONS</c>
     <c>*[ ACTION ]</c>
+    <c>C,U</c>
     <c>List of actions.</c>
 
     <c>POLICIES</c>
     <c>*[ POLICY ]</c>
+    <c>C,U</c>
     <c>List of Policies</c>
 
     <c>POLICY_GROUPS</c>
     <c>*[ POLICY_GROUP ]</c>
+    <c>C,U</c>
     <c>List of Policy-groups.</c>
 
     <c>PORTS</c>
     <c>*[ PORT [ COMMAND_SET ] ]</c>
+    <c>C,U</c>
     <c>List of Ports that may optionally come with Command bitsets, if Command Sets are
       supported by the Agent. See <xref target="commandsets"/>.</c>
 
     <c>CONTEXTS</c>
     <c>*[ CONTEXT [ COMMAND_SET ] ]</c>
+    <c>C,U</c>
     <c>List of Contexts that may optionally come with Command bitsets, if Command Sets are
       supported by the Agent. See <xref target="commandsets"/>.</c>
+
+    <c>TARGETS</c>
+    <c>*[ FPC-Identity (<xref target="naming"/>) ]</c>
+    <c>Q,D</c>
+    <c>List of targets for the operation.</c>
     </texttable>
 
     <t>If an error occurs the following information is returned.
@@ -1198,8 +1210,6 @@ commands of a particular DPN is specific to the DPN's technology and the Agent's
       </list>
     </t>
   </section>
-
-
 </section>
 </section>
 
