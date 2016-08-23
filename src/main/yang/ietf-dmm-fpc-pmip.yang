@@ -63,20 +63,17 @@ module ietf-dmm-fpc-pmip {
         bit assign-ip {
           position 0;
         }
-        bit assign-fteid-ip {
+        bit assign-dpn {
           position 1;
         }
-        bit assign-fteid-teid {
+        bit session {
           position 2;
         }
-        bit session {
+        bit uplink {
           position 3;
         }
-        bit uplink {
-          position 4;
-        }
         bit downlink {
-          position 5;
+          position 4;
         }
       }
     }

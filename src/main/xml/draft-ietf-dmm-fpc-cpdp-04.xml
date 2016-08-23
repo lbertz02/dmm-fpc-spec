@@ -436,12 +436,54 @@ commands of a particular DPN is specific to the DPN's technology and the Agent's
     <t>DPN Groups specify the Mobility Role, supported access technologies and mobility profiles. It also specifies
     connected peer groups.</t>
   </section>
+  <section anchor="monitor_descr" title="Monitors">
+    <t>Monitors provide a mechanism to produce reports when events occur.  Unlike ports and contexts a Monitor will
+      have a target that may be any FPC-Identity except other monitors, events by their type, or attributes of an entity.
+      In such cases, the target name is a concatenation of the FPC-Identity and the relative path (separated by '/') to the
+      attribute(s) to be monitored.
+    </t>
+    <t>Monitors MUST be registered with the Agent.  The registration specifies the monitor id, attribute to monitor and
+      optional reporting configuration. When a Monitor registration is applied, the reporting configuration MUST be applicable
+      to the attribute monitored, e.g. a Monitor using a Threshold configuration cannot be applied to a context but it can be
+      applied to a numeric context property.
+    </t>
+    <t>Four report types are defined:
+      <list style="numbers">
+        <t>Periodic reporting specifies an interval by which a NOTIFY is sent to the Client.</t>
+        <t>Event reporting specifies a list of EVENT_TYPE_IDs that, if they occur and are related to the monitored attribute,
+          will result in sending a NOTIFY to the Client</t>
+       <t>Scheduled reporting specifies the time (in seconds since Jan 1, 1970) when a NOTIFY for the monitor should be sent
+         to the Client. Once this Monitor's NOTIFY is completed the Monitor is automatically de-registered.</t>
+       <t>Threshold reporting specifies one or both of a low and high threshold. When these values are crossed a corresponding
+         NOTIFY is sent to the Client.</t>
+      </list>
+    </t>
+   <t>All monitored data can be requested by the Client at any time using the PROBE message. Thus, reporting configuration is
+     optional and when not present only PROBE messages may be used for monitoring. If a SCHEDULED or PERIODIC configuration is
+     provided during registration with the time related value (time or period respectively) of 0 a NOTIFY is immediately sent and
+     the monitor is immediately de-registered. This method should, when a MONITOR has not been installed, result in an immediate
+     NOTIFY is sufficient for the Client's needs and the Client has no further need for the monitor to be registered.
+     An Agent may reject a registration if it or the DPN has insufficient resources.</t>
+   <t>MONITOR_DEREG is used by a Client to remove a monitor from an Agent. The message identifies one or multiple monitors by including
+     the MONITOR_ID. The message also includes an optional Boolean value that, when true, will result in NOTIFY messages being sent for
+     the MONITOR_ID to the Client.</t>
+   <t>When a monitor has a reporting configuration of SCHEDULED it is automatically de-registered after the NOTIFY occurs.
+   An Agent or DPN may temporarily suspend monitoring if insufficient resources exist.  In such a case the Agent MUST notify the
+   Client.</t>
+  <t>PROBE are used by a Client to retrieve information about a previously installed monitor. The PROBE message SHOULD
+   identify one or more monitors by means of including the associated monitor identifier. An Agent receiving a PROBE
+   message SHOULD send the requested information in a single or multiple NOTIFY messages.</t>
+  <t>NOTIFY are used by an Agent to report the status of a monitor to a Client. This message contains the MONITOR_ID, a
+   NOTIFICATION_ID to permit the Client to distinguish amongst many monitoring related requests, a TRIGGER that caused
+   the NOTIFY message, the timestamp of when the monitored information was record for the message along with the value
+   of the monitored attribute.</t>
+  </section>
 </section>
     </section>
 <section anchor="protocol" title="Protocol">
   <section anchor="messageandsematics" title="Protocol Messages and Semantics">
-    <t>Two message types are supported:</t>
-    <texttable anchor="messages" title="Messages">
+    <t>Five message types are supported:</t>
+    <texttable anchor="messages" title="Client to Agent Messages">
     <ttcol align="left">Message</ttcol>
     <ttcol align="left">Type</ttcol>
     <ttcol align="left">Description</ttcol>
@@ -455,102 +497,48 @@ commands of a particular DPN is specific to the DPN's technology and the Agent's
     <c>Configure-bundles takes multiple operations that are to be executed as a group
           with partial failures allowed. They are executed according to the OP_ID value
           in the OP_BODY.</c>
+
+    <c>REG_MONITOR</c>
+    <c>*[ MONITOR ]</c>
+    <c>Install a monitor at an Agent. The message includes information about the attribute to
+      monitor and the reporting method.  Note that a MONITOR_CONFIG is required for this
+      opeation.</c>
+
+    <c>DEREG_MONITOR</c>
+    <c>*[ MONITOR_ID ] [ boolean ]</c>
+    <c>Remove monitors from an Agent. Monitor IDs are provided. Boolean (optional) indicates
+      if a successful DEREG triggers a NOTIFY with final data.</c>
+
+    <c>PROBE</c>
+    <c>MONITOR_ID</c>
+    <c>Probe the status of a registered monitor.</c>
     </texttable>
     <t>Each message contains a header with the Client Identifier, an execution delay timer,
     the state of session related entites after the operation, the adminstrative state of all
     entities, the type of operation, an optional Command Set (see <xref target="commandsets"/>) and
     the input (body) of the message.</t>
-    <t>The opeartion input contains an operation identifier, a list of all entities and optional cloning
+    <t>The operation input contains an operation identifier, a list of all entities and optional cloning
     instructions (see <xref target="cloning"/>).</t>
     <t>An Agent will respond with an error, ok, or an ok with indication that remaining
     data will be sent via a notify from the Agent to the Client <xref target="asyncnotification"/>. When
     returning an 'ok' of any kind, optional data may be present.</t>
-    <section anchor="op-header" title="Header">
-      <t>Each operation contains a header with the following fields:</t>
-    <texttable anchor="op-header-tables" title="Message Header Fields">
-    <ttcol align="left">Field</ttcol>
-    <ttcol align="left">Type</ttcol>
-    <ttcol align="left">Description</ttcol>
+    <t>Two Agent notifications are supported:</t>
+    <texttable anchor="notifications" title="Agent to Client Messages (Notfications)">
+      <ttcol align="left">Message</ttcol>
+      <ttcol align="left">Type</ttcol>
+      <ttcol align="left">Description</ttcol>
 
-    <c>CLIENT_ID</c>
-    <c>FPC-Identity (<xref target="naming"/>)</c>
-    <c>FPC Client Identifier</c>
+      <c>CONFIG_RESULT_NOTIFY</c>
+      <c>See <xref target="ayncnotify"/></c>
+      <c>An asynchronous notification from Agent to Client based upon a previous CONFIG or CONFIG_BUNDLES
+      request.</c>
 
-    <c>DELAY</c>
-    <c>[32, unsigned integer]</c>
-    <c>Delay, in milliseconds, from the time the operation is received by the Agent for the
-      operation(s) to take effect.</c>
-
-    <c>SESSION_STATE</c>
-    <c>[8, session state] </c>
-    <c>Sets the expected state of the entities embedded in the operation body after successful
-      completion of the operation. This can be 'complete', 'incomplete' or 'outdated'. Any operation
-      that is 'incomplete' MAY NOT result in communication between the Agent and DPN. If the result is
-      'outdated' any new operations on these entities or new references to these entities have unpredictable
-      results.</c>
-
-    <c>ADMIN_STATE </c>
-    <c>[8, admin state]</c>
-    <c>Sets the administrative status for all entities. If the status is set to virtual, any existing data on the
-      DPN is removed. If the value is set to disabled, then an operation will occur on the DPN IF the entity
-      exists on the DPN. If set to 'active' the DPN will be provisioned. Values are 'enabled', 'disabled' or
-      'virtual'.</c>
-
-    <c>OP_TYPE</c>
-    <c>[8, op type]</c>
-    <c>The type of operation. Valid values are 'create', 'update', 'query' or 'delete'.</c>
-
-    <c>COMMAND_SET</c>
-    <c>FPC Command Bitset</c>
-    <c>If supported by the Agent. See <xref target="commandsets"/>.</c>
+      <c>NOTIFY</c>
+      <c>See <xref target="notify_structs"/></c>
+      <c>An asynchronous notification from Agent to Client based upon a registered MONITOR.</c>
     </texttable>
-    </section>
 
-    <section anchor="op-body" title="Body">
-    <t>An operation body contains an operation identifier an lists of entities.</t>
-    <texttable anchor="op_input" title="Message Body Fields">
-    <ttcol align="left">Field</ttcol>
-    <ttcol align="left">Type</ttcol>
-    <ttcol align="left">Description</ttcol>
-
-    <c>OP_ID</c>
-    <c>[64, unsigned integer]</c>
-    <c>Operation identifier which is used in responses and related notifications.</c>
-
-    <c>CLONES</c>
-    <c>*[ FPC-Identity FPC-Identity ] (<xref target="naming"/>)</c>
-    <c>If supported by the Agent, this is a list of clone instructions.  The first argument
-      is the entity to be cloned and the second argument is the name of the newly cloned entity.
-      See <xref target="cloning"/></c>
-
-    <c>DESCRIPTORS</c>
-    <c>*[ DESCRIPTOR ]</c>
-    <c>List of descriptors.</c>
-
-    <c>ACTIONS</c>
-    <c>*[ ACTION ]</c>
-    <c>List of actions.</c>
-
-    <c>POLICIES</c>
-    <c>*[ POLICY ]</c>
-    <c>List of policies.</c>
-
-    <c>POLICY_GROUPS</c>
-    <c>*[ POLICY_GROUP ]</c>
-    <c>List of policy-groups.</c>
-
-    <c>PORTS</c>
-    <c>*[ PORT [ COMMAND_SET ] ]</c>
-    <c>List of ports that may optionally come with Command bitsets, if Command Sets are
-      supported by the Agent. See <xref target="commandsets"/>.</c>
-
-    <c>CONTEXTS</c>
-    <c>*[ CONTEXT [ COMMAND_SET ] ]</c>
-    <c>List of contexts that may optionally come with Command bitsets, if Command Sets are
-      supported by the Agent. See <xref target="commandsets"/>.</c>
-    </texttable>
-    </section>
-    <section anchor="agent-processing" title="Agent Operation Procesing">
+    <section anchor="agent-processing" title="Agent Operation Processing">
       <t>The Agent will process entities provided in an operation in the following order:
         <list style="numbers">
   <t>Clone Instructions, if the feature is supported</t>
@@ -653,7 +641,7 @@ commands of a particular DPN is specific to the DPN's technology and the Agent's
         Agent to the Client.</t>
 
         <t>The value includes the following data</t>
-    <texttable anchor="ayncnotify" title="Asynchronous Notification Fields">
+    <texttable anchor="ayncnotify" title="CONFIG_RESULT_NOTIFY Fields">
     <ttcol align="left">Field</ttcol>
     <ttcol align="left">Type</ttcol>
     <ttcol align="left">Description</ttcol>
@@ -1135,19 +1123,314 @@ commands of a particular DPN is specific to the DPN's technology and the Agent's
     <c>Defines Endpoint address of its own DPN-Group to peer the remote DPN-Group. </c>
   </texttable>
   </section>
+
+  <section anchor="mess_notifications" title="Monitors">
+    <texttable anchor="monitor_structs" title="Monitor Structures and Attributes" align="left">
+      <ttcol align="left">Field</ttcol>
+      <ttcol align="left">Type</ttcol>
+      <ttcol align="left">Description</ttcol>
+
+      <c>MONITOR_ID</c>
+      <c>FPC-Identity. See <xref target="naming"/></c>
+      <c>Identifies a registered monitor.</c>
+
+      <c>EVENT_TYPE_ID</c>
+      <c>[8, Event Type ID]</c>
+      <c>Identifies an event type (unsigned integer).</c>
+
+      <c>MONITOR</c>
+      <c>MONITOR_ID TARGET [REPORT_CONFIG]</c>
+      <c>A Monitor.</c>
+
+      <c>TARGET</c>
+      <c>FPC-Identity. See <xref target="naming"/></c>
+      <c>A Target MAY be an entity, e.g. Context, port, etc. or it may be the attribute of an entity.  When
+      it is an attribute the fully qualified path (instance identifier) is reuqired.  This is equal to the
+      FPC-Identity of the top level structure concatenated by a '/' and the relative path to the attribute.</c>
+
+      <c>REPORT_CONFIG</c>
+      <c>[8, REPORT-TYPE] [TYPE_SPECIFIC_INFO]</c>
+      <c>The type of report and type-specific configuration.</c>
+
+      <c>PERIODIC_CONFIG</c>
+      <c>[32, period]</c>
+      <c>period specifies the report interval (ms).</c>
+
+      <c>THRESHOLD_CONFIG</c>
+      <c>[32, low] [32, hi]</c>
+      <c>low and high thresholds (at least one value must be present)</c>
+
+      <c>SCHEDULED_CONFIG</c>
+      <c>[32, time]</c>
+      <c>time specifies when the report must be sent.</c>
+
+      <c>EVENTS_CONFIG</c>
+      <c>*[EVENT_TYPE_ID]</c>
+      <c>List of events that triggers a report.</c>
+    </texttable>
+    <texttable anchor="notify_structs" title="Monitor Notifications" align="left">
+      <ttcol align="left">Field</ttcol>
+      <ttcol align="left">Type</ttcol>
+      <ttcol align="left">Description</ttcol>
+
+      <c>NOTIFICATION_ID</c>
+      <c>[32, unsiged integer]</c>
+      <c>Notifiction Identifier.</c>
+
+      <c>TRIGGER</c>
+      <c>[32, unsigned integer]</c>
+      <c>The trigger for this notification.</c>
+
+      <c>NOTIFY</c>
+      <c>NOTIFICATION_ID MONITOR_ID TRIGGER [32, timestamp] [NOTIFICATION_DATA]</c>
+      <c>A Notification. timestamp notes when the event occurred. Notification Data is
+      specific to the TRIGGER and Monitor type.</c>
+    </texttable>
+    <t>TRIGGERS include but are not limited to the following values:
+      <list style="symbols">
+        <t>Events specified in the Event List of an EVENTS CONFIG</t>
+        <t>LOW_THRESHOLD_CROSSED</t>
+        <t>HIGH_THRESHOLD_CROSSED</t>
+        <t>PERIODIC_REPORT</t>
+        <t>SCHEDULED_REPORT</t>
+        <t>PROBED</t>
+        <t>DEREG_FINAL_VALUE</t>
+      </list>
+    </t>
+  </section>
+
+
+</section>
 </section>
 
   <section anchor="mess_attributes" title="Message Attributes">
+    <section anchor="op-header" title="Header">
+      <t>Each operation contains a header with the following fields:</t>
+    <texttable anchor="op-header-tables" title="Message Header Fields">
+    <ttcol align="left">Field</ttcol>
+    <ttcol align="left">Type</ttcol>
+    <ttcol align="left">Description</ttcol>
 
+    <c>CLIENT_ID</c>
+    <c>FPC-Identity (<xref target="naming"/>)</c>
+    <c>FPC Client Identifier</c>
+
+    <c>DELAY</c>
+    <c>[32, unsigned integer]</c>
+    <c>Delay, in milliseconds, from the time the operation is received by the Agent for the
+      operation(s) to take effect.</c>
+
+    <c>SESSION_STATE</c>
+    <c>[8, session state] </c>
+    <c>Sets the expected state of the entities embedded in the operation body after successful
+      completion of the operation. This can be 'complete', 'incomplete' or 'outdated'. Any operation
+      that is 'incomplete' MAY NOT result in communication between the Agent and DPN. If the result is
+      'outdated' any new operations on these entities or new references to these entities have unpredictable
+      results.</c>
+
+    <c>ADMIN_STATE </c>
+    <c>[8, admin state]</c>
+    <c>Sets the administrative status for all entities. If the status is set to virtual, any existing data on the
+      DPN is removed. If the value is set to disabled, then an operation will occur on the DPN IF the entity
+      exists on the DPN. If set to 'active' the DPN will be provisioned. Values are 'enabled', 'disabled' or
+      'virtual'.</c>
+
+    <c>OP_TYPE</c>
+    <c>[8, op type]</c>
+    <c>The type of operation. Valid values are 'create', 'update', 'query' or 'delete'.</c>
+
+    <c>COMMAND_SET</c>
+    <c>FPC Command Bitset</c>
+    <c>If supported by the Agent. See <xref target="commandsets"/>.</c>
+    </texttable>
+    </section>
+
+    <section anchor="op-body" title="Body">
+    <t>An operation body contains an operation identifier an lists of entities.</t>
+    <texttable anchor="op_input" title="Message Body Fields">
+    <ttcol align="left">Field</ttcol>
+    <ttcol align="left">Type</ttcol>
+    <ttcol align="left">Description</ttcol>
+
+    <c>OP_ID</c>
+    <c>[64, unsigned integer]</c>
+    <c>Operation identifier which is used in responses and related notifications.</c>
+
+    <c>CLONES</c>
+    <c>*[ FPC-Identity FPC-Identity ] (<xref target="naming"/>)</c>
+    <c>If supported by the Agent, this is a list of clone instructions.  The first argument
+      is the entity to be cloned and the second argument is the name of the newly cloned entity.
+      See <xref target="cloning"/></c>
+
+    <c>DESCRIPTORS</c>
+    <c>*[ DESCRIPTOR ]</c>
+    <c>List of descriptors.</c>
+
+    <c>ACTIONS</c>
+    <c>*[ ACTION ]</c>
+    <c>List of actions.</c>
+
+    <c>POLICIES</c>
+    <c>*[ POLICY ]</c>
+    <c>List of policies.</c>
+
+    <c>POLICY_GROUPS</c>
+    <c>*[ POLICY_GROUP ]</c>
+    <c>List of policy-groups.</c>
+
+    <c>PORTS</c>
+    <c>*[ PORT [ COMMAND_SET ] ]</c>
+    <c>List of ports that may optionally come with Command bitsets, if Command Sets are
+      supported by the Agent. See <xref target="commandsets"/>.</c>
+
+    <c>CONTEXTS</c>
+    <c>*[ CONTEXT [ COMMAND_SET ] ]</c>
+    <c>List of contexts that may optionally come with Command bitsets, if Command Sets are
+      supported by the Agent. See <xref target="commandsets"/>.</c>
+    </texttable>
+    </section>
   </section>
+
   <section anchor="mess_messages" title="Messages">
+<t>An FPC Client and Agent MUST identify themself using the CLI_ID and AGT_ID respectively to ensure that for all
+transactions a recipient of an FPC message can unambiguously identify the sender of the FPC message.
+<!--All messages between an Agent and a Client must identify the Client and Agent using the CLI_ID and AGT_ID respectively.-->
+A Client MAY direct the Agent to enforce a rule in a particular DPN by including a DPN_ID value. Otherwise the Agent
+selects a suitable DPN to enforce a rule and notifies the Client about the selected DPN using the DPN_ID.</t>
 
-  </section>
-    <section anchor="mess_notifications" title="Notifications">
+<t>All messages sent from a Client to an Agent MUST be acknowledged by the Agent. The response must
+include all attributes as well as status information, which indicates the result of processing the message,
+using the RESULT property. In case the processing of the message results in a failure, the Agent sets
+the RESULT accordingly and MAY clear the property or traffic descriptor, which caused the failure,
+in the response.</t>
 
-  </section>
+<t>A Client MAY add a property to a port without providing all required details of the attribute's value. In such case
+the Agent SHOULD determine the missing details and provide the completed property description back to the Client.
+In case the Agent cannot determine the missing value of an attribute's value per the Client's request, it leaves the
+attribute's value cleared in the response and sets the RESULT to failure. As example, the Control-Plane needs to setup
+a tunnel configuration in the Data-Plane but has to rely on the Agent to determine the tunnel endpoint which is
+associated with the DPN that enforces the rule. The Client adds the tunnel property attribute to the FPC message and
+clears the value of the attribute (e.g. IP address of the local tunnel endpoint). The Agent determines the tunnel
+endpoint and includes the completed tunnel property in its response to the Client.</t>
 
+
+<t><xref target="fig_msc_example"></xref> illustrates an exemplary session life-cycle based on
+Proxy Mobile IPv6 registration via MAG Control-Plane function 1
+(MAG-C1) and handover to MAG Control-Plane function 2 (MAG-C2). Edge DPN1 represents the Proxy CoA after
+attachment, whereas Edge DPN2 serves as Proxy CoA after handover. As exemplary architecture,
+the FPC Agent and the network control function are assumed to be co-located with the Anchor-DPN, e.g. a Router.
+</t>
+
+<t>
+ <figure anchor="fig_msc_example"
+              title="Exemplary Message Sequence (focus on FPC reference point)">
+        <artwork align="center"><![CDATA[
+                                                +-------Router--------+
+                        +-----------+           |+-------+ +---------+|
++------+ +------+     +-----+ FPC   |            | FPC   | |  Anchor |
+|MAG-C1| |MAG-C2|     |LMA-C| Client|            | Agent | |   DPN   |
++------+ +------+     +-----+-------+            +-------+ +---------+
+[MN attach]  |            |                          |           |
+   |-------------PBU----->|                          |           |
+   |         |            |----(1)-PRT_ADD---------->|           |
+   |         |            |        [PRT_ID]          |           |
+   |         |            |                          |           |
+   |         |            |--(2)---PROP_ADD--------->|           |
+   |         |            |   [PRT_ID,PROP_TUN]      |--tun1 up->|
+   |         |            |                          |           |
+   |         |            |--(3)---PROP_ADD--------->|           |
+   |         |            |    [PRT_ID,PROP_QOS]     |--tc qos-->|
+   |<------------PBA------|--(4)----TS_ADD---------->|           |
+   | +----+  |            |       [PRT_ID,           |-route add>|
+   | |Edge|  |            |    TD_CONTAINER(HNP)]    |           |
+   | |DPN1|  |            |                          |           |
+   | +----+  |            |                          |           |
+   |   |                                                         |
+   |   |-=======================================================-|
+   |                      |                          |           |
+   |   [MN handover]      |                          |           |
+   |         |---PBU ---->|                          |           |
+   |         |            |--(5)---PROP_MOD--------->|           |
+   |         |<--PBA------|    [PRT_ID,PROP_TUN]     |-tun1 mod->|
+   |         |            |                          |           |
+   |         |  +----+    |                          |           |
+   |         |  |Edge|    |                          |           |
+   |         |  |DPN2|    |                          |           |
+   |         |  +----+    |                          |           |
+   |         |    |       |                          |           |
+   |         |    |-============================================-|
+   |         |            |                          |           |
+
+      ]]></artwork>
+        <postamble></postamble>
+      </figure>
+</t>
+
+<t>After reception of the Proxy Binding Update (PBU) at the LMA Control-Plane function (LMA_C), the
+LMA-C selects a suitable DPN, which serves as Data-Plane anchor to the mobile node's (MN) traffic. The LMA-C
+adds a new logical port to the DPN to treat the MN's traffic (1) and includes a Port Identifier (PRT_ID)
+to the PRT_ADD command. The LMA-C identifies the selected Anchor DPN by including the associated DPN identifier.
+</t>
+
+<t>Subsequently, the LMA-C adds properties to the new port. One property is added (2) to specify the
+forwarding tunnel type and endpoints (Anchor DPN, Edge DPN1). Another property is added (3) to specify the QoS
+differentiation, which the MN's traffic should experience. At reception of the properties, the FPC Agent
+utilizes local configuration commands to create the tunnel (tun1) as well as the traffic control (tc)
+to enable QoS differentiation. After configuration of port properties have been completed, the LMA binds the
+traffic description for the MN's traffic to the port by sending a TS_CONTAINER to the Agent and identifying the
+MN's Nome Network Prefix (HNP) in the traffic descriptor. At the reception of the traffic descriptor, the Agent
+applies a new route to forward all traffic destined to the MN's HNP to the configured tunnel interface (tun1).</t>
+
+<t>During handover, the LMA-C receives an updating PBU from the handover target MAG-C2. The PBU refers to a
+new Data-Plane node (Edge DPN2) to represent the new tunnel endpoint. The LMA-C sends a PROP_MOD message (5)
+to the Agent to modify the existing tunnel property of the existing port and to update the tunnel endpoint
+from Edge DPN1 to Edge DPN2. Upon reception of the PROP_MOD message, the Agent applies updated tunnel property
+to the local configuration.</t>
+
+<t>To reduce the number of protocol handshakes between the LMA-C and the DPN, the LMA-C can
+append properties (PROP_TUN, PROP_QOS) and traffic descriptor attributes to the PRT_ADD message,
+as illustrated in <xref target="fig_msc_aggr_example"></xref>.</t>
+
+<t>
+ <figure anchor="fig_msc_aggr_example"
+              title="Example: Sequence for Message Aggregation (focus on FPC reference point)">
+        <artwork align="center"><![CDATA[
+                        +-----------+             +-------+ +---------+
++------+ +------+     +-----+ FPC   |             | FPC   | |  Anchor |
+|MAG-C1| |MAG-C2|     |LMA-C| Client|             | Agent | |   DPN   |
++------+ +------+     +-----+-------+             +-------+ +---------+
+[MN attach]  |            |                           |           |
+   |-------------PBU----->|                           |           |
+   |         |            |----(1)-PRT_ADD----------->|           |
+   |         |            |      [PRT_ID,PROP_TUN,    |--tun1 up->|
+   |<------------PBA------|              PROP_QOS,    |--tc qos-->|
+   |         |            |       TS_CONTAINER(HNP)]  |-route add>|
+   | [Edge]-=====================================================-|
+   | [DPN1|  |            |                           |           |
+   |         |            |                           |           |
+   |   [MN handover]      |                           |           |
+   |         |---PBU ---->|                           |           |
+   |         |            |---------PROP_MOD--------->|           |
+   |         |<--PBA------|     [PRT_ID,PROP_TUN]     |-tun1 mod->|
+   |         |            |                           |           |
+   |         | [Edge]-===========================================-|
+   |         | [DPN2]     |                           |           |
+
+      ]]></artwork>
+        <postamble></postamble>
+      </figure>
+</t>
 </section>
+
+<section title="Security Considerations">
+
+<t>Detailed protocol implementations for DMM Forwarding Policy Configuration must ensure integrity
+of the information exchanged between an FPC Client and an FPC Agent. Required Security Associations
+may be derived from co-located functions, which utilize the FPC Client and FPC Agent respectively.
+</t>
+
+  </section>
+
 <section anchor="derived_attrs" title="Derived and Subtype Attributes">
 <t>This section notes derived attributes.</t>
   <texttable anchor="descriptor_subtypes" title="Descriptor Subtypes" align="left">
@@ -1283,639 +1566,103 @@ commands of a particular DPN is specific to the DPN's technology and the Agent's
     <c>[32, GRE Key]</c>
     <c>GRE Tunnel.</c>
   </texttable>
-</section>
 
- <section anchor="events_propse" title="Events and Probes">
+  <t>The following COMMAND_SET values are supported for IETF_PMIP.
+    <list style="symbols">
+      <t>assign-ip - Assign the IP Address for the mobile session.</t>
+      <t>assign-dpn - Assign the Dataplane Node.</t>
+      <t>session - Assign values for the Session Level.</t>
+      <t>uplink - Command applies to uplink.</t>
+      <t>downlink - Comman applies to downlink.</t>
+    </list>
+  </t>
 
-  <t>Protocol messages as per <xref target="protomsg_m1"></xref> identify an FPC Client or Agent function,
-as well as a DPN, and carry traffic descriptor attributes, logical port identification and
-properties specifying traffic treatment actions. Traffic can be described per-host, in aggregate or
-per-IP flow. A Client MAY append administrative properties to a message to indicate the desired status
-of a port to the Agent.</t>
+ <section anchor="thregpp" title="3GPP Specific Extenstions">
+  <t>3GPP support is optional and detailed in this section.</t>
+  <texttable anchor="threegpp_attributes" title="3GPP Attributes and Structures">
+    <ttcol align="left">Field</ttcol>
+    <ttcol align="left">Type Value</ttcol>
+    <ttcol align="left">Namespace / Entity Extended</ttcol>
+    <ttcol align="left">Type</ttcol>
+    <ttcol align="left">Description</ttcol>
 
-<t>This document specifies attributes from the following categories:</t>
+    <c>GTPV1</c>
+    <c>3</c>
+    <c>Tunnel Subtypes namespace.</c>
+    <c>LOCAL_TEID REMOTE_TEID SEQ_NUMBER</c>
+    <c>Local and Remote Tunnel Endpoint Identifier (TEID).</c>
 
-<t><list style="symbols">
-<t>Identifier attributes</t>
-<t>Traffic Descriptors</t>
-<t>Properties specifying traffic treatment actions</t>
-<t>Protocol-specific Properties</t>
-<t>Administrative properties</t>
-</list></t>
+    <c>GTPV2</c>
+    <c>4</c>
+    <c>Tunnel Subtypes namespace.</c>
+    <c>LOCAL_TEID REMOTE_TEID SEQ_NUMBER</c>
+    <c>Local and Remote Tunnel Endpoint Identifier (TEID).</c>
 
-<t>
- <figure anchor="tab_protoattr_ident"
-              title="Model I Protocol Attributes: Identifiers">
-        <artwork align="center"><![CDATA[
-+---------------------------------------------------------------------+
-|   Attribute    | Format Clarification |         Description         |
-+=====================================================================+
-|                            Identifiers                              |
-+---------------------------------------------------------------------+
-|   MONITOR_ID   | [32, Monitor ID]     | Identifies a registered     |
-|                |                      | monitor                     |
-+---------------------------------------------------------------------+
-|  EVENT_TYPE_ID | [8, Event Type ID]   | Identifies an event type    |
-+---------------------------------------------------------------------+
+    <c>LOCAL_TEID</c>
+    <c>N/A</c>
+    <c>N/A</c>
+    <c>[32, unisgned integer]</c>
+    <c>Local Tunnel Endpoint Identifier (TEID).</c>
 
-      ]]></artwork>
-        <postamble></postamble>
-      </figure>
-</t>
+    <c>REMOTE_TEID</c>
+    <c>N/A</c>
+    <c>N/A</c>
+    <c>[32, unisgned integer]</c>
+    <c>Remote Tunnel Endpoint Identifier (TEID).</c>
 
-<t>
- <figure anchor="tab_protoattr_traffic_propdep"
-              title="Model I Protocol Attributes: Protocol-specific">
-        <artwork align="center"><![CDATA[
-+---------------------------------------------------------------------+
-|   Attribute    | Format Clarification |         Description         |
-+=====================================================================+
-|                          Protocol-specific                          |
-+---------------------------------------------------------------------+
-|   GTP_CONF     | [TEID_local]         | GTP-U encapsulation         |
-|                | [TEID_remote]        | configuration attribute     |
-|                | [seq-#]              |                             |
-+---------------------------------------------------------------------+
-      ]]></artwork>
-        <postamble></postamble>
-      </figure>
-</t>
+    <c>SEQ_NUMBER</c>
+    <c>N/A</c>
+    <c>N/A</c>
+    <c>[32, unisgned integer]</c>
+    <c>GTP Sequence Number. Used in failover and handover.</c>
 
+    <c>TFT</c>
+    <c>3</c>
+    <c>Descriptors Subtypes namespace.</c>
+    <c>Format per TS 24.008 Section 10.5.6.12.</c>
+    <c>Traffic Flow Template (TFT).</c>
 
+    <c>IMSI</c>
+    <c>N/A</c>
+    <c>Context (new attribute)</c>
+    <c>[64, unsigned integer]</c>
+    <c>International Mobile Subscriber Identity (IMSI).</c>
 
-<t>
- <figure anchor="tab_protoattr_monitor_prop"
-              title="Protocol Attributes: Monitor and Notify Attributes">
-        <artwork align="center"><![CDATA[
-+----------------------------------------------------------------------+
-|  Attribute       |  Format Clarification |        Description        |
-+======================================================================+
-|                       Monitors and Notification                      |
-+----------------------------------------------------------------------+
-| MONITOR          | Monitor-ID Attribute  | A Monitor                 |
-|                  | [REPORT CONFIG]       |                           |
-+----------------------------------------------------------------------+
-| REPORT_CONFIG    | [8, REPORT-TYPE]      | The type of report and    |
-|                  | [TYPE_SPECIFIC_INFO]  | type-specific             |
-|                  |                       | configurations            |
-+----------------------------------------------------------------------+
-| PERIODIC_CONFIG  | [32, period]          | REPORT-TYPE is PERIODIC,  |
-|                  |                       | period specifies the      |
-|                  |                       | report interval (ms)      |
-+----------------------------------------------------------------------+
-| THRESHOLD_CONFIG | [32, low]             | REPORT-TYPE is THRESHOLD, |
-|                  | [32, hi]              | Low Threshold,            |
-|                  |                       | High Threshold (at least  |
-|                  |                       | one value required)       |
-+----------------------------------------------------------------------+
-| SCHEDULED_CONFIG | [32, time]            | REPORT-TYPE is SCHEDULED, |
-|                  |                       | Time when NOTIFY is sent  |
-|                  |                       |                           |
-+----------------------------------------------------------------------+
-| EVENTS_CONFIG    | *[EVENT_TYPE_ID]      | List of Events that       |
-|                  |                       | trigger the Monitor       |
-+----------------------------------------------------------------------+
-| DEREG_INFO       | *[MONITOR_ID]         | Monitors to deregister,   |
-|                  |  [boolean]            | Boolean (optional)        |
-|                  |                       | indicates if a successful |
-|                  |                       | DEREG triggers a NOTIFY   |
-|                  |                       | with final data           |
-+----------------------------------------------------------------------+
-| NOTIFY_INFO      | [32, Notification-Id] |ID used for Client ordering|
-|                  | [MONITOR-ID]          |Monitor-ID of the NOTIFY,  |
-|                  | [32, TRIGGER]         |TRIGGER for the NOTIFY,    |
-|                  | [32, timestamp]       |Timestamp of when the      |
-|                  |                       |attributes were recorded   |
-+----------------------------------------------------------------------+
-     ]]></artwork>
-        <postamble></postamble>
-      </figure>
-</t>
+    <c>EBI</c>
+    <c>N/A</c>
+    <c>Context (new attribute)</c>
+    <c>[4, unsigned integer]</c>
+    <c>EPS Bearer Identity (EBI).</c>
 
-<t>TRIGGERS include but are not limited to the following values:</t>
+    <c>3GPP_QOS</c>
+    <c>4</c>
+    <c>QoS Subtypes namespace.</c>
+    <c>[8, qci] [32, gbr] [32, mbr] [32, apn_ambr] [32, ue_ambr] ARP</c>
+    <c>3GPP QoS Structure with QoS Class Identifier (QCI), Guaranteed Bit Rate (GBR), Maximum Bit Rate (MBR),
+    Access Point Name Aggregate Maximum Bit Rate (APN-AMBR), User Equipment Aggregate Maximum Bit Rate (UE-AMBR)
+    and Allocation of Retention Priority (ARP).</c>
 
-<t><list style="symbols">
-<t>Events specified in the Event List of an EVENTS CONFIG</t>
-<t>LOW_THRESHOLD_CROSSED</t>
-<t>HIGH_THRESHOLD_CROSSED</t>
-<t>PERIODIC_REPORT</t>
-<t>SCHEDULED_REPORT</t>
-<t>PROBED</t>
-<t>DEREG_FINAL_VALUE</t>
-</list></t>
+    <c>ARP</c>
+    <c>N/A</c>
+    <c>N/A</c>
+    <c>See Allocation-Retention-Priority from <xref target="RFC7222"/></c>
+    <c>Allocation of Retention Priority (ARP)</c>
+  </texttable>
 
-
-
+  <t>The following COMMAND_SET values are supported for 3GPP.
+    <list style="symbols">
+      <t>assign-ip - Assign the IP Address for the mobile session.</t>
+      <t>assign-dpn - Assign the Dataplane Node.</t>
+      <t>assign-fteid-ip - Assign the Fully Qualified TEID (F-TEID) LOCAL IP address.</t>
+      <t>assign-fteid-teid - Assign the Fully Qualified TEID (F-TEID) LOCAL TEID.</t>
+      <t>session - Assign values for the Session Level.  When this involves 'assign-fteid-ip' and 'assign-fteid-teid' this implies the values are part
+        of the default bearer.</t>
+      <t>uplink - Command applies to uplink.</t>
+      <t>downlink - Comman applies to downlink.</t>
+    </list>
+  </t>
  </section>
-
-
-<!--  <section anchor="genmessages1" title="Protocol to support Model I"> -->
-
-  <section anchor="protomsg_m1" title="Protocol Messages and Semantics">
-
-<t>The following table specifies all protocol messages to create and modify a rule by creating
-and deleting logical Ports, adding and modifying properties and binding traffic descriptors
-to a port. Furthermore, messages can schedule tasks, such as monitoring, at an Agent or probe
-the status of the scheduled task from a Client. Additional messages enable the Data-Plane to
-notify or query the Control-Plane through the Agent and Client functions.</t>
-
-
-<t>
- <figure anchor="tab_protomsg"
-              title="Protocol Messages">
-    <artwork align="center"><![CDATA[
-
-+---------------------------------------------------------------------+
-|     Message     |                    Description                    |
-+=====================================================================+
-|               Messages issued by the FPC Client                     |
-+---------------------------------------------------------------------+
-|  MONITOR_REG    | Install a monitor at an Agent. The message        |
-|                 | includes information about the attribute to       |
-|                 | monitor and the reporting method.                 |
-+---------------------------------------------------------------------+
-|  MONITOR_DEREG  | Remove a monitor at an Agent.                     |
-+---------------------------------------------------------------------+
-|     PROBE       | Probe the status of a registered event            |
-+---------------------------------------------------------------------+
-|                 Messages issued by the FPC Agent                    |
-+---------------------------------------------------------------------+
-|                 | Notify the Client about the status of a           |
-|    NOTIFY       | monitored attribute per the reporting method      |
-|                 | (periodic / event trigger / probed)               |
-+---------------------------------------------------------------------+
-|     QUERY       | Query the Client about missing rules/states       |
-+---------------------------------------------------------------------+
-          ]]></artwork>
-        <postamble></postamble>
-      </figure>
-</t>
-
-
-
-
-  </section>
-
-
-
-  <section anchor="protoop_m1" title="Protocol Operation">
-
-<t>The following list comprises a more detailed description of each message's semantic.</t>
-
-<t>An FPC Client and Agent MUST identify themself using the CLI_ID and AGT_ID respectively to ensure that for all
-transactions a recipient of an FPC message can unambiguously identify the sender of the FPC message.
-<!--All messages between an Agent and a Client must identify the Client and Agent using the CLI_ID and AGT_ID respectively.-->
-A Client MAY direct the Agent to enforce a rule in a particular DPN by including a DPN_ID value. Otherwise the Agent
-selects a suitable DPN to enforce a rule and notifies the Client about the selected DPN using the DPN_ID.</t>
-
-
-<t>
-<list style="symbols">
-<t>PRT_ADD - Issued by a Client to add a new logical port at an Agent. An Agent receiving the
-   PRT_ADD message identifies the new port according to the included port identifier (PRT_ID).
-   <!-- In case the DPN holds already a registration for a logical port with the same identifier, the Agent should throw an
-   error message to the Client. Otherwise the --> The Agent adds a new port into its conceptual data structures using the
-   port identifier as key. Optionally, the PRT_ADD message MAY include properties as well as traffic descriptors,
-   which are bound and refer to the new port. This enables a Client to issue a new configuration in a single transaction
-   with an Agent. A Client MAY assign a port to a group of ports and indicate the associated port group identifier (PRT_GROUP_ID)
-   in the PRT_ADD message.</t>
-<t>PRT_DEL - Used by a Client to delete a port. An Agent receiving such message MUST delete all properties
-   associated with the identified port.</t>
-<t>PROP_ADD - Used by the Client to add a new property to an existing port. The property is unambiguously identified
-   through a property identifier (PRT_PROP_ID). All traffic, which is directed to this port is treated according to
-   the existing and newly added property. Optionally, the PROP_ADD message can include traffic descriptors, which refer
-   to the port to which the properties are bound. This enables a Client to add new rules to the existing port to which
-   the new properties have been bound in a single transaction.</t>
-<t>PROP_MOD - Used by a Client to modify an existing property. For example, a tunnel property can be changed to direct
-   traffic to a different tunnel endpoint in case of a mobile node's handover. Optionally, the PROP_MOD message can include rules
-   descriptions, which refer to the port whose properties are modified. This enables a Client to add new rules to the existing
-   port whose properties have been modified in a single transaction.</t>
-<t>PROP_DEL - Used by a Client to delete one or multiple properties, each being identified by a property identifier. </t>
-<t>TD_ADD - Used by a Client to add a traffic descriptor to a port. The traffic descriptor SHOULD unambiguously
-   identify aggregated traffic (longest prefix), per host IP traffic or per-flow traffic in the TD_ADD command and
-   bind the identified traffic to a port. Traffic descriptors are carried in a TD_CONTAINER, which allows the
-   identification of a traffic description as well as the indication if a traffic handling priority in case the sole
-   traffic description does not suffice unambiguous traffic matching. An Agent receiving a TD_ADD command MUST add the
-   traffic descriptor to its local conceptual data structures and apply commands for local configuration to add the
-   new traffic descriptor to the rule on the DPN. Multiple traffic descriptors can bind to the same port.
-   All traffic captured by the traffic descriptor will experience the same treatment per the properties
-   which bind to that port.</t>
-<t>TD_MOD - Used by a Client to modify an existing traffic descriptor. An Agent receiving such messages MUST apply commands
-   to the local configuration and update the rule on the DPN accordingly.</t>
-<t>TD_DEL - Used to remove an existing traffic descriptor from a port. The Agent receiving such messages MUST delete
-   the identified traffic descriptor from the local configuration and update the rule on the DPN accordingly.</t>
-<t>MONITOR_REG - Used by a Client to install a monitor at an Agent. A monitor contains the monitor id, attribute to monitor,
-   and optional reporting configuration. The attribute may be any ID with the exception of MONITOR_ID and EVENT_TYPE_ID.
-   When a Monitor registration is applied, the reporting configuration MUST be applicable to the attribute monitored, e.g. a
-   Monitor using a Threshold configuration cannot be applied to a Port but it can be applied to a numeric Port Property.
-
-   Four report types are defined:
-   (1) Periodic reporting specifies an interval by which a NOTIFY is sent to the Client,
-   (2) Event reporting specifies a list of EVENT_TYPE_IDs that, if they occur and are related to the monitored attribute,
-       will result in sending a NOTIFY to the Client,
-   (3) Scheduled reporting specifies the time (in seconds since Jan 1, 1970) when a NOTIFY for the monitor should be sent to the Client.
-   Once this Monitor's NOTIFY is completed the Monitor is automatically de-registered,
-   (4) Threshold reporting specifies one or both of a low and high threshold. When these values are crossed a corresponding NOTIFY is sent to the Client.
-
-   All monitored data can be requested by the Client at any time using the PROBE message. Thus, reporting configuration is optional
-   and when not present only PROBE messages may be used for monitoring.
-   If a SCHEDULED or PERIODIC configuration is provided during registration with the time related value (time or period respectively) of 0
-   a NOTIFY is immediately sent and the monitor is immediately de-registered. This method should when a MONITOR has not been installed,
-   an immediate NOTIFY is sufficient for the Client's needs and the Client has no further need for the monitor to be registered.
-   An Agent may reject a registration if it or the DPN has insufficient resources.</t>
-<t>MONITOR_DEREG - Used by a Client to remove a monitor from an Agent. The message identifies one or multiple monitors by including
-   the MONITOR_ID. The message also includes an optional Boolean value that, when true, will result in NOTIFY messages being sent for
-   the MONITOR_ID to the Client.
-   When a monitor has a reporting configuration of SCHEDULED it is automatically de-registered after the NOTIFY occurs.
-   An Agent or DPN may temporarily suspend monitoring if insufficient resources exist.  In such a case the Agent MUST notify the Client.
-</t>
-<t>PROBE - Used by a Client to retrieve information about a previously installed monitor. The PROBE message SHOULD
-   identify one or more monitors by means of including the associated monitor identifier. An Agent receiving a PROBE
-   message SHOULD send the requested information in a single or multiple NOTIFY messages.</t>
-<t>NOTIFY - Used by an Agent to report the status of a monitor to a Client. This message contains the MONITOR_ID, a
-   NOTIFICATION_ID to permit the Client to distinguish amongst many monitoring related requests, a TRIGGER that caused
-   the NOTIFY message, the timestamp of when the monitored information was record for the message along with the value
-   of the monitored attribute.</t>
-<t>QUERY - Used by an Agent to request an update of port properties via a Client. The Agent adds one or multiple port identifiers
-   to the QUERY message to request all properties associated with the identified port(s). The Agent MAY request the update of
-   particular properties associated with a port by including the property and its identifier. As result of processing a
-   QUERY message, the Client sends one or multiple PROP_MOD messages with the requested properties to the Agent.</t>
-</list></t>
-
-<t>All messages sent from a Client to an Agent MUST be acknowledged by the Agent. The response must
-include all attributes as well as status information, which indicates the result of processing the message,
-using the RESULT property. In case the processing of the message results in a failure, the Agent sets
-the RESULT accordingly and MAY clear the property or traffic descriptor, which caused the failure,
-in the response.</t>
-
-<t>A Client MAY add a property to a port without providing all required details of the attribute's value. In such case
-the Agent SHOULD determine the missing details and provide the completed property description back to the Client.
-In case the Agent cannot determine the missing value of an attribute's value per the Client's request, it leaves the
-attribute's value cleared in the response and sets the RESULT to failure. As example, the Control-Plane needs to setup
-a tunnel configuration in the Data-Plane but has to rely on the Agent to determine the tunnel endpoint which is
-associated with the DPN that enforces the rule. The Client adds the tunnel property attribute to the FPC message and
-clears the value of the attribute (e.g. IP address of the local tunnel endpoint). The Agent determines the tunnel
-endpoint and includes the completed tunnel property in its response to the Client.</t>
-
-
-<t>The following list provides information on the use and semantics of attributes for traffic treatment:</t>
-
-
-<t>
-<list style="symbols">
-<t>PROP_TUN - Defines the properties for encapsulation into different tunnel headers. The property includes IP address
-   information of tunnel endpoints as well as a type identifier specifying the encapsulation type. Further attributes
-   may be included to provide information which is relevant for the configuration and initialization of the tunnel.</t>
-<t>PROP_REWR - Defines the properties for IP address and port re-write.</t>
-<t>PROP_QOS - Defines the QoS properties in terms of a known index type, e.g. LTE's Quality Class Index (QCI), and its value
-   (QCI 1..9), as well as a Differentiated Services Code Point (DSCP) to classify and mark packets. Additional QoS attributes may
-   follow, to define Guaranteed Bit Rate (GBR) and Maximum Bit Rate (MBR) bounds. PROP_QOS_GBR and PROP_QOS_MBR attributes can
-   apply to a single port or multiple ports. The latter is required to configure aggregate bounds, such as Aggregate Maximum
-   Bit Rate (AMBR), taking traffic, which is forwarded through different ports (hence experiencing different treatment),
-   into account. In such case the GBR/MBR attributes append multiple PRT_ID attributes to identify the ports which are
-   to be monitored to determine the aggregated view of the bit rate. As alternative to binding a PROP_QOS_MBR property to
-   each port whose traffic is to be taken into account for Aggregate Maximum Bitrate (AMBR) metering, a Client can create
-   a separate port with a single PROP_QOS_MBR property. Other ports, whose traffic is to be metered per the AMBR, can refer
-   to the port with the PROP_QOS_MBR property using the PROP_CONCAT property. The scope of attributes for QoS is aligned
-   to <xref target="RFC7222"></xref>. The Allocation and Retention Priority (ARP) as per <xref target="RFC7222"></xref>
-   is not present in the list of QoS-specific attributes, since ARP is treated and kept in the Control-Plane for granting
-   requests for new resources and QoS, as well as for preempting other QoS configuration, if needed.</t>
-<t>PROP_QOS_GBR - Defines the GBR bound for traffic associated with a port.</t>
-<t>PROP_QOS_MBR - Defines the MBR bound for traffic associated with a port.</t>
-<t>PROP_GW - Defines a Next Hop IP address, to which packets are forwarded. Using this attribute, the Control-Plane can
-   configure a host-route in the Data-Plane to deviate from default routes.</t>
-<t>PROP_CPY_FORW - Refers to a different port and results in treatment of a copy of packets per the properties
-   bound to the referred port.</t>
-<t>PROP_DROP - Defines a treatment action to drop packets of traffic associated with a port. As example, this treatment
-   action can be used to enforce gating rules and filter traffic which does not match any traffic descriptor.</t>
-<t>PROP_CONCAT - Traffic can be treated per properties bound to concatenated ports. After treatment of traffic
-   according to the properties of a port, additional treatment actions per the properties bound to a separate port,
-   which is referred to in the PROP_CONCAT property, apply to the traffic. As example, port concatenation can be used
-   to enable AMBR metering to traffic which is associated with multiple other ports.</t>
-<t>PROP_NSH - Defines the properties for a Network Service Header (NSH). The header is included to the classified IP flows.</t>
-</list></t>
-
-<!-- Note: Is this the right place? -->
-<t>Unlike descriptors, overlapping or contradictory properties cannot be resolved by the Agent. For example, adding
-address translation related properties and a Drop property to a single port may result in needless activity in the DPN
-or it may reflect a temporary administrative activity where the port must Drop traffic. Other properties may be intentionally
-set, e.g. a property that invokes and accounting activity and a Drop property present on the same port.
-The FPC Client MUST avoid situations where contradictory properties or those that result in unnecessary activity are added
-to ports. Rather, in such situations, multiple ports MUST be used. In some obvious cases the Agent MAY raise a warning
-but a contradictory action.</t>
-<!-- Warning, how?-->
-
-<t>The following list provides information on the use and semantics of administrative properties:</t>
-
-<t>
-<list style="symbols">
-<t>ADMIN_STATE - A Client can apply an administrative state to a port indicating the desired operational status of a port
-   (enabled, disabled, virtual). An Agent, which receives a message without ADMIN_STATE property, SHOULD consider the
-   port to be 'enabled'.</t>
-<t>SESSION_STATE - A Client can indicate to the Agent the status of a rule to serve Data-Plane traffic. A session state
-   'complete' confirms that a rule is valid and ready to serve Data-Plane traffic. A session state 'incomplete' hints to the Agent
-   that more FPC message will arrive from the Client to complete a rule, whereas session state 'outdated' requires the Agent
-   to solicit an update of the rule from the Client in case a rule with session state 'complete' is desired. An Agent, which receives
-   a message without SESSION_STATE property, SHOULD assume the session state is 'complete'.</t>
-<t>CLONE_REF - Instead of repeatedly sending all properties and traffic descriptors for similar rules, a Client
-   can take a clone of a previously configured rule as base for a new one by using the CLONE_REF property with a PRT_ADD message
-   and refer to an existing port. The cloned port will be a copy of the referred port and serve as base for the new port.
-   The cloned port will have its own port identifier, which will also be present in the port identifier portion of the property
-   identifiers. After a cloned port has been created, it represents its own rule without any further dependency on the reference
-   port which served as source to create the clone. A Client MAY apply updates to existing properties of the new port, as well
-   as delete or add properties. Updates to the port in terms of new or changed properties and traffic descriptors MAY
-   already come with the PRT_ADD message or subsequently using messages to handle properties and traffic descriptors.
-   A Client can use the CLONE_REF property with messages to handle properties and traffic descriptors to achieve a different result.
-   In such case these messages identify an existing port already and processing the CLONE_REF property on the receiving Agent will result
-   in a reset of the identified port to match the properties of the port referred to in the CLONE_REF property.</t>
-<t>ACT_DELAY - A Client can use this property to define a delay in ms before an updated rule takes effect at an Agent,
-   e.g. an administrative state 'enabled' will be enforced by the Agent after the delay per the Client's request.</t>
-<t>PRT_BIDIR - A Client uses this property to indicate to an Agent to apply a rule associated with a port bi-directionally.
-   In case the PRT_BIDIR property is absent in a message, the Agent assumes a rule applies uni-directionally.</t>
-<t>RESULT - An Agent uses this property to signal to the Client in a response the result of processing a message.</t>
-</list></t>
-
-
-
-<t><xref target="fig_msc_example"></xref> illustrates an exemplary session life-cycle based on
-Proxy Mobile IPv6 registration via MAG Control-Plane function 1
-(MAG-C1) and handover to MAG Control-Plane function 2 (MAG-C2). Edge DPN1 represents the Proxy CoA after
-attachment, whereas Edge DPN2 serves as Proxy CoA after handover. As exemplary architecture,
-the FPC Agent and the network control function are assumed to be co-located with the Anchor-DPN, e.g. a Router.
-</t>
-
-<t>
- <figure anchor="fig_msc_example"
-              title="Exemplary Message Sequence (focus on FPC reference point)">
-        <artwork align="center"><![CDATA[
-                                                +-------Router--------+
-                        +-----------+           |+-------+ +---------+|
-+------+ +------+     +-----+ FPC   |            | FPC   | |  Anchor |
-|MAG-C1| |MAG-C2|     |LMA-C| Client|            | Agent | |   DPN   |
-+------+ +------+     +-----+-------+            +-------+ +---------+
-[MN attach]  |            |                          |           |
-   |-------------PBU----->|                          |           |
-   |         |            |----(1)-PRT_ADD---------->|           |
-   |         |            |        [PRT_ID]          |           |
-   |         |            |                          |           |
-   |         |            |--(2)---PROP_ADD--------->|           |
-   |         |            |   [PRT_ID,PROP_TUN]      |--tun1 up->|
-   |         |            |                          |           |
-   |         |            |--(3)---PROP_ADD--------->|           |
-   |         |            |    [PRT_ID,PROP_QOS]     |--tc qos-->|
-   |<------------PBA------|--(4)----TS_ADD---------->|           |
-   | +----+  |            |       [PRT_ID,           |-route add>|
-   | |Edge|  |            |    TD_CONTAINER(HNP)]    |           |
-   | |DPN1|  |            |                          |           |
-   | +----+  |            |                          |           |
-   |   |                                                         |
-   |   |-=======================================================-|
-   |                      |                          |           |
-   |   [MN handover]      |                          |           |
-   |         |---PBU ---->|                          |           |
-   |         |            |--(5)---PROP_MOD--------->|           |
-   |         |<--PBA------|    [PRT_ID,PROP_TUN]     |-tun1 mod->|
-   |         |            |                          |           |
-   |         |  +----+    |                          |           |
-   |         |  |Edge|    |                          |           |
-   |         |  |DPN2|    |                          |           |
-   |         |  +----+    |                          |           |
-   |         |    |       |                          |           |
-   |         |    |-============================================-|
-   |         |            |                          |           |
-
-      ]]></artwork>
-        <postamble></postamble>
-      </figure>
-</t>
-
-<t>After reception of the Proxy Binding Update (PBU) at the LMA Control-Plane function (LMA_C), the
-LMA-C selects a suitable DPN, which serves as Data-Plane anchor to the mobile node's (MN) traffic. The LMA-C
-adds a new logical port to the DPN to treat the MN's traffic (1) and includes a Port Identifier (PRT_ID)
-to the PRT_ADD command. The LMA-C identifies the selected Anchor DPN by including the associated DPN identifier.
-</t>
-
-<t>Subsequently, the LMA-C adds properties to the new port. One property is added (2) to specify the
-forwarding tunnel type and endpoints (Anchor DPN, Edge DPN1). Another property is added (3) to specify the QoS
-differentiation, which the MN's traffic should experience. At reception of the properties, the FPC Agent
-utilizes local configuration commands to create the tunnel (tun1) as well as the traffic control (tc)
-to enable QoS differentiation. After configuration of port properties have been completed, the LMA binds the
-traffic description for the MN's traffic to the port by sending a TS_CONTAINER to the Agent and identifying the
-MN's Nome Network Prefix (HNP) in the traffic descriptor. At the reception of the traffic descriptor, the Agent
-applies a new route to forward all traffic destined to the MN's HNP to the configured tunnel interface (tun1).</t>
-
-<t>During handover, the LMA-C receives an updating PBU from the handover target MAG-C2. The PBU refers to a
-new Data-Plane node (Edge DPN2) to represent the new tunnel endpoint. The LMA-C sends a PROP_MOD message (5)
-to the Agent to modify the existing tunnel property of the existing port and to update the tunnel endpoint
-from Edge DPN1 to Edge DPN2. Upon reception of the PROP_MOD message, the Agent applies updated tunnel property
-to the local configuration.</t>
-
-<t>To reduce the number of protocol handshakes between the LMA-C and the DPN, the LMA-C can
-append properties (PROP_TUN, PROP_QOS) and traffic descriptor attributes to the PRT_ADD message,
-as illustrated in <xref target="fig_msc_aggr_example"></xref>.</t>
-
-<t>
- <figure anchor="fig_msc_aggr_example"
-              title="Example: Sequence for Message Aggregation (focus on FPC reference point)">
-        <artwork align="center"><![CDATA[
-                        +-----------+             +-------+ +---------+
-+------+ +------+     +-----+ FPC   |             | FPC   | |  Anchor |
-|MAG-C1| |MAG-C2|     |LMA-C| Client|             | Agent | |   DPN   |
-+------+ +------+     +-----+-------+             +-------+ +---------+
-[MN attach]  |            |                           |           |
-   |-------------PBU----->|                           |           |
-   |         |            |----(1)-PRT_ADD----------->|           |
-   |         |            |      [PRT_ID,PROP_TUN,    |--tun1 up->|
-   |<------------PBA------|              PROP_QOS,    |--tc qos-->|
-   |         |            |       TS_CONTAINER(HNP)]  |-route add>|
-   | [Edge]-=====================================================-|
-   | [DPN1|  |            |                           |           |
-   |         |            |                           |           |
-   |   [MN handover]      |                           |           |
-   |         |---PBU ---->|                           |           |
-   |         |            |---------PROP_MOD--------->|           |
-   |         |<--PBA------|     [PRT_ID,PROP_TUN]     |-tun1 mod->|
-   |         |            |                           |           |
-   |         | [Edge]-===========================================-|
-   |         | [DPN2]     |                           |           |
-
-      ]]></artwork>
-        <postamble></postamble>
-      </figure>
-</t>
-
-
-
-  </section>
-
- <section anchor="proto_m2" title="Protocol to support Model II">
-
- <section anchor="protoattributes_m2" title="Protocol Attributes">
-
-
-<t>
- <figure anchor="tab_protoattr_model2"
-              title="Model II Protocol Attributes: Traffic Treatment">
-        <artwork align="center"><![CDATA[
-+---------------------------------------------------------------------+
-|    Attribute        | Format               |      Description       |
-+=====================================================================+
-|TFT                  |TBD                   |Traffic Flow Template   |
-|                     |                      |                        |
-+---------------------------------------------------------------------+
-
-      ]]></artwork>
-        <postamble></postamble>
-      </figure>
-</t>
-
- </section>
-
- <section anchor="protomsg_m2" title="Protocol Messages and Semantics">
-
-
-<t>
- <figure anchor="tab_protomsg_mod2"
-              title="Model II Protocol Messages">
-        <artwork align="center"><![CDATA[
-
-+---------------------------------------------------------------------+
-|         Message           |              Description                |
-+=====================================================================+
-|                    Tunnel Interface Management                      |
-+---------------------------------------------------------------------+
-| CREATE_TUNNEL_IF         | Create a Tunnel Interface                |
-+---------------------------------------------------------------------+
-| DELETE_TUNNEL_IF         | Delete a Tunnel Interface                |
-+---------------------------------------------------------------------+
-| UPDATE_TUNNEL_PARAMETER  | Update a parameter of the specified      |
-|                          | tunnel                                   |
-+---------------------------------------------------------------------+
-| QUERY_TUNNEL_IF          | Request Tunnel Interface information     |
-+---------------------------------------------------------------------+
-|                      Policy Route Management                        |
-+---------------------------------------------------------------------+
-| CREATE_POLICY_ROUTE      | Create a Policy-based Route              |
-+---------------------------------------------------------------------+
-| DELETE_POLICY_ROUTE      | Deletes a Policy-based Route             |
-+---------------------------------------------------------------------+
-| ADD_TRAFFIC_SELECTOR     | Adds a Traffic Selector to a Policy-     |
-|                          | based Route                              |
-+---------------------------------------------------------------------+
-| DELETE_TRAFFIC_SELECTOR  | Removes a Traffic Selector from          |
-|                          | a Policy-based Route                     |
-+---------------------------------------------------------------------+
-| QUERY_POLICY_ROUTE       | Request Policy Route information         |
-+---------------------------------------------------------------------+
-|                        IP Route Management                          |
-+---------------------------------------------------------------------+
-| CREATE_IP_ROUTE          | Create an IP Route                       |
-+---------------------------------------------------------------------+
-| DELETE_IP_ROUTE          | Delete an IP Route                       |
-+---------------------------------------------------------------------+
-| QUERY_IP_ROUTE           | Request IP Route information             |
-+---------------------------------------------------------------------+
-|                        IP QoS Management                            |
-+---------------------------------------------------------------------+
-| ALLOCATE_QOS_RESOURCES   | Allocates QoS Resources, e.g. AMBR, to   |
-|                          | the specified Session / Context          |
-+---------------------------------------------------------------------+
-| DEALLOCATE_QOS_RESOURCES | Removes applies QoS Resources from       |
-|                          | the specified Session / Context          |
-+---------------------------------------------------------------------+
-|                       Optional Management                           |
-+---------------------------------------------------------------------+
-| ADD_NSH_HEADER           | Add NSH Header for the classified        |
-|                          | IP flows                                 |
-+---------------------------------------------------------------------+
-| DELETE_NSH_HEADER        | Remove NSH Header for the classified     |
-|                          | IP flows                                 |
-+---------------------------------------------------------------------+
-      ]]></artwork>
-        <postamble></postamble>
-      </figure>
-</t>
-
-
-
-
-
-
- </section>
-
-
- <section anchor="protoop_m2" title="Protocol Operation">
-
-<t>The following list comprises a description of each message's semantic.
-</t>
-
-<t>
-<list style="symbols">
-<t>CREATE_TUNNEL_IF - Message can include TUN_SRC_IP_ADDR, TUN_DST_IP_ADDR, TUN_ENCAP_TYPE, TUN_IF_ID, TUN_TYPE_UDP, TUN_TYPE_GRE, TUN_IF_MTU, TUN_PAYLOAD_TYPE, TUN_VENDOR_SPEC_PARAM, VRF_ID, CTRL_PLANE_ID, CONTEXT_ID.
-</t>
-<t>DELETE_TUNNEL_IF - Message can include TUN_SRC_IP_ADDR, TUN_DST_IP_ADDR, TUN_ENCAP_TYPE, TUN_IF_ID, CTRL_PLANE_ID, CONTEXT_ID.
-</t>
-<t>UPDATE_TUNNEL_PARAMETER - Message can include TUN_SRC_IP_ADDR, TUN_DST_IP_ADDR, TUN_ENCAP_TYPE, TUN_IF_ID, TUN_IF_MTU, TUN_PAYLOAD_TYPE, TUN_VENDOR_SPEC_PARAM, CTRL_PLANE_ID, CONTEXT_ID.
-</t>
-<t>QUERY_TUNNEL_IF -
-</t>
-<t>CREATE_POLICY_ROUTE - Message can include INPUT_IF, OUTPUT_IF, NEXT_HOP_IP_GW_ADDR, VRF_ID, PBR_ID, CTRL_PLANE_ID, CONTEXT_ID.
-</t>
-<t>DELETE_POLICY_ROUTE - Message can include PBR_ID, CTRL_PLANE_ID, CONTEXT_ID.
-</t>
-<t>ADD_TRAFFIC_SELECTOR - Message can include TRAFFIC_SELECTOR_ACL, PBR_ID, CTRL_PLANE_ID, CONTEXT_ID.
-</t>
-<t>DELETE_TRAFFIC_SELECTOR - Message can include TRAFFIC_SELECTOR_ACL, PBR_ID, CTRL_PLANE_ID, CONTEXT_ID.
-</t>
-<t>QUERY_POLICY_ROUTE -
-</t>
-<t>CREATE_IP_ROUTE - Message can include DST_IP_SUBNET, DST_IP_SUBNET_MASK, OUTPUT_IF, VRF_ID, ROUTE_ID, CTRL_PLANE_ID, CONTEXT_ID.
-</t>
-<t>DELETE_IP_ROUTE - Message can include ROUTE_ID, CTRL_PLANE_ID, CONTEXT_ID.
-</t>
-<t>QUERY_IP_ROUTE -
-</t>
-<t>ALLOCATE_QOS_RESOURCES - Message can include AMBR, GBR, TCLASS, TFT, QOS_SERVICE_ID, CONTEXT_ID.
-</t>
-<t>DEALLOCATE_QOS_RESOURCES - Message can include Session_ID, QOS_SERVICE_ID, CONTEXT_ID.
-</t>
-<t>ADD_NSH_HEADER - Message can include SERVICE_PATH_ID, SERVICE_INDEX, TFT
-</t>
-<t>DELETE_NSH_HEADER - Message can include SERVICE_PATH_ID, SERVICE_INDEX, TFT
-</t>
-</list></t>
-
- </section>
-
 </section>
-
-<!-- main section end, model II -->
-
-
-
-
-
-<!--
-
-<section title="Protocol Implementation Guidelines">
-
-</section>
-
--->
-
-
-
-
-
-<section title="Security Considerations">
-
-<t>Detailed protocol implementations for DMM Forwarding Policy Configuration must ensure integrity
-of the information exchanged between an FPC Client and an FPC Agent. Required Security Associations
-may be derived from co-located functions, which utilize the FPC Client and FPC Agent respectively.
-</t>
-
-</section>
-
 
 <section anchor="IANA" title="IANA Considerations">
 
