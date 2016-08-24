@@ -322,7 +322,7 @@ module ietf-dmm-fpcagent {
       type uint32;
     }
 
-    grouping op-status {
+    grouping op-status-value {
       leaf op-status {
         type enumeration {
           enum ok { value 0; }
@@ -425,12 +425,12 @@ module ietf-dmm-fpcagent {
       uses fpcagent:notification-header;
       choice value {
         case config-result {
-          uses fpcagent:op-status;
+          uses fpcagent:op-status-value;
           uses fpcagent:result-body;
         }
         case config-bundle-result {
           list bundles {
-            uses fpcagent:op-status;
+            uses fpcagent:op-status-value;
             uses fpcagent:result-body;
           }
         }
