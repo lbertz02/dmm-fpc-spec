@@ -122,14 +122,14 @@ module ietf-dmm-fpc-pmip {
           }
       }
     }
-    augment "/fpcagent:configure/fpcagent:input/fpcagent:contexts/fpcagent:instructions/fpcagent:instr-type" {
+    augment "/fpcagent:configure/fpcagent:input/fpcagent:op_body/fpcagent:create_or_update/fpcagent:contexts/fpcagent:instructions/fpcagent:instr-type" {
       case threegpp-mobility-instr {
           leaf instr-pmip {
               type fpc-pmip:pmip-instr;
           }
       }
     }
-    augment "/fpcagent:configure/fpcagent:input/fpcagent:ports/fpcagent:instructions/fpcagent:instr-type" {
+    augment "/fpcagent:configure/fpcagent:input/fpcagent:op_body/fpcagent:create_or_update/fpcagent:ports/fpcagent:instructions/fpcagent:instr-type" {
       case threegpp-mobility-instr {
           leaf instr-pmip {
               type fpc-pmip:pmip-instr;
@@ -143,14 +143,14 @@ module ietf-dmm-fpc-pmip {
           }
       }
     }
-    augment "/fpcagent:configure-bundles/fpcagent:input/fpcagent:bundles/fpcagent:contexts/fpcagent:instructions/fpcagent:instr-type" {
+    augment "/fpcagent:configure-bundles/fpcagent:input/fpcagent:bundles/fpcagent:op_body/fpcagent:create_or_update/fpcagent:contexts/fpcagent:instructions/fpcagent:instr-type" {
       case threegpp-mobility-instr {
           leaf instr-pmip {
               type fpc-pmip:pmip-instr;
           }
       }
     }
-    augment "/fpcagent:configure-bundles/fpcagent:input/fpcagent:bundles/fpcagent:ports/fpcagent:instructions/fpcagent:instr-type" {
+    augment "/fpcagent:configure-bundles/fpcagent:input/fpcagent:bundles/fpcagent:op_body/fpcagent:create_or_update/fpcagent:ports/fpcagent:instructions/fpcagent:instr-type" {
       case threegpp-mobility-instr {
           leaf instr-pmip {
               type fpc-pmip:pmip-instr;
