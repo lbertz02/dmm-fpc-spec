@@ -58,14 +58,14 @@ module ietf-dmm-fpc-policyext {
           case port-ref {
             leaf port-ref {
               type leafref {
-                path "/fpcagent:ports/fpcagent:port-id";
+                path "/fpcagent:fpc-entities/fpcagent:ports/fpcagent:port-id";
               }
             }
           }
           case context-ref {
             leaf context-ref {
               type leafref {
-                path "/fpcagent:contexts/fpcagent:context-id";
+                path "/fpcagent:fpc-entities/fpcagent:contexts/fpcagent:context-id";
               }
             }
           }
@@ -73,7 +73,7 @@ module ietf-dmm-fpc-policyext {
       }
     }
 
-    augment "/fpcagent:actions/fpcagent:action-value" {
+    augment "/fpcagent:fpc-entities/fpcagent:actions/fpcagent:action-value" {
       case simple-nat {
           uses fpcpolicyext:simple-nat;
       }
@@ -101,7 +101,7 @@ module ietf-dmm-fpc-policyext {
         }
     }
 
-    augment "/fpcagent:descriptors/fpcagent:descriptor-value" {
+    augment "/fpcagent:fpc-entities/fpcagent:descriptors/fpcagent:descriptor-value" {
       case prefix-descriptor {
           uses fpcpolicyext:prefix-traffic-descriptor;
       }

@@ -78,38 +78,38 @@ module ietf-dmm-fpc-pmip {
       }
     }
 
-    augment "/fpcagent:descriptors/fpcagent:descriptor-value" {
+    augment "/fpcagent:fpc-entities/fpcagent:descriptors/fpcagent:descriptor-value" {
       case pmip-selector {
           uses traffic-selectors:traffic-selector;
       }
     }
 
-    augment "/fpcagent:dpn-groups/fpcagent:dpn-group-peers/fpcagent:profile-parameters" {
+    augment "/fpcagent:fpc-topology/fpcagent:dpn-groups/fpcagent:dpn-group-peers/fpcagent:profile-parameters" {
       case pmip-tunnel {
         uses fpc-pmip:pmip-mobility;
         uses traffic-selectors:traffic-selector;
       }
     }
-    augment "/fpcagent:contexts/fpcagent:ul/fpcagent:mobility-profile/fpcagent:profile-parameters" {
+    augment "/fpcagent:fpc-entities/fpcagent:contexts/fpcagent:ul/fpcagent:mobility-profile/fpcagent:profile-parameters" {
       case pmip-tunnel {
         uses fpc-pmip:pmip-mobility;
         uses traffic-selectors:traffic-selector;
       }
     }
-    augment "/fpcagent:contexts/fpcagent:dl/fpcagent:mobility-profile/fpcagent:profile-parameters" {
+    augment "/fpcagent:fpc-entities/fpcagent:contexts/fpcagent:dl/fpcagent:mobility-profile/fpcagent:profile-parameters" {
       case pmip-tunnel {
         uses fpc-pmip:pmip-mobility;
         uses traffic-selectors:traffic-selector;
       }
     }
-    augment "/fpcagent:contexts/fpcagent:dpns/fpcagent:mobility-profile/fpcagent:profile-parameters" {
+    augment "/fpcagent:fpc-entities/fpcagent:contexts/fpcagent:dpns/fpcagent:mobility-profile/fpcagent:profile-parameters" {
       case pmip-tunnel {
         uses fpc-pmip:pmip-mobility;
         uses traffic-selectors:traffic-selector;
       }
     }
 
-    augment "/fpcagent:contexts/fpcagent:ul/fpcagent:qos-profile/fpcagent:value" {
+    augment "/fpcagent:fpc-entities/fpcagent:contexts/fpcagent:ul/fpcagent:qos-profile/fpcagent:value" {
       case qos-pmip {
           uses qos-pmip:qosattribute;
       }

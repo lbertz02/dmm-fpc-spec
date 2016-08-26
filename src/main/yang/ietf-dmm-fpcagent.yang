@@ -44,6 +44,10 @@ module ietf-dmm-fpcagent {
     feature instruction-bitset {
       description "Allows the expression of instructions (bit sets) over FPC.";
     }
+    feature operation-ref-scope {
+      description "Provides the scope of refeneces in an operation.  Used to optmize
+        the Agent processing.";
+    }
 
     typedef agent-identifier {
         type fpcbase:fpc-identity;
@@ -54,77 +58,83 @@ module ietf-dmm-fpcagent {
     }
 
     // Top Level Structures
-    list contexts {
-        key context-id;
-        uses fpcbase:fpc-context;
-    }
-    list ports {
-        key port-id;
-        uses fpcbase:fpc-port;
-    }
-    list policy-groups {
-        key "policy-group-id";
-        uses fpcbase:fpc-policy-group;
-    }
-    list policies {
-        key "policy-id";
-        uses fpcbase:fpc-policy;
-    }
-    list descriptors {
-      key descriptor-id;
-      uses fpcbase:fpc-descriptor;
-    }
-    list actions {
-        key action-id;
-        uses fpcbase:fpc-action;
-    }
-
-    // General Agent Structures
-    leaf-list agent-features {
-      type inet:uri;
+    container fpc-entities {
+      list contexts {
+          key context-id;
+          uses fpcbase:fpc-context;
+      }
+      list ports {
+          key port-id;
+          uses fpcbase:fpc-port;
+      }
+      list policy-groups {
+          key "policy-group-id";
+          uses fpcbase:fpc-policy-group;
+      }
+      list policies {
+          key "policy-id";
+          uses fpcbase:fpc-policy;
+      }
+      list descriptors {
+        key descriptor-id;
+        uses fpcbase:fpc-descriptor;
+      }
+      list actions {
+          key action-id;
+          uses fpcbase:fpc-action;
+      }
     }
 
-    // Common Agent Info
-    list supported-events {
-      key event;
-      leaf event {
-        type identityref {
-          base "fpcbase:event-type";
+    container fpc-agent-info {
+      // General Agent Structures
+      leaf-list supported-features {
+        type inet:uri;
+      }
+
+      // Common Agent Info
+      list supported-events {
+        key event;
+        leaf event {
+          type identityref {
+            base "fpcbase:event-type";
+          }
+        }
+        leaf event-id {
+          type fpcbase:event-type-id;
         }
       }
-      leaf event-id {
-        type fpcbase:event-type-id;
-      }
-    }
 
-    list error-types {
-      key error-type;
-      leaf error-type {
-        type identityref {
-          base "fpcagent:error-type";
+      list supported-error-types {
+        key error-type;
+        leaf error-type {
+          type identityref {
+            base "fpcagent:error-type";
+          }
+        }
+        leaf error-type-id {
+          type fpcagent:error-type-id;
         }
       }
-      leaf error-type-id {
-        type fpcagent:error-type-id;
+
+      // Base Name Registry Feature
+      list basename-registry {
+          description "A registy for multiple clients operating upon the same base,
+            e.g. '/mcc:01/mnc:01' to determine if a Client has already provisioned
+            common Policy on the Agent / DPN";
+          if-feature fpcagent:fpc-basename-registry;
+          key basename;
+          leaf basename {
+              type fpcbase:fpc-identity;
+          }
+          leaf state {
+              type string;
+          }
+          leaf checkpoint {
+              type string;
+          }
       }
     }
 
-    // Basic Agent Structures
-    list dpn-group-peers {
-        if-feature fpc-basic-agent;
-        key "remote-dpn-group-id";
-        uses fpcbase:fpc-dpn-peer-group;
-    }
-    leaf dpn-id {
-      if-feature fpc-basic-agent;
-      type fpcbase:fpc-dpn-id;
-    }
-    leaf-list control-protocols {
-      if-feature fpc-basic-agent;
-      type identityref {
-        base "fpcbase:fpc-dpn-control-protocol";
-      }
-    }
 
     // Multi-DPN Agent Structures
     grouping fpc-dpn-group {
@@ -152,33 +162,34 @@ module ietf-dmm-fpcagent {
         }
     }
 
-    list dpn-groups {
-        if-feature fpc-multi-dpn;
-        key group-id;
-        uses fpcagent:fpc-dpn-group;
-    }
-    list dpns {
-        if-feature fpc-multi-dpn;
-        key dpn-id;
-        uses fpcbase:fpc-dpn;
-    }
+    container fpc-topology {
+      // Basic Agent Topology Structures
+      list dpn-group-peers {
+          if-feature fpc-basic-agent;
+          key "remote-dpn-group-id";
+          uses fpcbase:fpc-dpn-peer-group;
+      }
+      leaf dpn-id {
+        if-feature fpc-basic-agent;
+        type fpcbase:fpc-dpn-id;
+      }
+      leaf-list control-protocols {
+        if-feature fpc-basic-agent;
+        type identityref {
+          base "fpcbase:fpc-dpn-control-protocol";
+        }
+      }
 
-    // Base Name Registry Feature
-    list basename-registry {
-        description "A registy for multiple clients operating upon the same base,
-          e.g. '/mcc:01/mnc:01' to determine if a Client has already provisioned
-          common Policy on the Agent / DPN";
-        if-feature fpcagent:fpc-basename-registry;
-        key basename;
-        leaf basename {
-            type fpcbase:fpc-identity;
-        }
-        leaf state {
-            type string;
-        }
-        leaf checkpoint {
-            type string;
-        }
+      list dpn-groups {
+          if-feature fpc-multi-dpn;
+          key group-id;
+          uses fpcagent:fpc-dpn-group;
+      }
+      list dpns {
+          if-feature fpc-multi-dpn;
+          key dpn-id;
+          uses fpcbase:fpc-dpn;
+      }
     }
 
     // RPC
@@ -200,12 +211,29 @@ module ietf-dmm-fpcagent {
         }
     }
 
-    typedef operation-delay {
+    typedef op-delay {
         type uint32;
     }
 
     typedef op-identifier {
         type uint64;
+    }
+
+    typedef ref-scope {
+      description "Search scope for references in the operation.
+        op - All references are contained in the operation body (intra-op)
+        bundle - All references in exist in bundle (inter-operation/intra-bundle).
+          NOTE - If this value comes in CONFIG call it is equivalen to 'op'.
+        storage - One or more references exist outside of the operation and bundle.
+          A lookup to a cache / storage is required.
+        unknown - the location of the references are unknown.  This is treated as
+          a 'storage' type.";
+      type enumeration {
+        enum op { value 0; }
+        enum bundle { value 1; }
+        enum storage { value 2; }
+        enum unknown { value 3; }
+      }
     }
 
     grouping instructions {
@@ -221,7 +249,7 @@ module ietf-dmm-fpcagent {
         type fpcagent:client-identifier;
       }
       leaf delay {
-        type operation-delay;
+        type op-delay;
       }
       leaf session-state {
         type session-status;
@@ -236,6 +264,10 @@ module ietf-dmm-fpcagent {
           enum query { value 2; }
           enum delete { value 3; }
         }
+      }
+      leaf op-ref-scope {
+          if-feature operation-ref-scope;
+          type fpcagent:ref-scope;
       }
       uses fpcagent:instructions;
     }

@@ -258,44 +258,44 @@ module ietf-dmm-threegpp {
       }
     }
 
-    augment "/fpcagent:descriptors/fpcagent:descriptor-value" {
+    augment "/fpcagent:fpc-entities/fpcagent:descriptors/fpcagent:descriptor-value" {
       case threegpp-tft {
           uses threegpp:tft;
       }
     }
 
-    augment "/fpcagent:dpn-groups/fpcagent:dpn-group-peers/fpcagent:profile-parameters" {
+    augment "/fpcagent:fpc-topology/fpcagent:dpn-groups/fpcagent:dpn-group-peers/fpcagent:profile-parameters" {
       case threegpp-tunnel {
           uses threegpp:threeGPP-tunnel;
           uses threegpp:tft;
       }
     }
-    augment "/fpcagent:contexts/fpcagent:ul/fpcagent:mobility-profile/fpcagent:profile-parameters" {
+    augment "/fpcagent:fpc-entities/fpcagent:contexts/fpcagent:ul/fpcagent:mobility-profile/fpcagent:profile-parameters" {
       case threegpp-tunnel {
           uses threegpp:threeGPP-tunnel;
           uses threegpp:tft;
       }
     }
-    augment "/fpcagent:contexts/fpcagent:dl/fpcagent:mobility-profile/fpcagent:profile-parameters" {
+    augment "/fpcagent:fpc-entities/fpcagent:contexts/fpcagent:dl/fpcagent:mobility-profile/fpcagent:profile-parameters" {
       case threegpp-tunnel {
           uses threegpp:threeGPP-tunnel;
           uses threegpp:tft;
       }
     }
-    augment "/fpcagent:contexts/fpcagent:dpns/fpcagent:mobility-profile/fpcagent:profile-parameters" {
+    augment "/fpcagent:fpc-entities/fpcagent:contexts/fpcagent:dpns/fpcagent:mobility-profile/fpcagent:profile-parameters" {
       case threegpp-tunnel {
           uses threegpp:threeGPP-tunnel;
           uses threegpp:tft;
       }
     }
 
-    augment "/fpcagent:contexts/fpcagent:ul/fpcagent:qos-profile/fpcagent:value" {
+    augment "/fpcagent:fpc-entities/fpcagent:contexts/fpcagent:ul/fpcagent:qos-profile/fpcagent:value" {
       case threegpp-qos {
           uses threegpp:threeGPP-QoS;
       }
     }
 
-    augment "/fpcagent:contexts" {
+    augment "/fpcagent:fpc-entities/fpcagent:contexts" {
       leaf imsi {
         type threegpp:imsi-type;
       }
