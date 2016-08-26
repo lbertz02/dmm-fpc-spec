@@ -78,43 +78,123 @@ module ietf-dmm-fpc-pmip {
       }
     }
 
+    // Descriptors update - goes to Entities, Configure and Configure Bundles
     augment "/fpcagent:fpc-entities/fpcagent:descriptors/fpcagent:descriptor-value" {
       case pmip-selector {
           uses traffic-selectors:traffic-selector;
       }
     }
+    augment "/fpcagent:configure/fpcagent:input/fpcagent:op_body/fpcagent:create_or_update/fpcagent:descriptors/fpcagent:descriptor-value" {
+      case pmip-selector {
+          uses traffic-selectors:traffic-selector;
+      }
+    }
+    augment "/fpcagent:configure-bundles/fpcagent:input/fpcagent:bundles/fpcagent:op_body/fpcagent:create_or_update/fpcagent:descriptors/fpcagent:descriptor-value" {
+      case pmip-selector {
+          uses traffic-selectors:traffic-selector;
+      }
+    }
 
+    // Topology
     augment "/fpcagent:fpc-topology/fpcagent:dpn-groups/fpcagent:dpn-group-peers/fpcagent:profile-parameters" {
       case pmip-tunnel {
         uses fpc-pmip:pmip-mobility;
         uses traffic-selectors:traffic-selector;
       }
     }
+
+    // Contexts Update - Contexts / UL / mob-profile, Contexts / DL / mob-profile and Contexts / dpns / mobility-profile
     augment "/fpcagent:fpc-entities/fpcagent:contexts/fpcagent:ul/fpcagent:mobility-profile/fpcagent:profile-parameters" {
       case pmip-tunnel {
         uses fpc-pmip:pmip-mobility;
         uses traffic-selectors:traffic-selector;
       }
     }
+    augment "/fpcagent:configure/fpcagent:input/fpcagent:op_body/fpcagent:create_or_update/fpcagent:contexts/fpcagent:ul/fpcagent:mobility-profile/fpcagent:profile-parameters" {
+      case pmip-tunnel {
+        uses fpc-pmip:pmip-mobility;
+        uses traffic-selectors:traffic-selector;
+      }
+    }
+    augment "/fpcagent:configure-bundles/fpcagent:input/fpcagent:bundles/fpcagent:op_body/fpcagent:create_or_update/fpcagent:contexts/fpcagent:ul/fpcagent:mobility-profile/fpcagent:profile-parameters" {
+      case pmip-tunnel {
+        uses fpc-pmip:pmip-mobility;
+        uses traffic-selectors:traffic-selector;
+      }
+    }
+
     augment "/fpcagent:fpc-entities/fpcagent:contexts/fpcagent:dl/fpcagent:mobility-profile/fpcagent:profile-parameters" {
       case pmip-tunnel {
         uses fpc-pmip:pmip-mobility;
         uses traffic-selectors:traffic-selector;
       }
     }
-    augment "/fpcagent:fpc-entities/fpcagent:contexts/fpcagent:dpns/fpcagent:mobility-profile/fpcagent:profile-parameters" {
+    augment "/fpcagent:configure/fpcagent:input/fpcagent:op_body/fpcagent:create_or_update/fpcagent:contexts/fpcagent:dl/fpcagent:mobility-profile/fpcagent:profile-parameters" {
+      case pmip-tunnel {
+        uses fpc-pmip:pmip-mobility;
+        uses traffic-selectors:traffic-selector;
+      }
+    }
+    augment "/fpcagent:configure-bundles/fpcagent:input/fpcagent:bundles/fpcagent:op_body/fpcagent:create_or_update/fpcagent:contexts/fpcagent:dl/fpcagent:mobility-profile/fpcagent:profile-parameters" {
       case pmip-tunnel {
         uses fpc-pmip:pmip-mobility;
         uses traffic-selectors:traffic-selector;
       }
     }
 
+    augment "/fpcagent:fpc-entities/fpcagent:contexts/fpcagent:dpns/fpcagent:mobility-profile/fpcagent:profile-parameters" {
+      case pmip-tunnel {
+        uses fpc-pmip:pmip-mobility;
+        uses traffic-selectors:traffic-selector;
+      }
+    }
+    augment "/fpcagent:configure/fpcagent:input/fpcagent:op_body/fpcagent:create_or_update/fpcagent:contexts/fpcagent:dpns/fpcagent:mobility-profile/fpcagent:profile-parameters" {
+      case pmip-tunnel {
+        uses fpc-pmip:pmip-mobility;
+        uses traffic-selectors:traffic-selector;
+      }
+    }
+    augment "/fpcagent:configure-bundles/fpcagent:input/fpcagent:bundles/fpcagent:op_body/fpcagent:create_or_update/fpcagent:contexts/fpcagent:dpns/fpcagent:mobility-profile/fpcagent:profile-parameters" {
+      case pmip-tunnel {
+        uses fpc-pmip:pmip-mobility;
+        uses traffic-selectors:traffic-selector;
+      }
+    }
+
+    // QoS Updates - Context / UL / qosprofile, Context / DL / QoS Profile
     augment "/fpcagent:fpc-entities/fpcagent:contexts/fpcagent:ul/fpcagent:qos-profile/fpcagent:value" {
       case qos-pmip {
           uses qos-pmip:qosattribute;
       }
     }
+    augment "/fpcagent:configure/fpcagent:input/fpcagent:op_body/fpcagent:create_or_update/fpcagent:contexts/fpcagent:ul/fpcagent:qos-profile/fpcagent:value" {
+      case qos-pmip {
+          uses qos-pmip:qosattribute;
+      }
+    }
+    augment "/fpcagent:configure-bundles/fpcagent:input/fpcagent:bundles/fpcagent:op_body/fpcagent:create_or_update/fpcagent:contexts/fpcagent:ul/fpcagent:qos-profile/fpcagent:value" {
+      case qos-pmip {
+          uses qos-pmip:qosattribute;
+      }
+    }
 
+    augment "/fpcagent:fpc-entities/fpcagent:contexts/fpcagent:dl/fpcagent:qos-profile/fpcagent:value" {
+      case qos-pmip {
+          uses qos-pmip:qosattribute;
+      }
+    }
+    augment "/fpcagent:configure/fpcagent:input/fpcagent:op_body/fpcagent:create_or_update/fpcagent:contexts/fpcagent:dl/fpcagent:qos-profile/fpcagent:value" {
+      case qos-pmip {
+          uses qos-pmip:qosattribute;
+      }
+    }
+    augment "/fpcagent:configure-bundles/fpcagent:input/fpcagent:bundles/fpcagent:op_body/fpcagent:create_or_update/fpcagent:contexts/fpcagent:dl/fpcagent:qos-profile/fpcagent:value" {
+      case qos-pmip {
+          uses qos-pmip:qosattribute;
+      }
+    }
+
+    // Instructions Update - OP BODY, Context, Port
     augment "/fpcagent:configure/fpcagent:input/fpcagent:instructions/fpcagent:instr-type" {
       case threegpp-mobility-instr {
           leaf instr-pmip {
