@@ -194,6 +194,18 @@ module ietf-dmm-fpcbase {
          enum downlink;
        }
     }
+    grouping assignable-dpns {
+        list dpns {
+            key dpn-id;
+            leaf dpn-id {
+                type fpcbase:fpc-dpn-id;
+            }
+            leaf direction {
+                type fpcbase:fpc-direction;
+            }
+            uses fpcbase:fpc-context-profile;
+        }
+    }
     grouping fpc-context {
         leaf context-id {
             type fpcbase:fpc-context-id;
@@ -213,16 +225,7 @@ module ietf-dmm-fpcbase {
         leaf parent-context {
             type fpcbase:fpc-context-id;
         }
-        list dpns {
-            key dpn-id;
-            leaf dpn-id {
-                type fpcbase:fpc-dpn-id;
-            }
-            leaf direction {
-                type fpcbase:fpc-direction;
-            }
-            uses fpcbase:fpc-context-profile;
-        }
+        uses fpcbase:assignable-dpns;
     }
 
     // Mobility (Tunnel) Information
