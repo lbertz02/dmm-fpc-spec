@@ -403,21 +403,33 @@ module ietf-dmm-threegpp {
     }
 
     augment "/fpcagent:configure/fpcagent:input/fpcagent:instructions/fpcagent:instr-type" {
-      uses threegpp:threegpp-commandset;
+      case instr-3gpp-mob {
+        uses threegpp:threegpp-commandset;
+      }
     }
     augment "/fpcagent:configure/fpcagent:input/fpcagent:op_body/fpcagent:create_or_update/fpcagent:contexts/fpcagent:instructions/fpcagent:instr-type" {
-      uses threegpp:threegpp-commandset;
+      case instr-3gpp-mob {
+        uses threegpp:threegpp-commandset;
+      }
     }
     augment "/fpcagent:configure/fpcagent:input/fpcagent:op_body/fpcagent:create_or_update/fpcagent:ports/fpcagent:instructions/fpcagent:instr-type" {
-      uses threegpp:threegpp-commandset;
+      case instr-3gpp-mob {
+        uses threegpp:threegpp-commandset;
+      }
     }
     augment "/fpcagent:configure-bundles/fpcagent:input/fpcagent:bundles/fpcagent:instructions/fpcagent:instr-type" {
-      uses threegpp:threegpp-commandset;
+      case instr-3gpp-mob {
+        uses threegpp:threegpp-commandset;
+      }
     }
     augment "/fpcagent:configure-bundles/fpcagent:input/fpcagent:bundles/fpcagent:op_body/fpcagent:create_or_update/fpcagent:contexts/fpcagent:instructions/fpcagent:instr-type" {
-      uses threegpp:threegpp-commandset;
+      case instr-3gpp-mob {
+        uses threegpp:threegpp-commandset;
+      }
     }
     augment "/fpcagent:configure-bundles/fpcagent:input/fpcagent:bundles/fpcagent:op_body/fpcagent:create_or_update/fpcagent:ports/fpcagent:instructions/fpcagent:instr-type" {
-      uses threegpp:threegpp-commandset;
+      case instr-3gpp-mob {
+        uses threegpp:threegpp-commandset;
+      }
     }
 }

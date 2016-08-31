@@ -301,9 +301,11 @@ module ietf-dmm-fpcagent {
       }
       list ports {
         uses fpcbase:fpc-port;
+        uses fpcagent:instructions;
       }
       list contexts {
         uses fpcbase:fpc-context;
+        uses fpcagent:instructions;
       }
     }
 
@@ -319,14 +321,7 @@ module ietf-dmm-fpcagent {
             key entity;
             uses fpcagent:clone-ref;
           }
-          uses fpcagent:payload {
-            augment ports {
-              uses fpcagent:instructions;
-            }
-            augment contexts {
-              uses fpcagent:instructions;
-            }
-          }
+          uses fpcagent:payload;
         }
         case delete_or_query {
           uses fpcbase:targets-value;
