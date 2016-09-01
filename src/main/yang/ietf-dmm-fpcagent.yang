@@ -285,6 +285,20 @@ module ietf-dmm-fpcagent {
       description "protocol specific commands";
     }
 
+    grouping context-operation {
+      list contexts {
+        uses fpcbase:fpc-context;
+        uses fpcagent:instructions;
+      }
+    }
+
+    grouping port-operation {
+      list ports {
+        uses fpcbase:fpc-port;
+        uses fpcagent:instructions;
+      }
+    }
+
     // Output Structure
     grouping payload {
       list descriptors {
@@ -296,17 +310,8 @@ module ietf-dmm-fpcagent {
       list policies {
         uses fpcbase:fpc-policy;
       }
-      list policy-groups {
-        uses fpcbase:fpc-policy-group;
-      }
-      list ports {
-        uses fpcbase:fpc-port;
-        uses fpcagent:instructions;
-      }
-      list contexts {
-        uses fpcbase:fpc-context;
-        uses fpcagent:instructions;
-      }
+      uses fpcagent:port-operation;
+      uses fpcagent:context-operation;
     }
 
     grouping op-input {
