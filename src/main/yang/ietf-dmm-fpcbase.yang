@@ -31,8 +31,11 @@ module ietf-dmm-fpcbase {
     }
 
     grouping targets-value {
-      leaf-list targets {
-          type fpc-identity;
+      list targets {
+          key "target";
+          leaf target {
+            type fpc-identity;
+          }
       }
     }
 
