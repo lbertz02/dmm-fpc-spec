@@ -39,16 +39,20 @@ module ietf-dmm-threegpp {
         base "threegpp:threeGPP-tunnel-type";
     }
 
+    grouping teid-value {
+         leaf tunnel-identifier {
+            description "TEID";
+            type uint32;
+        }
+    }
+
     grouping threeGPP-tunnel {
         leaf tunnel-type {
             type identityref  {
               base "threegpp:threeGPP-tunnel-type";
             }
         }
-        leaf tunnel-identifier {
-            description "TEID";
-            type uint32;
-        }
+        uses threegpp:teid-value;
     }
 
     // QoS Profile
@@ -431,5 +435,13 @@ module ietf-dmm-threegpp {
       case instr-3gpp-mob {
         uses threegpp:threegpp-commandset;
       }
+    }
+
+    // Deletion Augments - We add the TEID to speed up deletion
+    augment "/fpcagent:configure/fpcagent:input/fpcagent:op_body/fpcagent:delete_or_query/fpcagent:targets" {
+      uses threegpp:teid-value;
+    }
+    augment "/fpcagent:configure-bundles/fpcagent:input/fpcagent:bundles/fpcagent:op_body/fpcagent:delete_or_query/fpcagent:targets" {
+      uses threegpp:teid-value;
     }
 }
