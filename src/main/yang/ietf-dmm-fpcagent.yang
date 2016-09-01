@@ -286,17 +286,13 @@ module ietf-dmm-fpcagent {
     }
 
     grouping context-operation {
-      list contexts {
-        uses fpcbase:fpc-context;
-        uses fpcagent:instructions;
-      }
+      uses fpcbase:fpc-context;
+      uses fpcagent:instructions;
     }
 
     grouping port-operation {
-      list ports {
-        uses fpcbase:fpc-port;
-        uses fpcagent:instructions;
-      }
+      uses fpcbase:fpc-port;
+      uses fpcagent:instructions;
     }
 
     // Output Structure
@@ -310,8 +306,15 @@ module ietf-dmm-fpcagent {
       list policies {
         uses fpcbase:fpc-policy;
       }
-      uses fpcagent:port-operation;
-      uses fpcagent:context-operation;
+      list policy-groups {
+        uses fpcbase:fpc-policy-group;
+      }
+      list ports {
+        uses fpcagent:port-operation;
+      }
+      list contexts {
+        uses fpcagent:context-operation;
+      }
     }
 
     grouping op-input {
