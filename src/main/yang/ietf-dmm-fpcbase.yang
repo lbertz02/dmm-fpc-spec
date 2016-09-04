@@ -36,6 +36,9 @@ module ietf-dmm-fpcbase {
           leaf target {
             type fpc-identity;
           }
+          leaf dpn-id {
+                type fpcbase:fpc-dpn-id;
+          }
       }
     }
 
