@@ -157,14 +157,13 @@
 
     <abstract>
       <t>
-This specification supports the separation of the Control-Plane for mobility- and session
-management from the Data-Plane. The protocol semantics abstract the configuration of
-Data-Plane nodes and applies it between a Client function, which is used by an application
-of the mobility Control-Plane, and an Agent function, which is associated with the configuration
-of Data-Plane nodes, according to the Data-Plane rules issued by the mobility Control-Plane.
-The scope of the rules comprises traffic description and treatment of packets in terms of
-encapsulation, IP address re-writing and QoS. Additional protocol semantics are described to
-support the maintenance of the Data-Plane path.
+        This document describes the solution of data-plane separation
+        from control-plane which enables mobility management system
+        flexible using agent and client functions. To configure
+        data-plane nodes and functions, the data-plane is abstracted in
+        the agent to provide interface to the client. The data-plane
+        abstraction model is extensible to support many different type
+        of mobility management systems and data-plane functions.
       </t>
     </abstract>
   </front>
