@@ -1,4 +1,3 @@
-// Contents of "ietf-pmip-qos"
 module ietf-pmip-qos {
     yang-version 1;
 

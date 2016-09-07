@@ -1,4 +1,3 @@
-// Contents of "ietf-traffic-selector-types"
 module ietf-traffic-selector-types {
     yang-version 1;
 
