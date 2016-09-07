@@ -5052,27 +5052,2973 @@ module ietf-dmm-fpc-policyext {
 </section>
 <!-- template for YANG model, end -->
 <section anchor="yangtrees" title="YANG Trees">
-  <section anchor="ietf-dmm-fpcbase-tree" title="FPC Base YANG Tree">
-  </section>
+  <t>If a tree is NOT present in this section for a YANG Model defined in this document, the
+    YANG model does not create YANG structures that would create a tree, e.g. top level structures
+    or RPCs.</t>
   <section anchor="ietf-dmm-fpcagent-tree" title="FPC Agent YANG Tree">
 <t>
  <figure anchor="fig-ietf-dmm-fpc-fpcagent-tree"
-              title="FPC YANG FPC Agent Tree">
+              title="YANG FPC Agent Tree">
 <artwork align="center"><![CDATA[
+module: ietf-dmm-fpcagent
+   +--rw fpc-entities
+   |  +--rw contexts* [context-id]
+   |  |  +--rw context-id                fpcbase:fpc-context-id
+   |  |  +--rw ports*                    fpcbase:fpc-port-id
+   |  |  +--rw delegating-ip-prefixes*   inet:ip-prefix
+   |  |  +--rw ul
+   |  |  |  +--rw remote-address?     inet:ip-address
+   |  |  |  +--rw local-address?      inet:ip-address
+   |  |  |  +--rw mtu?                uint32
+   |  |  |  +--rw mobility-profile
+   |  |  |  |  +--rw (profile-parameters)?
+   |  |  |  +--rw nexthop
+   |  |  |  |  +--rw nexthop-type?   identityref
+   |  |  |  |  +--rw (nexthop-value)?
+   |  |  |  |     +--:(ip)
+   |  |  |  |     |  +--rw ip?             inet:ip-address
+   |  |  |  |     +--:(servicepath)
+   |  |  |  |        +--rw servicepath?    fpcbase:fpcp-service-path-id
+   |  |  |  +--rw qos-profile
+   |  |  |  |  +--rw qos-type?   identityref
+   |  |  |  |  +--rw (value)?
+   |  |  |  +--rw dpn-parameters
+   |  |  |  +--rw vendor-params* [vendor-id vendor-type]
+   |  |  |     +--rw vendor-id      fpcbase:fpc-identity
+   |  |  |     +--rw vendor-type    identityref
+   |  |  |     +--rw (value)?
+   |  |  |        +--:(empty-type)
+   |  |  |           +--rw empty-type?    empty
+   |  |  +--rw dl
+   |  |  |  +--rw remote-address?     inet:ip-address
+   |  |  |  +--rw local-address?      inet:ip-address
+   |  |  |  +--rw mtu?                uint32
+   |  |  |  +--rw mobility-profile
+   |  |  |  |  +--rw (profile-parameters)?
+   |  |  |  +--rw nexthop
+   |  |  |  |  +--rw nexthop-type?   identityref
+   |  |  |  |  +--rw (nexthop-value)?
+   |  |  |  |     +--:(ip)
+   |  |  |  |     |  +--rw ip?             inet:ip-address
+   |  |  |  |     +--:(servicepath)
+   |  |  |  |        +--rw servicepath?    fpcbase:fpcp-service-path-id
+   |  |  |  +--rw qos-profile
+   |  |  |  |  +--rw qos-type?   identityref
+   |  |  |  |  +--rw (value)?
+   |  |  |  +--rw dpn-parameters
+   |  |  |  +--rw vendor-params* [vendor-id vendor-type]
+   |  |  |     +--rw vendor-id      fpcbase:fpc-identity
+   |  |  |     +--rw vendor-type    identityref
+   |  |  |     +--rw (value)?
+   |  |  |        +--:(empty-type)
+   |  |  |           +--rw empty-type?    empty
+   |  |  +--rw parent-context?           fpcbase:fpc-context-id
+   |  |  +--rw dpns* [dpn-id]
+   |  |     +--rw dpn-id              fpcbase:fpc-dpn-id
+   |  |     +--rw direction?          fpcbase:fpc-direction
+   |  |     +--rw remote-address?     inet:ip-address
+   |  |     +--rw local-address?      inet:ip-address
+   |  |     +--rw mtu?                uint32
+   |  |     +--rw mobility-profile
+   |  |     |  +--rw (profile-parameters)?
+   |  |     +--rw nexthop
+   |  |     |  +--rw nexthop-type?   identityref
+   |  |     |  +--rw (nexthop-value)?
+   |  |     |     +--:(ip)
+   |  |     |     |  +--rw ip?             inet:ip-address
+   |  |     |     +--:(servicepath)
+   |  |     |        +--rw servicepath?    fpcbase:fpcp-service-path-id
+   |  |     +--rw qos-profile
+   |  |     |  +--rw qos-type?   identityref
+   |  |     |  +--rw (value)?
+   |  |     +--rw dpn-parameters
+   |  |     +--rw vendor-params* [vendor-id vendor-type]
+   |  |        +--rw vendor-id      fpcbase:fpc-identity
+   |  |        +--rw vendor-type    identityref
+   |  |        +--rw (value)?
+   |  |           +--:(empty-type)
+   |  |              +--rw empty-type?    empty
+   |  +--rw ports* [port-id]
+   |  |  +--rw port-id          fpcbase:fpc-port-id
+   |  |  +--rw policy-groups* [policy-group-id]
+   |  |     +--rw policy-group-id    fpcbase:fpc-policy-group-id
+   |  |     +--rw policy*            fpcbase:fpc-policy-id
+   |  +--rw policy-groups* [policy-group-id]
+   |  |  +--rw policy-group-id    fpcbase:fpc-policy-group-id
+   |  |  +--rw policy*            fpcbase:fpc-policy-id
+   |  +--rw policies* [policy-id]
+   |  |  +--rw policy-id    fpcbase:fpc-policy-id
+   |  |  +--rw rule* [order]
+   |  |     +--rw order         uint32
+   |  |     +--rw action* [action-id]
+   |  |     |  +--rw order?         uint32
+   |  |     |  +--rw action-id      fpcbase:fpc-action-id
+   |  |     |  +--rw action-type?   identityref
+   |  |     |  +--rw (action-value)?
+   |  |     |     +--:(drop)
+   |  |     |        +--rw drop?          empty
+   |  |     +--rw descriptor* [descriptor-id]
+   |  |        +--rw descriptor-id      fpcbase:fpc-descriptor-id
+   |  |        +--rw descriptor-type?   identityref
+   |  |        +--rw (descriptor-value)?
+   |  |           +--:(all-traffic)
+   |  |              +--rw all-traffic?       empty
+   |  +--rw descriptors* [descriptor-id]
+   |  |  +--rw descriptor-id      fpcbase:fpc-descriptor-id
+   |  |  +--rw descriptor-type?   identityref
+   |  |  +--rw (descriptor-value)?
+   |  |     +--:(all-traffic)
+   |  |        +--rw all-traffic?       empty
+   |  +--rw actions* [action-id]
+   |     +--rw action-id      fpcbase:fpc-action-id
+   |     +--rw action-type?   identityref
+   |     +--rw (action-value)?
+   |        +--:(drop)
+   |           +--rw drop?          empty
+   +--rw fpc-agent-info
+   |  +--rw supported-features*      string
+   |  +--rw supported-events* [event]
+   |  |  +--rw event       identityref
+   |  |  +--rw event-id?   fpcbase:event-type-id
+   |  +--rw supported-error-types* [error-type]
+   |  |  +--rw error-type       identityref
+   |  |  +--rw error-type-id?   fpcagent:error-type-id
+   |  +--rw basename-registry* [basename] {fpcagent:fpc-basename-registry}?
+   |     +--rw basename      fpcbase:fpc-identity
+   |     +--rw state?        string
+   |     +--rw checkpoint?   string
+   +--rw fpc-topology
+      +--rw dpn-group-peers* [remote-dpn-group-id] {fpc-basic-agent}?
+      |  +--rw remote-dpn-group-id        fpcbase:fpc-dpn-group-id
+      |  +--rw remote-endpoint-address?   inet:ip-address
+      |  +--rw local-endpoint-address?    inet:ip-address
+      |  +--rw mtu-size?                  uint32
+      |  +--rw (profile-parameters)?
+      |  +--rw fowarding-role?            identityref
+      +--rw dpn-id?              fpcbase:fpc-dpn-id {fpc-basic-agent}?
+      +--rw control-protocols*   identityref {fpc-basic-agent}?
+      +--rw dpn-groups* [group-id] {fpc-multi-dpn}?
+      |  +--rw group-id            fpcbase:fpc-dpn-group-id
+      |  +--rw fowarding-role?     identityref
+      |  +--rw access-type?        identityref
+      |  +--rw mobility-profile?   identityref
+      |  +--rw dpn-group-peers* [remote-dpn-group-id]
+      |     +--rw remote-dpn-group-id        fpcbase:fpc-dpn-group-id
+      |     +--rw remote-endpoint-address?   inet:ip-address
+      |     +--rw local-endpoint-address?    inet:ip-address
+      |     +--rw mtu-size?                  uint32
+      |     +--rw (profile-parameters)?
+      |     +--rw fowarding-role?            identityref
+      +--rw dpns* [dpn-id] {fpc-multi-dpn}?
+         +--rw dpn-id               fpcbase:fpc-dpn-id
+         +--rw address?             inet:ip-address
+         +--rw control-protocols*   identityref
+         +--rw dpn-groups*          fpcbase:fpc-dpn-group-id
+rpcs:
+   +---x configure
+   |  +---w input
+   |  |  +---w client-id?       fpcagent:client-identifier
+   |  |  +---w delay?           op-delay
+   |  |  +---w session-state?   session-status
+   |  |  +---w admin-state?     admin-status
+   |  |  +---w op-type?         enumeration
+   |  |  +---w op-ref-scope?    fpcagent:ref-scope {operation-ref-scope}?
+   |  |  +---w instructions {instruction-bitset}?
+   |  |  |  +---w (instr-type)?
+   |  |  +---w op-id?           op-identifier
+   |  |  +---w (op_body)?
+   |  |     +--:(create_or_update)
+   |  |     |  +---w clones* [entity] {fpc-cloning}?
+   |  |     |  |  +---w entity    fpcbase:fpc-identity
+   |  |     |  |  +---w source?   fpcbase:fpc-identity
+   |  |     |  +---w descriptors*
+   |  |     |  |  +---w descriptor-id?     fpcbase:fpc-descriptor-id
+   |  |     |  |  +---w descriptor-type?   identityref
+   |  |     |  |  +---w (descriptor-value)?
+   |  |     |  |     +--:(all-traffic)
+   |  |     |  |        +---w all-traffic?       empty
+   |  |     |  +---w actions*
+   |  |     |  |  +---w action-id?     fpcbase:fpc-action-id
+   |  |     |  |  +---w action-type?   identityref
+   |  |     |  |  +---w (action-value)?
+   |  |     |  |     +--:(drop)
+   |  |     |  |        +---w drop?          empty
+   |  |     |  +---w policies*
+   |  |     |  |  +---w policy-id?   fpcbase:fpc-policy-id
+   |  |     |  |  +---w rule* [order]
+   |  |     |  |     +---w order         uint32
+   |  |     |  |     +---w action* [action-id]
+   |  |     |  |     |  +---w order?         uint32
+   |  |     |  |     |  +---w action-id      fpcbase:fpc-action-id
+   |  |     |  |     |  +---w action-type?   identityref
+   |  |     |  |     |  +---w (action-value)?
+   |  |     |  |     |     +--:(drop)
+   |  |     |  |     |        +---w drop?          empty
+   |  |     |  |     +---w descriptor* [descriptor-id]
+   |  |     |  |        +---w descriptor-id      fpcbase:fpc-descriptor-id
+   |  |     |  |        +---w descriptor-type?   identityref
+   |  |     |  |        +---w (descriptor-value)?
+   |  |     |  |           +--:(all-traffic)
+   |  |     |  |              +---w all-traffic?       empty
+   |  |     |  +---w policy-groups*
+   |  |     |  |  +---w policy-group-id?   fpcbase:fpc-policy-group-id
+   |  |     |  |  +---w policy*            fpcbase:fpc-policy-id
+   |  |     |  +---w ports*
+   |  |     |  |  +---w port-id?         fpcbase:fpc-port-id
+   |  |     |  |  +---w policy-groups* [policy-group-id]
+   |  |     |  |  |  +---w policy-group-id    fpcbase:fpc-policy-group-id
+   |  |     |  |  |  +---w policy*            fpcbase:fpc-policy-id
+   |  |     |  |  +---w instructions {instruction-bitset}?
+   |  |     |  |     +---w (instr-type)?
+   |  |     |  +---w contexts*
+   |  |     |     +---w context-id?               fpcbase:fpc-context-id
+   |  |     |     +---w ports*                    fpcbase:fpc-port-id
+   |  |     |     +---w delegating-ip-prefixes*   inet:ip-prefix
+   |  |     |     +---w ul
+   |  |     |     |  +---w remote-address?     inet:ip-address
+   |  |     |     |  +---w local-address?      inet:ip-address
+   |  |     |     |  +---w mtu?                uint32
+   |  |     |     |  +---w mobility-profile
+   |  |     |     |  |  +---w (profile-parameters)?
+   |  |     |     |  +---w nexthop
+   |  |     |     |  |  +---w nexthop-type?   identityref
+   |  |     |     |  |  +---w (nexthop-value)?
+   |  |     |     |  |     +--:(ip)
+   |  |     |     |  |     |  +---w ip?             inet:ip-address
+   |  |     |     |  |     +--:(servicepath)
+   |  |     |     |  |        +---w servicepath?    fpcbase:fpcp-service-path-id
+   |  |     |     |  +---w qos-profile
+   |  |     |     |  |  +---w qos-type?   identityref
+   |  |     |     |  |  +---w (value)?
+   |  |     |     |  +---w dpn-parameters
+   |  |     |     |  +---w vendor-params* [vendor-id vendor-type]
+   |  |     |     |     +---w vendor-id      fpcbase:fpc-identity
+   |  |     |     |     +---w vendor-type    identityref
+   |  |     |     |     +---w (value)?
+   |  |     |     |        +--:(empty-type)
+   |  |     |     |           +---w empty-type?    empty
+   |  |     |     +---w dl
+   |  |     |     |  +---w remote-address?     inet:ip-address
+   |  |     |     |  +---w local-address?      inet:ip-address
+   |  |     |     |  +---w mtu?                uint32
+   |  |     |     |  +---w mobility-profile
+   |  |     |     |  |  +---w (profile-parameters)?
+   |  |     |     |  +---w nexthop
+   |  |     |     |  |  +---w nexthop-type?   identityref
+   |  |     |     |  |  +---w (nexthop-value)?
+   |  |     |     |  |     +--:(ip)
+   |  |     |     |  |     |  +---w ip?             inet:ip-address
+   |  |     |     |  |     +--:(servicepath)
+   |  |     |     |  |        +---w servicepath?    fpcbase:fpcp-service-path-id
+   |  |     |     |  +---w qos-profile
+   |  |     |     |  |  +---w qos-type?   identityref
+   |  |     |     |  |  +---w (value)?
+   |  |     |     |  +---w dpn-parameters
+   |  |     |     |  +---w vendor-params* [vendor-id vendor-type]
+   |  |     |     |     +---w vendor-id      fpcbase:fpc-identity
+   |  |     |     |     +---w vendor-type    identityref
+   |  |     |     |     +---w (value)?
+   |  |     |     |        +--:(empty-type)
+   |  |     |     |           +---w empty-type?    empty
+   |  |     |     +---w parent-context?           fpcbase:fpc-context-id
+   |  |     |     +---w dpns* [dpn-id]
+   |  |     |     |  +---w dpn-id              fpcbase:fpc-dpn-id
+   |  |     |     |  +---w direction?          fpcbase:fpc-direction
+   |  |     |     |  +---w remote-address?     inet:ip-address
+   |  |     |     |  +---w local-address?      inet:ip-address
+   |  |     |     |  +---w mtu?                uint32
+   |  |     |     |  +---w mobility-profile
+   |  |     |     |  |  +---w (profile-parameters)?
+   |  |     |     |  +---w nexthop
+   |  |     |     |  |  +---w nexthop-type?   identityref
+   |  |     |     |  |  +---w (nexthop-value)?
+   |  |     |     |  |     +--:(ip)
+   |  |     |     |  |     |  +---w ip?             inet:ip-address
+   |  |     |     |  |     +--:(servicepath)
+   |  |     |     |  |        +---w servicepath?    fpcbase:fpcp-service-path-id
+   |  |     |     |  +---w qos-profile
+   |  |     |     |  |  +---w qos-type?   identityref
+   |  |     |     |  |  +---w (value)?
+   |  |     |     |  +---w dpn-parameters
+   |  |     |     |  +---w vendor-params* [vendor-id vendor-type]
+   |  |     |     |     +---w vendor-id      fpcbase:fpc-identity
+   |  |     |     |     +---w vendor-type    identityref
+   |  |     |     |     +---w (value)?
+   |  |     |     |        +--:(empty-type)
+   |  |     |     |           +---w empty-type?    empty
+   |  |     |     +---w instructions {instruction-bitset}?
+   |  |     |        +---w (instr-type)?
+   |  |     +--:(delete_or_query)
+   |  |        +---w targets* [target]
+   |  |           +---w target    fpc-identity
+   |  |           +---w dpn-id?   fpcbase:fpc-dpn-id
+   |  +--ro output
+   |     +--ro result?          result
+   |     +--ro op-id?           op-identifier
+   |     +--ro (result-type)?
+   |        +--:(err)
+   |        |  +--ro error-type-id?   fpcagent:error-type-id
+   |        |  +--ro error-info?      string
+   |        +--:(config-success)
+   |        |  +--ro descriptors*
+   |        |  |  +--ro descriptor-id?     fpcbase:fpc-descriptor-id
+   |        |  |  +--ro descriptor-type?   identityref
+   |        |  |  +--ro (descriptor-value)?
+   |        |  |     +--:(all-traffic)
+   |        |  |        +--ro all-traffic?       empty
+   |        |  +--ro actions*
+   |        |  |  +--ro action-id?     fpcbase:fpc-action-id
+   |        |  |  +--ro action-type?   identityref
+   |        |  |  +--ro (action-value)?
+   |        |  |     +--:(drop)
+   |        |  |        +--ro drop?          empty
+   |        |  +--ro policies*
+   |        |  |  +--ro policy-id?   fpcbase:fpc-policy-id
+   |        |  |  +--ro rule* [order]
+   |        |  |     +--ro order         uint32
+   |        |  |     +--ro action* [action-id]
+   |        |  |     |  +--ro order?         uint32
+   |        |  |     |  +--ro action-id      fpcbase:fpc-action-id
+   |        |  |     |  +--ro action-type?   identityref
+   |        |  |     |  +--ro (action-value)?
+   |        |  |     |     +--:(drop)
+   |        |  |     |        +--ro drop?          empty
+   |        |  |     +--ro descriptor* [descriptor-id]
+   |        |  |        +--ro descriptor-id      fpcbase:fpc-descriptor-id
+   |        |  |        +--ro descriptor-type?   identityref
+   |        |  |        +--ro (descriptor-value)?
+   |        |  |           +--:(all-traffic)
+   |        |  |              +--ro all-traffic?       empty
+   |        |  +--ro policy-groups*
+   |        |  |  +--ro policy-group-id?   fpcbase:fpc-policy-group-id
+   |        |  |  +--ro policy*            fpcbase:fpc-policy-id
+   |        |  +--ro ports*
+   |        |  |  +--ro port-id?         fpcbase:fpc-port-id
+   |        |  |  +--ro policy-groups* [policy-group-id]
+   |        |  |  |  +--ro policy-group-id    fpcbase:fpc-policy-group-id
+   |        |  |  |  +--ro policy*            fpcbase:fpc-policy-id
+   |        |  |  +--ro instructions {instruction-bitset}?
+   |        |  |     +--ro (instr-type)?
+   |        |  +--ro contexts*
+   |        |     +--ro context-id?               fpcbase:fpc-context-id
+   |        |     +--ro ports*                    fpcbase:fpc-port-id
+   |        |     +--ro delegating-ip-prefixes*   inet:ip-prefix
+   |        |     +--ro ul
+   |        |     |  +--ro remote-address?     inet:ip-address
+   |        |     |  +--ro local-address?      inet:ip-address
+   |        |     |  +--ro mtu?                uint32
+   |        |     |  +--ro mobility-profile
+   |        |     |  |  +--ro (profile-parameters)?
+   |        |     |  +--ro nexthop
+   |        |     |  |  +--ro nexthop-type?   identityref
+   |        |     |  |  +--ro (nexthop-value)?
+   |        |     |  |     +--:(ip)
+   |        |     |  |     |  +--ro ip?             inet:ip-address
+   |        |     |  |     +--:(servicepath)
+   |        |     |  |        +--ro servicepath?    fpcbase:fpcp-service-path-id
+   |        |     |  +--ro qos-profile
+   |        |     |  |  +--ro qos-type?   identityref
+   |        |     |  |  +--ro (value)?
+   |        |     |  +--ro dpn-parameters
+   |        |     |  +--ro vendor-params* [vendor-id vendor-type]
+   |        |     |     +--ro vendor-id      fpcbase:fpc-identity
+   |        |     |     +--ro vendor-type    identityref
+   |        |     |     +--ro (value)?
+   |        |     |        +--:(empty-type)
+   |        |     |           +--ro empty-type?    empty
+   |        |     +--ro dl
+   |        |     |  +--ro remote-address?     inet:ip-address
+   |        |     |  +--ro local-address?      inet:ip-address
+   |        |     |  +--ro mtu?                uint32
+   |        |     |  +--ro mobility-profile
+   |        |     |  |  +--ro (profile-parameters)?
+   |        |     |  +--ro nexthop
+   |        |     |  |  +--ro nexthop-type?   identityref
+   |        |     |  |  +--ro (nexthop-value)?
+   |        |     |  |     +--:(ip)
+   |        |     |  |     |  +--ro ip?             inet:ip-address
+   |        |     |  |     +--:(servicepath)
+   |        |     |  |        +--ro servicepath?    fpcbase:fpcp-service-path-id
+   |        |     |  +--ro qos-profile
+   |        |     |  |  +--ro qos-type?   identityref
+   |        |     |  |  +--ro (value)?
+   |        |     |  +--ro dpn-parameters
+   |        |     |  +--ro vendor-params* [vendor-id vendor-type]
+   |        |     |     +--ro vendor-id      fpcbase:fpc-identity
+   |        |     |     +--ro vendor-type    identityref
+   |        |     |     +--ro (value)?
+   |        |     |        +--:(empty-type)
+   |        |     |           +--ro empty-type?    empty
+   |        |     +--ro parent-context?           fpcbase:fpc-context-id
+   |        |     +--ro dpns* [dpn-id]
+   |        |     |  +--ro dpn-id              fpcbase:fpc-dpn-id
+   |        |     |  +--ro direction?          fpcbase:fpc-direction
+   |        |     |  +--ro remote-address?     inet:ip-address
+   |        |     |  +--ro local-address?      inet:ip-address
+   |        |     |  +--ro mtu?                uint32
+   |        |     |  +--ro mobility-profile
+   |        |     |  |  +--ro (profile-parameters)?
+   |        |     |  +--ro nexthop
+   |        |     |  |  +--ro nexthop-type?   identityref
+   |        |     |  |  +--ro (nexthop-value)?
+   |        |     |  |     +--:(ip)
+   |        |     |  |     |  +--ro ip?             inet:ip-address
+   |        |     |  |     +--:(servicepath)
+   |        |     |  |        +--ro servicepath?    fpcbase:fpcp-service-path-id
+   |        |     |  +--ro qos-profile
+   |        |     |  |  +--ro qos-type?   identityref
+   |        |     |  |  +--ro (value)?
+   |        |     |  +--ro dpn-parameters
+   |        |     |  +--ro vendor-params* [vendor-id vendor-type]
+   |        |     |     +--ro vendor-id      fpcbase:fpc-identity
+   |        |     |     +--ro vendor-type    identityref
+   |        |     |     +--ro (value)?
+   |        |     |        +--:(empty-type)
+   |        |     |           +--ro empty-type?    empty
+   |        |     +--ro instructions {instruction-bitset}?
+   |        |        +--ro (instr-type)?
+   |        +--:(empty-case)
+   +---x configure-bundles {fpcagent:fpc-bundles}?
+   |  +---w input
+   |  |  +---w bundles* [op-id]
+   |  |     +---w client-id?       fpcagent:client-identifier
+   |  |     +---w delay?           op-delay
+   |  |     +---w session-state?   session-status
+   |  |     +---w admin-state?     admin-status
+   |  |     +---w op-type?         enumeration
+   |  |     +---w op-ref-scope?    fpcagent:ref-scope {operation-ref-scope}?
+   |  |     +---w instructions {instruction-bitset}?
+   |  |     |  +---w (instr-type)?
+   |  |     +---w op-id            op-identifier
+   |  |     +---w (op_body)?
+   |  |        +--:(create_or_update)
+   |  |        |  +---w clones* [entity] {fpc-cloning}?
+   |  |        |  |  +---w entity    fpcbase:fpc-identity
+   |  |        |  |  +---w source?   fpcbase:fpc-identity
+   |  |        |  +---w descriptors*
+   |  |        |  |  +---w descriptor-id?     fpcbase:fpc-descriptor-id
+   |  |        |  |  +---w descriptor-type?   identityref
+   |  |        |  |  +---w (descriptor-value)?
+   |  |        |  |     +--:(all-traffic)
+   |  |        |  |        +---w all-traffic?       empty
+   |  |        |  +---w actions*
+   |  |        |  |  +---w action-id?     fpcbase:fpc-action-id
+   |  |        |  |  +---w action-type?   identityref
+   |  |        |  |  +---w (action-value)?
+   |  |        |  |     +--:(drop)
+   |  |        |  |        +---w drop?          empty
+   |  |        |  +---w policies*
+   |  |        |  |  +---w policy-id?   fpcbase:fpc-policy-id
+   |  |        |  |  +---w rule* [order]
+   |  |        |  |     +---w order         uint32
+   |  |        |  |     +---w action* [action-id]
+   |  |        |  |     |  +---w order?         uint32
+   |  |        |  |     |  +---w action-id      fpcbase:fpc-action-id
+   |  |        |  |     |  +---w action-type?   identityref
+   |  |        |  |     |  +---w (action-value)?
+   |  |        |  |     |     +--:(drop)
+   |  |        |  |     |        +---w drop?          empty
+   |  |        |  |     +---w descriptor* [descriptor-id]
+   |  |        |  |        +---w descriptor-id      fpcbase:fpc-descriptor-id
+   |  |        |  |        +---w descriptor-type?   identityref
+   |  |        |  |        +---w (descriptor-value)?
+   |  |        |  |           +--:(all-traffic)
+   |  |        |  |              +---w all-traffic?       empty
+   |  |        |  +---w policy-groups*
+   |  |        |  |  +---w policy-group-id?   fpcbase:fpc-policy-group-id
+   |  |        |  |  +---w policy*            fpcbase:fpc-policy-id
+   |  |        |  +---w ports*
+   |  |        |  |  +---w port-id?         fpcbase:fpc-port-id
+   |  |        |  |  +---w policy-groups* [policy-group-id]
+   |  |        |  |  |  +---w policy-group-id    fpcbase:fpc-policy-group-id
+   |  |        |  |  |  +---w policy*            fpcbase:fpc-policy-id
+   |  |        |  |  +---w instructions {instruction-bitset}?
+   |  |        |  |     +---w (instr-type)?
+   |  |        |  +---w contexts*
+   |  |        |     +---w context-id?               fpcbase:fpc-context-id
+   |  |        |     +---w ports*                    fpcbase:fpc-port-id
+   |  |        |     +---w delegating-ip-prefixes*   inet:ip-prefix
+   |  |        |     +---w ul
+   |  |        |     |  +---w remote-address?     inet:ip-address
+   |  |        |     |  +---w local-address?      inet:ip-address
+   |  |        |     |  +---w mtu?                uint32
+   |  |        |     |  +---w mobility-profile
+   |  |        |     |  |  +---w (profile-parameters)?
+   |  |        |     |  +---w nexthop
+   |  |        |     |  |  +---w nexthop-type?   identityref
+   |  |        |     |  |  +---w (nexthop-value)?
+   |  |        |     |  |     +--:(ip)
+   |  |        |     |  |     |  +---w ip?             inet:ip-address
+   |  |        |     |  |     +--:(servicepath)
+   |  |        |     |  |        +---w servicepath?    fpcbase:fpcp-service-path-id
+   |  |        |     |  +---w qos-profile
+   |  |        |     |  |  +---w qos-type?   identityref
+   |  |        |     |  |  +---w (value)?
+   |  |        |     |  +---w dpn-parameters
+   |  |        |     |  +---w vendor-params* [vendor-id vendor-type]
+   |  |        |     |     +---w vendor-id      fpcbase:fpc-identity
+   |  |        |     |     +---w vendor-type    identityref
+   |  |        |     |     +---w (value)?
+   |  |        |     |        +--:(empty-type)
+   |  |        |     |           +---w empty-type?    empty
+   |  |        |     +---w dl
+   |  |        |     |  +---w remote-address?     inet:ip-address
+   |  |        |     |  +---w local-address?      inet:ip-address
+   |  |        |     |  +---w mtu?                uint32
+   |  |        |     |  +---w mobility-profile
+   |  |        |     |  |  +---w (profile-parameters)?
+   |  |        |     |  +---w nexthop
+   |  |        |     |  |  +---w nexthop-type?   identityref
+   |  |        |     |  |  +---w (nexthop-value)?
+   |  |        |     |  |     +--:(ip)
+   |  |        |     |  |     |  +---w ip?             inet:ip-address
+   |  |        |     |  |     +--:(servicepath)
+   |  |        |     |  |        +---w servicepath?    fpcbase:fpcp-service-path-id
+   |  |        |     |  +---w qos-profile
+   |  |        |     |  |  +---w qos-type?   identityref
+   |  |        |     |  |  +---w (value)?
+   |  |        |     |  +---w dpn-parameters
+   |  |        |     |  +---w vendor-params* [vendor-id vendor-type]
+   |  |        |     |     +---w vendor-id      fpcbase:fpc-identity
+   |  |        |     |     +---w vendor-type    identityref
+   |  |        |     |     +---w (value)?
+   |  |        |     |        +--:(empty-type)
+   |  |        |     |           +---w empty-type?    empty
+   |  |        |     +---w parent-context?           fpcbase:fpc-context-id
+   |  |        |     +---w dpns* [dpn-id]
+   |  |        |     |  +---w dpn-id              fpcbase:fpc-dpn-id
+   |  |        |     |  +---w direction?          fpcbase:fpc-direction
+   |  |        |     |  +---w remote-address?     inet:ip-address
+   |  |        |     |  +---w local-address?      inet:ip-address
+   |  |        |     |  +---w mtu?                uint32
+   |  |        |     |  +---w mobility-profile
+   |  |        |     |  |  +---w (profile-parameters)?
+   |  |        |     |  +---w nexthop
+   |  |        |     |  |  +---w nexthop-type?   identityref
+   |  |        |     |  |  +---w (nexthop-value)?
+   |  |        |     |  |     +--:(ip)
+   |  |        |     |  |     |  +---w ip?             inet:ip-address
+   |  |        |     |  |     +--:(servicepath)
+   |  |        |     |  |        +---w servicepath?    fpcbase:fpcp-service-path-id
+   |  |        |     |  +---w qos-profile
+   |  |        |     |  |  +---w qos-type?   identityref
+   |  |        |     |  |  +---w (value)?
+   |  |        |     |  +---w dpn-parameters
+   |  |        |     |  +---w vendor-params* [vendor-id vendor-type]
+   |  |        |     |     +---w vendor-id      fpcbase:fpc-identity
+   |  |        |     |     +---w vendor-type    identityref
+   |  |        |     |     +---w (value)?
+   |  |        |     |        +--:(empty-type)
+   |  |        |     |           +---w empty-type?    empty
+   |  |        |     +---w instructions {instruction-bitset}?
+   |  |        |        +---w (instr-type)?
+   |  |        +--:(delete_or_query)
+   |  |           +---w targets* [target]
+   |  |              +---w target    fpc-identity
+   |  |              +---w dpn-id?   fpcbase:fpc-dpn-id
+   |  +--ro output
+   |     +--ro bundles* [op-id]
+   |        +--ro op-id            op-identifier
+   |        +--ro (result-type)?
+   |           +--:(err)
+   |           |  +--ro error-type-id?   fpcagent:error-type-id
+   |           |  +--ro error-info?      string
+   |           +--:(config-success)
+   |           |  +--ro descriptors*
+   |           |  |  +--ro descriptor-id?     fpcbase:fpc-descriptor-id
+   |           |  |  +--ro descriptor-type?   identityref
+   |           |  |  +--ro (descriptor-value)?
+   |           |  |     +--:(all-traffic)
+   |           |  |        +--ro all-traffic?       empty
+   |           |  +--ro actions*
+   |           |  |  +--ro action-id?     fpcbase:fpc-action-id
+   |           |  |  +--ro action-type?   identityref
+   |           |  |  +--ro (action-value)?
+   |           |  |     +--:(drop)
+   |           |  |        +--ro drop?          empty
+   |           |  +--ro policies*
+   |           |  |  +--ro policy-id?   fpcbase:fpc-policy-id
+   |           |  |  +--ro rule* [order]
+   |           |  |     +--ro order         uint32
+   |           |  |     +--ro action* [action-id]
+   |           |  |     |  +--ro order?         uint32
+   |           |  |     |  +--ro action-id      fpcbase:fpc-action-id
+   |           |  |     |  +--ro action-type?   identityref
+   |           |  |     |  +--ro (action-value)?
+   |           |  |     |     +--:(drop)
+   |           |  |     |        +--ro drop?          empty
+   |           |  |     +--ro descriptor* [descriptor-id]
+   |           |  |        +--ro descriptor-id      fpcbase:fpc-descriptor-id
+   |           |  |        +--ro descriptor-type?   identityref
+   |           |  |        +--ro (descriptor-value)?
+   |           |  |           +--:(all-traffic)
+   |           |  |              +--ro all-traffic?       empty
+   |           |  +--ro policy-groups*
+   |           |  |  +--ro policy-group-id?   fpcbase:fpc-policy-group-id
+   |           |  |  +--ro policy*            fpcbase:fpc-policy-id
+   |           |  +--ro ports*
+   |           |  |  +--ro port-id?         fpcbase:fpc-port-id
+   |           |  |  +--ro policy-groups* [policy-group-id]
+   |           |  |  |  +--ro policy-group-id    fpcbase:fpc-policy-group-id
+   |           |  |  |  +--ro policy*            fpcbase:fpc-policy-id
+   |           |  |  +--ro instructions {instruction-bitset}?
+   |           |  |     +--ro (instr-type)?
+   |           |  +--ro contexts*
+   |           |     +--ro context-id?               fpcbase:fpc-context-id
+   |           |     +--ro ports*                    fpcbase:fpc-port-id
+   |           |     +--ro delegating-ip-prefixes*   inet:ip-prefix
+   |           |     +--ro ul
+   |           |     |  +--ro remote-address?     inet:ip-address
+   |           |     |  +--ro local-address?      inet:ip-address
+   |           |     |  +--ro mtu?                uint32
+   |           |     |  +--ro mobility-profile
+   |           |     |  |  +--ro (profile-parameters)?
+   |           |     |  +--ro nexthop
+   |           |     |  |  +--ro nexthop-type?   identityref
+   |           |     |  |  +--ro (nexthop-value)?
+   |           |     |  |     +--:(ip)
+   |           |     |  |     |  +--ro ip?             inet:ip-address
+   |           |     |  |     +--:(servicepath)
+   |           |     |  |        +--ro servicepath?    fpcbase:fpcp-service-path-id
+   |           |     |  +--ro qos-profile
+   |           |     |  |  +--ro qos-type?   identityref
+   |           |     |  |  +--ro (value)?
+   |           |     |  +--ro dpn-parameters
+   |           |     |  +--ro vendor-params* [vendor-id vendor-type]
+   |           |     |     +--ro vendor-id      fpcbase:fpc-identity
+   |           |     |     +--ro vendor-type    identityref
+   |           |     |     +--ro (value)?
+   |           |     |        +--:(empty-type)
+   |           |     |           +--ro empty-type?    empty
+   |           |     +--ro dl
+   |           |     |  +--ro remote-address?     inet:ip-address
+   |           |     |  +--ro local-address?      inet:ip-address
+   |           |     |  +--ro mtu?                uint32
+   |           |     |  +--ro mobility-profile
+   |           |     |  |  +--ro (profile-parameters)?
+   |           |     |  +--ro nexthop
+   |           |     |  |  +--ro nexthop-type?   identityref
+   |           |     |  |  +--ro (nexthop-value)?
+   |           |     |  |     +--:(ip)
+   |           |     |  |     |  +--ro ip?             inet:ip-address
+   |           |     |  |     +--:(servicepath)
+   |           |     |  |        +--ro servicepath?    fpcbase:fpcp-service-path-id
+   |           |     |  +--ro qos-profile
+   |           |     |  |  +--ro qos-type?   identityref
+   |           |     |  |  +--ro (value)?
+   |           |     |  +--ro dpn-parameters
+   |           |     |  +--ro vendor-params* [vendor-id vendor-type]
+   |           |     |     +--ro vendor-id      fpcbase:fpc-identity
+   |           |     |     +--ro vendor-type    identityref
+   |           |     |     +--ro (value)?
+   |           |     |        +--:(empty-type)
+   |           |     |           +--ro empty-type?    empty
+   |           |     +--ro parent-context?           fpcbase:fpc-context-id
+   |           |     +--ro dpns* [dpn-id]
+   |           |     |  +--ro dpn-id              fpcbase:fpc-dpn-id
+   |           |     |  +--ro direction?          fpcbase:fpc-direction
+   |           |     |  +--ro remote-address?     inet:ip-address
+   |           |     |  +--ro local-address?      inet:ip-address
+   |           |     |  +--ro mtu?                uint32
+   |           |     |  +--ro mobility-profile
+   |           |     |  |  +--ro (profile-parameters)?
+   |           |     |  +--ro nexthop
+   |           |     |  |  +--ro nexthop-type?   identityref
+   |           |     |  |  +--ro (nexthop-value)?
+   |           |     |  |     +--:(ip)
+   |           |     |  |     |  +--ro ip?             inet:ip-address
+   |           |     |  |     +--:(servicepath)
+   |           |     |  |        +--ro servicepath?    fpcbase:fpcp-service-path-id
+   |           |     |  +--ro qos-profile
+   |           |     |  |  +--ro qos-type?   identityref
+   |           |     |  |  +--ro (value)?
+   |           |     |  +--ro dpn-parameters
+   |           |     |  +--ro vendor-params* [vendor-id vendor-type]
+   |           |     |     +--ro vendor-id      fpcbase:fpc-identity
+   |           |     |     +--ro vendor-type    identityref
+   |           |     |     +--ro (value)?
+   |           |     |        +--:(empty-type)
+   |           |     |           +--ro empty-type?    empty
+   |           |     +--ro instructions {instruction-bitset}?
+   |           |        +--ro (instr-type)?
+   |           +--:(empty-case)
+   +---x bind-dpn {fpcagent:fpc-client-binding}?
+   |  +---w input
+   |  |  +---w node-id?             inet:uri
+   |  |  +---w dpn-id?              fpcbase:fpc-dpn-id
+   |  |  +---w address?             inet:ip-address
+   |  |  +---w control-protocols*   identityref
+   |  |  +---w dpn-groups*          fpcbase:fpc-dpn-group-id
+   |  +--ro output
+   |     +--ro op-id?           op-identifier
+   |     +--ro (result-type)?
+   |        +--:(err)
+   |        |  +--ro error-type-id?   fpcagent:error-type-id
+   |        |  +--ro error-info?      string
+   |        +--:(config-success)
+   |        |  +--ro descriptors*
+   |        |  |  +--ro descriptor-id?     fpcbase:fpc-descriptor-id
+   |        |  |  +--ro descriptor-type?   identityref
+   |        |  |  +--ro (descriptor-value)?
+   |        |  |     +--:(all-traffic)
+   |        |  |        +--ro all-traffic?       empty
+   |        |  +--ro actions*
+   |        |  |  +--ro action-id?     fpcbase:fpc-action-id
+   |        |  |  +--ro action-type?   identityref
+   |        |  |  +--ro (action-value)?
+   |        |  |     +--:(drop)
+   |        |  |        +--ro drop?          empty
+   |        |  +--ro policies*
+   |        |  |  +--ro policy-id?   fpcbase:fpc-policy-id
+   |        |  |  +--ro rule* [order]
+   |        |  |     +--ro order         uint32
+   |        |  |     +--ro action* [action-id]
+   |        |  |     |  +--ro order?         uint32
+   |        |  |     |  +--ro action-id      fpcbase:fpc-action-id
+   |        |  |     |  +--ro action-type?   identityref
+   |        |  |     |  +--ro (action-value)?
+   |        |  |     |     +--:(drop)
+   |        |  |     |        +--ro drop?          empty
+   |        |  |     +--ro descriptor* [descriptor-id]
+   |        |  |        +--ro descriptor-id      fpcbase:fpc-descriptor-id
+   |        |  |        +--ro descriptor-type?   identityref
+   |        |  |        +--ro (descriptor-value)?
+   |        |  |           +--:(all-traffic)
+   |        |  |              +--ro all-traffic?       empty
+   |        |  +--ro policy-groups*
+   |        |  |  +--ro policy-group-id?   fpcbase:fpc-policy-group-id
+   |        |  |  +--ro policy*            fpcbase:fpc-policy-id
+   |        |  +--ro ports*
+   |        |  |  +--ro port-id?         fpcbase:fpc-port-id
+   |        |  |  +--ro policy-groups* [policy-group-id]
+   |        |  |  |  +--ro policy-group-id    fpcbase:fpc-policy-group-id
+   |        |  |  |  +--ro policy*            fpcbase:fpc-policy-id
+   |        |  |  +--ro instructions {instruction-bitset}?
+   |        |  |     +--ro (instr-type)?
+   |        |  +--ro contexts*
+   |        |     +--ro context-id?               fpcbase:fpc-context-id
+   |        |     +--ro ports*                    fpcbase:fpc-port-id
+   |        |     +--ro delegating-ip-prefixes*   inet:ip-prefix
+   |        |     +--ro ul
+   |        |     |  +--ro remote-address?     inet:ip-address
+   |        |     |  +--ro local-address?      inet:ip-address
+   |        |     |  +--ro mtu?                uint32
+   |        |     |  +--ro mobility-profile
+   |        |     |  |  +--ro (profile-parameters)?
+   |        |     |  +--ro nexthop
+   |        |     |  |  +--ro nexthop-type?   identityref
+   |        |     |  |  +--ro (nexthop-value)?
+   |        |     |  |     +--:(ip)
+   |        |     |  |     |  +--ro ip?             inet:ip-address
+   |        |     |  |     +--:(servicepath)
+   |        |     |  |        +--ro servicepath?    fpcbase:fpcp-service-path-id
+   |        |     |  +--ro qos-profile
+   |        |     |  |  +--ro qos-type?   identityref
+   |        |     |  |  +--ro (value)?
+   |        |     |  +--ro dpn-parameters
+   |        |     |  +--ro vendor-params* [vendor-id vendor-type]
+   |        |     |     +--ro vendor-id      fpcbase:fpc-identity
+   |        |     |     +--ro vendor-type    identityref
+   |        |     |     +--ro (value)?
+   |        |     |        +--:(empty-type)
+   |        |     |           +--ro empty-type?    empty
+   |        |     +--ro dl
+   |        |     |  +--ro remote-address?     inet:ip-address
+   |        |     |  +--ro local-address?      inet:ip-address
+   |        |     |  +--ro mtu?                uint32
+   |        |     |  +--ro mobility-profile
+   |        |     |  |  +--ro (profile-parameters)?
+   |        |     |  +--ro nexthop
+   |        |     |  |  +--ro nexthop-type?   identityref
+   |        |     |  |  +--ro (nexthop-value)?
+   |        |     |  |     +--:(ip)
+   |        |     |  |     |  +--ro ip?             inet:ip-address
+   |        |     |  |     +--:(servicepath)
+   |        |     |  |        +--ro servicepath?    fpcbase:fpcp-service-path-id
+   |        |     |  +--ro qos-profile
+   |        |     |  |  +--ro qos-type?   identityref
+   |        |     |  |  +--ro (value)?
+   |        |     |  +--ro dpn-parameters
+   |        |     |  +--ro vendor-params* [vendor-id vendor-type]
+   |        |     |     +--ro vendor-id      fpcbase:fpc-identity
+   |        |     |     +--ro vendor-type    identityref
+   |        |     |     +--ro (value)?
+   |        |     |        +--:(empty-type)
+   |        |     |           +--ro empty-type?    empty
+   |        |     +--ro parent-context?           fpcbase:fpc-context-id
+   |        |     +--ro dpns* [dpn-id]
+   |        |     |  +--ro dpn-id              fpcbase:fpc-dpn-id
+   |        |     |  +--ro direction?          fpcbase:fpc-direction
+   |        |     |  +--ro remote-address?     inet:ip-address
+   |        |     |  +--ro local-address?      inet:ip-address
+   |        |     |  +--ro mtu?                uint32
+   |        |     |  +--ro mobility-profile
+   |        |     |  |  +--ro (profile-parameters)?
+   |        |     |  +--ro nexthop
+   |        |     |  |  +--ro nexthop-type?   identityref
+   |        |     |  |  +--ro (nexthop-value)?
+   |        |     |  |     +--:(ip)
+   |        |     |  |     |  +--ro ip?             inet:ip-address
+   |        |     |  |     +--:(servicepath)
+   |        |     |  |        +--ro servicepath?    fpcbase:fpcp-service-path-id
+   |        |     |  +--ro qos-profile
+   |        |     |  |  +--ro qos-type?   identityref
+   |        |     |  |  +--ro (value)?
+   |        |     |  +--ro dpn-parameters
+   |        |     |  +--ro vendor-params* [vendor-id vendor-type]
+   |        |     |     +--ro vendor-id      fpcbase:fpc-identity
+   |        |     |     +--ro vendor-type    identityref
+   |        |     |     +--ro (value)?
+   |        |     |        +--:(empty-type)
+   |        |     |           +--ro empty-type?    empty
+   |        |     +--ro instructions {instruction-bitset}?
+   |        |        +--ro (instr-type)?
+   |        +--:(empty-case)
+   +---x unbind-dpn {fpcagent:fpc-client-binding}?
+   |  +---w input
+   |  |  +---w dpn-id?   fpcbase:fpc-dpn-id
+   |  +--ro output
+   |     +--ro op-id?           op-identifier
+   |     +--ro (result-type)?
+   |        +--:(err)
+   |        |  +--ro error-type-id?   fpcagent:error-type-id
+   |        |  +--ro error-info?      string
+   |        +--:(config-success)
+   |        |  +--ro descriptors*
+   |        |  |  +--ro descriptor-id?     fpcbase:fpc-descriptor-id
+   |        |  |  +--ro descriptor-type?   identityref
+   |        |  |  +--ro (descriptor-value)?
+   |        |  |     +--:(all-traffic)
+   |        |  |        +--ro all-traffic?       empty
+   |        |  +--ro actions*
+   |        |  |  +--ro action-id?     fpcbase:fpc-action-id
+   |        |  |  +--ro action-type?   identityref
+   |        |  |  +--ro (action-value)?
+   |        |  |     +--:(drop)
+   |        |  |        +--ro drop?          empty
+   |        |  +--ro policies*
+   |        |  |  +--ro policy-id?   fpcbase:fpc-policy-id
+   |        |  |  +--ro rule* [order]
+   |        |  |     +--ro order         uint32
+   |        |  |     +--ro action* [action-id]
+   |        |  |     |  +--ro order?         uint32
+   |        |  |     |  +--ro action-id      fpcbase:fpc-action-id
+   |        |  |     |  +--ro action-type?   identityref
+   |        |  |     |  +--ro (action-value)?
+   |        |  |     |     +--:(drop)
+   |        |  |     |        +--ro drop?          empty
+   |        |  |     +--ro descriptor* [descriptor-id]
+   |        |  |        +--ro descriptor-id      fpcbase:fpc-descriptor-id
+   |        |  |        +--ro descriptor-type?   identityref
+   |        |  |        +--ro (descriptor-value)?
+   |        |  |           +--:(all-traffic)
+   |        |  |              +--ro all-traffic?       empty
+   |        |  +--ro policy-groups*
+   |        |  |  +--ro policy-group-id?   fpcbase:fpc-policy-group-id
+   |        |  |  +--ro policy*            fpcbase:fpc-policy-id
+   |        |  +--ro ports*
+   |        |  |  +--ro port-id?         fpcbase:fpc-port-id
+   |        |  |  +--ro policy-groups* [policy-group-id]
+   |        |  |  |  +--ro policy-group-id    fpcbase:fpc-policy-group-id
+   |        |  |  |  +--ro policy*            fpcbase:fpc-policy-id
+   |        |  |  +--ro instructions {instruction-bitset}?
+   |        |  |     +--ro (instr-type)?
+   |        |  +--ro contexts*
+   |        |     +--ro context-id?               fpcbase:fpc-context-id
+   |        |     +--ro ports*                    fpcbase:fpc-port-id
+   |        |     +--ro delegating-ip-prefixes*   inet:ip-prefix
+   |        |     +--ro ul
+   |        |     |  +--ro remote-address?     inet:ip-address
+   |        |     |  +--ro local-address?      inet:ip-address
+   |        |     |  +--ro mtu?                uint32
+   |        |     |  +--ro mobility-profile
+   |        |     |  |  +--ro (profile-parameters)?
+   |        |     |  +--ro nexthop
+   |        |     |  |  +--ro nexthop-type?   identityref
+   |        |     |  |  +--ro (nexthop-value)?
+   |        |     |  |     +--:(ip)
+   |        |     |  |     |  +--ro ip?             inet:ip-address
+   |        |     |  |     +--:(servicepath)
+   |        |     |  |        +--ro servicepath?    fpcbase:fpcp-service-path-id
+   |        |     |  +--ro qos-profile
+   |        |     |  |  +--ro qos-type?   identityref
+   |        |     |  |  +--ro (value)?
+   |        |     |  +--ro dpn-parameters
+   |        |     |  +--ro vendor-params* [vendor-id vendor-type]
+   |        |     |     +--ro vendor-id      fpcbase:fpc-identity
+   |        |     |     +--ro vendor-type    identityref
+   |        |     |     +--ro (value)?
+   |        |     |        +--:(empty-type)
+   |        |     |           +--ro empty-type?    empty
+   |        |     +--ro dl
+   |        |     |  +--ro remote-address?     inet:ip-address
+   |        |     |  +--ro local-address?      inet:ip-address
+   |        |     |  +--ro mtu?                uint32
+   |        |     |  +--ro mobility-profile
+   |        |     |  |  +--ro (profile-parameters)?
+   |        |     |  +--ro nexthop
+   |        |     |  |  +--ro nexthop-type?   identityref
+   |        |     |  |  +--ro (nexthop-value)?
+   |        |     |  |     +--:(ip)
+   |        |     |  |     |  +--ro ip?             inet:ip-address
+   |        |     |  |     +--:(servicepath)
+   |        |     |  |        +--ro servicepath?    fpcbase:fpcp-service-path-id
+   |        |     |  +--ro qos-profile
+   |        |     |  |  +--ro qos-type?   identityref
+   |        |     |  |  +--ro (value)?
+   |        |     |  +--ro dpn-parameters
+   |        |     |  +--ro vendor-params* [vendor-id vendor-type]
+   |        |     |     +--ro vendor-id      fpcbase:fpc-identity
+   |        |     |     +--ro vendor-type    identityref
+   |        |     |     +--ro (value)?
+   |        |     |        +--:(empty-type)
+   |        |     |           +--ro empty-type?    empty
+   |        |     +--ro parent-context?           fpcbase:fpc-context-id
+   |        |     +--ro dpns* [dpn-id]
+   |        |     |  +--ro dpn-id              fpcbase:fpc-dpn-id
+   |        |     |  +--ro direction?          fpcbase:fpc-direction
+   |        |     |  +--ro remote-address?     inet:ip-address
+   |        |     |  +--ro local-address?      inet:ip-address
+   |        |     |  +--ro mtu?                uint32
+   |        |     |  +--ro mobility-profile
+   |        |     |  |  +--ro (profile-parameters)?
+   |        |     |  +--ro nexthop
+   |        |     |  |  +--ro nexthop-type?   identityref
+   |        |     |  |  +--ro (nexthop-value)?
+   |        |     |  |     +--:(ip)
+   |        |     |  |     |  +--ro ip?             inet:ip-address
+   |        |     |  |     +--:(servicepath)
+   |        |     |  |        +--ro servicepath?    fpcbase:fpcp-service-path-id
+   |        |     |  +--ro qos-profile
+   |        |     |  |  +--ro qos-type?   identityref
+   |        |     |  |  +--ro (value)?
+   |        |     |  +--ro dpn-parameters
+   |        |     |  +--ro vendor-params* [vendor-id vendor-type]
+   |        |     |     +--ro vendor-id      fpcbase:fpc-identity
+   |        |     |     +--ro vendor-type    identityref
+   |        |     |     +--ro (value)?
+   |        |     |        +--:(empty-type)
+   |        |     |           +--ro empty-type?    empty
+   |        |     +--ro instructions {instruction-bitset}?
+   |        |        +--ro (instr-type)?
+   |        +--:(empty-case)
+   +---x event_register
+   |  +---w input
+   |  |  +---w monitor-id?         fpcbase:fpc-identity
+   |  |  +---w target?             fpc-identity
+   |  |  +---w (event-config-value)?
+   |  |     +--:(periodic-config)
+   |  |     |  +---w period?             uint32
+   |  |     +--:(threshold-config)
+   |  |     |  +---w lo-thresh?          uint32
+   |  |     |  +---w hi-thresh?          uint32
+   |  |     +--:(scheduled-config)
+   |  |     |  +---w report-time?        uint32
+   |  |     +--:(events-config-ident)
+   |  |     |  +---w event-identities*   identityref
+   |  |     +--:(events-config)
+   |  |        +---w event-ids*          uint32
+   |  +--ro output
+   |     +--ro monitor-result?   fpcagent:result
+   +---x event_deregister
+   |  +---w input
+   |  |  +---w monitors*
+   |  |     +---w monitor-id?   fpcbase:fpc-identity
+   |  +--ro output
+   |     +--ro monitor-result?   fpcagent:result
+   +---x probe
+      +---w input
+      |  +---w targets* [target]
+      |     +---w target    fpc-identity
+      |     +---w dpn-id?   fpcbase:fpc-dpn-id
+      +--ro output
+         +--ro monitor-result?   fpcagent:result
+notifications:
+   +---n config-result-notification
+   |  +--ro notification-id?   fpcagent:notification-id
+   |  +--ro timestamp?         uint32
+   |  +--ro (value)?
+   |     +--:(config-result)
+   |     |  +--ro op-status?         enumeration
+   |     |  +--ro op-id?             op-identifier
+   |     |  +--ro (result-type)?
+   |     |     +--:(err)
+   |     |     |  +--ro error-type-id?     fpcagent:error-type-id
+   |     |     |  +--ro error-info?        string
+   |     |     +--:(config-success)
+   |     |     |  +--ro descriptors*
+   |     |     |  |  +--ro descriptor-id?     fpcbase:fpc-descriptor-id
+   |     |     |  |  +--ro descriptor-type?   identityref
+   |     |     |  |  +--ro (descriptor-value)?
+   |     |     |  |     +--:(all-traffic)
+   |     |     |  |        +--ro all-traffic?       empty
+   |     |     |  +--ro actions*
+   |     |     |  |  +--ro action-id?     fpcbase:fpc-action-id
+   |     |     |  |  +--ro action-type?   identityref
+   |     |     |  |  +--ro (action-value)?
+   |     |     |  |     +--:(drop)
+   |     |     |  |        +--ro drop?          empty
+   |     |     |  +--ro policies*
+   |     |     |  |  +--ro policy-id?   fpcbase:fpc-policy-id
+   |     |     |  |  +--ro rule* [order]
+   |     |     |  |     +--ro order         uint32
+   |     |     |  |     +--ro action* [action-id]
+   |     |     |  |     |  +--ro order?         uint32
+   |     |     |  |     |  +--ro action-id      fpcbase:fpc-action-id
+   |     |     |  |     |  +--ro action-type?   identityref
+   |     |     |  |     |  +--ro (action-value)?
+   |     |     |  |     |     +--:(drop)
+   |     |     |  |     |        +--ro drop?          empty
+   |     |     |  |     +--ro descriptor* [descriptor-id]
+   |     |     |  |        +--ro descriptor-id      fpcbase:fpc-descriptor-id
+   |     |     |  |        +--ro descriptor-type?   identityref
+   |     |     |  |        +--ro (descriptor-value)?
+   |     |     |  |           +--:(all-traffic)
+   |     |     |  |              +--ro all-traffic?       empty
+   |     |     |  +--ro policy-groups*
+   |     |     |  |  +--ro policy-group-id?   fpcbase:fpc-policy-group-id
+   |     |     |  |  +--ro policy*            fpcbase:fpc-policy-id
+   |     |     |  +--ro ports*
+   |     |     |  |  +--ro port-id?         fpcbase:fpc-port-id
+   |     |     |  |  +--ro policy-groups* [policy-group-id]
+   |     |     |  |  |  +--ro policy-group-id    fpcbase:fpc-policy-group-id
+   |     |     |  |  |  +--ro policy*            fpcbase:fpc-policy-id
+   |     |     |  |  +--ro instructions {instruction-bitset}?
+   |     |     |  |     +--ro (instr-type)?
+   |     |     |  +--ro contexts*
+   |     |     |     +--ro context-id?               fpcbase:fpc-context-id
+   |     |     |     +--ro ports*                    fpcbase:fpc-port-id
+   |     |     |     +--ro delegating-ip-prefixes*   inet:ip-prefix
+   |     |     |     +--ro ul
+   |     |     |     |  +--ro remote-address?     inet:ip-address
+   |     |     |     |  +--ro local-address?      inet:ip-address
+   |     |     |     |  +--ro mtu?                uint32
+   |     |     |     |  +--ro mobility-profile
+   |     |     |     |  |  +--ro (profile-parameters)?
+   |     |     |     |  +--ro nexthop
+   |     |     |     |  |  +--ro nexthop-type?   identityref
+   |     |     |     |  |  +--ro (nexthop-value)?
+   |     |     |     |  |     +--:(ip)
+   |     |     |     |  |     |  +--ro ip?             inet:ip-address
+   |     |     |     |  |     +--:(servicepath)
+   |     |     |     |  |        +--ro servicepath?    fpcbase:fpcp-service-path-id
+   |     |     |     |  +--ro qos-profile
+   |     |     |     |  |  +--ro qos-type?   identityref
+   |     |     |     |  |  +--ro (value)?
+   |     |     |     |  +--ro dpn-parameters
+   |     |     |     |  +--ro vendor-params* [vendor-id vendor-type]
+   |     |     |     |     +--ro vendor-id      fpcbase:fpc-identity
+   |     |     |     |     +--ro vendor-type    identityref
+   |     |     |     |     +--ro (value)?
+   |     |     |     |        +--:(empty-type)
+   |     |     |     |           +--ro empty-type?    empty
+   |     |     |     +--ro dl
+   |     |     |     |  +--ro remote-address?     inet:ip-address
+   |     |     |     |  +--ro local-address?      inet:ip-address
+   |     |     |     |  +--ro mtu?                uint32
+   |     |     |     |  +--ro mobility-profile
+   |     |     |     |  |  +--ro (profile-parameters)?
+   |     |     |     |  +--ro nexthop
+   |     |     |     |  |  +--ro nexthop-type?   identityref
+   |     |     |     |  |  +--ro (nexthop-value)?
+   |     |     |     |  |     +--:(ip)
+   |     |     |     |  |     |  +--ro ip?             inet:ip-address
+   |     |     |     |  |     +--:(servicepath)
+   |     |     |     |  |        +--ro servicepath?    fpcbase:fpcp-service-path-id
+   |     |     |     |  +--ro qos-profile
+   |     |     |     |  |  +--ro qos-type?   identityref
+   |     |     |     |  |  +--ro (value)?
+   |     |     |     |  +--ro dpn-parameters
+   |     |     |     |  +--ro vendor-params* [vendor-id vendor-type]
+   |     |     |     |     +--ro vendor-id      fpcbase:fpc-identity
+   |     |     |     |     +--ro vendor-type    identityref
+   |     |     |     |     +--ro (value)?
+   |     |     |     |        +--:(empty-type)
+   |     |     |     |           +--ro empty-type?    empty
+   |     |     |     +--ro parent-context?           fpcbase:fpc-context-id
+   |     |     |     +--ro dpns* [dpn-id]
+   |     |     |     |  +--ro dpn-id              fpcbase:fpc-dpn-id
+   |     |     |     |  +--ro direction?          fpcbase:fpc-direction
+   |     |     |     |  +--ro remote-address?     inet:ip-address
+   |     |     |     |  +--ro local-address?      inet:ip-address
+   |     |     |     |  +--ro mtu?                uint32
+   |     |     |     |  +--ro mobility-profile
+   |     |     |     |  |  +--ro (profile-parameters)?
+   |     |     |     |  +--ro nexthop
+   |     |     |     |  |  +--ro nexthop-type?   identityref
+   |     |     |     |  |  +--ro (nexthop-value)?
+   |     |     |     |  |     +--:(ip)
+   |     |     |     |  |     |  +--ro ip?             inet:ip-address
+   |     |     |     |  |     +--:(servicepath)
+   |     |     |     |  |        +--ro servicepath?    fpcbase:fpcp-service-path-id
+   |     |     |     |  +--ro qos-profile
+   |     |     |     |  |  +--ro qos-type?   identityref
+   |     |     |     |  |  +--ro (value)?
+   |     |     |     |  +--ro dpn-parameters
+   |     |     |     |  +--ro vendor-params* [vendor-id vendor-type]
+   |     |     |     |     +--ro vendor-id      fpcbase:fpc-identity
+   |     |     |     |     +--ro vendor-type    identityref
+   |     |     |     |     +--ro (value)?
+   |     |     |     |        +--:(empty-type)
+   |     |     |     |           +--ro empty-type?    empty
+   |     |     |     +--ro instructions {instruction-bitset}?
+   |     |     |        +--ro (instr-type)?
+   |     |     +--:(empty-case)
+   |     +--:(config-bundle-result)
+   |        +--ro bundles*
+   |           +--ro op-status?       enumeration
+   |           +--ro op-id?           op-identifier
+   |           +--ro (result-type)?
+   |              +--:(err)
+   |              |  +--ro error-type-id?   fpcagent:error-type-id
+   |              |  +--ro error-info?      string
+   |              +--:(config-success)
+   |              |  +--ro descriptors*
+   |              |  |  +--ro descriptor-id?     fpcbase:fpc-descriptor-id
+   |              |  |  +--ro descriptor-type?   identityref
+   |              |  |  +--ro (descriptor-value)?
+   |              |  |     +--:(all-traffic)
+   |              |  |        +--ro all-traffic?       empty
+   |              |  +--ro actions*
+   |              |  |  +--ro action-id?     fpcbase:fpc-action-id
+   |              |  |  +--ro action-type?   identityref
+   |              |  |  +--ro (action-value)?
+   |              |  |     +--:(drop)
+   |              |  |        +--ro drop?          empty
+   |              |  +--ro policies*
+   |              |  |  +--ro policy-id?   fpcbase:fpc-policy-id
+   |              |  |  +--ro rule* [order]
+   |              |  |     +--ro order         uint32
+   |              |  |     +--ro action* [action-id]
+   |              |  |     |  +--ro order?         uint32
+   |              |  |     |  +--ro action-id      fpcbase:fpc-action-id
+   |              |  |     |  +--ro action-type?   identityref
+   |              |  |     |  +--ro (action-value)?
+   |              |  |     |     +--:(drop)
+   |              |  |     |        +--ro drop?          empty
+   |              |  |     +--ro descriptor* [descriptor-id]
+   |              |  |        +--ro descriptor-id      fpcbase:fpc-descriptor-id
+   |              |  |        +--ro descriptor-type?   identityref
+   |              |  |        +--ro (descriptor-value)?
+   |              |  |           +--:(all-traffic)
+   |              |  |              +--ro all-traffic?       empty
+   |              |  +--ro policy-groups*
+   |              |  |  +--ro policy-group-id?   fpcbase:fpc-policy-group-id
+   |              |  |  +--ro policy*            fpcbase:fpc-policy-id
+   |              |  +--ro ports*
+   |              |  |  +--ro port-id?         fpcbase:fpc-port-id
+   |              |  |  +--ro policy-groups* [policy-group-id]
+   |              |  |  |  +--ro policy-group-id    fpcbase:fpc-policy-group-id
+   |              |  |  |  +--ro policy*            fpcbase:fpc-policy-id
+   |              |  |  +--ro instructions {instruction-bitset}?
+   |              |  |     +--ro (instr-type)?
+   |              |  +--ro contexts*
+   |              |     +--ro context-id?               fpcbase:fpc-context-id
+   |              |     +--ro ports*                    fpcbase:fpc-port-id
+   |              |     +--ro delegating-ip-prefixes*   inet:ip-prefix
+   |              |     +--ro ul
+   |              |     |  +--ro remote-address?     inet:ip-address
+   |              |     |  +--ro local-address?      inet:ip-address
+   |              |     |  +--ro mtu?                uint32
+   |              |     |  +--ro mobility-profile
+   |              |     |  |  +--ro (profile-parameters)?
+   |              |     |  +--ro nexthop
+   |              |     |  |  +--ro nexthop-type?   identityref
+   |              |     |  |  +--ro (nexthop-value)?
+   |              |     |  |     +--:(ip)
+   |              |     |  |     |  +--ro ip?             inet:ip-address
+   |              |     |  |     +--:(servicepath)
+   |              |     |  |        +--ro servicepath?    fpcbase:fpcp-service-path-id
+   |              |     |  +--ro qos-profile
+   |              |     |  |  +--ro qos-type?   identityref
+   |              |     |  |  +--ro (value)?
+   |              |     |  +--ro dpn-parameters
+   |              |     |  +--ro vendor-params* [vendor-id vendor-type]
+   |              |     |     +--ro vendor-id      fpcbase:fpc-identity
+   |              |     |     +--ro vendor-type    identityref
+   |              |     |     +--ro (value)?
+   |              |     |        +--:(empty-type)
+   |              |     |           +--ro empty-type?    empty
+   |              |     +--ro dl
+   |              |     |  +--ro remote-address?     inet:ip-address
+   |              |     |  +--ro local-address?      inet:ip-address
+   |              |     |  +--ro mtu?                uint32
+   |              |     |  +--ro mobility-profile
+   |              |     |  |  +--ro (profile-parameters)?
+   |              |     |  +--ro nexthop
+   |              |     |  |  +--ro nexthop-type?   identityref
+   |              |     |  |  +--ro (nexthop-value)?
+   |              |     |  |     +--:(ip)
+   |              |     |  |     |  +--ro ip?             inet:ip-address
+   |              |     |  |     +--:(servicepath)
+   |              |     |  |        +--ro servicepath?    fpcbase:fpcp-service-path-id
+   |              |     |  +--ro qos-profile
+   |              |     |  |  +--ro qos-type?   identityref
+   |              |     |  |  +--ro (value)?
+   |              |     |  +--ro dpn-parameters
+   |              |     |  +--ro vendor-params* [vendor-id vendor-type]
+   |              |     |     +--ro vendor-id      fpcbase:fpc-identity
+   |              |     |     +--ro vendor-type    identityref
+   |              |     |     +--ro (value)?
+   |              |     |        +--:(empty-type)
+   |              |     |           +--ro empty-type?    empty
+   |              |     +--ro parent-context?           fpcbase:fpc-context-id
+   |              |     +--ro dpns* [dpn-id]
+   |              |     |  +--ro dpn-id              fpcbase:fpc-dpn-id
+   |              |     |  +--ro direction?          fpcbase:fpc-direction
+   |              |     |  +--ro remote-address?     inet:ip-address
+   |              |     |  +--ro local-address?      inet:ip-address
+   |              |     |  +--ro mtu?                uint32
+   |              |     |  +--ro mobility-profile
+   |              |     |  |  +--ro (profile-parameters)?
+   |              |     |  +--ro nexthop
+   |              |     |  |  +--ro nexthop-type?   identityref
+   |              |     |  |  +--ro (nexthop-value)?
+   |              |     |  |     +--:(ip)
+   |              |     |  |     |  +--ro ip?             inet:ip-address
+   |              |     |  |     +--:(servicepath)
+   |              |     |  |        +--ro servicepath?    fpcbase:fpcp-service-path-id
+   |              |     |  +--ro qos-profile
+   |              |     |  |  +--ro qos-type?   identityref
+   |              |     |  |  +--ro (value)?
+   |              |     |  +--ro dpn-parameters
+   |              |     |  +--ro vendor-params* [vendor-id vendor-type]
+   |              |     |     +--ro vendor-id      fpcbase:fpc-identity
+   |              |     |     +--ro vendor-type    identityref
+   |              |     |     +--ro (value)?
+   |              |     |        +--:(empty-type)
+   |              |     |           +--ro empty-type?    empty
+   |              |     +--ro instructions {instruction-bitset}?
+   |              |        +--ro (instr-type)?
+   |              +--:(empty-case)
+   +---n notify
+      +--ro notification-id?          fpcagent:notification-id
+      +--ro timestamp?                uint32
+      +--ro (value)?
+         +--:(dpn-candidate-available) {fpcagent:fpc-auto-binding}?
+         |  +--ro node-id?                  inet:uri
+         |  +--ro access-types*             identityref
+         |  +--ro mobility-profiles*        identityref
+         |  +--ro forwarding-plane-roles*   identityref
+         +--:(monitor-notification)
+            +--ro (monitor-notification-value)?
+               +--:(simple-monitor)
+               |  +--ro monitor-id?               fpcbase:fpc-identity
+               |  +--ro target?                   fpc-identity
+               |  +--ro (event-config-value)?
+               |  |  +--:(periodic-config)
+               |  |  |  +--ro period?                   uint32
+               |  |  +--:(threshold-config)
+               |  |  |  +--ro lo-thresh?                uint32
+               |  |  |  +--ro hi-thresh?                uint32
+               |  |  +--:(scheduled-config)
+               |  |  |  +--ro report-time?              uint32
+               |  |  +--:(events-config-ident)
+               |  |  |  +--ro event-identities*         identityref
+               |  |  +--:(events-config)
+               |  |     +--ro event-ids*                uint32
+               |  +--ro (report-value)?
+               |     +--:(trigger)
+               |     |  +--ro trigger?                  fpcbase:event-type-id
+               |     +--:(simple-empty)
+               |     |  +--ro nothing?                  empty
+               |     +--:(simple-val32)
+               |        +--ro val32?                    uint32
+               +--:(bulk-monitors)
+                  +--ro reports*
+                     +--ro monitor-id?         fpcbase:fpc-identity
+                     +--ro target?             fpc-identity
+                     +--ro (event-config-value)?
+                     |  +--:(periodic-config)
+                     |  |  +--ro period?             uint32
+                     |  +--:(threshold-config)
+                     |  |  +--ro lo-thresh?          uint32
+                     |  |  +--ro hi-thresh?          uint32
+                     |  +--:(scheduled-config)
+                     |  |  +--ro report-time?        uint32
+                     |  +--:(events-config-ident)
+                     |  |  +--ro event-identities*   identityref
+                     |  +--:(events-config)
+                     |     +--ro event-ids*          uint32
+                     +--ro (report-value)?
+                        +--:(trigger)
+                        |  +--ro trigger?            fpcbase:event-type-id
+                        +--:(simple-empty)
+                        |  +--ro nothing?            empty
+                        +--:(simple-val32)
+                           +--ro val32?              uint32
      ]]></artwork>
         <postamble></postamble>
       </figure>
 </t>
   </section>
-  <section anchor="ietf-pmip-qos-tree" title="PMIP QoS Tree">
-  </section>
-  <section anchor="ietf-traffic-selectors-types-tree" title="Traffic Selectors YANG Tree">
-  </section>
   <section anchor="ietf-dmm-threegpp-tree" title="FPC 3GPP Mobility YANG Tree">
+<t>
+ <figure anchor="fig-ietf-dmm-threegpp-tree"
+              title="YANG FPC 3GPP Mobility Tree">
+<artwork align="center"><![CDATA[
+module: ietf-dmm-threegpp
+augment /fpcagent:fpc-entities/fpcagent:descriptors/fpcagent:descriptor-value:
+   +--:(threegpp-tft)
+      +--rw packet-filters* [identifier]
+         +--rw direction?               threegpp:packet-filter-direction
+         +--rw identifier               uint8
+         +--rw evaluation-precedence?   uint8
+         +--rw contents* [component-type-identifier]
+            +--rw component-type-identifier    threegpp:component-type-id
+            +--rw (value)?
+               +--:(ipv4-local)
+               |  +--rw ipv4-local?                  inet:ipv4-address
+               +--:(ipv6-prefix-local)
+               |  +--rw ipv6-prefix-local?           inet:ipv6-prefix
+               +--:(ipv4-ipv6-remote)
+               |  +--rw ipv4-ipv6-remote?            inet:ip-address
+               +--:(ipv6-prefix-remote)
+               |  +--rw ipv6-prefix-remote?          inet:ipv6-prefix
+               +--:(next-header)
+               |  +--rw next-header?                 uint8
+               +--:(local-port)
+               |  +--rw local-port?                  inet:port-number
+               +--:(local-port-range)
+               |  +--rw local-port-lo?               inet:port-number
+               |  +--rw local-port-hi?               inet:port-number
+               +--:(remote-port)
+               |  +--rw remote-port?                 inet:port-number
+               +--:(remote-port-range)
+               |  +--rw remote-port-lo?              inet:port-number
+               |  +--rw remote-port-hi?              inet:port-number
+               +--:(ipsec-index)
+               |  +--rw ipsec-index?                 traffic-selectors:ipsec-spi
+               +--:(traffic-class)
+               |  +--rw traffic-class?               inet:dscp
+               +--:(traffic-class-range)
+               |  +--rw traffic-class-lo?            inet:dscp
+               |  +--rw traffic-class-hi?            inet:dscp
+               +--:(flow-label-type)
+                  +--rw flow-label-type*             inet:ipv6-flow-label
+augment /fpcagent:configure/fpcagent:input/fpcagent:op_body/fpcagent:create_or_update/fpcagent:descriptors/fpcagent:descriptor-value:
+   +--:(threegpp-tft)
+      +---- packet-filters* [identifier]
+         +---- direction?               threegpp:packet-filter-direction
+         +---- identifier               uint8
+         +---- evaluation-precedence?   uint8
+         +---- contents* [component-type-identifier]
+            +---- component-type-identifier    threegpp:component-type-id
+            +---- (value)?
+               +--:(ipv4-local)
+               |  +---- ipv4-local?                  inet:ipv4-address
+               +--:(ipv6-prefix-local)
+               |  +---- ipv6-prefix-local?           inet:ipv6-prefix
+               +--:(ipv4-ipv6-remote)
+               |  +---- ipv4-ipv6-remote?            inet:ip-address
+               +--:(ipv6-prefix-remote)
+               |  +---- ipv6-prefix-remote?          inet:ipv6-prefix
+               +--:(next-header)
+               |  +---- next-header?                 uint8
+               +--:(local-port)
+               |  +---- local-port?                  inet:port-number
+               +--:(local-port-range)
+               |  +---- local-port-lo?               inet:port-number
+               |  +---- local-port-hi?               inet:port-number
+               +--:(remote-port)
+               |  +---- remote-port?                 inet:port-number
+               +--:(remote-port-range)
+               |  +---- remote-port-lo?              inet:port-number
+               |  +---- remote-port-hi?              inet:port-number
+               +--:(ipsec-index)
+               |  +---- ipsec-index?                 traffic-selectors:ipsec-spi
+               +--:(traffic-class)
+               |  +---- traffic-class?               inet:dscp
+               +--:(traffic-class-range)
+               |  +---- traffic-class-lo?            inet:dscp
+               |  +---- traffic-class-hi?            inet:dscp
+               +--:(flow-label-type)
+                  +---- flow-label-type*             inet:ipv6-flow-label
+augment /fpcagent:configure-bundles/fpcagent:input/fpcagent:bundles/fpcagent:op_body/fpcagent:create_or_update/fpcagent:descriptors/fpcagent:descriptor-value:
+   +--:(threegpp-tft)
+      +---- packet-filters* [identifier]
+         +---- direction?               threegpp:packet-filter-direction
+         +---- identifier               uint8
+         +---- evaluation-precedence?   uint8
+         +---- contents* [component-type-identifier]
+            +---- component-type-identifier    threegpp:component-type-id
+            +---- (value)?
+               +--:(ipv4-local)
+               |  +---- ipv4-local?                  inet:ipv4-address
+               +--:(ipv6-prefix-local)
+               |  +---- ipv6-prefix-local?           inet:ipv6-prefix
+               +--:(ipv4-ipv6-remote)
+               |  +---- ipv4-ipv6-remote?            inet:ip-address
+               +--:(ipv6-prefix-remote)
+               |  +---- ipv6-prefix-remote?          inet:ipv6-prefix
+               +--:(next-header)
+               |  +---- next-header?                 uint8
+               +--:(local-port)
+               |  +---- local-port?                  inet:port-number
+               +--:(local-port-range)
+               |  +---- local-port-lo?               inet:port-number
+               |  +---- local-port-hi?               inet:port-number
+               +--:(remote-port)
+               |  +---- remote-port?                 inet:port-number
+               +--:(remote-port-range)
+               |  +---- remote-port-lo?              inet:port-number
+               |  +---- remote-port-hi?              inet:port-number
+               +--:(ipsec-index)
+               |  +---- ipsec-index?                 traffic-selectors:ipsec-spi
+               +--:(traffic-class)
+               |  +---- traffic-class?               inet:dscp
+               +--:(traffic-class-range)
+               |  +---- traffic-class-lo?            inet:dscp
+               |  +---- traffic-class-hi?            inet:dscp
+               +--:(flow-label-type)
+                  +---- flow-label-type*             inet:ipv6-flow-label
+augment /fpcagent:fpc-topology/fpcagent:dpn-groups/fpcagent:dpn-group-peers/fpcagent:profile-parameters:
+   +--:(threegpp-tunnel)
+      +--rw tunnel-type?         identityref
+      +--rw tunnel-identifier?   uint32
+      +--rw packet-filters* [identifier]
+         +--rw direction?               threegpp:packet-filter-direction
+         +--rw identifier               uint8
+         +--rw evaluation-precedence?   uint8
+         +--rw contents* [component-type-identifier]
+            +--rw component-type-identifier    threegpp:component-type-id
+            +--rw (value)?
+               +--:(ipv4-local)
+               |  +--rw ipv4-local?                  inet:ipv4-address
+               +--:(ipv6-prefix-local)
+               |  +--rw ipv6-prefix-local?           inet:ipv6-prefix
+               +--:(ipv4-ipv6-remote)
+               |  +--rw ipv4-ipv6-remote?            inet:ip-address
+               +--:(ipv6-prefix-remote)
+               |  +--rw ipv6-prefix-remote?          inet:ipv6-prefix
+               +--:(next-header)
+               |  +--rw next-header?                 uint8
+               +--:(local-port)
+               |  +--rw local-port?                  inet:port-number
+               +--:(local-port-range)
+               |  +--rw local-port-lo?               inet:port-number
+               |  +--rw local-port-hi?               inet:port-number
+               +--:(remote-port)
+               |  +--rw remote-port?                 inet:port-number
+               +--:(remote-port-range)
+               |  +--rw remote-port-lo?              inet:port-number
+               |  +--rw remote-port-hi?              inet:port-number
+               +--:(ipsec-index)
+               |  +--rw ipsec-index?                 traffic-selectors:ipsec-spi
+               +--:(traffic-class)
+               |  +--rw traffic-class?               inet:dscp
+               +--:(traffic-class-range)
+               |  +--rw traffic-class-lo?            inet:dscp
+               |  +--rw traffic-class-hi?            inet:dscp
+               +--:(flow-label-type)
+                  +--rw flow-label-type*             inet:ipv6-flow-label
+augment /fpcagent:fpc-entities/fpcagent:contexts/fpcagent:ul/fpcagent:mobility-profile/fpcagent:profile-parameters:
+   +--:(threegpp-tunnel)
+      +--rw tunnel-type?         identityref
+      +--rw tunnel-identifier?   uint32
+      +--rw packet-filters* [identifier]
+         +--rw direction?               threegpp:packet-filter-direction
+         +--rw identifier               uint8
+         +--rw evaluation-precedence?   uint8
+         +--rw contents* [component-type-identifier]
+            +--rw component-type-identifier    threegpp:component-type-id
+            +--rw (value)?
+               +--:(ipv4-local)
+               |  +--rw ipv4-local?                  inet:ipv4-address
+               +--:(ipv6-prefix-local)
+               |  +--rw ipv6-prefix-local?           inet:ipv6-prefix
+               +--:(ipv4-ipv6-remote)
+               |  +--rw ipv4-ipv6-remote?            inet:ip-address
+               +--:(ipv6-prefix-remote)
+               |  +--rw ipv6-prefix-remote?          inet:ipv6-prefix
+               +--:(next-header)
+               |  +--rw next-header?                 uint8
+               +--:(local-port)
+               |  +--rw local-port?                  inet:port-number
+               +--:(local-port-range)
+               |  +--rw local-port-lo?               inet:port-number
+               |  +--rw local-port-hi?               inet:port-number
+               +--:(remote-port)
+               |  +--rw remote-port?                 inet:port-number
+               +--:(remote-port-range)
+               |  +--rw remote-port-lo?              inet:port-number
+               |  +--rw remote-port-hi?              inet:port-number
+               +--:(ipsec-index)
+               |  +--rw ipsec-index?                 traffic-selectors:ipsec-spi
+               +--:(traffic-class)
+               |  +--rw traffic-class?               inet:dscp
+               +--:(traffic-class-range)
+               |  +--rw traffic-class-lo?            inet:dscp
+               |  +--rw traffic-class-hi?            inet:dscp
+               +--:(flow-label-type)
+                  +--rw flow-label-type*             inet:ipv6-flow-label
+augment /fpcagent:configure/fpcagent:input/fpcagent:op_body/fpcagent:create_or_update/fpcagent:contexts/fpcagent:ul/fpcagent:mobility-profile/fpcagent:profile-parameters:
+   +--:(threegpp-tunnel)
+      +---- tunnel-type?         identityref
+      +---- tunnel-identifier?   uint32
+      +---- packet-filters* [identifier]
+         +---- direction?               threegpp:packet-filter-direction
+         +---- identifier               uint8
+         +---- evaluation-precedence?   uint8
+         +---- contents* [component-type-identifier]
+            +---- component-type-identifier    threegpp:component-type-id
+            +---- (value)?
+               +--:(ipv4-local)
+               |  +---- ipv4-local?                  inet:ipv4-address
+               +--:(ipv6-prefix-local)
+               |  +---- ipv6-prefix-local?           inet:ipv6-prefix
+               +--:(ipv4-ipv6-remote)
+               |  +---- ipv4-ipv6-remote?            inet:ip-address
+               +--:(ipv6-prefix-remote)
+               |  +---- ipv6-prefix-remote?          inet:ipv6-prefix
+               +--:(next-header)
+               |  +---- next-header?                 uint8
+               +--:(local-port)
+               |  +---- local-port?                  inet:port-number
+               +--:(local-port-range)
+               |  +---- local-port-lo?               inet:port-number
+               |  +---- local-port-hi?               inet:port-number
+               +--:(remote-port)
+               |  +---- remote-port?                 inet:port-number
+               +--:(remote-port-range)
+               |  +---- remote-port-lo?              inet:port-number
+               |  +---- remote-port-hi?              inet:port-number
+               +--:(ipsec-index)
+               |  +---- ipsec-index?                 traffic-selectors:ipsec-spi
+               +--:(traffic-class)
+               |  +---- traffic-class?               inet:dscp
+               +--:(traffic-class-range)
+               |  +---- traffic-class-lo?            inet:dscp
+               |  +---- traffic-class-hi?            inet:dscp
+               +--:(flow-label-type)
+                  +---- flow-label-type*             inet:ipv6-flow-label
+augment /fpcagent:configure-bundles/fpcagent:input/fpcagent:bundles/fpcagent:op_body/fpcagent:create_or_update/fpcagent:contexts/fpcagent:ul/fpcagent:mobility-profile/fpcagent:profile-parameters:
+   +--:(threegpp-tunnel)
+      +---- tunnel-type?         identityref
+      +---- tunnel-identifier?   uint32
+      +---- packet-filters* [identifier]
+         +---- direction?               threegpp:packet-filter-direction
+         +---- identifier               uint8
+         +---- evaluation-precedence?   uint8
+         +---- contents* [component-type-identifier]
+            +---- component-type-identifier    threegpp:component-type-id
+            +---- (value)?
+               +--:(ipv4-local)
+               |  +---- ipv4-local?                  inet:ipv4-address
+               +--:(ipv6-prefix-local)
+               |  +---- ipv6-prefix-local?           inet:ipv6-prefix
+               +--:(ipv4-ipv6-remote)
+               |  +---- ipv4-ipv6-remote?            inet:ip-address
+               +--:(ipv6-prefix-remote)
+               |  +---- ipv6-prefix-remote?          inet:ipv6-prefix
+               +--:(next-header)
+               |  +---- next-header?                 uint8
+               +--:(local-port)
+               |  +---- local-port?                  inet:port-number
+               +--:(local-port-range)
+               |  +---- local-port-lo?               inet:port-number
+               |  +---- local-port-hi?               inet:port-number
+               +--:(remote-port)
+               |  +---- remote-port?                 inet:port-number
+               +--:(remote-port-range)
+               |  +---- remote-port-lo?              inet:port-number
+               |  +---- remote-port-hi?              inet:port-number
+               +--:(ipsec-index)
+               |  +---- ipsec-index?                 traffic-selectors:ipsec-spi
+               +--:(traffic-class)
+               |  +---- traffic-class?               inet:dscp
+               +--:(traffic-class-range)
+               |  +---- traffic-class-lo?            inet:dscp
+               |  +---- traffic-class-hi?            inet:dscp
+               +--:(flow-label-type)
+                  +---- flow-label-type*             inet:ipv6-flow-label
+augment /fpcagent:fpc-entities/fpcagent:contexts/fpcagent:dl/fpcagent:mobility-profile/fpcagent:profile-parameters:
+   +--:(threegpp-tunnel)
+      +--rw tunnel-type?         identityref
+      +--rw tunnel-identifier?   uint32
+      +--rw packet-filters* [identifier]
+         +--rw direction?               threegpp:packet-filter-direction
+         +--rw identifier               uint8
+         +--rw evaluation-precedence?   uint8
+         +--rw contents* [component-type-identifier]
+            +--rw component-type-identifier    threegpp:component-type-id
+            +--rw (value)?
+               +--:(ipv4-local)
+               |  +--rw ipv4-local?                  inet:ipv4-address
+               +--:(ipv6-prefix-local)
+               |  +--rw ipv6-prefix-local?           inet:ipv6-prefix
+               +--:(ipv4-ipv6-remote)
+               |  +--rw ipv4-ipv6-remote?            inet:ip-address
+               +--:(ipv6-prefix-remote)
+               |  +--rw ipv6-prefix-remote?          inet:ipv6-prefix
+               +--:(next-header)
+               |  +--rw next-header?                 uint8
+               +--:(local-port)
+               |  +--rw local-port?                  inet:port-number
+               +--:(local-port-range)
+               |  +--rw local-port-lo?               inet:port-number
+               |  +--rw local-port-hi?               inet:port-number
+               +--:(remote-port)
+               |  +--rw remote-port?                 inet:port-number
+               +--:(remote-port-range)
+               |  +--rw remote-port-lo?              inet:port-number
+               |  +--rw remote-port-hi?              inet:port-number
+               +--:(ipsec-index)
+               |  +--rw ipsec-index?                 traffic-selectors:ipsec-spi
+               +--:(traffic-class)
+               |  +--rw traffic-class?               inet:dscp
+               +--:(traffic-class-range)
+               |  +--rw traffic-class-lo?            inet:dscp
+               |  +--rw traffic-class-hi?            inet:dscp
+               +--:(flow-label-type)
+                  +--rw flow-label-type*             inet:ipv6-flow-label
+augment /fpcagent:configure/fpcagent:input/fpcagent:op_body/fpcagent:create_or_update/fpcagent:contexts/fpcagent:dl/fpcagent:mobility-profile/fpcagent:profile-parameters:
+   +--:(threegpp-tunnel)
+      +---- tunnel-type?         identityref
+      +---- tunnel-identifier?   uint32
+      +---- packet-filters* [identifier]
+         +---- direction?               threegpp:packet-filter-direction
+         +---- identifier               uint8
+         +---- evaluation-precedence?   uint8
+         +---- contents* [component-type-identifier]
+            +---- component-type-identifier    threegpp:component-type-id
+            +---- (value)?
+               +--:(ipv4-local)
+               |  +---- ipv4-local?                  inet:ipv4-address
+               +--:(ipv6-prefix-local)
+               |  +---- ipv6-prefix-local?           inet:ipv6-prefix
+               +--:(ipv4-ipv6-remote)
+               |  +---- ipv4-ipv6-remote?            inet:ip-address
+               +--:(ipv6-prefix-remote)
+               |  +---- ipv6-prefix-remote?          inet:ipv6-prefix
+               +--:(next-header)
+               |  +---- next-header?                 uint8
+               +--:(local-port)
+               |  +---- local-port?                  inet:port-number
+               +--:(local-port-range)
+               |  +---- local-port-lo?               inet:port-number
+               |  +---- local-port-hi?               inet:port-number
+               +--:(remote-port)
+               |  +---- remote-port?                 inet:port-number
+               +--:(remote-port-range)
+               |  +---- remote-port-lo?              inet:port-number
+               |  +---- remote-port-hi?              inet:port-number
+               +--:(ipsec-index)
+               |  +---- ipsec-index?                 traffic-selectors:ipsec-spi
+               +--:(traffic-class)
+               |  +---- traffic-class?               inet:dscp
+               +--:(traffic-class-range)
+               |  +---- traffic-class-lo?            inet:dscp
+               |  +---- traffic-class-hi?            inet:dscp
+               +--:(flow-label-type)
+                  +---- flow-label-type*             inet:ipv6-flow-label
+augment /fpcagent:configure-bundles/fpcagent:input/fpcagent:bundles/fpcagent:op_body/fpcagent:create_or_update/fpcagent:contexts/fpcagent:dl/fpcagent:mobility-profile/fpcagent:profile-parameters:
+   +--:(threegpp-tunnel)
+      +---- tunnel-type?         identityref
+      +---- tunnel-identifier?   uint32
+      +---- packet-filters* [identifier]
+         +---- direction?               threegpp:packet-filter-direction
+         +---- identifier               uint8
+         +---- evaluation-precedence?   uint8
+         +---- contents* [component-type-identifier]
+            +---- component-type-identifier    threegpp:component-type-id
+            +---- (value)?
+               +--:(ipv4-local)
+               |  +---- ipv4-local?                  inet:ipv4-address
+               +--:(ipv6-prefix-local)
+               |  +---- ipv6-prefix-local?           inet:ipv6-prefix
+               +--:(ipv4-ipv6-remote)
+               |  +---- ipv4-ipv6-remote?            inet:ip-address
+               +--:(ipv6-prefix-remote)
+               |  +---- ipv6-prefix-remote?          inet:ipv6-prefix
+               +--:(next-header)
+               |  +---- next-header?                 uint8
+               +--:(local-port)
+               |  +---- local-port?                  inet:port-number
+               +--:(local-port-range)
+               |  +---- local-port-lo?               inet:port-number
+               |  +---- local-port-hi?               inet:port-number
+               +--:(remote-port)
+               |  +---- remote-port?                 inet:port-number
+               +--:(remote-port-range)
+               |  +---- remote-port-lo?              inet:port-number
+               |  +---- remote-port-hi?              inet:port-number
+               +--:(ipsec-index)
+               |  +---- ipsec-index?                 traffic-selectors:ipsec-spi
+               +--:(traffic-class)
+               |  +---- traffic-class?               inet:dscp
+               +--:(traffic-class-range)
+               |  +---- traffic-class-lo?            inet:dscp
+               |  +---- traffic-class-hi?            inet:dscp
+               +--:(flow-label-type)
+                  +---- flow-label-type*             inet:ipv6-flow-label
+augment /fpcagent:fpc-entities/fpcagent:contexts/fpcagent:dpns/fpcagent:mobility-profile/fpcagent:profile-parameters:
+   +--:(threegpp-tunnel)
+      +--rw tunnel-type?         identityref
+      +--rw tunnel-identifier?   uint32
+      +--rw packet-filters* [identifier]
+         +--rw direction?               threegpp:packet-filter-direction
+         +--rw identifier               uint8
+         +--rw evaluation-precedence?   uint8
+         +--rw contents* [component-type-identifier]
+            +--rw component-type-identifier    threegpp:component-type-id
+            +--rw (value)?
+               +--:(ipv4-local)
+               |  +--rw ipv4-local?                  inet:ipv4-address
+               +--:(ipv6-prefix-local)
+               |  +--rw ipv6-prefix-local?           inet:ipv6-prefix
+               +--:(ipv4-ipv6-remote)
+               |  +--rw ipv4-ipv6-remote?            inet:ip-address
+               +--:(ipv6-prefix-remote)
+               |  +--rw ipv6-prefix-remote?          inet:ipv6-prefix
+               +--:(next-header)
+               |  +--rw next-header?                 uint8
+               +--:(local-port)
+               |  +--rw local-port?                  inet:port-number
+               +--:(local-port-range)
+               |  +--rw local-port-lo?               inet:port-number
+               |  +--rw local-port-hi?               inet:port-number
+               +--:(remote-port)
+               |  +--rw remote-port?                 inet:port-number
+               +--:(remote-port-range)
+               |  +--rw remote-port-lo?              inet:port-number
+               |  +--rw remote-port-hi?              inet:port-number
+               +--:(ipsec-index)
+               |  +--rw ipsec-index?                 traffic-selectors:ipsec-spi
+               +--:(traffic-class)
+               |  +--rw traffic-class?               inet:dscp
+               +--:(traffic-class-range)
+               |  +--rw traffic-class-lo?            inet:dscp
+               |  +--rw traffic-class-hi?            inet:dscp
+               +--:(flow-label-type)
+                  +--rw flow-label-type*             inet:ipv6-flow-label
+augment /fpcagent:configure/fpcagent:input/fpcagent:op_body/fpcagent:create_or_update/fpcagent:contexts/fpcagent:dpns/fpcagent:mobility-profile/fpcagent:profile-parameters:
+   +--:(threegpp-tunnel)
+      +---- tunnel-type?         identityref
+      +---- tunnel-identifier?   uint32
+      +---- packet-filters* [identifier]
+         +---- direction?               threegpp:packet-filter-direction
+         +---- identifier               uint8
+         +---- evaluation-precedence?   uint8
+         +---- contents* [component-type-identifier]
+            +---- component-type-identifier    threegpp:component-type-id
+            +---- (value)?
+               +--:(ipv4-local)
+               |  +---- ipv4-local?                  inet:ipv4-address
+               +--:(ipv6-prefix-local)
+               |  +---- ipv6-prefix-local?           inet:ipv6-prefix
+               +--:(ipv4-ipv6-remote)
+               |  +---- ipv4-ipv6-remote?            inet:ip-address
+               +--:(ipv6-prefix-remote)
+               |  +---- ipv6-prefix-remote?          inet:ipv6-prefix
+               +--:(next-header)
+               |  +---- next-header?                 uint8
+               +--:(local-port)
+               |  +---- local-port?                  inet:port-number
+               +--:(local-port-range)
+               |  +---- local-port-lo?               inet:port-number
+               |  +---- local-port-hi?               inet:port-number
+               +--:(remote-port)
+               |  +---- remote-port?                 inet:port-number
+               +--:(remote-port-range)
+               |  +---- remote-port-lo?              inet:port-number
+               |  +---- remote-port-hi?              inet:port-number
+               +--:(ipsec-index)
+               |  +---- ipsec-index?                 traffic-selectors:ipsec-spi
+               +--:(traffic-class)
+               |  +---- traffic-class?               inet:dscp
+               +--:(traffic-class-range)
+               |  +---- traffic-class-lo?            inet:dscp
+               |  +---- traffic-class-hi?            inet:dscp
+               +--:(flow-label-type)
+                  +---- flow-label-type*             inet:ipv6-flow-label
+augment /fpcagent:configure-bundles/fpcagent:input/fpcagent:bundles/fpcagent:op_body/fpcagent:create_or_update/fpcagent:contexts/fpcagent:dpns/fpcagent:mobility-profile/fpcagent:profile-parameters:
+   +--:(threegpp-tunnel)
+      +---- tunnel-type?         identityref
+      +---- tunnel-identifier?   uint32
+      +---- packet-filters* [identifier]
+         +---- direction?               threegpp:packet-filter-direction
+         +---- identifier               uint8
+         +---- evaluation-precedence?   uint8
+         +---- contents* [component-type-identifier]
+            +---- component-type-identifier    threegpp:component-type-id
+            +---- (value)?
+               +--:(ipv4-local)
+               |  +---- ipv4-local?                  inet:ipv4-address
+               +--:(ipv6-prefix-local)
+               |  +---- ipv6-prefix-local?           inet:ipv6-prefix
+               +--:(ipv4-ipv6-remote)
+               |  +---- ipv4-ipv6-remote?            inet:ip-address
+               +--:(ipv6-prefix-remote)
+               |  +---- ipv6-prefix-remote?          inet:ipv6-prefix
+               +--:(next-header)
+               |  +---- next-header?                 uint8
+               +--:(local-port)
+               |  +---- local-port?                  inet:port-number
+               +--:(local-port-range)
+               |  +---- local-port-lo?               inet:port-number
+               |  +---- local-port-hi?               inet:port-number
+               +--:(remote-port)
+               |  +---- remote-port?                 inet:port-number
+               +--:(remote-port-range)
+               |  +---- remote-port-lo?              inet:port-number
+               |  +---- remote-port-hi?              inet:port-number
+               +--:(ipsec-index)
+               |  +---- ipsec-index?                 traffic-selectors:ipsec-spi
+               +--:(traffic-class)
+               |  +---- traffic-class?               inet:dscp
+               +--:(traffic-class-range)
+               |  +---- traffic-class-lo?            inet:dscp
+               |  +---- traffic-class-hi?            inet:dscp
+               +--:(flow-label-type)
+                  +---- flow-label-type*             inet:ipv6-flow-label
+augment /fpcagent:fpc-entities/fpcagent:contexts/fpcagent:ul/fpcagent:qos-profile/fpcagent:value:
+   +--:(threegpp-qos)
+      +--rw qci?        fpc-qos-class-identifier
+      +--rw gbr?        uint32
+      +--rw mbr?        uint32
+      +--rw apn-ambr?   uint32
+      +--rw ue-ambr?    uint32
+      +--rw arp
+         +--rw prioirty-level             uint8
+         +--rw premption-capability       enumeration
+         +--rw premption-vulnerability    enumeration
+augment /fpcagent:configure/fpcagent:input/fpcagent:op_body/fpcagent:create_or_update/fpcagent:contexts/fpcagent:ul/fpcagent:qos-profile/fpcagent:value:
+   +--:(threegpp-qos)
+      +---- qci?        fpc-qos-class-identifier
+      +---- gbr?        uint32
+      +---- mbr?        uint32
+      +---- apn-ambr?   uint32
+      +---- ue-ambr?    uint32
+      +---- arp
+         +---- prioirty-level             uint8
+         +---- premption-capability       enumeration
+         +---- premption-vulnerability    enumeration
+augment /fpcagent:configure-bundles/fpcagent:input/fpcagent:bundles/fpcagent:op_body/fpcagent:create_or_update/fpcagent:contexts/fpcagent:ul/fpcagent:qos-profile/fpcagent:value:
+   +--:(threegpp-qos)
+      +---- qci?        fpc-qos-class-identifier
+      +---- gbr?        uint32
+      +---- mbr?        uint32
+      +---- apn-ambr?   uint32
+      +---- ue-ambr?    uint32
+      +---- arp
+         +---- prioirty-level             uint8
+         +---- premption-capability       enumeration
+         +---- premption-vulnerability    enumeration
+augment /fpcagent:fpc-entities/fpcagent:contexts/fpcagent:dl/fpcagent:qos-profile/fpcagent:value:
+   +--:(threegpp-qos)
+      +--rw qci?        fpc-qos-class-identifier
+      +--rw gbr?        uint32
+      +--rw mbr?        uint32
+      +--rw apn-ambr?   uint32
+      +--rw ue-ambr?    uint32
+      +--rw arp
+         +--rw prioirty-level             uint8
+         +--rw premption-capability       enumeration
+         +--rw premption-vulnerability    enumeration
+augment /fpcagent:configure/fpcagent:input/fpcagent:op_body/fpcagent:create_or_update/fpcagent:contexts/fpcagent:dl/fpcagent:qos-profile/fpcagent:value:
+   +--:(threegpp-qos)
+      +---- qci?        fpc-qos-class-identifier
+      +---- gbr?        uint32
+      +---- mbr?        uint32
+      +---- apn-ambr?   uint32
+      +---- ue-ambr?    uint32
+      +---- arp
+         +---- prioirty-level             uint8
+         +---- premption-capability       enumeration
+         +---- premption-vulnerability    enumeration
+augment /fpcagent:configure-bundles/fpcagent:input/fpcagent:bundles/fpcagent:op_body/fpcagent:create_or_update/fpcagent:contexts/fpcagent:dl/fpcagent:qos-profile/fpcagent:value:
+   +--:(threegpp-qos)
+      +---- qci?        fpc-qos-class-identifier
+      +---- gbr?        uint32
+      +---- mbr?        uint32
+      +---- apn-ambr?   uint32
+      +---- ue-ambr?    uint32
+      +---- arp
+         +---- prioirty-level             uint8
+         +---- premption-capability       enumeration
+         +---- premption-vulnerability    enumeration
+augment /fpcagent:fpc-entities/fpcagent:contexts:
+   +--rw imsi?   threegpp:imsi-type
+   +--rw ebi?    threegpp:ebi-type
+   +--rw lbi?    threegpp:ebi-type
+augment /fpcagent:configure/fpcagent:input/fpcagent:op_body/fpcagent:create_or_update/fpcagent:contexts:
+   +---- imsi?   threegpp:imsi-type
+   +---- ebi?    threegpp:ebi-type
+   +---- lbi?    threegpp:ebi-type
+augment /fpcagent:configure-bundles/fpcagent:input/fpcagent:bundles/fpcagent:op_body/fpcagent:create_or_update/fpcagent:contexts:
+   +---- imsi?   threegpp:imsi-type
+   +---- ebi?    threegpp:ebi-type
+   +---- lbi?    threegpp:ebi-type
+augment /fpcagent:configure/fpcagent:input/fpcagent:instructions/fpcagent:instr-type:
+   +--:(instr-3gpp-mob)
+      +---- instr-3gpp-mob?   threegpp:threegpp-instr
+augment /fpcagent:configure/fpcagent:input/fpcagent:op_body/fpcagent:create_or_update/fpcagent:contexts/fpcagent:instructions/fpcagent:instr-type:
+   +--:(instr-3gpp-mob)
+      +---- instr-3gpp-mob?   threegpp:threegpp-instr
+augment /fpcagent:configure/fpcagent:output/fpcagent:result-type/fpcagent:config-success/fpcagent:contexts/fpcagent:instructions/fpcagent:instr-type:
+   +--:(instr-3gpp-mob)
+      +---- instr-3gpp-mob?   threegpp:threegpp-instr
+augment /fpcagent:configure/fpcagent:input/fpcagent:op_body/fpcagent:create_or_update/fpcagent:ports/fpcagent:instructions/fpcagent:instr-type:
+   +--:(instr-3gpp-mob)
+      +---- instr-3gpp-mob?   threegpp:threegpp-instr
+augment /fpcagent:configure/fpcagent:output/fpcagent:result-type/fpcagent:config-success/fpcagent:ports/fpcagent:instructions/fpcagent:instr-type:
+   +--:(instr-3gpp-mob)
+      +---- instr-3gpp-mob?   threegpp:threegpp-instr
+augment /fpcagent:configure-bundles/fpcagent:input/fpcagent:bundles/fpcagent:instructions/fpcagent:instr-type:
+   +--:(instr-3gpp-mob)
+      +---- instr-3gpp-mob?   threegpp:threegpp-instr
+augment /fpcagent:configure-bundles/fpcagent:input/fpcagent:bundles/fpcagent:op_body/fpcagent:create_or_update/fpcagent:contexts/fpcagent:instructions/fpcagent:instr-type:
+   +--:(instr-3gpp-mob)
+      +---- instr-3gpp-mob?   threegpp:threegpp-instr
+augment /fpcagent:configure-bundles/fpcagent:output/fpcagent:bundles/fpcagent:result-type/fpcagent:config-success/fpcagent:contexts/fpcagent:instructions/fpcagent:instr-type:
+   +--:(instr-3gpp-mob)
+      +---- instr-3gpp-mob?   threegpp:threegpp-instr
+augment /fpcagent:configure-bundles/fpcagent:input/fpcagent:bundles/fpcagent:op_body/fpcagent:create_or_update/fpcagent:ports/fpcagent:instructions/fpcagent:instr-type:
+   +--:(instr-3gpp-mob)
+      +---- instr-3gpp-mob?   threegpp:threegpp-instr
+augment /fpcagent:configure-bundles/fpcagent:output/fpcagent:bundles/fpcagent:result-type/fpcagent:config-success/fpcagent:ports/fpcagent:instructions/fpcagent:instr-type:
+   +--:(instr-3gpp-mob)
+      +---- instr-3gpp-mob?   threegpp:threegpp-instr
+augment /fpcagent:configure/fpcagent:input/fpcagent:op_body/fpcagent:delete_or_query/fpcagent:targets:
+   +---- tunnel-identifier?   uint32
+augment /fpcagent:configure-bundles/fpcagent:input/fpcagent:bundles/fpcagent:op_body/fpcagent:delete_or_query/fpcagent:targets:
+   +---- tunnel-identifier?   uint32
+     ]]></artwork>
+        <postamble></postamble>
+      </figure>
+</t>
   </section>
   <section anchor="ietf-dmm-fpc-pmip-tree" title="FPC / PMIP Integration YANG Tree">
+<t>
+ <figure anchor="fig-ietf-dmm-fpc-pmip-tree"
+              title="YANG FPC / PMIP Integration Tree">
+<artwork align="center"><![CDATA[
+module: ietf-dmm-fpc-pmip
+augment /fpcagent:fpc-entities/fpcagent:descriptors/fpcagent:descriptor-value:
+   +--:(pmip-selector)
+      +--rw ts-format?                      identityref
+      +--rw ipsec-spi-range!
+      |  +--rw start-spi    ipsec-spi
+      |  +--rw end-spi?     ipsec-spi
+      +--rw source-port-range!
+      |  +--rw start-port    inet:port-number
+      |  +--rw end-port?     inet:port-number
+      +--rw destination-port-range!
+      |  +--rw start-port    inet:port-number
+      |  +--rw end-port?     inet:port-number
+      +--rw source-address-range-v4!
+      |  +--rw start-address    inet:ipv4-address
+      |  +--rw end-address?     inet:ipv4-address
+      +--rw destination-address-range-v4!
+      |  +--rw start-address    inet:ipv4-address
+      |  +--rw end-address?     inet:ipv4-address
+      +--rw ds-range!
+      |  +--rw start-ds    inet:dscp
+      |  +--rw end-ds?     inet:dscp
+      +--rw protocol-range!
+      |  +--rw start-protocol    uint8
+      |  +--rw end-protocol?     uint8
+      +--rw source-address-range-v6!
+      |  +--rw start-address    inet:ipv6-address
+      |  +--rw end-address?     inet:ipv6-address
+      +--rw destination-address-range-v6!
+      |  +--rw start-address    inet:ipv6-address
+      |  +--rw end-address?     inet:ipv6-address
+      +--rw flow-label-range!
+      |  +--rw start-flow-label?   inet:ipv6-flow-label
+      |  +--rw end-flow-label?     inet:ipv6-flow-label
+      +--rw traffic-class-range!
+      |  +--rw start-traffic-class?   inet:dscp
+      |  +--rw end-traffic-class?     inet:dscp
+      +--rw next-header-range!
+         +--rw start-next-header?   uint8
+         +--rw end-next-header?     uint8
+augment /fpcagent:configure/fpcagent:input/fpcagent:op_body/fpcagent:create_or_update/fpcagent:descriptors/fpcagent:descriptor-value:
+   +--:(pmip-selector)
+      +---- ts-format?                      identityref
+      +---- ipsec-spi-range!
+      |  +---- start-spi    ipsec-spi
+      |  +---- end-spi?     ipsec-spi
+      +---- source-port-range!
+      |  +---- start-port    inet:port-number
+      |  +---- end-port?     inet:port-number
+      +---- destination-port-range!
+      |  +---- start-port    inet:port-number
+      |  +---- end-port?     inet:port-number
+      +---- source-address-range-v4!
+      |  +---- start-address    inet:ipv4-address
+      |  +---- end-address?     inet:ipv4-address
+      +---- destination-address-range-v4!
+      |  +---- start-address    inet:ipv4-address
+      |  +---- end-address?     inet:ipv4-address
+      +---- ds-range!
+      |  +---- start-ds    inet:dscp
+      |  +---- end-ds?     inet:dscp
+      +---- protocol-range!
+      |  +---- start-protocol    uint8
+      |  +---- end-protocol?     uint8
+      +---- source-address-range-v6!
+      |  +---- start-address    inet:ipv6-address
+      |  +---- end-address?     inet:ipv6-address
+      +---- destination-address-range-v6!
+      |  +---- start-address    inet:ipv6-address
+      |  +---- end-address?     inet:ipv6-address
+      +---- flow-label-range!
+      |  +---- start-flow-label?   inet:ipv6-flow-label
+      |  +---- end-flow-label?     inet:ipv6-flow-label
+      +---- traffic-class-range!
+      |  +---- start-traffic-class?   inet:dscp
+      |  +---- end-traffic-class?     inet:dscp
+      +---- next-header-range!
+         +---- start-next-header?   uint8
+         +---- end-next-header?     uint8
+augment /fpcagent:configure-bundles/fpcagent:input/fpcagent:bundles/fpcagent:op_body/fpcagent:create_or_update/fpcagent:descriptors/fpcagent:descriptor-value:
+   +--:(pmip-selector)
+      +---- ts-format?                      identityref
+      +---- ipsec-spi-range!
+      |  +---- start-spi    ipsec-spi
+      |  +---- end-spi?     ipsec-spi
+      +---- source-port-range!
+      |  +---- start-port    inet:port-number
+      |  +---- end-port?     inet:port-number
+      +---- destination-port-range!
+      |  +---- start-port    inet:port-number
+      |  +---- end-port?     inet:port-number
+      +---- source-address-range-v4!
+      |  +---- start-address    inet:ipv4-address
+      |  +---- end-address?     inet:ipv4-address
+      +---- destination-address-range-v4!
+      |  +---- start-address    inet:ipv4-address
+      |  +---- end-address?     inet:ipv4-address
+      +---- ds-range!
+      |  +---- start-ds    inet:dscp
+      |  +---- end-ds?     inet:dscp
+      +---- protocol-range!
+      |  +---- start-protocol    uint8
+      |  +---- end-protocol?     uint8
+      +---- source-address-range-v6!
+      |  +---- start-address    inet:ipv6-address
+      |  +---- end-address?     inet:ipv6-address
+      +---- destination-address-range-v6!
+      |  +---- start-address    inet:ipv6-address
+      |  +---- end-address?     inet:ipv6-address
+      +---- flow-label-range!
+      |  +---- start-flow-label?   inet:ipv6-flow-label
+      |  +---- end-flow-label?     inet:ipv6-flow-label
+      +---- traffic-class-range!
+      |  +---- start-traffic-class?   inet:dscp
+      |  +---- end-traffic-class?     inet:dscp
+      +---- next-header-range!
+         +---- start-next-header?   uint8
+         +---- end-next-header?     uint8
+augment /fpcagent:fpc-topology/fpcagent:dpn-groups/fpcagent:dpn-group-peers/fpcagent:profile-parameters:
+   +--:(pmip-tunnel)
+      +--rw type?                           identityref
+      +--rw (value)?
+      |  +--:(gre)
+      |     +--rw key?                            uint32
+      +--rw ts-format?                      identityref
+      +--rw ipsec-spi-range!
+      |  +--rw start-spi    ipsec-spi
+      |  +--rw end-spi?     ipsec-spi
+      +--rw source-port-range!
+      |  +--rw start-port    inet:port-number
+      |  +--rw end-port?     inet:port-number
+      +--rw destination-port-range!
+      |  +--rw start-port    inet:port-number
+      |  +--rw end-port?     inet:port-number
+      +--rw source-address-range-v4!
+      |  +--rw start-address    inet:ipv4-address
+      |  +--rw end-address?     inet:ipv4-address
+      +--rw destination-address-range-v4!
+      |  +--rw start-address    inet:ipv4-address
+      |  +--rw end-address?     inet:ipv4-address
+      +--rw ds-range!
+      |  +--rw start-ds    inet:dscp
+      |  +--rw end-ds?     inet:dscp
+      +--rw protocol-range!
+      |  +--rw start-protocol    uint8
+      |  +--rw end-protocol?     uint8
+      +--rw source-address-range-v6!
+      |  +--rw start-address    inet:ipv6-address
+      |  +--rw end-address?     inet:ipv6-address
+      +--rw destination-address-range-v6!
+      |  +--rw start-address    inet:ipv6-address
+      |  +--rw end-address?     inet:ipv6-address
+      +--rw flow-label-range!
+      |  +--rw start-flow-label?   inet:ipv6-flow-label
+      |  +--rw end-flow-label?     inet:ipv6-flow-label
+      +--rw traffic-class-range!
+      |  +--rw start-traffic-class?   inet:dscp
+      |  +--rw end-traffic-class?     inet:dscp
+      +--rw next-header-range!
+         +--rw start-next-header?   uint8
+         +--rw end-next-header?     uint8
+augment /fpcagent:fpc-entities/fpcagent:contexts/fpcagent:ul/fpcagent:mobility-profile/fpcagent:profile-parameters:
+   +--:(pmip-tunnel)
+      +--rw type?                           identityref
+      +--rw (value)?
+      |  +--:(gre)
+      |     +--rw key?                            uint32
+      +--rw ts-format?                      identityref
+      +--rw ipsec-spi-range!
+      |  +--rw start-spi    ipsec-spi
+      |  +--rw end-spi?     ipsec-spi
+      +--rw source-port-range!
+      |  +--rw start-port    inet:port-number
+      |  +--rw end-port?     inet:port-number
+      +--rw destination-port-range!
+      |  +--rw start-port    inet:port-number
+      |  +--rw end-port?     inet:port-number
+      +--rw source-address-range-v4!
+      |  +--rw start-address    inet:ipv4-address
+      |  +--rw end-address?     inet:ipv4-address
+      +--rw destination-address-range-v4!
+      |  +--rw start-address    inet:ipv4-address
+      |  +--rw end-address?     inet:ipv4-address
+      +--rw ds-range!
+      |  +--rw start-ds    inet:dscp
+      |  +--rw end-ds?     inet:dscp
+      +--rw protocol-range!
+      |  +--rw start-protocol    uint8
+      |  +--rw end-protocol?     uint8
+      +--rw source-address-range-v6!
+      |  +--rw start-address    inet:ipv6-address
+      |  +--rw end-address?     inet:ipv6-address
+      +--rw destination-address-range-v6!
+      |  +--rw start-address    inet:ipv6-address
+      |  +--rw end-address?     inet:ipv6-address
+      +--rw flow-label-range!
+      |  +--rw start-flow-label?   inet:ipv6-flow-label
+      |  +--rw end-flow-label?     inet:ipv6-flow-label
+      +--rw traffic-class-range!
+      |  +--rw start-traffic-class?   inet:dscp
+      |  +--rw end-traffic-class?     inet:dscp
+      +--rw next-header-range!
+         +--rw start-next-header?   uint8
+         +--rw end-next-header?     uint8
+augment /fpcagent:configure/fpcagent:input/fpcagent:op_body/fpcagent:create_or_update/fpcagent:contexts/fpcagent:ul/fpcagent:mobility-profile/fpcagent:profile-parameters:
+   +--:(pmip-tunnel)
+      +---- type?                           identityref
+      +---- (value)?
+      |  +--:(gre)
+      |     +---- key?                            uint32
+      +---- ts-format?                      identityref
+      +---- ipsec-spi-range!
+      |  +---- start-spi    ipsec-spi
+      |  +---- end-spi?     ipsec-spi
+      +---- source-port-range!
+      |  +---- start-port    inet:port-number
+      |  +---- end-port?     inet:port-number
+      +---- destination-port-range!
+      |  +---- start-port    inet:port-number
+      |  +---- end-port?     inet:port-number
+      +---- source-address-range-v4!
+      |  +---- start-address    inet:ipv4-address
+      |  +---- end-address?     inet:ipv4-address
+      +---- destination-address-range-v4!
+      |  +---- start-address    inet:ipv4-address
+      |  +---- end-address?     inet:ipv4-address
+      +---- ds-range!
+      |  +---- start-ds    inet:dscp
+      |  +---- end-ds?     inet:dscp
+      +---- protocol-range!
+      |  +---- start-protocol    uint8
+      |  +---- end-protocol?     uint8
+      +---- source-address-range-v6!
+      |  +---- start-address    inet:ipv6-address
+      |  +---- end-address?     inet:ipv6-address
+      +---- destination-address-range-v6!
+      |  +---- start-address    inet:ipv6-address
+      |  +---- end-address?     inet:ipv6-address
+      +---- flow-label-range!
+      |  +---- start-flow-label?   inet:ipv6-flow-label
+      |  +---- end-flow-label?     inet:ipv6-flow-label
+      +---- traffic-class-range!
+      |  +---- start-traffic-class?   inet:dscp
+      |  +---- end-traffic-class?     inet:dscp
+      +---- next-header-range!
+         +---- start-next-header?   uint8
+         +---- end-next-header?     uint8
+augment /fpcagent:configure-bundles/fpcagent:input/fpcagent:bundles/fpcagent:op_body/fpcagent:create_or_update/fpcagent:contexts/fpcagent:ul/fpcagent:mobility-profile/fpcagent:profile-parameters:
+   +--:(pmip-tunnel)
+      +---- type?                           identityref
+      +---- (value)?
+      |  +--:(gre)
+      |     +---- key?                            uint32
+      +---- ts-format?                      identityref
+      +---- ipsec-spi-range!
+      |  +---- start-spi    ipsec-spi
+      |  +---- end-spi?     ipsec-spi
+      +---- source-port-range!
+      |  +---- start-port    inet:port-number
+      |  +---- end-port?     inet:port-number
+      +---- destination-port-range!
+      |  +---- start-port    inet:port-number
+      |  +---- end-port?     inet:port-number
+      +---- source-address-range-v4!
+      |  +---- start-address    inet:ipv4-address
+      |  +---- end-address?     inet:ipv4-address
+      +---- destination-address-range-v4!
+      |  +---- start-address    inet:ipv4-address
+      |  +---- end-address?     inet:ipv4-address
+      +---- ds-range!
+      |  +---- start-ds    inet:dscp
+      |  +---- end-ds?     inet:dscp
+      +---- protocol-range!
+      |  +---- start-protocol    uint8
+      |  +---- end-protocol?     uint8
+      +---- source-address-range-v6!
+      |  +---- start-address    inet:ipv6-address
+      |  +---- end-address?     inet:ipv6-address
+      +---- destination-address-range-v6!
+      |  +---- start-address    inet:ipv6-address
+      |  +---- end-address?     inet:ipv6-address
+      +---- flow-label-range!
+      |  +---- start-flow-label?   inet:ipv6-flow-label
+      |  +---- end-flow-label?     inet:ipv6-flow-label
+      +---- traffic-class-range!
+      |  +---- start-traffic-class?   inet:dscp
+      |  +---- end-traffic-class?     inet:dscp
+      +---- next-header-range!
+         +---- start-next-header?   uint8
+         +---- end-next-header?     uint8
+augment /fpcagent:fpc-entities/fpcagent:contexts/fpcagent:dl/fpcagent:mobility-profile/fpcagent:profile-parameters:
+   +--:(pmip-tunnel)
+      +--rw type?                           identityref
+      +--rw (value)?
+      |  +--:(gre)
+      |     +--rw key?                            uint32
+      +--rw ts-format?                      identityref
+      +--rw ipsec-spi-range!
+      |  +--rw start-spi    ipsec-spi
+      |  +--rw end-spi?     ipsec-spi
+      +--rw source-port-range!
+      |  +--rw start-port    inet:port-number
+      |  +--rw end-port?     inet:port-number
+      +--rw destination-port-range!
+      |  +--rw start-port    inet:port-number
+      |  +--rw end-port?     inet:port-number
+      +--rw source-address-range-v4!
+      |  +--rw start-address    inet:ipv4-address
+      |  +--rw end-address?     inet:ipv4-address
+      +--rw destination-address-range-v4!
+      |  +--rw start-address    inet:ipv4-address
+      |  +--rw end-address?     inet:ipv4-address
+      +--rw ds-range!
+      |  +--rw start-ds    inet:dscp
+      |  +--rw end-ds?     inet:dscp
+      +--rw protocol-range!
+      |  +--rw start-protocol    uint8
+      |  +--rw end-protocol?     uint8
+      +--rw source-address-range-v6!
+      |  +--rw start-address    inet:ipv6-address
+      |  +--rw end-address?     inet:ipv6-address
+      +--rw destination-address-range-v6!
+      |  +--rw start-address    inet:ipv6-address
+      |  +--rw end-address?     inet:ipv6-address
+      +--rw flow-label-range!
+      |  +--rw start-flow-label?   inet:ipv6-flow-label
+      |  +--rw end-flow-label?     inet:ipv6-flow-label
+      +--rw traffic-class-range!
+      |  +--rw start-traffic-class?   inet:dscp
+      |  +--rw end-traffic-class?     inet:dscp
+      +--rw next-header-range!
+         +--rw start-next-header?   uint8
+         +--rw end-next-header?     uint8
+augment /fpcagent:configure/fpcagent:input/fpcagent:op_body/fpcagent:create_or_update/fpcagent:contexts/fpcagent:dl/fpcagent:mobility-profile/fpcagent:profile-parameters:
+   +--:(pmip-tunnel)
+      +---- type?                           identityref
+      +---- (value)?
+      |  +--:(gre)
+      |     +---- key?                            uint32
+      +---- ts-format?                      identityref
+      +---- ipsec-spi-range!
+      |  +---- start-spi    ipsec-spi
+      |  +---- end-spi?     ipsec-spi
+      +---- source-port-range!
+      |  +---- start-port    inet:port-number
+      |  +---- end-port?     inet:port-number
+      +---- destination-port-range!
+      |  +---- start-port    inet:port-number
+      |  +---- end-port?     inet:port-number
+      +---- source-address-range-v4!
+      |  +---- start-address    inet:ipv4-address
+      |  +---- end-address?     inet:ipv4-address
+      +---- destination-address-range-v4!
+      |  +---- start-address    inet:ipv4-address
+      |  +---- end-address?     inet:ipv4-address
+      +---- ds-range!
+      |  +---- start-ds    inet:dscp
+      |  +---- end-ds?     inet:dscp
+      +---- protocol-range!
+      |  +---- start-protocol    uint8
+      |  +---- end-protocol?     uint8
+      +---- source-address-range-v6!
+      |  +---- start-address    inet:ipv6-address
+      |  +---- end-address?     inet:ipv6-address
+      +---- destination-address-range-v6!
+      |  +---- start-address    inet:ipv6-address
+      |  +---- end-address?     inet:ipv6-address
+      +---- flow-label-range!
+      |  +---- start-flow-label?   inet:ipv6-flow-label
+      |  +---- end-flow-label?     inet:ipv6-flow-label
+      +---- traffic-class-range!
+      |  +---- start-traffic-class?   inet:dscp
+      |  +---- end-traffic-class?     inet:dscp
+      +---- next-header-range!
+         +---- start-next-header?   uint8
+         +---- end-next-header?     uint8
+augment /fpcagent:configure-bundles/fpcagent:input/fpcagent:bundles/fpcagent:op_body/fpcagent:create_or_update/fpcagent:contexts/fpcagent:dl/fpcagent:mobility-profile/fpcagent:profile-parameters:
+   +--:(pmip-tunnel)
+      +---- type?                           identityref
+      +---- (value)?
+      |  +--:(gre)
+      |     +---- key?                            uint32
+      +---- ts-format?                      identityref
+      +---- ipsec-spi-range!
+      |  +---- start-spi    ipsec-spi
+      |  +---- end-spi?     ipsec-spi
+      +---- source-port-range!
+      |  +---- start-port    inet:port-number
+      |  +---- end-port?     inet:port-number
+      +---- destination-port-range!
+      |  +---- start-port    inet:port-number
+      |  +---- end-port?     inet:port-number
+      +---- source-address-range-v4!
+      |  +---- start-address    inet:ipv4-address
+      |  +---- end-address?     inet:ipv4-address
+      +---- destination-address-range-v4!
+      |  +---- start-address    inet:ipv4-address
+      |  +---- end-address?     inet:ipv4-address
+      +---- ds-range!
+      |  +---- start-ds    inet:dscp
+      |  +---- end-ds?     inet:dscp
+      +---- protocol-range!
+      |  +---- start-protocol    uint8
+      |  +---- end-protocol?     uint8
+      +---- source-address-range-v6!
+      |  +---- start-address    inet:ipv6-address
+      |  +---- end-address?     inet:ipv6-address
+      +---- destination-address-range-v6!
+      |  +---- start-address    inet:ipv6-address
+      |  +---- end-address?     inet:ipv6-address
+      +---- flow-label-range!
+      |  +---- start-flow-label?   inet:ipv6-flow-label
+      |  +---- end-flow-label?     inet:ipv6-flow-label
+      +---- traffic-class-range!
+      |  +---- start-traffic-class?   inet:dscp
+      |  +---- end-traffic-class?     inet:dscp
+      +---- next-header-range!
+         +---- start-next-header?   uint8
+         +---- end-next-header?     uint8
+augment /fpcagent:fpc-entities/fpcagent:contexts/fpcagent:dpns/fpcagent:mobility-profile/fpcagent:profile-parameters:
+   +--:(pmip-tunnel)
+      +--rw type?                           identityref
+      +--rw (value)?
+      |  +--:(gre)
+      |     +--rw key?                            uint32
+      +--rw ts-format?                      identityref
+      +--rw ipsec-spi-range!
+      |  +--rw start-spi    ipsec-spi
+      |  +--rw end-spi?     ipsec-spi
+      +--rw source-port-range!
+      |  +--rw start-port    inet:port-number
+      |  +--rw end-port?     inet:port-number
+      +--rw destination-port-range!
+      |  +--rw start-port    inet:port-number
+      |  +--rw end-port?     inet:port-number
+      +--rw source-address-range-v4!
+      |  +--rw start-address    inet:ipv4-address
+      |  +--rw end-address?     inet:ipv4-address
+      +--rw destination-address-range-v4!
+      |  +--rw start-address    inet:ipv4-address
+      |  +--rw end-address?     inet:ipv4-address
+      +--rw ds-range!
+      |  +--rw start-ds    inet:dscp
+      |  +--rw end-ds?     inet:dscp
+      +--rw protocol-range!
+      |  +--rw start-protocol    uint8
+      |  +--rw end-protocol?     uint8
+      +--rw source-address-range-v6!
+      |  +--rw start-address    inet:ipv6-address
+      |  +--rw end-address?     inet:ipv6-address
+      +--rw destination-address-range-v6!
+      |  +--rw start-address    inet:ipv6-address
+      |  +--rw end-address?     inet:ipv6-address
+      +--rw flow-label-range!
+      |  +--rw start-flow-label?   inet:ipv6-flow-label
+      |  +--rw end-flow-label?     inet:ipv6-flow-label
+      +--rw traffic-class-range!
+      |  +--rw start-traffic-class?   inet:dscp
+      |  +--rw end-traffic-class?     inet:dscp
+      +--rw next-header-range!
+         +--rw start-next-header?   uint8
+         +--rw end-next-header?     uint8
+augment /fpcagent:configure/fpcagent:input/fpcagent:op_body/fpcagent:create_or_update/fpcagent:contexts/fpcagent:dpns/fpcagent:mobility-profile/fpcagent:profile-parameters:
+   +--:(pmip-tunnel)
+      +---- type?                           identityref
+      +---- (value)?
+      |  +--:(gre)
+      |     +---- key?                            uint32
+      +---- ts-format?                      identityref
+      +---- ipsec-spi-range!
+      |  +---- start-spi    ipsec-spi
+      |  +---- end-spi?     ipsec-spi
+      +---- source-port-range!
+      |  +---- start-port    inet:port-number
+      |  +---- end-port?     inet:port-number
+      +---- destination-port-range!
+      |  +---- start-port    inet:port-number
+      |  +---- end-port?     inet:port-number
+      +---- source-address-range-v4!
+      |  +---- start-address    inet:ipv4-address
+      |  +---- end-address?     inet:ipv4-address
+      +---- destination-address-range-v4!
+      |  +---- start-address    inet:ipv4-address
+      |  +---- end-address?     inet:ipv4-address
+      +---- ds-range!
+      |  +---- start-ds    inet:dscp
+      |  +---- end-ds?     inet:dscp
+      +---- protocol-range!
+      |  +---- start-protocol    uint8
+      |  +---- end-protocol?     uint8
+      +---- source-address-range-v6!
+      |  +---- start-address    inet:ipv6-address
+      |  +---- end-address?     inet:ipv6-address
+      +---- destination-address-range-v6!
+      |  +---- start-address    inet:ipv6-address
+      |  +---- end-address?     inet:ipv6-address
+      +---- flow-label-range!
+      |  +---- start-flow-label?   inet:ipv6-flow-label
+      |  +---- end-flow-label?     inet:ipv6-flow-label
+      +---- traffic-class-range!
+      |  +---- start-traffic-class?   inet:dscp
+      |  +---- end-traffic-class?     inet:dscp
+      +---- next-header-range!
+         +---- start-next-header?   uint8
+         +---- end-next-header?     uint8
+augment /fpcagent:configure-bundles/fpcagent:input/fpcagent:bundles/fpcagent:op_body/fpcagent:create_or_update/fpcagent:contexts/fpcagent:dpns/fpcagent:mobility-profile/fpcagent:profile-parameters:
+   +--:(pmip-tunnel)
+      +---- type?                           identityref
+      +---- (value)?
+      |  +--:(gre)
+      |     +---- key?                            uint32
+      +---- ts-format?                      identityref
+      +---- ipsec-spi-range!
+      |  +---- start-spi    ipsec-spi
+      |  +---- end-spi?     ipsec-spi
+      +---- source-port-range!
+      |  +---- start-port    inet:port-number
+      |  +---- end-port?     inet:port-number
+      +---- destination-port-range!
+      |  +---- start-port    inet:port-number
+      |  +---- end-port?     inet:port-number
+      +---- source-address-range-v4!
+      |  +---- start-address    inet:ipv4-address
+      |  +---- end-address?     inet:ipv4-address
+      +---- destination-address-range-v4!
+      |  +---- start-address    inet:ipv4-address
+      |  +---- end-address?     inet:ipv4-address
+      +---- ds-range!
+      |  +---- start-ds    inet:dscp
+      |  +---- end-ds?     inet:dscp
+      +---- protocol-range!
+      |  +---- start-protocol    uint8
+      |  +---- end-protocol?     uint8
+      +---- source-address-range-v6!
+      |  +---- start-address    inet:ipv6-address
+      |  +---- end-address?     inet:ipv6-address
+      +---- destination-address-range-v6!
+      |  +---- start-address    inet:ipv6-address
+      |  +---- end-address?     inet:ipv6-address
+      +---- flow-label-range!
+      |  +---- start-flow-label?   inet:ipv6-flow-label
+      |  +---- end-flow-label?     inet:ipv6-flow-label
+      +---- traffic-class-range!
+      |  +---- start-traffic-class?   inet:dscp
+      |  +---- end-traffic-class?     inet:dscp
+      +---- next-header-range!
+         +---- start-next-header?   uint8
+         +---- end-next-header?     uint8
+augment /fpcagent:fpc-entities/fpcagent:contexts/fpcagent:ul/fpcagent:qos-profile/fpcagent:value:
+   +--:(qos-pmip)
+      +--rw attributetype              identityref
+      +--rw (attribute-choice)?
+         +--:(per-mn-agg-max-dl-case)
+         |  +--rw per-mn-agg-max-dl?         qos-pmip:Per-MN-Agg-Max-DL-Bit-Rate-Value
+         +--:(per-mn-agg-max-ul-case)
+         |  +--rw per-mn-agg-max-ul?         qos-pmip:Per-MN-Agg-Max-UL-Bit-Rate-Value
+         +--:(per-session-agg-max-dl-case)
+         |  +--rw per-session-agg-max-dl
+         |     +--rw max-rate        uint32
+         |     +--rw service-flag    boolean
+         |     +--rw exclude-flag    boolean
+         +--:(per-session-agg-max-ul-case)
+         |  +--rw per-session-agg-max-ul
+         |     +--rw max-rate        uint32
+         |     +--rw service-flag    boolean
+         |     +--rw exclude-flag    boolean
+         +--:(allocation-retention-priority-case)
+         |  +--rw prioirty-level             uint8
+         |  +--rw premption-capability       enumeration
+         |  +--rw premption-vulnerability    enumeration
+         +--:(agg-max-dl-case)
+         |  +--rw agg-max-dl?                qos-pmip:Aggregate-Max-DL-Bit-Rate-Value
+         +--:(agg-max-ul-case)
+         |  +--rw agg-max-ul?                qos-pmip:Aggregate-Max-UL-Bit-Rate-Value
+         +--:(gbr-dl-case)
+         |  +--rw gbr-dl?                    qos-pmip:Guaranteed-DL-Bit-Rate-Value
+         +--:(gbr-ul-case)
+         |  +--rw gbr-ul?                    qos-pmip:Guaranteed-UL-Bit-Rate-Value
+         +--:(traffic-selector-case)
+            +--rw traffic-selector
+               +--rw ts-format?                      identityref
+               +--rw ipsec-spi-range!
+               |  +--rw start-spi    ipsec-spi
+               |  +--rw end-spi?     ipsec-spi
+               +--rw source-port-range!
+               |  +--rw start-port    inet:port-number
+               |  +--rw end-port?     inet:port-number
+               +--rw destination-port-range!
+               |  +--rw start-port    inet:port-number
+               |  +--rw end-port?     inet:port-number
+               +--rw source-address-range-v4!
+               |  +--rw start-address    inet:ipv4-address
+               |  +--rw end-address?     inet:ipv4-address
+               +--rw destination-address-range-v4!
+               |  +--rw start-address    inet:ipv4-address
+               |  +--rw end-address?     inet:ipv4-address
+               +--rw ds-range!
+               |  +--rw start-ds    inet:dscp
+               |  +--rw end-ds?     inet:dscp
+               +--rw protocol-range!
+               |  +--rw start-protocol    uint8
+               |  +--rw end-protocol?     uint8
+               +--rw source-address-range-v6!
+               |  +--rw start-address    inet:ipv6-address
+               |  +--rw end-address?     inet:ipv6-address
+               +--rw destination-address-range-v6!
+               |  +--rw start-address    inet:ipv6-address
+               |  +--rw end-address?     inet:ipv6-address
+               +--rw flow-label-range!
+               |  +--rw start-flow-label?   inet:ipv6-flow-label
+               |  +--rw end-flow-label?     inet:ipv6-flow-label
+               +--rw traffic-class-range!
+               |  +--rw start-traffic-class?   inet:dscp
+               |  +--rw end-traffic-class?     inet:dscp
+               +--rw next-header-range!
+                  +--rw start-next-header?   uint8
+                  +--rw end-next-header?     uint8
+augment /fpcagent:configure/fpcagent:input/fpcagent:op_body/fpcagent:create_or_update/fpcagent:contexts/fpcagent:ul/fpcagent:qos-profile/fpcagent:value:
+   +--:(qos-pmip)
+      +---- attributetype              identityref
+      +---- (attribute-choice)?
+         +--:(per-mn-agg-max-dl-case)
+         |  +---- per-mn-agg-max-dl?         qos-pmip:Per-MN-Agg-Max-DL-Bit-Rate-Value
+         +--:(per-mn-agg-max-ul-case)
+         |  +---- per-mn-agg-max-ul?         qos-pmip:Per-MN-Agg-Max-UL-Bit-Rate-Value
+         +--:(per-session-agg-max-dl-case)
+         |  +---- per-session-agg-max-dl
+         |     +---- max-rate        uint32
+         |     +---- service-flag    boolean
+         |     +---- exclude-flag    boolean
+         +--:(per-session-agg-max-ul-case)
+         |  +---- per-session-agg-max-ul
+         |     +---- max-rate        uint32
+         |     +---- service-flag    boolean
+         |     +---- exclude-flag    boolean
+         +--:(allocation-retention-priority-case)
+         |  +---- prioirty-level             uint8
+         |  +---- premption-capability       enumeration
+         |  +---- premption-vulnerability    enumeration
+         +--:(agg-max-dl-case)
+         |  +---- agg-max-dl?                qos-pmip:Aggregate-Max-DL-Bit-Rate-Value
+         +--:(agg-max-ul-case)
+         |  +---- agg-max-ul?                qos-pmip:Aggregate-Max-UL-Bit-Rate-Value
+         +--:(gbr-dl-case)
+         |  +---- gbr-dl?                    qos-pmip:Guaranteed-DL-Bit-Rate-Value
+         +--:(gbr-ul-case)
+         |  +---- gbr-ul?                    qos-pmip:Guaranteed-UL-Bit-Rate-Value
+         +--:(traffic-selector-case)
+            +---- traffic-selector
+               +---- ts-format?                      identityref
+               +---- ipsec-spi-range!
+               |  +---- start-spi    ipsec-spi
+               |  +---- end-spi?     ipsec-spi
+               +---- source-port-range!
+               |  +---- start-port    inet:port-number
+               |  +---- end-port?     inet:port-number
+               +---- destination-port-range!
+               |  +---- start-port    inet:port-number
+               |  +---- end-port?     inet:port-number
+               +---- source-address-range-v4!
+               |  +---- start-address    inet:ipv4-address
+               |  +---- end-address?     inet:ipv4-address
+               +---- destination-address-range-v4!
+               |  +---- start-address    inet:ipv4-address
+               |  +---- end-address?     inet:ipv4-address
+               +---- ds-range!
+               |  +---- start-ds    inet:dscp
+               |  +---- end-ds?     inet:dscp
+               +---- protocol-range!
+               |  +---- start-protocol    uint8
+               |  +---- end-protocol?     uint8
+               +---- source-address-range-v6!
+               |  +---- start-address    inet:ipv6-address
+               |  +---- end-address?     inet:ipv6-address
+               +---- destination-address-range-v6!
+               |  +---- start-address    inet:ipv6-address
+               |  +---- end-address?     inet:ipv6-address
+               +---- flow-label-range!
+               |  +---- start-flow-label?   inet:ipv6-flow-label
+               |  +---- end-flow-label?     inet:ipv6-flow-label
+               +---- traffic-class-range!
+               |  +---- start-traffic-class?   inet:dscp
+               |  +---- end-traffic-class?     inet:dscp
+               +---- next-header-range!
+                  +---- start-next-header?   uint8
+                  +---- end-next-header?     uint8
+augment /fpcagent:configure-bundles/fpcagent:input/fpcagent:bundles/fpcagent:op_body/fpcagent:create_or_update/fpcagent:contexts/fpcagent:ul/fpcagent:qos-profile/fpcagent:value:
+   +--:(qos-pmip)
+      +---- attributetype              identityref
+      +---- (attribute-choice)?
+         +--:(per-mn-agg-max-dl-case)
+         |  +---- per-mn-agg-max-dl?         qos-pmip:Per-MN-Agg-Max-DL-Bit-Rate-Value
+         +--:(per-mn-agg-max-ul-case)
+         |  +---- per-mn-agg-max-ul?         qos-pmip:Per-MN-Agg-Max-UL-Bit-Rate-Value
+         +--:(per-session-agg-max-dl-case)
+         |  +---- per-session-agg-max-dl
+         |     +---- max-rate        uint32
+         |     +---- service-flag    boolean
+         |     +---- exclude-flag    boolean
+         +--:(per-session-agg-max-ul-case)
+         |  +---- per-session-agg-max-ul
+         |     +---- max-rate        uint32
+         |     +---- service-flag    boolean
+         |     +---- exclude-flag    boolean
+         +--:(allocation-retention-priority-case)
+         |  +---- prioirty-level             uint8
+         |  +---- premption-capability       enumeration
+         |  +---- premption-vulnerability    enumeration
+         +--:(agg-max-dl-case)
+         |  +---- agg-max-dl?                qos-pmip:Aggregate-Max-DL-Bit-Rate-Value
+         +--:(agg-max-ul-case)
+         |  +---- agg-max-ul?                qos-pmip:Aggregate-Max-UL-Bit-Rate-Value
+         +--:(gbr-dl-case)
+         |  +---- gbr-dl?                    qos-pmip:Guaranteed-DL-Bit-Rate-Value
+         +--:(gbr-ul-case)
+         |  +---- gbr-ul?                    qos-pmip:Guaranteed-UL-Bit-Rate-Value
+         +--:(traffic-selector-case)
+            +---- traffic-selector
+               +---- ts-format?                      identityref
+               +---- ipsec-spi-range!
+               |  +---- start-spi    ipsec-spi
+               |  +---- end-spi?     ipsec-spi
+               +---- source-port-range!
+               |  +---- start-port    inet:port-number
+               |  +---- end-port?     inet:port-number
+               +---- destination-port-range!
+               |  +---- start-port    inet:port-number
+               |  +---- end-port?     inet:port-number
+               +---- source-address-range-v4!
+               |  +---- start-address    inet:ipv4-address
+               |  +---- end-address?     inet:ipv4-address
+               +---- destination-address-range-v4!
+               |  +---- start-address    inet:ipv4-address
+               |  +---- end-address?     inet:ipv4-address
+               +---- ds-range!
+               |  +---- start-ds    inet:dscp
+               |  +---- end-ds?     inet:dscp
+               +---- protocol-range!
+               |  +---- start-protocol    uint8
+               |  +---- end-protocol?     uint8
+               +---- source-address-range-v6!
+               |  +---- start-address    inet:ipv6-address
+               |  +---- end-address?     inet:ipv6-address
+               +---- destination-address-range-v6!
+               |  +---- start-address    inet:ipv6-address
+               |  +---- end-address?     inet:ipv6-address
+               +---- flow-label-range!
+               |  +---- start-flow-label?   inet:ipv6-flow-label
+               |  +---- end-flow-label?     inet:ipv6-flow-label
+               +---- traffic-class-range!
+               |  +---- start-traffic-class?   inet:dscp
+               |  +---- end-traffic-class?     inet:dscp
+               +---- next-header-range!
+                  +---- start-next-header?   uint8
+                  +---- end-next-header?     uint8
+augment /fpcagent:fpc-entities/fpcagent:contexts/fpcagent:dl/fpcagent:qos-profile/fpcagent:value:
+   +--:(qos-pmip)
+      +--rw attributetype              identityref
+      +--rw (attribute-choice)?
+         +--:(per-mn-agg-max-dl-case)
+         |  +--rw per-mn-agg-max-dl?         qos-pmip:Per-MN-Agg-Max-DL-Bit-Rate-Value
+         +--:(per-mn-agg-max-ul-case)
+         |  +--rw per-mn-agg-max-ul?         qos-pmip:Per-MN-Agg-Max-UL-Bit-Rate-Value
+         +--:(per-session-agg-max-dl-case)
+         |  +--rw per-session-agg-max-dl
+         |     +--rw max-rate        uint32
+         |     +--rw service-flag    boolean
+         |     +--rw exclude-flag    boolean
+         +--:(per-session-agg-max-ul-case)
+         |  +--rw per-session-agg-max-ul
+         |     +--rw max-rate        uint32
+         |     +--rw service-flag    boolean
+         |     +--rw exclude-flag    boolean
+         +--:(allocation-retention-priority-case)
+         |  +--rw prioirty-level             uint8
+         |  +--rw premption-capability       enumeration
+         |  +--rw premption-vulnerability    enumeration
+         +--:(agg-max-dl-case)
+         |  +--rw agg-max-dl?                qos-pmip:Aggregate-Max-DL-Bit-Rate-Value
+         +--:(agg-max-ul-case)
+         |  +--rw agg-max-ul?                qos-pmip:Aggregate-Max-UL-Bit-Rate-Value
+         +--:(gbr-dl-case)
+         |  +--rw gbr-dl?                    qos-pmip:Guaranteed-DL-Bit-Rate-Value
+         +--:(gbr-ul-case)
+         |  +--rw gbr-ul?                    qos-pmip:Guaranteed-UL-Bit-Rate-Value
+         +--:(traffic-selector-case)
+            +--rw traffic-selector
+               +--rw ts-format?                      identityref
+               +--rw ipsec-spi-range!
+               |  +--rw start-spi    ipsec-spi
+               |  +--rw end-spi?     ipsec-spi
+               +--rw source-port-range!
+               |  +--rw start-port    inet:port-number
+               |  +--rw end-port?     inet:port-number
+               +--rw destination-port-range!
+               |  +--rw start-port    inet:port-number
+               |  +--rw end-port?     inet:port-number
+               +--rw source-address-range-v4!
+               |  +--rw start-address    inet:ipv4-address
+               |  +--rw end-address?     inet:ipv4-address
+               +--rw destination-address-range-v4!
+               |  +--rw start-address    inet:ipv4-address
+               |  +--rw end-address?     inet:ipv4-address
+               +--rw ds-range!
+               |  +--rw start-ds    inet:dscp
+               |  +--rw end-ds?     inet:dscp
+               +--rw protocol-range!
+               |  +--rw start-protocol    uint8
+               |  +--rw end-protocol?     uint8
+               +--rw source-address-range-v6!
+               |  +--rw start-address    inet:ipv6-address
+               |  +--rw end-address?     inet:ipv6-address
+               +--rw destination-address-range-v6!
+               |  +--rw start-address    inet:ipv6-address
+               |  +--rw end-address?     inet:ipv6-address
+               +--rw flow-label-range!
+               |  +--rw start-flow-label?   inet:ipv6-flow-label
+               |  +--rw end-flow-label?     inet:ipv6-flow-label
+               +--rw traffic-class-range!
+               |  +--rw start-traffic-class?   inet:dscp
+               |  +--rw end-traffic-class?     inet:dscp
+               +--rw next-header-range!
+                  +--rw start-next-header?   uint8
+                  +--rw end-next-header?     uint8
+augment /fpcagent:configure/fpcagent:input/fpcagent:op_body/fpcagent:create_or_update/fpcagent:contexts/fpcagent:dl/fpcagent:qos-profile/fpcagent:value:
+   +--:(qos-pmip)
+      +---- attributetype              identityref
+      +---- (attribute-choice)?
+         +--:(per-mn-agg-max-dl-case)
+         |  +---- per-mn-agg-max-dl?         qos-pmip:Per-MN-Agg-Max-DL-Bit-Rate-Value
+         +--:(per-mn-agg-max-ul-case)
+         |  +---- per-mn-agg-max-ul?         qos-pmip:Per-MN-Agg-Max-UL-Bit-Rate-Value
+         +--:(per-session-agg-max-dl-case)
+         |  +---- per-session-agg-max-dl
+         |     +---- max-rate        uint32
+         |     +---- service-flag    boolean
+         |     +---- exclude-flag    boolean
+         +--:(per-session-agg-max-ul-case)
+         |  +---- per-session-agg-max-ul
+         |     +---- max-rate        uint32
+         |     +---- service-flag    boolean
+         |     +---- exclude-flag    boolean
+         +--:(allocation-retention-priority-case)
+         |  +---- prioirty-level             uint8
+         |  +---- premption-capability       enumeration
+         |  +---- premption-vulnerability    enumeration
+         +--:(agg-max-dl-case)
+         |  +---- agg-max-dl?                qos-pmip:Aggregate-Max-DL-Bit-Rate-Value
+         +--:(agg-max-ul-case)
+         |  +---- agg-max-ul?                qos-pmip:Aggregate-Max-UL-Bit-Rate-Value
+         +--:(gbr-dl-case)
+         |  +---- gbr-dl?                    qos-pmip:Guaranteed-DL-Bit-Rate-Value
+         +--:(gbr-ul-case)
+         |  +---- gbr-ul?                    qos-pmip:Guaranteed-UL-Bit-Rate-Value
+         +--:(traffic-selector-case)
+            +---- traffic-selector
+               +---- ts-format?                      identityref
+               +---- ipsec-spi-range!
+               |  +---- start-spi    ipsec-spi
+               |  +---- end-spi?     ipsec-spi
+               +---- source-port-range!
+               |  +---- start-port    inet:port-number
+               |  +---- end-port?     inet:port-number
+               +---- destination-port-range!
+               |  +---- start-port    inet:port-number
+               |  +---- end-port?     inet:port-number
+               +---- source-address-range-v4!
+               |  +---- start-address    inet:ipv4-address
+               |  +---- end-address?     inet:ipv4-address
+               +---- destination-address-range-v4!
+               |  +---- start-address    inet:ipv4-address
+               |  +---- end-address?     inet:ipv4-address
+               +---- ds-range!
+               |  +---- start-ds    inet:dscp
+               |  +---- end-ds?     inet:dscp
+               +---- protocol-range!
+               |  +---- start-protocol    uint8
+               |  +---- end-protocol?     uint8
+               +---- source-address-range-v6!
+               |  +---- start-address    inet:ipv6-address
+               |  +---- end-address?     inet:ipv6-address
+               +---- destination-address-range-v6!
+               |  +---- start-address    inet:ipv6-address
+               |  +---- end-address?     inet:ipv6-address
+               +---- flow-label-range!
+               |  +---- start-flow-label?   inet:ipv6-flow-label
+               |  +---- end-flow-label?     inet:ipv6-flow-label
+               +---- traffic-class-range!
+               |  +---- start-traffic-class?   inet:dscp
+               |  +---- end-traffic-class?     inet:dscp
+               +---- next-header-range!
+                  +---- start-next-header?   uint8
+                  +---- end-next-header?     uint8
+augment /fpcagent:configure-bundles/fpcagent:input/fpcagent:bundles/fpcagent:op_body/fpcagent:create_or_update/fpcagent:contexts/fpcagent:dl/fpcagent:qos-profile/fpcagent:value:
+   +--:(qos-pmip)
+      +---- attributetype              identityref
+      +---- (attribute-choice)?
+         +--:(per-mn-agg-max-dl-case)
+         |  +---- per-mn-agg-max-dl?         qos-pmip:Per-MN-Agg-Max-DL-Bit-Rate-Value
+         +--:(per-mn-agg-max-ul-case)
+         |  +---- per-mn-agg-max-ul?         qos-pmip:Per-MN-Agg-Max-UL-Bit-Rate-Value
+         +--:(per-session-agg-max-dl-case)
+         |  +---- per-session-agg-max-dl
+         |     +---- max-rate        uint32
+         |     +---- service-flag    boolean
+         |     +---- exclude-flag    boolean
+         +--:(per-session-agg-max-ul-case)
+         |  +---- per-session-agg-max-ul
+         |     +---- max-rate        uint32
+         |     +---- service-flag    boolean
+         |     +---- exclude-flag    boolean
+         +--:(allocation-retention-priority-case)
+         |  +---- prioirty-level             uint8
+         |  +---- premption-capability       enumeration
+         |  +---- premption-vulnerability    enumeration
+         +--:(agg-max-dl-case)
+         |  +---- agg-max-dl?                qos-pmip:Aggregate-Max-DL-Bit-Rate-Value
+         +--:(agg-max-ul-case)
+         |  +---- agg-max-ul?                qos-pmip:Aggregate-Max-UL-Bit-Rate-Value
+         +--:(gbr-dl-case)
+         |  +---- gbr-dl?                    qos-pmip:Guaranteed-DL-Bit-Rate-Value
+         +--:(gbr-ul-case)
+         |  +---- gbr-ul?                    qos-pmip:Guaranteed-UL-Bit-Rate-Value
+         +--:(traffic-selector-case)
+            +---- traffic-selector
+               +---- ts-format?                      identityref
+               +---- ipsec-spi-range!
+               |  +---- start-spi    ipsec-spi
+               |  +---- end-spi?     ipsec-spi
+               +---- source-port-range!
+               |  +---- start-port    inet:port-number
+               |  +---- end-port?     inet:port-number
+               +---- destination-port-range!
+               |  +---- start-port    inet:port-number
+               |  +---- end-port?     inet:port-number
+               +---- source-address-range-v4!
+               |  +---- start-address    inet:ipv4-address
+               |  +---- end-address?     inet:ipv4-address
+               +---- destination-address-range-v4!
+               |  +---- start-address    inet:ipv4-address
+               |  +---- end-address?     inet:ipv4-address
+               +---- ds-range!
+               |  +---- start-ds    inet:dscp
+               |  +---- end-ds?     inet:dscp
+               +---- protocol-range!
+               |  +---- start-protocol    uint8
+               |  +---- end-protocol?     uint8
+               +---- source-address-range-v6!
+               |  +---- start-address    inet:ipv6-address
+               |  +---- end-address?     inet:ipv6-address
+               +---- destination-address-range-v6!
+               |  +---- start-address    inet:ipv6-address
+               |  +---- end-address?     inet:ipv6-address
+               +---- flow-label-range!
+               |  +---- start-flow-label?   inet:ipv6-flow-label
+               |  +---- end-flow-label?     inet:ipv6-flow-label
+               +---- traffic-class-range!
+               |  +---- start-traffic-class?   inet:dscp
+               |  +---- end-traffic-class?     inet:dscp
+               +---- next-header-range!
+                  +---- start-next-header?   uint8
+                  +---- end-next-header?     uint8
+augment /fpcagent:configure/fpcagent:input/fpcagent:instructions/fpcagent:instr-type:
+   +--:(pmip-instr)
+      +---- instr-pmip?   fpc-pmip:pmip-instr
+augment /fpcagent:configure/fpcagent:input/fpcagent:op_body/fpcagent:create_or_update/fpcagent:contexts/fpcagent:instructions/fpcagent:instr-type:
+   +--:(pmip-instr)
+      +---- instr-pmip?   fpc-pmip:pmip-instr
+augment /fpcagent:configure/fpcagent:output/fpcagent:result-type/fpcagent:config-success/fpcagent:contexts/fpcagent:instructions/fpcagent:instr-type:
+   +--:(pmip-instr)
+      +---- instr-pmip?   fpc-pmip:pmip-instr
+augment /fpcagent:configure/fpcagent:input/fpcagent:op_body/fpcagent:create_or_update/fpcagent:ports/fpcagent:instructions/fpcagent:instr-type:
+   +--:(pmip-instr)
+      +---- instr-pmip?   fpc-pmip:pmip-instr
+augment /fpcagent:configure/fpcagent:output/fpcagent:result-type/fpcagent:config-success/fpcagent:ports/fpcagent:instructions/fpcagent:instr-type:
+   +--:(pmip-instr)
+      +---- instr-pmip?   fpc-pmip:pmip-instr
+augment /fpcagent:configure-bundles/fpcagent:input/fpcagent:bundles/fpcagent:instructions/fpcagent:instr-type:
+   +--:(pmip-instr)
+      +---- instr-pmip?   fpc-pmip:pmip-instr
+augment /fpcagent:configure-bundles/fpcagent:input/fpcagent:bundles/fpcagent:op_body/fpcagent:create_or_update/fpcagent:contexts/fpcagent:instructions/fpcagent:instr-type:
+   +--:(pmip-instr)
+      +---- instr-pmip?   fpc-pmip:pmip-instr
+augment /fpcagent:configure-bundles/fpcagent:output/fpcagent:bundles/fpcagent:result-type/fpcagent:config-success/fpcagent:contexts/fpcagent:instructions/fpcagent:instr-type:
+   +--:(pmip-instr)
+      +---- instr-pmip?   fpc-pmip:pmip-instr
+augment /fpcagent:configure-bundles/fpcagent:input/fpcagent:bundles/fpcagent:op_body/fpcagent:create_or_update/fpcagent:ports/fpcagent:instructions/fpcagent:instr-type:
+   +--:(pmip-instr)
+      +---- instr-pmip?   fpc-pmip:pmip-instr
+augment /fpcagent:configure-bundles/fpcagent:output/fpcagent:bundles/fpcagent:result-type/fpcagent:config-success/fpcagent:ports/fpcagent:instructions/fpcagent:instr-type:
+   +--:(pmip-instr)
+      +---- instr-pmip?   fpc-pmip:pmip-instr
+     ]]></artwork>
+        <postamble></postamble>
+      </figure>
+</t>
   </section>
   <section anchor="ietf-dmm-fpc-policyext-tree" title="FPC Policy Extension YANG Tree">
+<t>
+ <figure anchor="fig-ietf-dmm-fpc-policyext-tree"
+              title="YANG FPC Policy Extension Tree">
+<artwork align="center"><![CDATA[
+module: ietf-dmm-fpc-policyext
+augment /fpcagent:fpc-entities/fpcagent:actions/fpcagent:action-value:
+   +--:(simple-nat)
+   |  +--rw outbound-nat-address?    inet:ip-address
+   +--:(simple-napt)
+   |  +--rw source-port?             inet:port-number
+   |  +--rw outbound-napt-address?   inet:ip-address
+   |  +--rw destination-port?        inet:port-number
+   +--:(copy-forward)
+      +--rw destination
+         +--rw (value)?
+            +--:(port-ref)
+            |  +--rw port-ref?      -> /fpcagent:fpc-entities/ports/port-id
+            +--:(context-ref)
+               +--rw context-ref?   -> /fpcagent:fpc-entities/contexts/context-id
+augment /fpcagent:fpc-entities/fpcagent:descriptors/fpcagent:descriptor-value:
+   +--:(prefix-descriptor)
+      +--rw destination-ip?   inet:ip-prefix
+      +--rw source-ip?        inet:ip-prefix
+     ]]></artwork>
+        <postamble></postamble>
+      </figure>
+</t>
   </section>
 </section>
 
