@@ -211,7 +211,7 @@ module ietf-dmm-fpc-pmip {
         uses fpc-pmip:pmip-commandset;
       }
     }
-    augment "/fpcagent:configure/fpcagent:output/fpcagent:result-type/fpcagent:config-success/fpcagent:contexts/fpcagent:instructions/fpcagent:instr-type" {
+    augment "/fpcagent:configure/fpcagent:output/fpcagent:result-type/fpcagent:create-or-update-success/fpcagent:contexts/fpcagent:instructions/fpcagent:instr-type" {
       case pmip-instr {
         uses fpc-pmip:pmip-commandset;
       }
@@ -221,7 +221,7 @@ module ietf-dmm-fpc-pmip {
         uses fpc-pmip:pmip-commandset;
       }
     }
-    augment "/fpcagent:configure/fpcagent:output/fpcagent:result-type/fpcagent:config-success/fpcagent:ports/fpcagent:instructions/fpcagent:instr-type" {
+    augment "/fpcagent:configure/fpcagent:output/fpcagent:result-type/fpcagent:create-or-update-success/fpcagent:ports/fpcagent:instructions/fpcagent:instr-type" {
       case pmip-instr {
         uses fpc-pmip:pmip-commandset;
       }
@@ -237,7 +237,7 @@ module ietf-dmm-fpc-pmip {
         uses fpc-pmip:pmip-commandset;
       }
     }
-    augment "/fpcagent:configure-bundles/fpcagent:output/fpcagent:bundles/fpcagent:result-type/fpcagent:config-success/fpcagent:contexts/fpcagent:instructions/fpcagent:instr-type" {
+    augment "/fpcagent:configure-bundles/fpcagent:output/fpcagent:bundles/fpcagent:result-type/fpcagent:create-or-update-success/fpcagent:contexts/fpcagent:instructions/fpcagent:instr-type" {
       case pmip-instr {
         uses fpc-pmip:pmip-commandset;
       }
@@ -248,7 +248,7 @@ module ietf-dmm-fpc-pmip {
         uses fpc-pmip:pmip-commandset;
       }
     }
-    augment "/fpcagent:configure-bundles/fpcagent:output/fpcagent:bundles/fpcagent:result-type/fpcagent:config-success/fpcagent:ports/fpcagent:instructions/fpcagent:instr-type" {
+    augment "/fpcagent:configure-bundles/fpcagent:output/fpcagent:bundles/fpcagent:result-type/fpcagent:create-or-update-success/fpcagent:ports/fpcagent:instructions/fpcagent:instr-type" {
       case pmip-instr {
         uses fpc-pmip:pmip-commandset;
       }

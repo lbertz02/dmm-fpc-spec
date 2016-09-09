@@ -416,7 +416,7 @@ module ietf-dmm-threegpp {
         uses threegpp:threegpp-commandset;
       }
     }
-    augment "/fpcagent:configure/fpcagent:output/fpcagent:result-type/fpcagent:config-success/fpcagent:contexts/fpcagent:instructions/fpcagent:instr-type" {
+    augment "/fpcagent:configure/fpcagent:output/fpcagent:result-type/fpcagent:create-or-update-success/fpcagent:contexts/fpcagent:instructions/fpcagent:instr-type" {
       case instr-3gpp-mob {
         uses threegpp:threegpp-commandset;
       }
@@ -426,7 +426,7 @@ module ietf-dmm-threegpp {
         uses threegpp:threegpp-commandset;
       }
     }
-    augment "/fpcagent:configure/fpcagent:output/fpcagent:result-type/fpcagent:config-success/fpcagent:ports/fpcagent:instructions/fpcagent:instr-type" {
+    augment "/fpcagent:configure/fpcagent:output/fpcagent:result-type/fpcagent:create-or-update-success/fpcagent:ports/fpcagent:instructions/fpcagent:instr-type" {
       case instr-3gpp-mob {
         uses threegpp:threegpp-commandset;
       }
@@ -442,7 +442,7 @@ module ietf-dmm-threegpp {
         uses threegpp:threegpp-commandset;
       }
     }
-    augment "/fpcagent:configure-bundles/fpcagent:output/fpcagent:bundles/fpcagent:result-type/fpcagent:config-success/fpcagent:contexts/fpcagent:instructions/fpcagent:instr-type" {
+    augment "/fpcagent:configure-bundles/fpcagent:output/fpcagent:bundles/fpcagent:result-type/fpcagent:create-or-update-success/fpcagent:contexts/fpcagent:instructions/fpcagent:instr-type" {
       case instr-3gpp-mob {
         uses threegpp:threegpp-commandset;
       }
@@ -452,7 +452,7 @@ module ietf-dmm-threegpp {
         uses threegpp:threegpp-commandset;
       }
     }
-    augment "/fpcagent:configure-bundles/fpcagent:output/fpcagent:bundles/fpcagent:result-type/fpcagent:config-success/fpcagent:ports/fpcagent:instructions/fpcagent:instr-type" {
+    augment "/fpcagent:configure-bundles/fpcagent:output/fpcagent:bundles/fpcagent:result-type/fpcagent:create-or-update-success/fpcagent:ports/fpcagent:instructions/fpcagent:instr-type" {
       case instr-3gpp-mob {
         uses threegpp:threegpp-commandset;
       }
