@@ -229,10 +229,11 @@ module ietf-dmm-fpcagent {
         unknown - the location of the references are unknown.  This is treated as
           a 'storage' type.";
       type enumeration {
-        enum op { value 0; }
-        enum bundle { value 1; }
-        enum storage { value 2; }
-        enum unknown { value 3; }
+        enum none { value 0; }
+        enum op { value 1; }
+        enum bundle { value 2; }
+        enum storage { value 3; }
+        enum unknown { value 4; }
       }
     }
 
@@ -381,8 +382,11 @@ module ietf-dmm-fpcagent {
             }
           }
         }
-        case config-success {
+        case create-or-update-success {
           uses fpcagent:payload;
+        }
+        case delete_or_query-success {
+          uses fpcbase:targets-value;
         }
         case empty-case {
         }
