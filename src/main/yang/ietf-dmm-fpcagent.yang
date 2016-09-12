@@ -415,6 +415,10 @@ module ietf-dmm-fpcagent {
         }
       }
       output {
+        leaf highest-op-ref-scope {
+            if-feature operation-ref-scope;
+            type fpcagent:ref-scope;
+        }
         list bundles {
           key op-id;
           uses fpcagent:result-body;
