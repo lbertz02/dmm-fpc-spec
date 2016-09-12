@@ -19,7 +19,7 @@
 <!ENTITY RFC6088 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6088.xml">
 <!ENTITY RFC7222 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7222.xml">
 <!ENTITY I-D.ietf-dmm-requirements SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-dmm-requirements.xml">
-<!ENTITY I-D.ietf-dmm-deployment-models SYSTEM 'http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-dmm-deployment-models.xml'>
+<!ENTITY I-D.ietf-dmm-deployment-models SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-dmm-deployment-models.xml">
 ]>
 <rfc category="std" docName="draft-ietf-dmm-fpc-cpdp-04.txt"
      ipr="trust200902">
@@ -2036,7 +2036,7 @@ Such protocol-specific details will be described in separate documents and may r
     </references>
 
     <references title="Informative References">
-
+    &I-D.ietf-dmm-deployment-models;
     &RFC5213;
     &RFC3344;
     &RFC7222;
