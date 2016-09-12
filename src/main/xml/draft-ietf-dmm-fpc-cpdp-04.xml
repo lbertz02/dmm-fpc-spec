@@ -176,9 +176,9 @@
         <t> To achive an objective of Distributed Mobility Management
         (DMM), such as ability of flexible data-plane functions
         deployment described in <xref target="RFC7333"></xref>, is the
-        separation of control and data-Plane in a mobility management
+        separation of control and data-plane in a mobility management
         system. In case of mobility applications require different
-        policies of data-plane function deployment, a Data-Plane node
+        policies of data-plane function deployment, a data-plane node
         (DPN) is configured with various roles in mobility management
         aspect described in <xref
         target="I-D.ietf-dmm-deployment-models"></xref>. </t>
@@ -230,7 +230,7 @@
 
         <t>
         <list style="hanging">
-            <t hangText="Forwarding plane topology">
+            <t hangText="Forwarding plane topology:">
             DPNs are grouped and abstracted in terms of roles of
             mobility management, such as access, anchors and domains.
             FPC agent arbitrary abstracts DPN-group and consists
@@ -238,7 +238,7 @@
             to a DPN-group which is peering to a DPN-group of anchor
             nodes. </t>
             
-            <t hangText="Mobility session">
+            <t hangText="Mobility session:">
             An endpoint of a mobility session is abstracted as a context
             with its associated attributes, such as tunnel endpoints,
             tunnel identifiers, delegated prefix(es) and routing
@@ -248,7 +248,7 @@
             abstracted as a port. A context can belong to multiple ports
             which are to different kind of purposes and policies. </t>
 
-            <t hangText="Policy">
+            <t hangText="Policy:">
             Policy abstracts policies of handling specific traffic flows
             or packets, such as QoS, packet processing to rewriting
             headers, etc,. The policy consists of one or multiple rules
