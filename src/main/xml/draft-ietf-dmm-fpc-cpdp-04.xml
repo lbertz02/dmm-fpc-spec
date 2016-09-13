@@ -172,65 +172,26 @@
   <middle>
     <section title="Introduction">
 
-
-        <t> To achive an objective of Distributed Mobility Management
-        (DMM), such as ability of flexible data-plane functions
-        deployment described in <xref target="RFC7333"></xref>, is the
-        separation of control and data-plane in a mobility management
-        system. In case of mobility applications require different
-        policies of data-plane function deployment, a data-plane node
-        (DPN) is configured with various roles in mobility management
-        aspect described in <xref
-        target="I-D.ietf-dmm-deployment-models"></xref>. </t>
-
-        <t> As in Proxy Mobile IPv6 protocol (PMIP) <xref
-        target="RFC5213"></xref> for instance, the DPN will be
-        configured as Local Mobility Anchor (LMA) for a registered
-        Mobile Node's (MN) in mobile service A while it will also be
-        configured for another MN as Mobile Access Gateway (MAG) in
-        service B. Moreover modern mobile network services require
-        functions, which are QoS differentiation, rewriting header of
-        packets in addition to the fundamental encapslation and
-        decapslation functions of that in the DPNs. </t>
-
-        <t> For sure that, the DPNs in the data-plane should be
-        abstracted for each service and the mobility control-plane of
-        the services must be able to configure the DPNs with forwarding
-        policies for their MNs. That forwarding policies should be
-        derived from appropriate abstraction of role of DPNs to which
-        MNs are attached, such as LMA or MAG. QoS class of the services
-        may also be included in the forwarding policies. The forwarding
-        policies must consist of unambiguous forwarding rule to treat
-        packets along with the policy. </t>
-
         <t> This document describes Forwarding Policy Configuration
         (FPC), the solution of data-plane separation from control-plane
         which enables mobility management system flexible using agent
         and client functions. To configure data-plane nodes and
         functions, the data-plane is abstracted in the agent to provide
         interface to the client. </t>
-
+        
         <t> Control planes of mobility management systems, and/or any
-        applications which require data-plane control, can utilize FPC
-        in flexible granularities of operations. The configuration
-        operations are capable not only to configure DPNs directly, but
-        also to derive configurations for the DPNs from the abstracted
-        data-plane data models.</t>
+        applications which require data-plane control, can utilize the
+        FPC client in flexible granularities of operations. The
+        configuration operations are capable to configure not only
+        single Data-Plane Node (DPN) directly, but also multiple DPNs
+        from abstracted data-plane models on the FPC agent.</t>
 
-        <t> The configurations collect specific sets of forwarding
-        policies from the data model. In that operation, a FPC client is
-        able to configure a FPC agent to have forwarding policies for
-        DPNs in the data planes as abstracted objects. The agents render
-        those objects into the specific configuration for each DPN. . In
-        other case, a FPC Client must send the specific configuration to
-        each DPN through the agent which exists on top of that.</t>
-
-        <t> FPC provides abstraction in the three areas as following:
-        </t>
+        <t> FPC agent provides the data-plane abstraction models in the
+        three areas as following: </t>
 
         <t>
         <list style="hanging">
-            <t hangText="Forwarding plane topology:">
+            <t hangText="Topology:">
             DPNs are grouped and abstracted in terms of roles of
             mobility management, such as access, anchors and domains.
             FPC agent arbitrary abstracts DPN-group and consists
@@ -238,7 +199,7 @@
             to a DPN-group which is peering to a DPN-group of anchor
             nodes. </t>
             
-            <t hangText="Mobility session:">
+            <t hangText="Mobility:">
             An endpoint of a mobility session is abstracted as a context
             with its associated attributes, such as tunnel endpoints,
             tunnel identifiers, delegated prefix(es) and routing
@@ -259,6 +220,13 @@
             policy-group to apply them to ports. </t>
         </list>
         </t>
+
+        <t> The agent collects applicable sets of forwarding policies
+        for the mobility sessions from the data model, and then renders
+        those policies into specific configurations for each DPNs to
+        which the sessions attached. Specific protocols and
+        configurations to configure DPN from FPC agent are out of scope
+        of this document.</t>
 
         <t> The data-plane abstraction model is extensible to support
         many different type of mobility management systems and
