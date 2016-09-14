@@ -319,9 +319,9 @@ module ietf-dmm-fpcagent {
 
     // Output Structure
     grouping payload {
-      // list descriptors {
-      //   uses fpcbase:fpc-descriptor;
-      // }
+      list descriptors {
+        uses fpcbase:fpc-descriptor;
+      }
       // list actions {
       //   uses fpcbase:fpc-action;
       // }
