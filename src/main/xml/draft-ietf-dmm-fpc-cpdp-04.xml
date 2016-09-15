@@ -18,7 +18,8 @@
 <!ENTITY RFC7429 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7429.xml">
 <!ENTITY RFC6088 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6088.xml">
 <!ENTITY RFC7222 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7222.xml">
-<!ENTITY I-D.ietf-dmm-requirements PUBLIC "" "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-dmm-requirements.xml">
+<!ENTITY I-D.ietf-dmm-requirements SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-dmm-requirements.xml">
+<!ENTITY I-D.ietf-dmm-deployment-models SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-dmm-deployment-models.xml">
 ]>
 <rfc category="std" docName="draft-ietf-dmm-fpc-cpdp-04.txt"
      ipr="trust200902">
@@ -171,65 +172,67 @@
   <middle>
     <section title="Introduction">
 
+        <t> This document describes Forwarding Policy Configuration
+        (FPC), the solution of data-plane separation from control-plane
+        which enables mobility management system flexible using agent
+        and client functions. To configure data-plane nodes and
+        functions, the data-plane is abstracted in the agent to provide
+        interface to the client. </t>
+        
+        <t> Control planes of mobility management systems, and/or any
+        applications which require data-plane control, can utilize the
+        FPC client in flexible granularities of operations. The
+        configuration operations are capable to configure not only
+        single Data-Plane Node (DPN) directly, but also multiple DPNs
+        from abstracted data-plane models on the FPC agent.</t>
 
-<t>
-One objective of the Distributed Mobility Management (DMM) WG is the separation of
-the mobility management Control- and Data-Plane to enable flexible deployment, such
-as decentralized provisioning of Data-Plane nodes (DPN). Data-Plane nodes can be configured
-to function as an anchor for a registered Mobile Node's (MN) traffic, others can be configured
-to function as a Mobile Access Gateway (MAG) per the Proxy Mobile IPv6 protocol
-<xref target="RFC5213"></xref> or a Foreign Agent (FA) per the Mobile IPv4 protocol
-<xref target="RFC3344"></xref>. Requirements for DMM have been described in <xref target="RFC7333"></xref>,
-whereas best current practices for DMM are documented in <xref target="RFC7429"></xref>.
-</t>
+        <t> FPC agent provides the data-plane abstraction models in the
+        three areas as following: </t>
 
-<t>
-The Data-Plane must provide a set of functions to the Mobility Control-Plane, such as
-support for encapsulation, IP address re-writing, QoS differentiation and traffic shaping.
-In addition, means for traffic description must be provided to complement traffic treatment actions
-and build unambiguous Data-plane rules. These requirements are met by various transport network components,
-such as IP switches and routers, though configuration semantics differ between them.
-</t>
+        <t>
+        <list style="hanging">
+            <t hangText="Topology:">
+            DPNs are grouped and abstracted in terms of roles of
+            mobility management, such as access, anchors and domains.
+            FPC agent arbitrary abstracts DPN-group and consists
+            forwarding plane topology, such as Access nodes are composed
+            to a DPN-group which is peering to a DPN-group of anchor
+            nodes. </t>
+            
+            <t hangText="Mobility:">
+            An endpoint of a mobility session is abstracted as a context
+            with its associated attributes, such as tunnel endpoints,
+            tunnel identifiers, delegated prefix(es) and routing
+            information, etc., Contexts are attached to DPN groups along
+            with consequence of the control plane. One or multiple
+            contexts which have same sets of policies, which are
+            abstracted as a port. A context can belong to multiple ports
+            which are to different kind of purposes and policies. </t>
 
-<t>Forwarding Policy Configuration (FPC) per this document enables the configuration
-of any Data-Plane node and type by the abstraction of configuration details and the use
-of common configuration semantics. The protocol using the FPC semantics is deployed between
-a Client function, which is associated with the Mobility Management Control-Plane,
-and an Agent function. The Agent function enforces the Data-Plane configuration
-and can be present on a transport network controller or co-located with a Data-Plane
-node. The Agent applies the generalized configuration semantics to configuration, which
-is specific to the Data-Plane node and type.
-</t>
+            <t hangText="Policy:">
+            Policy abstracts policies of handling specific traffic flows
+            or packets, such as QoS, packet processing to rewriting
+            headers, etc,. The policy consists of one or multiple rules
+            which are composed of descriptors and actions. Descriptors
+            in a rule identify traffic flows and actions apply
+            treatments to packets matched to the descriptors in the
+            rule. An arbitral set of policies is abstracted as a
+            policy-group to apply them to ports. </t>
+        </list>
+        </t>
 
-<t>This specification follows a common functional architecture, which utilizes the FPC
-protocol between the Client and Agent functions.</t>
+        <t> The agent collects applicable sets of forwarding policies
+        for the mobility sessions from the data model, and then renders
+        those policies into specific configurations for each DPNs to
+        which the sessions attached. Specific protocols and
+        configurations to configure DPN from FPC agent are out of scope
+        of this document.</t>
 
-<t>A Client interacts with the Agent to build unambiguous rules which are to be enforced in
-the Data-Plane. An Agent translates a rule, which follows the data model herein, into one or
-multiple configuration actions to enforce the rule in the Data-Plane. Distinct collections of
-rulese are defined as Ports in the information Model.</t>
-
-<t>The Client interacts with the Agent to build sessions, including mobility sessions, to be
-hosted by teh Data-Plane.  These sessions are referred to as Contexts.
-</t>
-
-<t>A Client utilizes a sequence or grouping of control messages to interact with the Agent, where
-each control message has an unambiguous semantic, e.g. to set up a tunnel interface or to
-configure a policy route in a Data-Plane node. An Agent performs a configuration action
-per the semantics of the received control message or grouping of control messages. Generic messages,
-i.e. create, update, query and delete, are also supported.</t>
-
-<t>The availability of both generic and control messaging enables tailored implementation and deployment of Control-/Data-Plane
-separation in mobile communication gateways, e.g. by having the Mobility Control-Plane directly communicating to
-a Data-Plane node using control messages, or by the deployment of a Network Controller in between the Mobility
-Control-Plane and Data-Plane nodes which may support both generic and control messages, which are under control of the Network Controller. Support for multiple deployment models
-enables an operator to transition their network in incremental phases.</t>
-
-<t>The architecture and reference interface specified in this document is not tied to any specific Control-Plane
-protocol that is in use in the mobility network, or to any type of access technology. The mobility protocols in
-use can be Proxy Mobile IPv6, GTP, IPSec or other protocols; and the access network can be 4G LTE, WiFi, or 5G.
-These aspects have no direct implication on the FPC interface that is between Control- and Data-Plane nodes.</t>
-
+        <t> The data-plane abstraction model is extensible to support
+        many different type of mobility management systems and
+        data-plane functions. The architecture and protocol design of
+        FPC intends not to tie specific type of access technologies and
+        mobility protocols. </t>
 
     </section>
 
@@ -244,105 +247,89 @@ These aspects have no direct implication on the FPC interface that is between Co
 
    <section anchor="pcmodel" title="Reference Architecture and Information Model">
 
-   <section anchor="refarch" title="Architecture for DMM Forwarding Policy Configuration">
+    <section anchor="refarch" title="FPC Architecture ">
 
-<t>The DMM Forwarding Policy Configuration (FPC) protocol enables the separation of the mobility management Control-Plane
-from the Data-Plane and provides the required control and semantics in between these two planes.
-<xref target="fig_usecase"></xref> depicts an exemplary use case where IP traffic between a Correspondent Node (CN)
-and a Mobile Node (MN) traverses multiple DPNs, each applying policies as per the Control-Plane's request.
-Policies in the one or multiple DPNs can result in traffic steering according to a host-route, packet scheduling
-and marking according to a subscriber's QoS profile, or forwarding rules (e.g. encapsulation within GRE or GTP-U tunnel).
-</t>
-<t>
-   <figure anchor="fig_usecase"
-              title="Exemplary illustration of DMM traffic steering and policy enforcement
-                     at Data Plane Nodes (DPN)">
-        <artwork align="center"><![CDATA[
+        <t> In accordance with the requirements of flexible data-plane
+        functions deployment described in <xref
+        target="RFC7333"></xref>, FPC provides means for mobility
+        control-plane and applications to handle DPNs that must be
+        configured with various roles in mobility management aspect
+        described in <xref
+        target="I-D.ietf-dmm-deployment-models"></xref>. </t>
 
-               +--------------------------+
-               |     Mobility Control     |
-               +--------------------------+
-                |             |         |
-                |             |         |
-                |             |         |
-         \ /    V             V         V
-+--+     -o-  +---+         +---+     +---+   +--+
-|MN| ---- |---|DPN|<========|DPN|<----|DPN|<--|CN|
-+--+      |   +---+         +---+     +---+   +--+
-             Rules:       Rules:      Rules:
-             Encap,Decap, Encap,Decap Policy-Route,
-             Forward,QoS  Forward,QoS Forward
+        <t> FPC uses building blocks of Agent, Client and
+        data-plane abstraction models as the interface between the
+        agent and the client.</t>
+        
+        <t> Mobility control-plane and applications integrates FPC
+        Client function and connect to FPC Agent function. The client
+        and the agent communicate based on data-plane abstraction models
+        described in <xref target="model1"></xref>. Along with the
+        models the control-plane and the applications put forwarding
+        policies for their mobility sessions to the agent. </t>
+        
+        <t>The agent is connecting to DPN(s) to manage their
+        configuration. That configurations are rendered from the
+        forwarding policies by the agent. FPC agent may be implemented
+        in network controller that handle multiple DPNs. And it also may
+        be integrated into a DPN.</t>
+        
+        <t>This architecture is illustrated in <xref
+        target="fig_refarch"></xref>. This document does not adopt
+        specific protocol for the FPC envelope protocol and it is out of
+        scope. However it must be capable to support FPC protocol
+        messages and transactions described in <xref
+        target="protocol"></xref>. </t>
 
-          ]]></artwork>
+        <t>
+        <figure anchor="fig_refarch"
+                  title="Reference Forwarding Policy Configuration (FPC) Architecture">
+            <artwork align="center"><![CDATA[
+                    +-------------------------+
+                    | Mobility Control-Plane  |
+                    |          and            |
+                    |      Applications       |
+                    |+-----------------------+|
+                    ||      FPC Client       ||
+                    |+----------^------------+|
+                    +-----------|-------------+
+        FPC envelope protocol   |
+                +---------------+-----------------+
+                |                                 |
+  Network       |                                 |
+  Controller    |                      DPN        | 
+    +-----------|-------------+        +----------|---------+    
+    |+----------v------------+|        |+---------v--------+|    
+    ||   [Data-plane model]  ||        ||[Data-plane model]||    
+    ||       FPC Agent       ||        ||    FPC Agent     ||    
+    |+-----------------------+|        |+------------------+|    
+    |+------------+----------+|        |                    |    
+    ||SB Protocols|FPC Client||        |  DPN Configuration |    
+    ||   Modules  |  Module  ||        +--------------------+    
+    |+------^-----+----^-----+|    
+    +-------|----------|------+         
+            |          | 
+  Other     |          | FPC envelope
+  Southband |          | Protocol
+  Protocols |          | 
+            |          +-----------------+ 
+            |                            |
+DPN         |                 DPN        |
+ +----------|---------+       +----------|---------+ 
+ |+---------v--------+|       |+---------v--------+|  
+ ||  Configuration   ||       ||[Data-plane model]||
+ || Protocol module  ||       ||     FPC Agent    || 
+ |+------------------+|       |+------------------+| 
+ |                    |       |                    | 
+ | DPN Configuration  |       |  DPN Configuration | 
+ +--------------------+       +--------------------+     
+              ]]></artwork>
+            <postamble></postamble>
+          </figure>
+        </t>        
 
-        <postamble></postamble>
-      </figure>
-</t>
 
-<t>Mobility Control-Plane functions have the following roles in common: </t>
-
- <t><list style="symbols">
-     <t>Tracking a mobile node's attachment, detachment from the access network.</t>
-     <t>Accept requests to set up and maintain mobility-related Data-Plane paths between DPNs,
-        enforcing QoS and forwarding policies. Such requests are a result of mobility signaling between different
-        Mobility Control-Plane functions.</t>
-     <t>Ensure that required rules to establish and maintain connectivity of an MN with its correspondent
-        nodes are enforced in the Data-Plane.</t>
-     <t>Participate in monitoring the DPNs' operation and support the handling of exceptions, e.g. the
-        detection of a partial DPN failure and the diversion of traffic through a different DPN.</t>
-     <t>Maintain consistency between multiple DPNs which enforce policy rules to ensure
-        connectivity between a MN and its correspondent services.</t>
-  </list></t>
-
-<t>Mobility Data-Plane functions have the following roles in common: </t>
-
-  <t><list style="symbols">
-     <t>Forward and treat traffic according to the policies and directives sent by the Mobility Control-Plane.</t>
-     <t>Provide status information (e.g. load, health, statistics and traffic volume) and events related to service failure
-        upon request.</t>
-     <t>Participate in the process of topology acquisition, e.g. by exposing relevant topological and
-        capability information, such as support for QoS differentiation and supported encapsulation protocols.
-        </t>
-  </list></t>
-<t>The protocol for DMM FPC applies to the interface between a FPC Client function and
-a FPC Agent function, as depicted in <xref target="fig_refarch"></xref>. The FPC Client function
-is associated with an application function of the mobility management Control-Plane, e.g. a Local
-Mobility Anchor Control-Plane function per the Proxy Mobile IPv6 protocol.
-The FPC Agent function processes the FPC protocol semantics and translates them into configuration
-commands per the DPN's technology. In one example, a FPC Agent can be co-located with a Network
-Controller, which enforces forwarding rules on a set of Data-plane nodes. In another example, the Agent
-can be co-located with a Data-Plane node to directly interact with interface management and the
-router's RIB Manager. The mapping of the common FPC semantics and policy description to the configuration
-commands of a particular DPN is specific to the DPN's technology and the Agent's implementation.
-</t>
-
-<t>
- <figure anchor="fig_refarch"
-              title="Functional reference architecture for DMM Forwarding Policy Configuration (FPC)">
-        <artwork align="center"><![CDATA[
-
-               +-------------------------+
-               | Mobility Control-Plane  |
-               |                         |
-               |+--------[API]----------+|
-               ||  FPC Client Function  ||
-               |+----------^------------+|
-               +-----------|-------------+
-                           |
-                           | DMM FPC protocol
-                           |
-               +-----------|-------------+
-               |+----------v------------+|
-               ||  FPC Agent Function   ||
-               |+-----------------------+|
-               |                         |
-               |  DPN Configuration API  |
-               +-------------------------+
-          ]]></artwork>
-        <postamble></postamble>
-      </figure>
-</t>
-</section>
+    </section>
 <section anchor="model1" title="Information Model">
     <t>To abstract from configuration details of an IP switch or IP router on the FPC protocol interface,
     the construct of logical ports describe sets of rules for D-Plane processing and contexts describe
@@ -2001,7 +1988,7 @@ Such protocol-specific details will be described in separate documents and may r
     </references>
 
     <references title="Informative References">
-
+    &I-D.ietf-dmm-deployment-models;
     &RFC5213;
     &RFC3344;
     &RFC7222;

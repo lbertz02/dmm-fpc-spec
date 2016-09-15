@@ -58,32 +58,82 @@ module ietf-dmm-fpcagent {
     }
 
     // Top Level Structures
-    container fpc-entities {
-      list contexts {
-          key context-id;
-          uses fpcbase:fpc-context;
-      }
-      list ports {
-          key port-id;
-          uses fpcbase:fpc-port;
-      }
-      list policy-groups {
-          key "policy-group-id";
-          uses fpcbase:fpc-policy-group;
-      }
-      list policies {
-          key "policy-id";
-          uses fpcbase:fpc-policy;
-      }
-      list descriptors {
-        key descriptor-id;
-        uses fpcbase:fpc-descriptor;
-      }
-      list actions {
-          key action-id;
-          uses fpcbase:fpc-action;
-      }
+    
+    container tenants {
+        description "";
+        
+        list tenant {
+            description "";
+            key "tenant-id";
+            leaf tenant-id {
+                type uint32;
+                description "";
+            }
+    
+            container fpc-policy {
+              list policy-groups {
+                  key "policy-group-id";
+                  uses fpcbase:fpc-policy-group;
+              }
+              list policies {
+                  key "policy-id";
+                  uses fpcbase:fpc-policy;
+              }
+              list descriptors {
+                key descriptor-id;
+                uses fpcbase:fpc-descriptor;
+              }
+              list actions {
+                  key action-id;
+                  uses fpcbase:fpc-action;
+              }
+            }
+
+            container fpc-mobility {
+              config false;
+              list contexts {
+                  key context-id;
+                  uses fpcbase:fpc-context;
+              }
+              list ports {
+                  key port-id;
+                  uses fpcbase:fpc-port;
+              }
+
+            }
+            container fpc-topology {
+              // Basic Agent Topology Structures
+              list dpn-group-peers {
+                  if-feature fpc-basic-agent;
+                  key "remote-dpn-group-id";
+                  uses fpcbase:fpc-dpn-peer-group;
+              }
+              leaf dpn-id {
+                if-feature fpc-basic-agent;
+                type fpcbase:fpc-dpn-id;
+              }
+              leaf-list control-protocols {
+                if-feature fpc-basic-agent;
+                type identityref {
+                  base "fpcbase:fpc-dpn-control-protocol";
+                }
+              }
+
+              list dpn-groups {
+                  if-feature fpc-multi-dpn;
+                  key group-id;
+                  uses fpcagent:fpc-dpn-group;
+              }
+              list dpns {
+                  if-feature fpc-multi-dpn;
+                  key dpn-id;
+                  uses fpcbase:fpc-dpn;
+              }
+            }
+
+        }
     }
+
 
     container fpc-agent-info {
       // General Agent Structures
@@ -162,35 +212,6 @@ module ietf-dmm-fpcagent {
         }
     }
 
-    container fpc-topology {
-      // Basic Agent Topology Structures
-      list dpn-group-peers {
-          if-feature fpc-basic-agent;
-          key "remote-dpn-group-id";
-          uses fpcbase:fpc-dpn-peer-group;
-      }
-      leaf dpn-id {
-        if-feature fpc-basic-agent;
-        type fpcbase:fpc-dpn-id;
-      }
-      leaf-list control-protocols {
-        if-feature fpc-basic-agent;
-        type identityref {
-          base "fpcbase:fpc-dpn-control-protocol";
-        }
-      }
-
-      list dpn-groups {
-          if-feature fpc-multi-dpn;
-          key group-id;
-          uses fpcagent:fpc-dpn-group;
-      }
-      list dpns {
-          if-feature fpc-multi-dpn;
-          key dpn-id;
-          uses fpcbase:fpc-dpn;
-      }
-    }
 
     // RPC
     // RPC Specific Structures
@@ -298,18 +319,18 @@ module ietf-dmm-fpcagent {
 
     // Output Structure
     grouping payload {
-      list descriptors {
-        uses fpcbase:fpc-descriptor;
-      }
-      list actions {
-        uses fpcbase:fpc-action;
-      }
-      list policies {
-        uses fpcbase:fpc-policy;
-      }
-      list policy-groups {
-        uses fpcbase:fpc-policy-group;
-      }
+      // list descriptors {
+      //   uses fpcbase:fpc-descriptor;
+      // }
+      // list actions {
+      //   uses fpcbase:fpc-action;
+      // }
+      // list policies {
+      //   uses fpcbase:fpc-policy;
+      // }
+      // list policy-groups {
+      //   uses fpcbase:fpc-policy-group;
+      // }
       list ports {
         uses fpcagent:port-operation;
       }
