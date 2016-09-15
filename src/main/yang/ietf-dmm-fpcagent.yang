@@ -58,10 +58,10 @@ module ietf-dmm-fpcagent {
     }
 
     // Top Level Structures
-    
+
     container tenants {
         description "";
-        
+
         list tenant {
             description "";
             key "tenant-id";
@@ -69,7 +69,7 @@ module ietf-dmm-fpcagent {
                 type uint32;
                 description "";
             }
-    
+
             container fpc-policy {
               list policy-groups {
                   key "policy-group-id";
@@ -319,18 +319,6 @@ module ietf-dmm-fpcagent {
 
     // Output Structure
     grouping payload {
-      // list descriptors {
-      //   uses fpcbase:fpc-descriptor;
-      // }
-      // list actions {
-      //   uses fpcbase:fpc-action;
-      // }
-      // list policies {
-      //   uses fpcbase:fpc-policy;
-      // }
-      // list policy-groups {
-      //   uses fpcbase:fpc-policy-group;
-      // }
       list ports {
         uses fpcagent:port-operation;
       }
