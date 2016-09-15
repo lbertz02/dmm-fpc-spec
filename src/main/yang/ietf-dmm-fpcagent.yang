@@ -134,7 +134,6 @@ module ietf-dmm-fpcagent {
         }
     }
 
-
     container fpc-agent-info {
       // General Agent Structures
       leaf-list supported-features {

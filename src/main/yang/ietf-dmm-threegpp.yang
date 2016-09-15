@@ -21,6 +21,10 @@ module ietf-dmm-threegpp {
         reference "draft-ietf-dmm-fpc-cpdp-04";
     }
 
+    identity threeGPP-access-type {
+      base "fpcbase:fpc-access-type";
+    }
+
     // Profile Type
     identity threeGPP-mobility {
         base "fpcbase:fpc-mobility-profile-type";

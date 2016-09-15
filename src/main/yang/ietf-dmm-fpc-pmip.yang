@@ -19,6 +19,10 @@ module ietf-dmm-fpc-pmip {
         reference "draft-ietf-dmm-fpc-cpdp-01";
     }
 
+    identity ietf-pmip-access-type {
+      base "fpcbase:fpc-access-type";
+    }
+
     identity fpcp-qos-index-pmip {
         base "fpcbase:fpc-qos-type";
     }
