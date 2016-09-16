@@ -237,6 +237,11 @@ module ietf-dmm-fpcbase {
     // Mobility (Tunnel) Information
     grouping mobility-info {
         choice profile-parameters {
+            case nothing {
+              leaf none {
+                type empty;
+              }
+            }
         }
     }
 
