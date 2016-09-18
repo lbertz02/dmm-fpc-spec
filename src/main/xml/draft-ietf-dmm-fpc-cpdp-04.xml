@@ -18,8 +18,10 @@
 <!ENTITY RFC7429 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7429.xml">
 <!ENTITY RFC6088 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6088.xml">
 <!ENTITY RFC7222 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7222.xml">
+<!ENTITY RFC6241 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6241.xml">
 <!ENTITY I-D.ietf-dmm-requirements SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-dmm-requirements.xml">
 <!ENTITY I-D.ietf-dmm-deployment-models SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-dmm-deployment-models.xml">
+<!ENTITY I-D.ietf-netconf-restconf SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-netconf-restconf.xml">
 ]>
 <rfc category="std" docName="draft-ietf-dmm-fpc-cpdp-04.txt"
      ipr="trust200902">
@@ -198,16 +200,6 @@
             forwarding plane topology, such as Access nodes are composed
             to a DPN-group which is peering to a DPN-group of anchor
             nodes. </t>
-            
-            <t hangText="Mobility:">
-            An endpoint of a mobility session is abstracted as a context
-            with its associated attributes, such as tunnel endpoints,
-            tunnel identifiers, delegated prefix(es) and routing
-            information, etc., Contexts are attached to DPN groups along
-            with consequence of the control plane. One or multiple
-            contexts which have same sets of policies, which are
-            abstracted as a port. A context can belong to multiple ports
-            which are to different kind of purposes and policies. </t>
 
             <t hangText="Policy:">
             Policy abstracts policies of handling specific traffic flows
@@ -218,6 +210,17 @@
             treatments to packets matched to the descriptors in the
             rule. An arbitral set of policies is abstracted as a
             policy-group to apply them to ports. </t>
+
+            <t hangText="Mobility:">
+            An endpoint of a mobility session is abstracted as a context
+            with its associated runtime attributes, such as tunnel endpoints,
+            tunnel identifiers, delegated prefix(es) and routing
+            information, etc., Contexts are attached to DPN groups along
+            with consequence of the control plane. One or multiple
+            contexts which have same sets of policies, which are
+            abstracted as a port. A context can belong to multiple ports
+            which are to different kind of purposes and policies. </t>
+
         </list>
         </t>
 
@@ -280,6 +283,7 @@
         scope. However it must be capable to support FPC protocol
         messages and transactions described in <xref
         target="protocol"></xref>. </t>
+        
 
         <t>
         <figure anchor="fig_refarch"
@@ -328,6 +332,14 @@ DPN         |                 DPN        |
           </figure>
         </t>        
 
+        <t>Noted that FPC envelope protocol is only required to handle
+        runtime data in the Mobility model. Rest of the FPC models,
+        Topology and Policy, are pre-configured so that real-time
+        data handling capabilities are not required for them. Hence the
+        operators of those who tenant in FPC data-plane can configure
+        them on the agent through other means, such as <xref
+        target="I-D.ietf-netconf-restconf">Restconf</xref> or <xref
+        target="RFC6241">Netconf</xref> for instance. </t>
 
     </section>
 
@@ -470,28 +482,40 @@ DPN         |                 DPN        |
 
            <t><list hangIndent="24" style="hanging"> 
            
-               <t hangText="DPN-group-id:">
-               </t>
+               <t hangText="DPN-group-id:"> Defines identifier of
+               DPN-Group. The ID format can be chose by operator as they
+               like. e.g; URI, UUID, certain length of string and
+               unsigned-integer, etc., </t>
 
-               <t hangText="Data-plane-role:">
-               </t>
+               <t hangText="Data-plane-role:"> Defines data-plane
+               role of the DPN-Group, such as access-dpn, L2/L3
+               anchor-dpn. </t>
 
-               <t hangText="Domains:">
-               </t>
+               <t hangText="Domains:"> Specifies domains of which the
+               DPN-group belong to. </t>
 
-               <t hangText="Access-type:">
-               </t>
+               <t hangText="Access-type:"> Defines access type which the
+               DPN-Group capable, such as ethernet(802.3/11), 3gpp
+               cellular(S1, RAB), if any. </t>
 
-               <t hangText="Mobility-profile:">
-               </t>
+               <t hangText="Mobility-profile:"> Defines supporting
+               mobility profile, such as ietf-pmip, 3gpp, or new profile
+               if anyone will define it. When those profiles are
+               correctly defined, some or all of data-plane
+               parameters of contexts can be automatically derived from
+               the profile by FPC agent. </t>
 
-               <t hangText="DPN-group-peer:">
-               </t>
+               <t hangText="DPN-group-peer:"> Defines remote peer of
+               DPN-group with parameters described in <xref
+               target="dpn-peers"></xref>. </t>
            
            </list></t>
 
 
         <section anchor="dpn-peers" title="DPN-group Peers">
+        
+        <t> DPN-group-peer defines parameters of remote peer DPN as illustrated in
+        <xref target="fig_dpn-peers-im"></xref>. </t>
 
         <t>
         <figure anchor="fig_dpn-peers-im"
@@ -521,22 +545,25 @@ DPN         |                 DPN        |
 
            <t><list hangIndent="24" style="hanging"> 
            
-               <t hangText="Remote-DPN-group:">
+               <t hangText="Remote-DPN-group:">Indicates peering DPN-Group.
                </t>
 
-               <t hangText="Remote-mobility-profile:">
+               <t hangText="Remote-mobility-profile:"> Defines
+               mobility-profile used to this peer, the profile which are
+               ietf-pmip, 3gpp, or new profile if anyone will define it.
                </t>
 
-               <t hangText="Remote-data-plane-role:">
-               </t>
+               <t hangText="Remote-data-plane-role:"> Defines
+               forwarding-plane role of peering DPN-Group. </t>
 
-               <t hangText="Remote-endpoint-address:">
-               </t>
+               <t hangText="Remote-endpoint-address:"> Defines Endpoint
+               address of the peering DPN-Group. </t>
 
-               <t hangText="Local-endpoint-address:">
-               </t>
+               <t hangText="Local-endpoint-address:"> Defines Endpoint
+               address of its own DPN-Group to peer the remote
+               DPN-Group. </t>
 
-               <t hangText="Tunnel-MTU-size:">
+               <t hangText="Tunnel-MTU-size:"> Defines MTU size of tunnel.
                </t>
            
            </list></t>
@@ -578,14 +605,16 @@ DPN         |                 DPN        |
 
            <t><list hangIndent="24" style="hanging"> 
            
-               <t hangText="DPN-id:">
+               <t hangText="DPN-id:"> Defines identifier of DPN. The ID
+               format can be chose by operator as they like. e.g; URI,
+               UUID, certain length of string and unsigned-integer,
+               etc., </t>
+
+               <t hangText="DPN-name:"> Defines name of DPN.
                </t>
 
-               <t hangText="DPN-name:">
-               </t>
-
-               <t hangText="DPN-groups:">
-               </t>
+               <t hangText="DPN-groups:">Indicates DPN-Group     which the
+               DPN belongs to. </t>
            
            </list></t>
         
@@ -944,13 +973,19 @@ DPN         |                 DPN        |
         </list></t>
         
         <section anchor="single-dpn-context" title="Single DPN Agent Case">
+        
+        <t> In the case of a FPC Agent supports only one DPN, the agent
+        must maintain context data just for the DPN. The agent does not
+        need to maintain Topology model in this case. The context in
+        sigle DPN case consist of following parameters for both
+        direction of uplink and downlink.</t>
 
         <t>
         <figure anchor="fig_ul-context-im"
                   title="Uplink Context Model of Single DPN Structure">
             <artwork align="center"><![CDATA[
 
-(Context)
+(Contexts)
     |    
     +---UL-Tunnel-local-address
     |    
@@ -982,7 +1017,7 @@ DPN         |                 DPN        |
             endpoint address of remote DPN. </t>
 
             <t hangText="UL-Mtu-size:">Specifies uplink MTU size of
-            tunnel </t>
+            tunnel. </t>
 
             <t hangText="UL-Mobility-specific-tunnel-parameters:">
             Specifies profile specific uplink tunnel parameters to the
@@ -1000,9 +1035,10 @@ DPN         |                 DPN        |
             for 3gpp profile,  rfc6089/7222 for ietf-pmip, or new
             profile if anyone will define it. </t>
 
-            <t hangText="UL-DPN-specific-parameters:">Specifies node
-            specific parameters of uplink, such like if-index,
-            tunnel-if-number that must be unique in the DPN-wise. </t>
+            <t hangText="UL-DPN-specific-parameters:">Specifies optional
+            node specific parameters of uplink in need, such like
+            if-index, tunnel-if-number that must be unique in the
+            DPN-wise. </t>
 
             <t hangText="UL-Vendor-specific-parameters:">Specifies
             vendor specific parameter space for uplink. </t>
@@ -1014,7 +1050,7 @@ DPN         |                 DPN        |
                   title="Downlink Context Model of Single DPN Structure">
             <artwork align="center"><![CDATA[
 
-(Context)
+(Contexts)
     |    
     +---DL-Tunnel-local-address
     |    
@@ -1039,42 +1075,60 @@ DPN         |                 DPN        |
 
         <t><list hangIndent="24" style="hanging"> 
 
-            <t hangText="DL-Tunnle-local-address:">
+            <t hangText="DL-Tunnle-local-address:"> Specifies downlink
+            endpoint address of the DPN which agent exists.
             </t>
 
-            <t hangText="DL-Tunnel-remote-address:">
+            <t hangText="DL-Tunnel-remote-address:">Specifies downlink
+            endpoint address of remote DPN.
             </t>
 
-            <t hangText="DL-Mtu-size:">
-            </t>
+            <t hangText="DL-Mtu-size:">Specifies downlink MTU size of
+            tunnel.</t>
 
             <t hangText="DL-Mobility-specific-tunnel-parameters:">
-            </t>
+            Specifies profile specific downlink tunnel parameters to the
+            DPN which the agent exists. The profiles includes  GTP/TEID
+            for 3gpp profile, GRE/Key for ietf-pmip profile, or new
+            profile if anyone will define it.</t>
 
-            <t hangText="DL-Nexthop:">
-            </t>
+            <t hangText="DL-Nexthop:">Indicates nexthop information of
+            downlink in external network, such as IP address, MAC address,
+            SPI of service function chain, SID of segment routing, or if
+            any.</t>
 
-            <t hangText="DL-QoS-profile-specific-parameters:">
-            </t>
+            <t hangText="DL-QoS-profile-specific-parameters:">Specifies
+            profile specific QoS parameter of downlink, such as QCI/TFT
+            for 3gpp profile,  rfc6089/7222 for ietf-pmip, or new
+            profile if anyone will define it.</t>
 
-            <t hangText="DL-DPN-specific-parameters:">
-            </t>
+            <t hangText="DL-DPN-specific-parameters:">Specifies optional
+            node specific parameters of downlink in need, such like
+            if-index, tunnel-if-number that must be unique in the
+            DPN-wise.</t>
 
-            <t hangText="DL-Vendor-specific-parameters:">
-            </t>
+            <t hangText="DL-Vendor-specific-parameters:">Specifies
+            vendor specific parameter space for downlink. </t>
 
         </list></t>
         
         </section>
 
         <section anchor="multi-dpn-context" title="Multiple DPN Agent Case">
+        
+        <t>Another case is that a FPC Agent connects to multiple DPNs and handle them.
+        This means that the agent maintain a set of context data for each of them so that
+        the context contain DPNs list and an entry of the list consist of the parameters 
+        in <xref target="fig_dpn-context-im"></xref>. A Context data for one DPN has two 
+        entries for each direction of uplink and downlink.
+        </t>
 
         <t>
         <figure anchor="fig_dpn-context-im"
                   title="Multiple-DPN Supported Context Model Structure">
             <artwork align="center"><![CDATA[
 
-(Context)
+(Contexts)
     |
     +---DPNs
          |
@@ -1105,34 +1159,44 @@ DPN         |                 DPN        |
 
         <t><list hangIndent="24" style="hanging"> 
 
-            <t hangText="DPN-id:">
-            </t>
+            <t hangText="DPN-id:"> Indicates DPN of which the runtime
+            context data installed. </t>
 
-            <t hangText="Direction:">
-            </t>
+            <t hangText="Direction:"> Specifies which side of connection
+            at the DPN indicated, "uplink" or "downlink". </t>
 
-            <t hangText="Tunnle-local-address:">
-            </t>
+            <t hangText="Tunnle-local-address:"> Specifies endpoint
+            address of the DPN at uplink or downlink. </t>
 
-            <t hangText="Tunnel-remote-address:">
-            </t>
+            <t hangText="Tunnel-remote-address:">Specifies endpoint
+            address of remote DPN at uplink or downlink.</t>
 
-            <t hangText="Mtu-size:">
-            </t>
+            <t hangText="Mtu-size:">Specifies downlink MTU size of
+            tunnel on uplink or downlink. </t>
 
             <t hangText="Mobility-specific-tunnel-parameters:">
-            </t>
+            Specifies profile specific tunnel parameters for uplink or
+            downlink of the DPN. The profiles includes GTP/TEID for
+            3gpp profile, GRE/Key for ietf-pmip profile, or new profile
+            if anyone will define it. </t>
 
-            <t hangText="Nexthop:">
-            </t>
+            <t hangText="Nexthop:">Indicates nexthop information for
+            uplink or downlink in external network of the DPN, such as
+            IP address, MAC address, SPI of service function chain, SID
+            of segment routing, or if any. </t>
 
-            <t hangText="QoS-profile-specific-parameters:">
-            </t>
+            <t hangText="QoS-profile-specific-parameters:"> Specifies
+            profile specific QoS parameter for uplink or downlink of
+            the DPN, such as QCI/TFT for 3gpp profile,  rfc6089/7222 for
+            ietf-pmip, or new profile if anyone will define it. </t>
 
-            <t hangText="DPN-specific-parameters:">
-            </t>
+            <t hangText="DPN-specific-parameters:"> Specifies optional
+            node specific parameters for uplink or downlink of the DPN
+            in need, such like if-index, tunnel-if-number that must be
+            unique in the DPN-wise. </t>
 
-            <t hangText="Vendor-specific-parameters:">
+            <t hangText="Vendor-specific-parameters:"> Specifies
+            vendor specific parameter space for the DPN.
             </t>
 
         </list></t>
@@ -2824,10 +2888,12 @@ Such protocol-specific details will be described in separate documents and may r
 
     <references title="Informative References">
     &I-D.ietf-dmm-deployment-models;
+    &I-D.ietf-netconf-restconf;
     &RFC5213;
     &RFC3344;
     &RFC7222;
-
+    &RFC6241;
+    
 </references>
 
 <!--
