@@ -1258,83 +1258,6 @@ DPN         |                 DPN        |
 
     </section>
 
-    <section anchor="monitor_descr" title="Monitors">
-
-        <t>Monitors provide a mechanism to produce reports when events
-        occur.  Unlike ports and contexts a Monitor will have a target
-        that may be any FPC-Identity except other monitors, events by
-        their type, or attributes of an entity. In such cases, the
-        target name is a concatenation of the FPC-Identity and the
-        relative path (separated by '/') to the attribute(s) to be
-        monitored. </t>
-
-        <t>Monitors MUST be registered with the Agent.  The registration
-        specifies the monitor id, attribute to monitor and optional
-        reporting configuration. When a Monitor registration is applied,
-        the reporting configuration MUST be applicable to the attribute
-        monitored, e.g. a Monitor using a Threshold configuration cannot
-        be applied to a context but it can be applied to a numeric
-        context property. </t>
-
-        <t>Four report types are defined:
-            <list style="symbols">
-                <t>Periodic reporting specifies an interval by which a
-                NOTIFY is sent to the Client.</t>
-                <t>Event reporting specifies a list of EVENT_TYPE_IDs
-                that, if they occur and are related to the monitored
-                attribute, will result in sending a NOTIFY to the
-                Client</t>
-                <t>Scheduled reporting specifies the time (in seconds
-                since Jan 1, 1970) when a NOTIFY for the monitor should
-                be sent to the Client. Once this Monitor's NOTIFY is
-                completed the Monitor is automatically de-registered.</t>
-                <t>Threshold reporting specifies one or both of a low
-                and high threshold. When these values are crossed a
-                corresponding NOTIFY is sent to the Client.</t>
-            </list>
-        </t>
-
-        <t>All monitored data can be requested by the Client at any time
-        using the PROBE message. Thus, reporting configuration is
-        optional and when not present only PROBE messages may be used
-        for monitoring. If a SCHEDULED or PERIODIC configuration is
-        provided during registration with the time related value (time
-        or period respectively) of 0 a NOTIFY is immediately sent and
-        the monitor is immediately de-registered. This method should,
-        when a MONITOR has not been installed, result in an immediate
-        NOTIFY is sufficient for the Client's needs and the Client has
-        no further need for the monitor to be registered. An Agent may
-        reject a registration if it or the DPN has insufficient
-        resources.</t>
-
-        <t>MONITOR_DEREG is used by a Client to remove a monitor from an
-        Agent. The message identifies one or multiple monitors by
-        including the MONITOR_ID. The message also includes an optional
-        Boolean value that, when true, will result in NOTIFY messages
-        being sent for the MONITOR_ID to the Client.</t>
-
-        <t>When a monitor has a reporting configuration of SCHEDULED it
-        is automatically de-registered after the NOTIFY occurs. An Agent
-        or DPN may temporarily suspend monitoring if insufficient
-        resources exist.  In such a case the Agent MUST notify the
-        Client.</t>
-
-        <t>PROBE are used by a Client to retrieve information about a
-        previously installed monitor. The PROBE message SHOULD identify
-        one or more monitors by means of including the associated
-        monitor identifier. An Agent receiving a PROBE message SHOULD
-        send the requested information in a single or multiple NOTIFY
-        messages.</t>
-
-        <t>NOTIFY are used by an Agent to report the status of a monitor
-        to a Client. This message contains the MONITOR_ID, a
-        NOTIFICATION_ID to permit the Client to distinguish amongst many
-        monitoring related requests, a TRIGGER that caused the NOTIFY
-        message, the timestamp of when the monitored information was
-        record for the message along with the value of the monitored
-        attribute.</t>
-
-    </section>
     
         <section anchor="naming" title="Naming">
             <t>Names have no official format between the Client and
@@ -1916,6 +1839,86 @@ Agent deletes the tunnel and route on the DPN and responds to the Client (4).</t
       </section>
     </section>
   </section>
+
+    <section anchor="monitor_descr" title="Monitors">
+
+        <t>Monitors provide a mechanism to produce reports when events
+        occur.  Unlike ports and contexts a Monitor will have a target
+        that may be any FPC-Identity except other monitors, events by
+        their type, or attributes of an entity. In such cases, the
+        target name is a concatenation of the FPC-Identity and the
+        relative path (separated by '/') to the attribute(s) to be
+        monitored. </t>
+
+        <t>Monitors MUST be registered with the Agent.  The registration
+        specifies the monitor id, attribute to monitor and optional
+        reporting configuration. When a Monitor registration is applied,
+        the reporting configuration MUST be applicable to the attribute
+        monitored, e.g. a Monitor using a Threshold configuration cannot
+        be applied to a context but it can be applied to a numeric
+        context property. </t>
+
+        <t>Four report types are defined:
+            <list style="symbols">
+                <t>Periodic reporting specifies an interval by which a
+                NOTIFY is sent to the Client.</t>
+                <t>Event reporting specifies a list of EVENT_TYPE_IDs
+                that, if they occur and are related to the monitored
+                attribute, will result in sending a NOTIFY to the
+                Client</t>
+                <t>Scheduled reporting specifies the time (in seconds
+                since Jan 1, 1970) when a NOTIFY for the monitor should
+                be sent to the Client. Once this Monitor's NOTIFY is
+                completed the Monitor is automatically de-registered.</t>
+                <t>Threshold reporting specifies one or both of a low
+                and high threshold. When these values are crossed a
+                corresponding NOTIFY is sent to the Client.</t>
+            </list>
+        </t>
+
+        <t>All monitored data can be requested by the Client at any time
+        using the PROBE message. Thus, reporting configuration is
+        optional and when not present only PROBE messages may be used
+        for monitoring. If a SCHEDULED or PERIODIC configuration is
+        provided during registration with the time related value (time
+        or period respectively) of 0 a NOTIFY is immediately sent and
+        the monitor is immediately de-registered. This method should,
+        when a MONITOR has not been installed, result in an immediate
+        NOTIFY is sufficient for the Client's needs and the Client has
+        no further need for the monitor to be registered. An Agent may
+        reject a registration if it or the DPN has insufficient
+        resources.</t>
+
+        <t>MONITOR_DEREG is used by a Client to remove a monitor from an
+        Agent. The message identifies one or multiple monitors by
+        including the MONITOR_ID. The message also includes an optional
+        Boolean value that, when true, will result in NOTIFY messages
+        being sent for the MONITOR_ID to the Client.</t>
+
+        <t>When a monitor has a reporting configuration of SCHEDULED it
+        is automatically de-registered after the NOTIFY occurs. An Agent
+        or DPN may temporarily suspend monitoring if insufficient
+        resources exist.  In such a case the Agent MUST notify the
+        Client.</t>
+
+        <t>PROBE are used by a Client to retrieve information about a
+        previously installed monitor. The PROBE message SHOULD identify
+        one or more monitors by means of including the associated
+        monitor identifier. An Agent receiving a PROBE message SHOULD
+        send the requested information in a single or multiple NOTIFY
+        messages.</t>
+
+        <t>NOTIFY are used by an Agent to report the status of a monitor
+        to a Client. This message contains the MONITOR_ID, a
+        NOTIFICATION_ID to permit the Client to distinguish amongst many
+        monitoring related requests, a TRIGGER that caused the NOTIFY
+        message, the timestamp of when the monitored information was
+        record for the message along with the value of the monitored
+        attribute.</t>
+
+    </section>
+
+
 
 </section>
 
