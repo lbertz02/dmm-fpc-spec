@@ -211,15 +211,15 @@
             rule. An arbitral set of policies is abstracted as a
             policy-group to apply them to ports. </t>
 
-            <t hangText="Mobility:">
-            An endpoint of a mobility session is abstracted as a context
-            with its associated runtime attributes, such as tunnel endpoints,
-            tunnel identifiers, delegated prefix(es) and routing
-            information, etc., Contexts are attached to DPN groups along
-            with consequence of the control plane. One or multiple
-            contexts which have same sets of policies, which are
-            abstracted as a port. A context can belong to multiple ports
-            which are to different kind of purposes and policies. </t>
+            <t hangText="Mobility:"> An endpoint of a mobility session
+            is abstracted as a context with its associated runtime
+            concrete attributes, such as tunnel endpoints, tunnel
+            identifiers, delegated prefix(es) and routing information,
+            etc., Contexts are attached to DPN groups along with
+            consequence of the control plane. One or multiple contexts
+            which have same sets of policies, which are abstracted as a
+            port. A context can belong to multiple ports which are to
+            different kind of purposes and policies. </t>
 
         </list>
         </t>
@@ -1259,18 +1259,34 @@ DPN         |                 DPN        |
     </section>
 
     
-        <section anchor="naming" title="Naming">
-            <t>Names have no official format between the Client and
-            Agent but using unsigned 32 bit integers MUST be supported
-            by Clients and Agents.  Other formats such as strings or
-            URIs MAY be supported. The only requirement is that all
-            names used to identify entities must be unique by
-            Client/Agent pair for each entity type, e.g. Context, Port,
-            etc. This is done by using binary comparison of names at the
-            Agent. If a creation attempt occurs for an entity where the
-            name already exists a NAME_ALREADY_EXISTS error is raised.
-            </t>
+        <section anchor="naming" title="Namespace and Format">
+        
+            <t> It is obvious that the identifiers and names in FPC
+            models which are in same namespace must be unique. That
+            uniqueness must be kept in agent-wise or data-plane
+            tenant-wise on an agent. The tenant-wise namespace can be
+            applied to all Topology, Policy and Mobility models. </t>
             
+            <t> When a policy need to be applied to contexts in all
+            tenants on an agent, the agent should define that policy to
+            be visible from all the tenants. In this case, the agent
+            assign an unique identifier in the agent-wise.</t>
+        
+            <t>The format of identifiers can utilize any format along
+            agreement between data-plane agent and client operators. The
+            formats are Globally Unique IDentifiers (GUIDs), Universally
+            Unique IDentifiers (UUIDs), Fully Qualified Domain Names
+            (FQDNs), Fully Qualified Path Names (FQPNs), Uniform
+            Resource Identifiers (URIs), or if any.</t>
+            
+            <t>The FPC model must not limit types of the format that
+            secure the choice of FPC protocol. It is noted that the
+            choice of identifiers which are used in Mobility model
+            should be suitable to handle runtime parameters in
+            real-time. The Topology and Policy models are not restricted
+            to meet that requirement as described in <xref
+            target="refarch"></xref></t>
+                                    
             <!--
 
             <t>The naming convention can be used to accommodate
