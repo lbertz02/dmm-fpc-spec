@@ -446,13 +446,14 @@ DPN         |                 DPN        |
 
         <section anchor="dpn-groups" title="DPN-groups">
 
-            <t>Agent arbitrary abstracts DPN-group and consists forwarding
-            plane topology, such as Access nodes are composed to a DPN-group
-            which is peering to a DPN-group of anchor nodes. </t>
+            <t>A DPN-group defines a set of DPNs which share same
+            attributes of data-plane. DPN-groups consist data-plane
+            topology that a DPN-group of access nodes connects to a
+            anchor nodes DPN-group. </t>
 
-            <t>DPN Groups specify the Mobility Role, supported access
-            technologies and mobility profiles. It also specifies connected
-            peer groups.</t>
+            <t>DPN Group has attributes of the data-plane role, supported
+            access technologies, mobility profiles, connected peer groups
+            and domain.</t>
 
         <t>
         <figure anchor="fig_dpn-groups-im"
@@ -575,13 +576,15 @@ DPN         |                 DPN        |
 
         <section anchor="dpns" title="DPNs">
 
-            <t>Data Plane Nodes may be organized into Data Plane Groups. A
-            Context is attached to a DPN Group indirectly (by reference to
-            the DPN Group Identifier) or directly through specification of
-            the structure in the Context.</t>
-            <t>A DPN specifies the connectivity information for the Agent,
-            supported Control Protocols and the DPN Groups it is a part
-            of.</t>
+            <t>List of DPNs which defines all available nodes for a
+            tenant of the FPC data-plane network. Role of a DPN in the
+            data-plane is not determined until the DPN is attributed to
+            a DPN-group. </t>
+            
+            <t>A DPN may have multiple DPN-groups which are in different
+            data-plane roles or domains. Mobility sessions of that
+            DPN-groups are installed into actual data-plane nodes. The
+            agent defines DPN binding to actual nodes.</t>
 
         <t>
         <figure anchor="fig_dpns-im"
@@ -613,8 +616,8 @@ DPN         |                 DPN        |
                <t hangText="DPN-name:"> Defines name of DPN.
                </t>
 
-               <t hangText="DPN-groups:">Indicates DPN-Group     which the
-               DPN belongs to. </t>
+               <t hangText="DPN-groups:">List of DPN-Group indicates
+               which the DPN belongs to. </t>
            
            </list></t>
         
