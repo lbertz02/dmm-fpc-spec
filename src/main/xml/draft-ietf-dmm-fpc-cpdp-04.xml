@@ -277,6 +277,12 @@
         in network controller that handle multiple DPNs. And it also may
         be integrated into a DPN.</t>
         
+        <t>The FPC architecture supports multi-tenancy that the FPC
+        enabled data-plane supports multiple tenants of mobile operator
+        networks and/or applications. DPNs on the data-plane run in
+        multiple role of data-plane that defined per session, domain and
+        tenant.</t>
+        
         <t>This architecture is illustrated in <xref
         target="fig_refarch"></xref>. This document does not adopt
         specific protocol for the FPC envelope protocol and it is out of
