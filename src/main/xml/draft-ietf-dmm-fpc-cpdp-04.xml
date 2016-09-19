@@ -277,6 +277,12 @@
         in network controller that handle multiple DPNs. And it also may
         be integrated into a DPN.</t>
         
+        <t>The FPC architecture supports multi-tenancy that the FPC
+        enabled data-plane supports multiple tenants of mobile operator
+        networks and/or applications. DPNs on the data-plane run in
+        multiple role of data-plane that defined per session, domain and
+        tenant.</t>
+        
         <t>This architecture is illustrated in <xref
         target="fig_refarch"></xref>. This document does not adopt
         specific protocol for the FPC envelope protocol and it is out of
@@ -446,13 +452,14 @@ DPN         |                 DPN        |
 
         <section anchor="dpn-groups" title="DPN-groups">
 
-            <t>Agent arbitrary abstracts DPN-group and consists forwarding
-            plane topology, such as Access nodes are composed to a DPN-group
-            which is peering to a DPN-group of anchor nodes. </t>
+            <t>A DPN-group defines a set of DPNs which share same
+            attributes of data-plane. DPN-groups consist data-plane
+            topology that a DPN-group of access nodes connects to a
+            anchor nodes DPN-group. </t>
 
-            <t>DPN Groups specify the Mobility Role, supported access
-            technologies and mobility profiles. It also specifies connected
-            peer groups.</t>
+            <t>DPN Group has attributes of the data-plane role, supported
+            access technologies, mobility profiles, connected peer groups
+            and domain.</t>
 
         <t>
         <figure anchor="fig_dpn-groups-im"
@@ -548,22 +555,22 @@ DPN         |                 DPN        |
                <t hangText="Remote-DPN-group:">Indicates peering DPN-Group.
                </t>
 
-               <t hangText="Remote-mobility-profile:"> Defines
+               <t hangText="Remote-mobility-profile:">Defines
                mobility-profile used to this peer, the profile which are
                ietf-pmip, 3gpp, or new profile if anyone will define it.
                </t>
 
-               <t hangText="Remote-data-plane-role:"> Defines
-               forwarding-plane role of peering DPN-Group. </t>
+               <t hangText="Remote-data-plane-role:">Defines
+               forwarding-plane role of peering DPN-Group.</t>
 
-               <t hangText="Remote-endpoint-address:"> Defines Endpoint
-               address of the peering DPN-Group. </t>
+               <t hangText="Remote-endpoint-address:">Defines Endpoint
+               address of the peering DPN-Group.</t>
 
-               <t hangText="Local-endpoint-address:"> Defines Endpoint
+               <t hangText="Local-endpoint-address:">Defines Endpoint
                address of its own DPN-Group to peer the remote
-               DPN-Group. </t>
+               DPN-Group.</t>
 
-               <t hangText="Tunnel-MTU-size:"> Defines MTU size of tunnel.
+               <t hangText="Tunnel-MTU-size:">Defines MTU size of tunnel.
                </t>
            
            </list></t>
@@ -575,13 +582,15 @@ DPN         |                 DPN        |
 
         <section anchor="dpns" title="DPNs">
 
-            <t>Data Plane Nodes may be organized into Data Plane Groups. A
-            Context is attached to a DPN Group indirectly (by reference to
-            the DPN Group Identifier) or directly through specification of
-            the structure in the Context.</t>
-            <t>A DPN specifies the connectivity information for the Agent,
-            supported Control Protocols and the DPN Groups it is a part
-            of.</t>
+            <t>List of DPNs which defines all available nodes for a
+            tenant of the FPC data-plane network. Role of a DPN in the
+            data-plane is not determined until the DPN is attributed to
+            a DPN-group. </t>
+            
+            <t>A DPN may have multiple DPN-groups which are in different
+            data-plane roles or domains. Mobility sessions of that
+            DPN-groups are installed into actual data-plane nodes. The
+            agent defines DPN binding to actual nodes.</t>
 
         <t>
         <figure anchor="fig_dpns-im"
@@ -613,8 +622,8 @@ DPN         |                 DPN        |
                <t hangText="DPN-name:"> Defines name of DPN.
                </t>
 
-               <t hangText="DPN-groups:">Indicates DPN-Group     which the
-               DPN belongs to. </t>
+               <t hangText="DPN-groups:">List of DPN-Group indicates
+               which the DPN belongs to. </t>
            
            </list></t>
         
@@ -866,24 +875,25 @@ DPN         |                 DPN        |
 
     <section anchor="portscontext" title="FPC-Mobility">
     
+        <t> The FPC-Mobility consists of Port and Context. A mobility
+        session is abstracted as a Context with its associated runtime
+        concrete attributes, such as tunnel endpoints, tunnel
+        identifiers, delegated prefix(es) and routing information,etc.,
+        A Port abstracts a set of policies that the contexts applies
+        to.</t>    
     
         <section anchor="port" title="Port">
         
         <t>A port represents a colleciton of policy groups, a group of
         rules that can exists independent of the mobility/session
-        lifecycle.  Policy groups are named collections of policies. 
-        Policy groups provide a collection of policies, e.g. a
-        contatenation of the rules in each policy, to provide a second
-        level of rule aggregation often required to separate out
-        technical grouping of rules, e.g. a policy, with the grouping of
-        rules for use cases, e.g. a service level policy. </t>
-    
-        <t>Ports contain Policy Groups (via reference to their Policy
-        Group Identifiers) and have an Identifier. They may be
-        instantiated on the DPN at the discretion of the Agent. Being
-        Policy based and having the ability to specify Rules with
-        Forwarding related Actions, Ports can take on functions such as
-        network address translation, route selection, etc.</t>
+        lifecycle. Mobility control-plane or application create, modify
+        and delete ports on FPC Agent through FPC Client. </t>
+        
+        <t>When a Port is indicated in a Context, the set of Descriptors
+        and Actions in the Policies of the Port are collected and set to
+        the Context. They must be instantiated on the DPN as forwarding
+        related actions, such as QoS differentiations, packet processing
+        of encap/decap, header rewrite, route selection, etc.</t>
 
         <t>
         <figure anchor="fig_port-im"
@@ -918,16 +928,20 @@ DPN         |                 DPN        |
         </section>
 
         <section anchor="context" title="Context">
+        
+        <t>An endpoint of a mobility session is abstracted as a Context
+        with its associated runtime concrete attributes, such as tunnel
+        endpoints, tunnel identifiers, delegated prefix(es) and routing
+        information, etc., Mobility control-plane or application create,
+        modify and delete contexts on FPC Agent through FPC Client.</t>
 
-        <t>A context binds one or multiple session/mobility properties,
-        which describe mobliity/session traffic treatment actions, such
-        as a mobility QoS policy or packet encapsulation. Which traffic
-        is treated by the context is determined by one or multiple
-        traffic descriptors, which also bind to that context. A group of
-        one or multiple traffic descriptors, one or multiple properties
-        defining mobility/session based traffic treatment actions and
-        the port identifier make a context. The context identifier
-        serves as key to access the information.</t>
+        <t>A Context describes traffic treatment policies in QoS profile
+        and Mobility profile. Parameters in that profiles may be set by
+        FPC Client directly, or indirectly derived from the set of
+        Descriptors and Actions when the Ports indicate the Policies
+        which specify those descriptors and actions. If a Context
+        doesn't have any port, all parameters of the Context must be set
+        by the Client. </t>
 
         <t>
         <figure anchor="fig_context-im"
