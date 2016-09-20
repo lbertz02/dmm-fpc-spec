@@ -161,7 +161,7 @@
     <abstract>
       <t>
         This document describes the solution of data-plane separation
-        from control-plane which enables a flexible mobility management 
+        from control-plane which enables a flexible mobility management
         system using agent and client functions. To configure
         data-plane nodes and functions, the data-plane is abstracted by
         an agent interface to the client. The data-plane abstraction
@@ -174,68 +174,67 @@
   <middle>
     <section title="Introduction">
 
-        <t> This document describes Forwarding Policy Configuration
+        <t>This document describes Forwarding Policy Configuration
         (FPC), the solution of data-plane separation from control-plane
-        which enables mobility management system flexible using agent
+        which enables flexible mobility management systems using agent
         and client functions. To configure data-plane nodes and
-        functions, the data-plane is abstracted in the agent to provide
-        interface to the client. </t>
-        
-        <t> Control planes of mobility management systems, and/or any
+        functions, the data-plane is abstracted in the agent which
+        provides an interface to the client.</t>
+
+        <t>Control planes of mobility management systems, and/or any
         applications which require data-plane control, can utilize the
-        FPC client in flexible granularities of operations. The
-        configuration operations are capable to configure not only
+        FPC Client in flexible granularities of operation. The
+        configuration operations are capable of configuring not only
         single Data-Plane Node (DPN) directly, but also multiple DPNs
         from abstracted data-plane models on the FPC agent.</t>
 
-        <t> FPC agent provides the data-plane abstraction models in the
-        three areas as following: </t>
+        <t>FPC agent provides the data-plane abstraction models in the
+        following three areas: </t>
 
         <t>
         <list style="hanging">
             <t hangText="Topology:">
             DPNs are grouped and abstracted in terms of roles of
-            mobility management, such as access, anchors and domains.
-            FPC agent arbitrary abstracts DPN-group and consists
-            forwarding plane topology, such as Access nodes are composed
-            to a DPN-group which is peering to a DPN-group of anchor
-            nodes. </t>
+            mobility management such as access, anchors and domains.
+            FPC Agent abstracts DPN-groups and consists of forwarding
+            plane topology, such as access nodes assigned to a
+            DPN-group which peers to a DPN-group of anchor nodes. </t>
 
             <t hangText="Policy:">
-            Policy abstracts policies of handling specific traffic flows
-            or packets, such as QoS, packet processing to rewriting
-            headers, etc,. The policy consists of one or multiple rules
-            which are composed of descriptors and actions. Descriptors
-            in a rule identify traffic flows and actions apply
-            treatments to packets matched to the descriptors in the
-            rule. An arbitral set of policies is abstracted as a
-            policy-group to apply them to ports. </t>
+            Policy abstracts policies which handle specific traffic flows
+            or packets such as QoS, packet processing to rewrite
+            headers, etc. A policy consists of one or multiple rules
+            which are composed of Descriptors and Actions. Descriptors
+            in a rule identify traffic flows and Actions apply
+            treatments to packets matched to the Descriptors in the
+            rule. An arbitrary set of policies is abstracted as a
+            Policy-group which is applied to Ports.</t>
 
-            <t hangText="Mobility:"> An endpoint of a mobility session
-            is abstracted as a context with its associated runtime
+            <t hangText="Mobility:">An endpoint of a mobility session
+            is abstracted as a Context with its associated runtime
             concrete attributes, such as tunnel endpoints, tunnel
-            identifiers, delegated prefix(es) and routing information,
-            etc., Contexts are attached to DPN groups along with
-            consequence of the control plane. One or multiple contexts
-            which have same sets of policies, which are abstracted as a
-            port. A context can belong to multiple ports which are to
-            different kind of purposes and policies. </t>
+            identifiers, delegated prefix(es), routing information,
+            etc. Contexts are attached to DPN-groups along with
+            consequence of the control plane. One or multiple Contexts
+            which have same sets of policies are assigned Ports which
+            abstract those policiy sets. A Context can belong to multiple
+            Ports which serve different kinds of purpose and policy. </t>
 
         </list>
         </t>
 
-        <t> The agent collects applicable sets of forwarding policies
+        <t>The Agent collects applicable sets of forwarding policies
         for the mobility sessions from the data model, and then renders
-        those policies into specific configurations for each DPNs to
+        those policies into specific configurations for each DPN to
         which the sessions attached. Specific protocols and
-        configurations to configure DPN from FPC agent are out of scope
+        configurations to configure DPN from FPC Agent are out of scope
         of this document.</t>
 
-        <t> The data-plane abstraction model is extensible to support
-        many different type of mobility management systems and
+        <t> The data-plane abstraction model is extensible in order to
+        support many different types of mobility management systems and
         data-plane functions. The architecture and protocol design of
-        FPC intends not to tie specific type of access technologies and
-        mobility protocols. </t>
+        FPC intends not to tie to specific types of access technologies
+        and mobility protocols. </t>
 
     </section>
 
@@ -254,42 +253,40 @@
 
         <t> In accordance with the requirements of flexible data-plane
         functions deployment described in <xref
-        target="RFC7333"></xref>, FPC provides means for mobility
+        target="RFC7333"></xref>, FPC provides a means for mobility
         control-plane and applications to handle DPNs that must be
-        configured with various roles in mobility management aspect
-        described in <xref
-        target="I-D.ietf-dmm-deployment-models"></xref>. </t>
+        configured with various roles of the mobility management aspect
+        described in <xref target="I-D.ietf-dmm-deployment-models"/>. </t>
 
         <t> FPC uses building blocks of Agent, Client and
         data-plane abstraction models as the interface between the
         agent and the client.</t>
-        
-        <t> Mobility control-plane and applications integrates FPC
-        Client function and connect to FPC Agent function. The client
-        and the agent communicate based on data-plane abstraction models
-        described in <xref target="model1"></xref>. Along with the
-        models the control-plane and the applications put forwarding
-        policies for their mobility sessions to the agent. </t>
-        
-        <t>The agent is connecting to DPN(s) to manage their
-        configuration. That configurations are rendered from the
-        forwarding policies by the agent. FPC agent may be implemented
-        in network controller that handle multiple DPNs. And it also may
+
+        <t> Mobility control-plane and applications integrate the FPC
+        Client function and connect to FPC Agent functions. The Client
+        and the Agent communicate based on data-plane abstraction models
+        described in <xref target="model1"/>. Along with models, the
+        control-plane and the applications put forwarding
+        policies for their mobility sessions on the Agent. </t>
+
+        <t>The Agent connects to DPN(s) to manage their configuration.
+        These configurations are rendered from the forwarding policies
+        by the Agent. FPC Agent may be implemented in a network
+        controller that handles multiple DPNs or it also may
         be integrated into a DPN.</t>
-        
-        <t>The FPC architecture supports multi-tenancy that the FPC
+
+        <t>The FPC architecture supports multi-tenancy where the FPC
         enabled data-plane supports multiple tenants of mobile operator
         networks and/or applications. DPNs on the data-plane run in
-        multiple role of data-plane that defined per session, domain and
+        multiple data-plane roles which are defined per session, domain and
         tenant.</t>
-        
-        <t>This architecture is illustrated in <xref
-        target="fig_refarch"></xref>. This document does not adopt
-        specific protocol for the FPC envelope protocol and it is out of
-        scope. However it must be capable to support FPC protocol
-        messages and transactions described in <xref
-        target="protocol"></xref>. </t>
-        
+
+        <t>This architecture is illustrated in <xref target="fig_refarch"/>.
+        This document does not adopt a specific protocol for the FPC envelope
+        protocol and it is out of scope. However it must be capable of
+        supporting FPC protocol messages and transactions described in <xref
+        target="protocol"/>. </t>
+
 
         <t>
         <figure anchor="fig_refarch"
@@ -307,55 +304,55 @@
                 +---------------+-----------------+
                 |                                 |
   Network       |                                 |
-  Controller    |                      DPN        | 
-    +-----------|-------------+        +----------|---------+    
-    |+----------v------------+|        |+---------v--------+|    
-    ||   [Data-plane model]  ||        ||[Data-plane model]||    
-    ||       FPC Agent       ||        ||    FPC Agent     ||    
-    |+-----------------------+|        |+------------------+|    
-    |+------------+----------+|        |                    |    
-    ||SB Protocols|FPC Client||        |  DPN Configuration |    
-    ||   Modules  |  Module  ||        +--------------------+    
-    |+------^-----+----^-----+|    
-    +-------|----------|------+         
-            |          | 
+  Controller    |                      DPN        |
+    +-----------|-------------+        +----------|---------+
+    |+----------v------------+|        |+---------v--------+|
+    ||   [Data-plane model]  ||        ||[Data-plane model]||
+    ||       FPC Agent       ||        ||    FPC Agent     ||
+    |+-----------------------+|        |+------------------+|
+    |+------------+----------+|        |                    |
+    ||SB Protocols|FPC Client||        |  DPN Configuration |
+    ||   Modules  |  Module  ||        +--------------------+
+    |+------^-----+----^-----+|
+    +-------|----------|------+
+            |          |
   Other     |          | FPC envelope
   Southband |          | Protocol
-  Protocols |          | 
-            |          +-----------------+ 
+  Protocols |          |
+            |          +-----------------+
             |                            |
 DPN         |                 DPN        |
- +----------|---------+       +----------|---------+ 
- |+---------v--------+|       |+---------v--------+|  
+ +----------|---------+       +----------|---------+
+ |+---------v--------+|       |+---------v--------+|
  ||  Configuration   ||       ||[Data-plane model]||
- || Protocol module  ||       ||     FPC Agent    || 
- |+------------------+|       |+------------------+| 
- |                    |       |                    | 
- | DPN Configuration  |       |  DPN Configuration | 
- +--------------------+       +--------------------+     
+ || Protocol module  ||       ||     FPC Agent    ||
+ |+------------------+|       |+------------------+|
+ |                    |       |                    |
+ | DPN Configuration  |       |  DPN Configuration |
+ +--------------------+       +--------------------+
               ]]></artwork>
             <postamble></postamble>
           </figure>
-        </t>        
+        </t>
 
-        <t>Noted that FPC envelope protocol is only required to handle
-        runtime data in the Mobility model. Rest of the FPC models,
-        Topology and Policy, are pre-configured so that real-time
-        data handling capabilities are not required for them. Hence the
-        operators of those who tenant in FPC data-plane can configure
-        them on the agent through other means, such as <xref
+        <t>Note that the FPC envelope protocol is only required to handle
+        runtime data in the Mobility model. The rest of the FPC models,
+        namely Topology and Policy, are pre-configured, therefore real-time
+        data handling capabilities are not required for them. Operators
+        that are tenants in the FPC data-plane can configure
+        Toplogy and Policy on the Agent through other means, such as <xref
         target="I-D.ietf-netconf-restconf">Restconf</xref> or <xref
-        target="RFC6241">Netconf</xref> for instance. </t>
+        target="RFC6241">Netconf</xref>. </t>
 
     </section>
 
     <section anchor="model1" title="Information Model">
 
         <t>This section describes information model that represents the
-        concept of FPC which is in languages and protocols neutral. <xref
-        target="fig_im"></xref> illustrates overview of FPC data-plane
+        concept of FPC which is language and protocol neutral. <xref
+        target="fig_im"/> is an overview of FPC data-plane
         abstraction model.</t>
-    
+
         <t>
         <figure anchor="fig_im"
                   title="FPC Data-plane Abstraction Model">
@@ -363,14 +360,14 @@ DPN         |                 DPN        |
 
 (Mobile operator tenant that abstracted data-plane is used)
         |
-        +---FPC-Topology      
-        |     |             
+        +---FPC-Topology
+        |     |
         |     +---Domains
-        |     |             
+        |     |
         |     +---DPN-Groups
-        |     |             
-        |     +---DPNs 
-        |    
+        |     |
+        |     +---DPNs
+        |
         +---FPC-Policy
         |    |
         |    +---Descriptors
@@ -381,32 +378,31 @@ DPN         |                 DPN        |
         |    |
         |    +---Policy-groups
         |
-        +---FPC-Mobility      
-              |             
-              +---Ports      
-              |             
-              +---Contexts   
+        +---FPC-Mobility
+              |
+              +---Ports
+              |
+              +---Contexts
 
               ]]></artwork>
             <postamble></postamble>
           </figure>
-        </t>        
+        </t>
 
-    <section anchor="toplogy" title="FPC-Topology">
-    
+    <section anchor="topology" title="FPC-Topology">
+
         <t> Topology abstraction enables an actual data-plane network to
         support multiple mobile operator's topologies of their
         data-plane. The FPC-Topology consists of DPNs, DPN-groups and
-        Domains which are abstracting data-plane topologies for Client's
+        Domains which abstract data-plane topologies for the Client's
         mobility control-planes and applications. </t>
-        
+
         <t> A mobile operator who utilizes a FPC enabled data-plane
-        network, can virtually create their DPNs along their data-plane
-        design on the agent. The operator also creates a DPN-group of
-        which the DPNs are attributed in terms of roles of mobility
-        management, such as access, anchors and domains.</t>
-        
-        
+        network can virtually create their DPNs along with their data-plane
+        design on the Agent. The operator also creates a DPN-group of
+        which the DPNs are attributed roles of mobility management
+        such as access, anchors and domains.</t>
+
         <section anchor="domains" title="Domains">
 
         <t> A domain is defined by the operators to attribute DPN-groups
@@ -427,37 +423,37 @@ DPN         |                 DPN        |
             +---Domain-name
             |
             +---Domain-type
-                    
+
               ]]></artwork>
             <postamble></postamble>
           </figure>
-        </t>        
+        </t>
 
-           <t><list hangIndent="24" style="hanging"> 
-           
+           <t><list hangIndent="24" style="hanging">
+
                <t hangText="Domain-id:">Identifier of Domain.
-               The ID format can be chose by operator as they like. e.g;
+               The ID format can be chosen by operator as they like, e.g.
                URI, UUID, certain length of string and unsigned-integer,
-               etc., </t>
+               etc. </t>
 
-               <t hangText="Domain-name:">Defines Domain name. 
+               <t hangText="Domain-name:">Defines Domain name.
                </t>
 
-               <t hangText="Domain-type:">Specifies type of
+               <t hangText="Domain-type:">Specifies the type of
                Domain. </t>
-           
+
            </list></t>
 
-        </section>        
+        </section>
 
         <section anchor="dpn-groups" title="DPN-groups">
 
-            <t>A DPN-group defines a set of DPNs which share same
-            attributes of data-plane. DPN-groups consist data-plane
-            topology that a DPN-group of access nodes connects to a
-            anchor nodes DPN-group. </t>
+            <t>A DPN-group defines a set of DPNs which share common
+            data-plane attributes. DPN-groups consist data-plane
+            topology that consists of a DPN-group of access nodes
+            connecting to an anchor nodes DPN-group. </t>
 
-            <t>DPN Group has attributes of the data-plane role, supported
+            <t>DPN Group has attributes such as the data-plane role, supported
             access technologies, mobility profiles, connected peer groups
             and domain.</t>
 
@@ -481,48 +477,48 @@ DPN         |                 DPN        |
             +---Mobility-profile
             |
             +---DPN-group-peer
-                    
+
               ]]></artwork>
             <postamble></postamble>
           </figure>
-        </t>        
+        </t>
 
-           <t><list hangIndent="24" style="hanging"> 
-           
+           <t><list hangIndent="24" style="hanging">
+
                <t hangText="DPN-group-id:"> Defines identifier of
-               DPN-Group. The ID format can be chose by operator as they
-               like. e.g; URI, UUID, certain length of string and
-               unsigned-integer, etc., </t>
+               DPN-Group. The ID format can be chosen by operator as they
+               like, e.g. URI, UUID, certain length of string and
+               unsigned-integer, etc. </t>
 
                <t hangText="Data-plane-role:"> Defines data-plane
-               role of the DPN-Group, such as access-dpn, L2/L3
+               role of the DPN-Group, such as access-dpn, L2/L3 or
                anchor-dpn. </t>
 
-               <t hangText="Domains:"> Specifies domains of which the
-               DPN-group belong to. </t>
+               <t hangText="Domains:"> Specifies domains which the
+               DPN-group belongs to.</t>
 
                <t hangText="Access-type:"> Defines access type which the
-               DPN-Group capable, such as ethernet(802.3/11), 3gpp
+               DPN-Group supports such as ethernet(802.3/11), 3gpp
                cellular(S1, RAB), if any. </t>
 
-               <t hangText="Mobility-profile:"> Defines supporting
-               mobility profile, such as ietf-pmip, 3gpp, or new profile
-               if anyone will define it. When those profiles are
-               correctly defined, some or all of data-plane
+               <t hangText="Mobility-profile:"> Defines supported
+               mobility profile, such as ietf-pmip, 3gpp, or new profiles
+               defined as extensions of this specification. When those
+               profiles are correctly defined, some or all data-plane
                parameters of contexts can be automatically derived from
-               the profile by FPC agent. </t>
+               this profile by FPC Agent. </t>
 
-               <t hangText="DPN-group-peer:"> Defines remote peer of
+               <t hangText="DPN-group-peer:"> Defines remote peers of
                DPN-group with parameters described in <xref
-               target="dpn-peers"></xref>. </t>
-           
+               target="dpn-peers"/>. </t>
+
            </list></t>
 
 
         <section anchor="dpn-peers" title="DPN-group Peers">
-        
-        <t> DPN-group-peer defines parameters of remote peer DPN as illustrated in
-        <xref target="fig_dpn-peers-im"></xref>. </t>
+
+        <t> DPN-group-peer defines parameters of remote peer DPNs as illustrated in
+        <xref target="fig_dpn-peers-im"/>. </t>
 
         <t>
         <figure anchor="fig_dpn-peers-im"
@@ -548,16 +544,17 @@ DPN         |                 DPN        |
               ]]></artwork>
             <postamble></postamble>
           </figure>
-        </t>        
+        </t>
 
-           <t><list hangIndent="24" style="hanging"> 
-           
+           <t><list hangIndent="24" style="hanging">
+
                <t hangText="Remote-DPN-group:">Indicates peering DPN-Group.
                </t>
 
                <t hangText="Remote-mobility-profile:">Defines
-               mobility-profile used to this peer, the profile which are
-               ietf-pmip, 3gpp, or new profile if anyone will define it.
+               mobility-profile used for this peer, currently defined
+               profiles are ietf-pmip, 3gpp, or new profiles defined
+               as extensions of this specification.
                </t>
 
                <t hangText="Remote-data-plane-role:">Defines
@@ -572,13 +569,13 @@ DPN         |                 DPN        |
 
                <t hangText="Tunnel-MTU-size:">Defines MTU size of tunnel.
                </t>
-           
+
            </list></t>
 
 
-        </section>        
+        </section>
 
-        </section>        
+        </section>
 
         <section anchor="dpns" title="DPNs">
 
@@ -586,11 +583,11 @@ DPN         |                 DPN        |
             tenant of the FPC data-plane network. Role of a DPN in the
             data-plane is not determined until the DPN is attributed to
             a DPN-group. </t>
-            
+
             <t>A DPN may have multiple DPN-groups which are in different
             data-plane roles or domains. Mobility sessions of that
             DPN-groups are installed into actual data-plane nodes. The
-            agent defines DPN binding to actual nodes.</t>
+            Agent defines DPN binding to actual nodes.</t>
 
         <t>
         <figure anchor="fig_dpns-im"
@@ -606,50 +603,50 @@ DPN         |                 DPN        |
             +---DPN-name
             |
             +---DPN-groups
-                    
+
               ]]></artwork>
             <postamble></postamble>
           </figure>
-        </t>        
+        </t>
 
-           <t><list hangIndent="24" style="hanging"> 
-           
+           <t><list hangIndent="24" style="hanging">
+
                <t hangText="DPN-id:"> Defines identifier of DPN. The ID
-               format can be chose by operator as they like. e.g; URI,
+               format can be chose by operator as they like. e.g. URI,
                UUID, certain length of string and unsigned-integer,
-               etc., </t>
+               etc. </t>
 
                <t hangText="DPN-name:"> Defines name of DPN.
                </t>
 
-               <t hangText="DPN-groups:">List of DPN-Group indicates
+               <t hangText="DPN-groups:">List of DPN-Group
                which the DPN belongs to. </t>
-           
+
            </list></t>
-        
-        </section>        
-        
+
+        </section>
+
 
     </section>
 
     <section anchor="policy" title="FPC-Policy">
-       
+
         <t>The FPC-Policy consists of Descriptors, Actions, Policies and
         Policy-groups, which can be viewed as configuration data while
-        Contexts are akin to structures that are instantiated on the
-        agent.  The descriptors and actions in a Policy referenced by a
+        Contexts and Ports are akin to structures that are instantiated on the
+        Agent.  The Descriptors and Actions in a Policy referenced by a
         Port are active when the Port is in a active Context, i.e. they can
         be applied to traffic on a DPN. </t>
-        
-        
+
+
         <section anchor="descriptors" title="Descriptors">
-        
+
             <t> List of Descriptors which defines classifiers of
-            specific traffic flow, such as based on source and
+            specific traffic flow, such as those based on source and
             destination addresses, protocols, port numbers of
-            TCP/UDP/SCTP/DCCP and if any. Noted that Descriptors are
+            TCP/UDP/SCTP/DCCP or any packet. Note that Descriptors are
             extensibly defined by specific profiles which 3gpp, ietf or
-            other SDO produced.  Many specifications also used the terms
+            other SDOs produce.  Many specifications also use the terms
             Filter, Traffic Descriptor or Traffic Selector <xref
             target="RFC6088"/>. A packet that meets the criteria of a
             Descriptor is said to satisfy, pass or is consumed by the
@@ -670,41 +667,41 @@ DPN         |                 DPN        |
             +---Descriptor-type
             |
             +---Descriptor-value
-                    
+
               ]]></artwork>
             <postamble></postamble>
           </figure>
-        </t>        
+        </t>
 
-           <t><list hangIndent="24" style="hanging"> 
-           
+           <t><list hangIndent="24" style="hanging">
+
                <t hangText="Descriptor-id:">Identifier of Descriptor.
-               The ID format can be chose by operator as they like. e.g;
+               The ID format can be chose by operator as they like. e.g.
                URI, UUID, certain length of string and unsigned-integer,
-               etc., </t>
+               etc. </t>
 
                <t hangText="Descriptor-type:">Defines descriptor type,
                which classifies specific traffic flow, such as source
                and destination addresses, protocols, port numbers of
-               TCP/UDP/SCTP/DCCP or if any. </t>
+               TCP/UDP/SCTP/DCCP or any packet. </t>
 
-               <t hangText="Descriptor-value:">Specifies value of
-               Descriptor, such as IP prefix/address, protocol number,
-               port number, etc., </t>
-           
+               <t hangText="Descriptor-value:">Specifies the value of
+               Descriptor such as IP prefix/address, protocol number,
+               port number, etc. </t>
+
            </list></t>
-        
+
         </section>
 
         <section anchor="actions" title="Actions">
-        
-            <t> List of Actions which defines to apply action to
-            classified traffic flow by descriptors, such as traffic
-            management related action such as shaping, policing based on
-            given bandwidth, and connectivity management actions, such
-            as pass, drop, forward to given nexthop. Noted that Actions
-            are extensibly defined by specific profiles which 3gpp, ietf
-            or other SDO produced. </t>
+
+            <t> List of Actions which defines treatment/actions to apply to
+            classified traffic meeting the criteria defined by Descriptors.
+            Actions include traffic management related activity such as
+            shaping, policing based on given bandwidth, and connectivity
+            management actions such as pass, drop, forward to given nexthop.
+            Note that Actions are extensibly defined by specific profiles which
+            3gpp, ietf or other SDOs produce. </t>
 
         <t>
         <figure anchor="fig_actions-im"
@@ -724,41 +721,42 @@ DPN         |                 DPN        |
               ]]></artwork>
             <postamble></postamble>
           </figure>
-        </t>        
-            
-           <t><list hangIndent="24" style="hanging"> 
-           
-               <t hangText="Action-id:">Identifier of Action. The ID
-               format can be chose by operator as they like. e.g; URI,
-               UUID, certain length of string and unsigned-integer,
-               etc., </t>
+        </t>
 
-               <t hangText="Action-type:">Defines action type how to
-               treat specified traffic flow, such as pass, drop, forward
+           <t><list hangIndent="24" style="hanging">
+
+               <t hangText="Action-id:">Identifier of Action. The ID
+               format can be chose by operator as they like. e.g, URI,
+               UUID, certain length of string and unsigned-integer,
+               etc. </t>
+
+               <t hangText="Action-type:">Defines action type, i.e. how to
+               treat the specified traffic flow, e.g. pass, drop, forward
                to given nexthop value and shape, police based on given
-               bandwidth value, etc., </t>
+               bandwidth value, etc. </t>
 
                <t hangText="Action-value:">Specifies value of Action,
-               such as bandwidth, nexthop address or drop explicitly, etc., </t>
-           
+               such as bandwidth, nexthop address or drop explicitly, etc. </t>
+
            </list></t>
 
-        
+
         </section>
 
         <section anchor="policies" title="Policies">
-        
+
             <t> Policies are collections of Rules. Each Policy has a
-            Policy Identifier and a list of Rules/Order pairs. Unlike
-            the AND filter matching the Policy uses an OR matching to
-            find the first Rule whose Descriptors are satisfied by the
-            packet. The search for a Rule to apply to packet is executed
-            according to the Order values of the Rules. This is an
-            ascending order search, i.e. the Rule with the lowest Order
-            value is tested first and if its Descriptors are not
+            Policy Identifier and a list of Rule/Order pairs.  The
+            Order and Rule values MUST be unique in the Policy. Unlike
+            the AND filter matching of each Rule the Policy uses an OR
+            matching to find the first Rule whose Descriptors are
+            satisfied by the packet. The search for a Rule to apply to
+            packet is executed according to the unique Order values of the Rules.
+            This is an ascending order search, i.e. the Rule with the
+            lowest Order value is tested first and if its Descriptors are not
             satisfied by the packet the Rule with the next lowest Order
-            value is tested. Policies contain Rules as opposed to
-            references to Rules.</t>
+            value is tested. If a Rule is not found then the Policy does not apply.
+            Policies contain Rules as opposed to references to Rules.</t>
 
         <t>
         <figure anchor="fig_policies-im"
@@ -790,49 +788,49 @@ DPN         |                 DPN        |
               ]]></artwork>
             <postamble></postamble>
           </figure>
-        </t>        
+        </t>
 
-            
-           <t><list hangIndent="24" style="hanging"> 
-           
+
+           <t><list hangIndent="24" style="hanging">
+
                <t hangText="Policy-id:">Identifier of Policy. The ID
-               format can be chose by operator as they like. e.g; URI,
+               format can be chose by operator as they like. e.g. URI,
                UUID, certain length of string and unsigned-integer,
-               etc., </t>
+               etc. </t>
 
-               <t hangText="Rules:">List of Rule which a collection of
+               <t hangText="Rules:">List of Rules which are a collection of
                Descriptors and Actions. All Descriptors MUST be
                satisfied before the Actions are taken. This is known as
                an AND Descriptor list, i.e. Descriptor 1 AND Descriptor
-               2 AND ... Descriptor X MUST be satisfied for the rule to
-               apply. These are an internal to the Policy, i.e. it is
+               2 AND ... Descriptor X MUST be satisfied for the Rule to
+               apply. These are internal structure to the Policy, i.e. it is
                not a first class, visible object at the top level of an
-               agent. </t>
+               Agent. </t>
 
                <t hangText="Order:">Specifies ordering if the Rule has
                multiple Descriptors and Action sets.</t>
 
                <t hangText="Descriptor:">List of Descriptors.</t>
 
-               <t hangText="Descriptor-id:">Indicates each Descriptor in the rule.</t>
+               <t hangText="Descriptor-id:">Indicates each Descriptor in the Rule.</t>
 
-               <t hangText="Direction:">Specifies descriptor to which
-               direction applies, such as upstream or downstream.</t>
+               <t hangText="Direction:">Specifies which
+               direction applies, such as upstream, downstream or both.</t>
 
                <t hangText="Action:">List of Actions.</t>
 
-               <t hangText="Action-id:">Indicates each Actions in the rule.</t>
-               
-               <t hangText="Order:">Specifies ordering if the rule has
+               <t hangText="Action-id:">Indicates each Action in the rule.</t>
+
+               <t hangText="Order:">Specifies Action ordering if the Rule has
                multiple actions. </t>
-           
+
            </list></t>
 
         </section>
 
         <section anchor="policy-groups" title="Policy-groups">
-        
-            <t> List of Policy-groups which are aggregation of Policies.
+
+            <t> List of Policy-groups which are an aggregation of Policies.
             Common applications include aggregating Policies that are
             defined by different functions, e.g. Network Address
             Translation, Security, etc. The structure has an Identifier
@@ -854,45 +852,45 @@ DPN         |                 DPN        |
               ]]></artwork>
             <postamble></postamble>
           </figure>
-        </t>        
-            
-           <t><list hangIndent="24" style="hanging"> 
-           
+        </t>
+
+           <t><list hangIndent="24" style="hanging">
+
                <t hangText="Policy-group-id:">Identifier of
                Policy-group. The ID format can be chose by operator as
-               they like. e.g; URI, UUID, certain length of string and
-               unsigned-integer, etc., </t>
+               they like. e.g: URI, UUID, certain length of string and
+               unsigned-integer, etc. </t>
 
                <t hangText="Policy:">List of Policies in the Policy-group.
                </t>
-           
+
            </list></t>
 
         </section>
-        
+
 
     </section>
 
     <section anchor="portscontext" title="FPC-Mobility">
-    
+
         <t> The FPC-Mobility consists of Port and Context. A mobility
         session is abstracted as a Context with its associated runtime
         concrete attributes, such as tunnel endpoints, tunnel
-        identifiers, delegated prefix(es) and routing information,etc.,
-        A Port abstracts a set of policies that the contexts applies
-        to.</t>    
-    
+        identifiers, delegated prefix(es) and routing information, etc.
+        A Port abstracts a set of policies that the Contexts applies
+        to.</t>
+
         <section anchor="port" title="Port">
-        
-        <t>A port represents a colleciton of policy groups, a group of
-        rules that can exists independent of the mobility/session
-        lifecycle. Mobility control-plane or application create, modify
-        and delete ports on FPC Agent through FPC Client. </t>
-        
+
+        <t>A port represents a collection of policy groups, a group of
+        rules that can exist independent of the mobility/session
+        lifecycle. Mobility control-plane or applications create, modify
+        and delete Ports on FPC Agent through the FPC Client. </t>
+
         <t>When a Port is indicated in a Context, the set of Descriptors
-        and Actions in the Policies of the Port are collected and set to
+        and Actions in the Policies of the Port are collected and applied to
         the Context. They must be instantiated on the DPN as forwarding
-        related actions, such as QoS differentiations, packet processing
+        related actions such as QoS differentiations, packet processing
         of encap/decap, header rewrite, route selection, etc.</t>
 
         <t>
@@ -902,45 +900,45 @@ DPN         |                 DPN        |
 
 (FPC-Mobility)
         |
-        +---Port      
-               |  
-               +---Port-id      
-               |    
+        +---Port
+               |
+               +---Port-id
+               |
                +---Policy-group-reference
 
               ]]></artwork>
             <postamble></postamble>
           </figure>
         </t>
-        
-        <t><list hangIndent="24" style="hanging"> 
+
+        <t><list hangIndent="24" style="hanging">
 
             <t hangText="Port-id:">Identifier of Port. The ID format can
-            be chose by operator as they like. e.g; URI, UUID, certain
-            length of string and unsigned-integer, etc., </t>
+            be chose by operator as they like. e.g: URI, UUID, certain
+            length of string and unsigned-integer, etc. </t>
 
             <t hangText="Policy-group-reference:">List of references to
-            Policy-groups which apply to the port. </t>
+            Policy-groups which apply to the Port. </t>
 
         </list></t>
 
-        
+
         </section>
 
         <section anchor="context" title="Context">
-        
+
         <t>An endpoint of a mobility session is abstracted as a Context
         with its associated runtime concrete attributes, such as tunnel
         endpoints, tunnel identifiers, delegated prefix(es) and routing
-        information, etc., Mobility control-plane or application create,
-        modify and delete contexts on FPC Agent through FPC Client.</t>
+        information, etc. Mobility control-plane or applications create,
+        modify and delete contexts on FPC Agent through the FPC Client.</t>
 
         <t>A Context describes traffic treatment policies in QoS profile
-        and Mobility profile. Parameters in that profiles may be set by
-        FPC Client directly, or indirectly derived from the set of
-        Descriptors and Actions when the Ports indicate the Policies
+        and Mobility profiles. Parameters in these profiles may be set by
+        the FPC Client directly or indirectly derived from the set of
+        Descriptors and Actions when the Ports indicate Policies
         which specify those descriptors and actions. If a Context
-        doesn't have any port, all parameters of the Context must be set
+        doesn't have any Port, all parameters of the Context must be set
         by the Client. </t>
 
         <t>
@@ -950,32 +948,32 @@ DPN         |                 DPN        |
 
 (FPC-Mobility)
         |
-        +---Context      
-               |  
-               +---Context-id      
-               |    
+        +---Context
+               |
+               +---Context-id
+               |
                +---Port-reference
-               |    
+               |
                +---DPN-group-reference
-               |  
+               |
                +---Delegating-ip-prefix
 
               ]]></artwork>
             <postamble></postamble>
           </figure>
-        </t>        
+        </t>
 
-        <t><list hangIndent="24" style="hanging"> 
+        <t><list hangIndent="24" style="hanging">
 
             <t hangText="Context-id:">Identifier of Context. The ID
             format can be chose by operator as they like. e.g; URI,
             UUID, certain length of string and unsigned-integer, etc.,
             </t>
 
-            <t hangText="Port-reference:">List of Ports. When a context
-            is applied to port(s), the context is configured by policies
-            of port(s). Port-id references indicate ports which applies
-            to the context. Context can be a part of multiple Ports
+            <t hangText="Port-reference:">List of Ports. When a Context
+            is applied to Port(s), the context is configured by policies
+            of those Port(s). Port-id references indicate Ports which apply
+            to the Context. Context can be a part of multiple Ports
             which have different policies. </t>
 
             <t hangText="DPN-group-reference:">
@@ -985,13 +983,13 @@ DPN         |                 DPN        |
             be delegated to the mobile node of the context. </t>
 
         </list></t>
-        
+
         <section anchor="single-dpn-context" title="Single DPN Agent Case">
-        
-        <t> In the case of a FPC Agent supports only one DPN, the agent
-        must maintain context data just for the DPN. The agent does not
-        need to maintain Topology model in this case. The context in
-        sigle DPN case consist of following parameters for both
+
+        <t> In the case where a FPC Agent supports only one DPN, the Agent
+        MUST maintain context data just for the DPN. The Agent does not
+        need to maintain a Topology model. The Context in
+        single DPN case consists of following parameters for both
         direction of uplink and downlink.</t>
 
         <t>
@@ -1000,62 +998,61 @@ DPN         |                 DPN        |
             <artwork align="center"><![CDATA[
 
 (Contexts)
-    |    
+    |
     +---UL-Tunnel-local-address
-    |    
+    |
     +---UL-Tunnel-remote-address
-    |    
+    |
     +---UL-Mtu-size
-    |    
+    |
     +---UL-Mobility-specific-tunnel-parameters
-    |    
+    |
     +---UL-Nexthop
-    |    
+    |
     +---UL-QoS-profile-specific-parameters
-    |    
+    |
     +---UL-DPN-specific-parameters
-    |    
+    |
     +---UL-Vendor-specific-parameters
 
               ]]></artwork>
             <postamble></postamble>
           </figure>
-        </t>        
+        </t>
 
-        <t><list hangIndent="24" style="hanging"> 
+        <t><list hangIndent="24" style="hanging">
 
-            <t hangText="UL-Tunnle-local-address:">Specifies uplink
-            endpoint address of the DPN which agent exists. </t>
+            <t hangText="UL-Tunnel-local-address:">Specifies uplink
+            endpoint address of the DPN. </t>
 
             <t hangText="UL-Tunnel-remote-address:">Specifies uplink
-            endpoint address of remote DPN. </t>
+            endpoint address of the remote DPN. </t>
 
             <t hangText="UL-Mtu-size:">Specifies uplink MTU size of
             tunnel. </t>
 
             <t hangText="UL-Mobility-specific-tunnel-parameters:">
             Specifies profile specific uplink tunnel parameters to the
-            DPN which the agent exists. The profiles includes  GTP/TEID
+            DPN which the agent exists. The profiles includes GTP/TEID
             for 3gpp profile, GRE/Key for ietf-pmip profile, or new
-            profile if anyone will define it. </t>
+            profiles defined by extensions of this specification. </t>
 
             <t hangText="UL-Nexthop:">Indicates nexthop information of
-            uplink in external network, such as IP address, MAC address,
-            SPI of service function chain, SID of segment routing, or if
-            any. </t>
+            uplink in external network such as IP address, MAC address,
+            SPI of service function chain, SID of segment routing, etc. </t>
 
             <t hangText="UL-QoS-profile-specific-parameters:">Specifies
             profile specific QoS parameter of uplink, such as QCI/TFT
             for 3gpp profile,  rfc6089/7222 for ietf-pmip, or new
-            profile if anyone will define it. </t>
+            profiles defined by extensions of this specification. </t>
 
             <t hangText="UL-DPN-specific-parameters:">Specifies optional
-            node specific parameters of uplink in need, such like
+            node specific parameters of uplink in need, such as
             if-index, tunnel-if-number that must be unique in the
-            DPN-wise. </t>
+            DPN. </t>
 
             <t hangText="UL-Vendor-specific-parameters:">Specifies
-            vendor specific parameter space for uplink. </t>
+            a vendor specific parameter space for uplink. </t>
 
         </list></t>
 
@@ -1065,36 +1062,36 @@ DPN         |                 DPN        |
             <artwork align="center"><![CDATA[
 
 (Contexts)
-    |    
+    |
     +---DL-Tunnel-local-address
-    |    
+    |
     +---DL-Tunnel-remote-address
-    |    
+    |
     +---DL-Mtu-size
-    |    
+    |
     +---DL-Mobility-specific-tunnel-parameters
-    |    
+    |
     +---DL-Nexthop
-    |    
+    |
     +---DL-QoS-profile-specific-parameters
-    |    
+    |
     +---DL-DPN-specific-parameters
-    |    
+    |
     +---DL-Vendor-specific-parameters
 
               ]]></artwork>
             <postamble></postamble>
           </figure>
-        </t>        
+        </t>
 
-        <t><list hangIndent="24" style="hanging"> 
+        <t><list hangIndent="24" style="hanging">
 
-            <t hangText="DL-Tunnle-local-address:"> Specifies downlink
-            endpoint address of the DPN which agent exists.
+            <t hangText="DL-Tunnel-local-address:"> Specifies downlink
+            endpoint address of the DPN.
             </t>
 
             <t hangText="DL-Tunnel-remote-address:">Specifies downlink
-            endpoint address of remote DPN.
+            endpoint address of the remote DPN.
             </t>
 
             <t hangText="DL-Mtu-size:">Specifies downlink MTU size of
@@ -1104,36 +1101,35 @@ DPN         |                 DPN        |
             Specifies profile specific downlink tunnel parameters to the
             DPN which the agent exists. The profiles includes  GTP/TEID
             for 3gpp profile, GRE/Key for ietf-pmip profile, or new
-            profile if anyone will define it.</t>
+            profiles defined by extensions of this specification.</t>
 
             <t hangText="DL-Nexthop:">Indicates nexthop information of
-            downlink in external network, such as IP address, MAC address,
-            SPI of service function chain, SID of segment routing, or if
-            any.</t>
+            downlink in external network such as IP address, MAC address,
+            SPI of service function chain, SID of segment routing, etc.</t>
 
             <t hangText="DL-QoS-profile-specific-parameters:">Specifies
             profile specific QoS parameter of downlink, such as QCI/TFT
             for 3gpp profile,  rfc6089/7222 for ietf-pmip, or new
-            profile if anyone will define it.</t>
+            profiles defined by extensions of this specification.</t>
 
             <t hangText="DL-DPN-specific-parameters:">Specifies optional
-            node specific parameters of downlink in need, such like
+            node specific parameters of downlink in need such as
             if-index, tunnel-if-number that must be unique in the
-            DPN-wise.</t>
+            DPN.</t>
 
             <t hangText="DL-Vendor-specific-parameters:">Specifies
-            vendor specific parameter space for downlink. </t>
+            a vendor specific parameter space for downlink. </t>
 
         </list></t>
-        
+
         </section>
 
         <section anchor="multi-dpn-context" title="Multiple DPN Agent Case">
-        
-        <t>Another case is that a FPC Agent connects to multiple DPNs and handle them.
-        This means that the agent maintain a set of context data for each of them so that
-        the context contain DPNs list and an entry of the list consist of the parameters 
-        in <xref target="fig_dpn-context-im"></xref>. A Context data for one DPN has two 
+
+        <t>Another case is when a FPC Agent connects to multiple DPNs.
+        This Agent MUST maintain a set of Context data for each DPN.
+        The Context contains a DPNs list where each entry of the list consists of the parameters
+        in <xref target="fig_dpn-context-im"/>. A Context data for one DPN has two
         entries for each direction of uplink and downlink.
         </t>
 
@@ -1149,29 +1145,29 @@ DPN         |                 DPN        |
          +---DPN-id
          |
          +---Direction
-         |    
+         |
          +---Tunnel-local-address
-         |    
+         |
          +---Tunnel-remote-address
-         |    
+         |
          +---Mtu-size
-         |    
+         |
          +---Mobility-specific-tunnel-parameters
-         |    
+         |
          +---Nexthop
-         |    
+         |
          +---QoS-profile-specific-parameters
-         |    
+         |
          +---DPN-specific-parameters
-         |    
+         |
          +---Vendor-specific-parameters
 
               ]]></artwork>
             <postamble></postamble>
           </figure>
-        </t>        
+        </t>
 
-        <t><list hangIndent="24" style="hanging"> 
+        <t><list hangIndent="24" style="hanging">
 
             <t hangText="DPN-id:"> Indicates DPN of which the runtime
             context data installed. </t>
@@ -1179,48 +1175,49 @@ DPN         |                 DPN        |
             <t hangText="Direction:"> Specifies which side of connection
             at the DPN indicated, "uplink" or "downlink". </t>
 
-            <t hangText="Tunnle-local-address:"> Specifies endpoint
-            address of the DPN at uplink or downlink. </t>
+            <t hangText="Tunnel-local-address:"> Specifies endpoint
+            address of the DPN at the uplink or downlink. </t>
 
             <t hangText="Tunnel-remote-address:">Specifies endpoint
-            address of remote DPN at uplink or downlink.</t>
+            address of remote DPN at the uplink or downlink.</t>
 
-            <t hangText="Mtu-size:">Specifies downlink MTU size of
+            <t hangText="Mtu-size:">Specifies the MTU size of
             tunnel on uplink or downlink. </t>
 
             <t hangText="Mobility-specific-tunnel-parameters:">
             Specifies profile specific tunnel parameters for uplink or
             downlink of the DPN. The profiles includes GTP/TEID for
-            3gpp profile, GRE/Key for ietf-pmip profile, or new profile
-            if anyone will define it. </t>
+            3gpp profile, GRE/Key for ietf-pmip profile, or new profiles
+            defined by extensions of this specification. </t>
 
             <t hangText="Nexthop:">Indicates nexthop information for
-            uplink or downlink in external network of the DPN, such as
+            uplink or downlink in external network of the DPN such as
             IP address, MAC address, SPI of service function chain, SID
-            of segment routing, or if any. </t>
+            of segment routing, etc. </t>
 
             <t hangText="QoS-profile-specific-parameters:"> Specifies
             profile specific QoS parameter for uplink or downlink of
             the DPN, such as QCI/TFT for 3gpp profile,  rfc6089/7222 for
-            ietf-pmip, or new profile if anyone will define it. </t>
+            ietf-pmip, or new profiles defined by extensions of this
+            specification. </t>
 
             <t hangText="DPN-specific-parameters:"> Specifies optional
             node specific parameters for uplink or downlink of the DPN
             in need, such like if-index, tunnel-if-number that must be
-            unique in the DPN-wise. </t>
+            unique in the DPN. </t>
 
             <t hangText="Vendor-specific-parameters:"> Specifies
-            vendor specific parameter space for the DPN.
+            a vendor specific parameter space for the DPN.
             </t>
 
         </list></t>
 
         </section>
-        
+
         </section>
-    
-    
-    
+
+
+
     <!--
 
         <t>A context binds one or multiple session/mobility properties,
@@ -1232,16 +1229,16 @@ DPN         |                 DPN        |
         defining mobility/session based traffic treatment actions and
         the port identifier make a context. The context identifier
         serves as key to access the information.</t>
-        
+
         <t>A port represents a colleciton of policy groups, a group of
         rules that can exists independent of the mobility/session
-        lifecycle.  Policy groups are named collections of policies. 
+        lifecycle.  Policy groups are named collections of policies.
         Policy groups provide a collection of policies, e.g. a
         contatenation of the rules in each policy, to provide a second
         level of rule aggregation often required to separate out
         technical grouping of rules, e.g. a policy, with the grouping of
         rules for use cases, e.g. a service level policy. </t>
-    
+
         <t>Ports contain Policy Groups (via reference to their Policy
         Group Identifiers) and have an Identifier. They may be
         instantiated on the DPN at the discretion of the Agent. Being
@@ -1267,40 +1264,40 @@ DPN         |                 DPN        |
         as this creates major disadvantages. A two tier hierarchy is
         common in many mobility solutions but further depths SHOULD be
         avoided.</t>
-    
+
     -->
 
     </section>
 
-    
+
         <section anchor="naming" title="Namespace and Format">
-        
-            <t> It is obvious that the identifiers and names in FPC
-            models which are in same namespace must be unique. That
-            uniqueness must be kept in agent-wise or data-plane
-            tenant-wise on an agent. The tenant-wise namespace can be
-            applied to all Topology, Policy and Mobility models. </t>
-            
-            <t> When a policy need to be applied to contexts in all
-            tenants on an agent, the agent should define that policy to
-            be visible from all the tenants. In this case, the agent
-            assign an unique identifier in the agent-wise.</t>
-        
-            <t>The format of identifiers can utilize any format along
+
+            <t> The identifiers and names in FPC models which reside
+            in the same namespace must be unique. That uniqueness must
+            be kept in agent or data-plane tenant namespace on an Agent.
+            The tenant namespace uniquenes MUST be applied to all elements
+            of the tenant model, i.e. Topology, Policy and Mobility models. </t>
+
+            <t> When a Policy needs to be applied to Contexts in all
+            tenants on an Agent, the Agent SHOULD define that policy to
+            be visible from all the tenants. In this case, the Agent
+            assign an unique identifier in the agent namespace.</t>
+
+            <t>The format of identifiers can utilize any format with
             agreement between data-plane agent and client operators. The
-            formats are Globally Unique IDentifiers (GUIDs), Universally
-            Unique IDentifiers (UUIDs), Fully Qualified Domain Names
-            (FQDNs), Fully Qualified Path Names (FQPNs), Uniform
-            Resource Identifiers (URIs), or if any.</t>
-            
-            <t>The FPC model must not limit types of the format that
-            secure the choice of FPC protocol. It is noted that the
+            formats include but are not limited to Globally Unique
+            IDentifiers (GUIDs), Universally Unique IDentifiers (UUIDs),
+            Fully Qualified Domain Names (FQDNs), Fully Qualified Path Names (
+            FQPNs) and Uniform Resource Identifiers (URIs).</t>
+
+            <t>The FPC model MUST NOT limit the types of format that
+            dictate the choice of FPC protocol. It is noted that the
             choice of identifiers which are used in Mobility model
             should be suitable to handle runtime parameters in
             real-time. The Topology and Policy models are not restricted
             to meet that requirement as described in <xref
-            target="refarch"></xref></t>
-                                    
+            target="refarch"/>.</t>
+
             <!--
 
             <t>The naming convention can be used to accommodate
@@ -1310,10 +1307,10 @@ DPN         |                 DPN        |
             prefix such as "mcc:01/mnc:002", an inteface such as
             "/if:1/", a VRF route, e.g. "/vrf:xxx/routeid:001" or a
             service id in a network "mcc:01/mnc:002/sr-id:internet".
-            </t>   
-            
+            </t>
+
             -->
-        </section> 
+        </section>
 
 
 </section>
@@ -2327,7 +2324,7 @@ Agent deletes the tunnel and route on the DPN and responds to the Client (4).</t
       that must be unique in the DPN.</c>
   </texttable>
 
-  <section anchor="topology" title="Topology Structures">
+  <section anchor="topology_structs" title="Topology Structures">
   <t>This section defines topology structures such as DPNs and DPN Groups.</t>
   <texttable anchor="dpn_fields" title="DPN Fields" align="left">
     <ttcol align="left">Field</ttcol>
@@ -2926,7 +2923,7 @@ Such protocol-specific details will be described in separate documents and may r
     &RFC3344;
     &RFC7222;
     &RFC6241;
-    
+
 </references>
 
 <!--
