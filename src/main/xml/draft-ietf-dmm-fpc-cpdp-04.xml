@@ -976,7 +976,8 @@ DPN         |                 DPN        |
             to the Context. Context can be a part of multiple Ports
             which have different policies. </t>
 
-            <t hangText="DPN-group-reference:">
+            <t hangText="DPN-group-reference:">The DPN-group assigned to
+            the Context.
             </t>
 
             <t hangText="Delegating-ip-prefix:">List of IP prefixes to
@@ -1331,7 +1332,7 @@ DPN         |                 DPN        |
     <c>1*[HEADER BODY]</c>
     <c>Configure-bundles takes multiple operations that are to be executed as a group
           with partial failures allowed. They are executed according to the OP_ID value
-          in the OP_BODY. If a CONFIGURE_BUNDLES fails, any entities provisioned in the
+          in the OP_BODY in ascendig order. If a CONFIGURE_BUNDLES fails, any entities provisioned in the
           CURRENT operation are removed, however, any successful operations completed prior to
           the current operation are preserved in order to reduce system load.</c>
 
@@ -1379,38 +1380,35 @@ DPN         |                 DPN        |
       <t>The Agent will process entities provided in an operation in the following order:
         <list style="numbers">
   <t>Clone Instructions, if the feature is supported</t>
-  <t>Descriptors</t>
-  <t>Actions</t>
-  <t>Policies</t>
-  <t>Policy-Groups</t>
-  <t>Ports according to COMMAND_SET order processing</t>
+  <t>Ports</t>
   <t>Contexts according to COMMAND_SET order processing</t>
 </list></t>
    <t>The following Order Processing occurs when COMMAND Sets are present
         <list style="numbers">
         <t>The Entity specific COMMAND_SET is processed according to its bit order unless
-        otherwise specified by the technology specific COMMAND_SET.
+        otherwise specified by the technology specific COMMAND_SET definition.
         </t><t>Operation specific COMMAND_SET is processed upon all applicable entities
         (even if they had Entity specific COMMAND_SET values present) according to its bit
-        order unless otherwise specified by the technology specific COMMAND_SET.
+        order unless otherwise specified by the technology specific COMMAND_SET definition.
         </t><t>Operation OP_TYPE is processed for all entities.</t>
         </list>
     </t>
-    <t>When deleting objects it at the top level only their name needs to be provided.</t>
+    <t>When deleting objects only their name needs to be provided.  However, attributes MAY be provided
+      if the Client wishes to avoid requiring the Agent cache lookups.</t>
     <t>When deleting an attribute, a leaf reference should be provided.  This is a path to the attibutes.</t>
   </section>
     <section anchor="cloning" title="Cloning">
       <t>Cloning is an optional feature that allows a Client to copy one structure to another
         in an operation. Cloning is always done first within the operation (see Operation
         Order of Execution for more detail). If a Client wants to build an object then Clone
-        it using CONFIG_BUNDLES with the first operation being the entities to be copied and
+        it, use CONFIG_BUNDLES with the first operation being the entities to be copied and
         a second operation with the Cloning instructions. A CLONE operation takes two arguments,
         the first is the name of the target to clone and the second is the name of the newly
-        created entity.</t>
+        created entity.  Individual attributes are not clonable; only Ports and Contexts can be cloned.</t>
     </section>
     <section anchor="commandsets" title="Command Bitsets">
 <t>The COMMAND_SET is a technology specific bitset that allows for a single entity to
-  be sent in an operation with the requested sub-transactions to be completed. For
+  be sent in an operation with requested sub-transactions to be completed. For
   example, a Context could have the Home Network Prefix absent but it is unclear if
   the Client would like the address to be assigned by the Agent or if this is an error.
   Rather than creating a specific command for assigning the IP a bit position in a
@@ -1425,8 +1423,7 @@ DPN         |                 DPN        |
     defined as
     <list style="symbols">
       <t>none - all entities have no references to other entities.  This implies only
-      Actions, Descriptors or Contexts are present as all other entities MUST have
-      references to other entities in the model.</t>
+      Contexts are present Ports MUST have references to Policy-Groups.</t>
       <t>op - All references are contained in the operation body, i.e. only intra-operaion
       references exist.</t>
       <t>bundle - All references in exist in bundle (inter-operation/intra-bundle). NOTE -
@@ -1434,7 +1431,9 @@ DPN         |                 DPN        |
       <t>storage - One or more references exist outside of the operation and bundle. A lookup
         to a cache / storage is required.</t>
       <t>unknown - the location of the references are unknown. This is treated as a 'storage' type.</t>
-    </list>
+  </list></t>
+    <t>If supported by the Agent, when cloning instructions are present, the scope MUST NOT be 'none'.  When
+    Ports are present the scope MUST be 'storage' or 'uknown'.
   </t>
   <t>An agent that only accepts 'op' or 'bundle' reference scope messages is referred to as 'stateless'
     as it has no direct memory of references outside messages themselves. This permits low memory
@@ -1454,7 +1453,10 @@ DPN         |                 DPN        |
       </list>
     </t>
     <t>Any result MAY contain nothing or a entities created or partially fulfilled as part of the
-      operation as specified in <xref target="op_respbody"/>.</t>
+      operation as specified in <xref target="op_respbody"/>.  For Clients that need attributes back
+      quickly for call processing, the AGENT MUST respond back with an OK_NOTIFY_FOLLOWS and minimally the
+      attributes assigned by the Agent in the response.  These situations MUST be determined through the use
+      of Command Sets (see <xref target="commandsets"/>).</t>
     <t>If an error occurs the following information is returned.
     <list>
       <t>ERROR_TYPE_ID (Unsigned 32) - The identifier of a specific error type
@@ -1476,8 +1478,8 @@ DPN         |                 DPN        |
 <t>An FPC Client and Agent MUST identify themself using the CLI_ID and AGT_ID respectively to ensure that for all
 transactions a recipient of an FPC message can unambiguously identify the sender of the FPC message.
 <!--All messages between an Agent and a Client must identify the Client and Agent using the CLI_ID and AGT_ID respectively.-->
-A Client MAY direct the Agent to enforce a rule in a particular DPN by including a DPN_ID value. Otherwise the Agent
-selects a suitable DPN to enforce a rule and notifies the Client about the selected DPN using the DPN_ID.</t>
+A Client MAY direct the Agent to enforce a rule in a particular DPN by including a DPN_ID value in a Context. Otherwise the Agent
+selects a suitable DPN to enforce a Context and notifies the Client about the selected DPN using the DPN_ID.</t>
 
 <t>All messages sent from a Client to an Agent MUST be acknowledged by the Agent. The response must
 include all entities as well as status information, which indicates the result of processing the message,
@@ -1485,10 +1487,10 @@ using the RESPONSE_BODY property. In case the processing of the message results 
 the ERROR_TYPE_ID and ERROR_INFORMATION accordingly and MAY clear the Context or Port, which caused the failure,
 in the response.</t>
 
-<t>If based upon Agent configuration or the processing of the request may take a significant amount of time the
+<t>If based upon Agent configuration or the processing of the request possibly taking a significant amount of time the
   Agent MAY respond with an OK_NOTIFY_FOLLOWS with an optional RESPONSE_BODY containing the paritially completed
-  entities. When an OK_NOTIFY_FOLLOWS is sent the Agent will, upon completion or failure of the operation, respond with an
-  asynchronous CONFIG_RESULT_NOTIFY.</t>
+  entities. When an OK_NOTIFY_FOLLOWS is sent, the Agent will, upon completion or failure of the operation, respond with an
+  asynchronous CONFIG_RESULT_NOTIFY to the Client.</t>
 
 <t>A Client MAY add a property to a Context without providing all required details of the attribute's value. In such case
 the Agent SHOULD determine the missing details and provide the completed property description back to the Client. If the
@@ -1498,7 +1500,7 @@ processing will take too long or based upon Agent configuration, the Agent MAY r
 In case the Agent cannot determine the missing value of an attribute's value per the Client's request, it leaves the
 attribute's value cleared in the RESPONSE_BODY and sets the RESULT to Error, ERROR_TYPE_ID and ERROR_INFORMATION. As example,
 the Control-Plane needs to setup a tunnel configuration in the Data-Plane but has to rely on the Agent to determine the tunnel
-endpoint which is associated with the DPN that enforces the rule. The Client adds the tunnel property attribute to the FPC message
+endpoint which is associated with the DPN that supports the Context. The Client adds the tunnel property attribute to the FPC message
 and clears the value of the attribute (e.g. IP address of the local tunnel endpoint). The Agent determines the tunnel
 endpoint and includes the completed tunnel property in its response to the Client.</t>
 
@@ -1572,10 +1574,6 @@ new Data-Plane node (Edge DPN2) to represent the new tunnel endpoints in the dow
 The LMA-C sends a CONFIGURE message (3) to the Agent to modify the existing tunnel property of the existing Context
 and to update the tunnel endpoint from Edge DPN1 to Edge DPN2. Upon reception of the CONFIGURE message, the Agent
 applies updated tunnel property to the local configuration and responds to the Client (4).</t>
-
-<t>The example below is a varition upon the previous example where the Agent has been configured or based upon
-the time to complete the request, the Agent responds with an OK_NOTIFY_FOLLOWS (2) and a subsequent
-CONFIG_RESULT_NOTIFY notification (3) upon completion of the DPN commands.</t>
 
 <t>
  <figure anchor="fig_msc_delete_example"
@@ -1822,8 +1820,8 @@ Agent deletes the tunnel and route on the DPN and responds to the Client (4).</t
       pre-provisioning of Ports permits policy and administrative use cases to be exected.  For example, creating
       tunnels to forward traffic to a trouble management platform and dropping packets to a defective web server
       can be accomplished via provisioning of Ports.</t>
-      <t>The figure below shows a CONFIGURE (1) message used to accomplish dropping packets to a
-        defective server prior to any Context creation.</t>
+      <t>The figure below shows a CONFIGURE (1) message used to install a Policy-group, policy-group1, using a Context
+        set aside for pre-provisioning on a DPN.</t>
 <t>
  <figure anchor="fig_policy_example"
               title="Exemplary Bundle Message (focus on FPC reference point)">
@@ -1835,21 +1833,11 @@ Agent deletes the tunnel and route on the DPN and responds to the Client (4).</t
 +-----------+            +-------+ +---------+
      |                          |           |
      |------CONFIG(CREATE)----->|           |
-     | [ DESCRIPTOR_ID desc1,   |           |
-     |     TYPE(TO_PREFIX)      |           |
-     |  defective server        |           |
-     |  address 32 ],           |           |
-     |  [ ACTION_ID act1,       |           |
-     |     TYPE(DROP)  ],       |           |
-     |   [ POLICY_ID p1,        |           |
-     |    [(RULE) ORDER 1       |           |
-     |    [ [desc1  uplink] ]   |           |
-     |    [ [act1 ORDER 1] ]]], |           |
-     |  [ POLICY-GROUP_ID pg1   |           |
-     |    [ p1 ] ],             |           |
      |  [ PORT_ID port1,        |           |
+     |     [ policy-group1 ] ]  |           |
+     |  [ CONTEXT_ID preprov,   |           |
      |     DPN_ID X,            |           |
-     |     [ pg1 ] ]            |           |
+     |     [ port1 ] ]          |           |
      |                          |           |
       ]]></artwork>
         <postamble></postamble>
@@ -1870,10 +1858,10 @@ Agent deletes the tunnel and route on the DPN and responds to the Client (4).</t
     <section anchor="monitor_descr" title="Monitors">
 
         <t>Monitors provide a mechanism to produce reports when events
-        occur.  Unlike ports and contexts a Monitor will have a target
-        that may be any FPC-Identity except other monitors, events by
-        their type, or attributes of an entity. In such cases, the
-        target name is a concatenation of the FPC-Identity and the
+        occur.  Unlike Ports and Contexts a Monitor will have a target
+        that may be events specified by their type, attributes of an
+        entity or any FPC identity except other monitors. In such cases, the
+        target name is a concatenation of the FPC Identity and the
         relative path (separated by '/') to the attribute(s) to be
         monitored. </t>
 
@@ -1883,7 +1871,7 @@ Agent deletes the tunnel and route on the DPN and responds to the Client (4).</t
         the reporting configuration MUST be applicable to the attribute
         monitored, e.g. a Monitor using a Threshold configuration cannot
         be applied to a context but it can be applied to a numeric
-        context property. </t>
+        Context property. </t>
 
         <t>Four report types are defined:
             <list style="symbols">
@@ -1911,7 +1899,7 @@ Agent deletes the tunnel and route on the DPN and responds to the Client (4).</t
         or period respectively) of 0 a NOTIFY is immediately sent and
         the monitor is immediately de-registered. This method should,
         when a MONITOR has not been installed, result in an immediate
-        NOTIFY is sufficient for the Client's needs and the Client has
+        NOTIFY sufficient for the Client's needs and lets the Agent realize the Client has
         no further need for the monitor to be registered. An Agent may
         reject a registration if it or the DPN has insufficient
         resources.</t>
@@ -1931,8 +1919,8 @@ Agent deletes the tunnel and route on the DPN and responds to the Client (4).</t
         <t>PROBE are used by a Client to retrieve information about a
         previously installed monitor. The PROBE message SHOULD identify
         one or more monitors by means of including the associated
-        monitor identifier. An Agent receiving a PROBE message SHOULD
-        send the requested information in a single or multiple NOTIFY
+        monitor identifier. An Agent receiving a PROBE message
+        sends the requested information in a single or multiple NOTIFY
         messages.</t>
 
         <t>NOTIFY are used by an Agent to report the status of a monitor
@@ -1951,11 +1939,11 @@ Agent deletes the tunnel and route on the DPN and responds to the Client (4).</t
 
 <section anchor="proto_message_detail" title="Protocol Message Details">
 <section anchor="datastructure" title="Data Structures">
-  <t>A Client may add, modify or delete multiple actions, descriptors,
-   policies, policy-groups, ports and contexts in a single message. This
-   includes control of the operation of a rule.  As example, a rule which
+  <t>A Client may add, modify or delete multiple Actions, Descriptors,
+   Policies, Policy-groups, Ports and Contexts in a single message. This
+   includes control of the operation of a Rule.  As example, a Rule which
    performs re-writing of an arriving packet's destination IP address
-   from IP_A to IP_B matching an associated Descriptro, can be
+   from IP_A to IP_B matching an associated Descriptor, can be
    enforced in the Data-Plane via an Agent to implicitly consider
    matching arriving packet's source IP address against IP_B and re-
    write the source IP address to IP_A.
@@ -2000,18 +1988,18 @@ Agent deletes the tunnel and route on the DPN and responds to the Client (4).</t
 </t>
 
   <t>
-   As depicted in <xref target="fig_port"/>, the port represents the anchor
-   of rules through the policy-group, policy, rule heirarchy.  A
-   Client and Agent use the identifier of the associated policy to directly
-   access the rule and perform modifications of traffic descriptors or action
-   references.  A Client and Agent use the identifiers to access the descriptors
-   or action to perform modifications. From the viewpoint of packet processing,
-   arriving packets are matched against traffic descriptors and processed according
-   to the treatment actions specified in the list of properties associated with the
-   port.
+   As depicted in <xref target="fig_port"/>, the Port represents the anchor
+   of Rules through the Policy-group, Policy, Rule heirarchy.  A
+   Client and Agent use the identifier of the associated Policy to directly
+   access the Rule and perform modifications of traffic Descriptors or Action
+   references.  A Client and Agent use the identifiers to access the Descriptors
+   or Actions to perform modifications. From the viewpoint of packet processing,
+   arriving packets are matched against traffic Descriptors and processed according
+   to the treatment Actions specified in the list of properties associated with the
+   Port.
   </t>
   <t>
-   A Client complements a rule's descriptors with a match priority
+   A Client complements a rule's Descriptors with a Rule Order (priority)
    value to allow unambiguous traffic matching on the Data-Plane.
   </t>
 <t><xref target="fig_context"/> illustrates the generic context configuration
@@ -2048,25 +2036,25 @@ Agent deletes the tunnel and route on the DPN and responds to the Client (4).</t
       </figure>
 </t>
 <t>
-   As depicted in <xref target="fig_context"/>, the context represents a mobiility
+   As depicted in <xref target="fig_context"/>, the Context represents a mobiility
    session heirarchy.  A Client and Agent directly assigns values such as dowlink
    traffic descriptors, QoS information, etc.  A Client and Agent use the context
    identifiers to access the descriptors, qos information, etc. to perform modifications.
    From the viewpoint of packet processing, arriving packets are matched against traffic
-   descriptors and processed according to the qos or other mobility profile related actions
-   specified in the context's properties. If present, the final action is to use a context's
+   Descriptors and processed according to the qos or other mobility profile related Actions
+   specified in the Context's properties. If present, the final action is to use a Context's
    tunnel information to encapsulate and forward the packet.
   </t>
-<t>A second context also references context1 in the figure.  Based upon the techology a property
+<t>A second Context also references context1 in the figure.  Based upon the techology a property
   in a parent context MAY be inherited by its descendants.  This permits concise over the wire
-  representation.  When a Client deletes a parent context all children are also deleted.</t>
+  representation.  When a Client deletes a parent Context all children are also deleted.</t>
 
-  <t>Actions defines how to apply action to classified traffic flow by descriptors,
+  <t>Actions defines how to apply action to classified traffic flow by Descriptors,
     such as traffic management related action such as shaping, policing based on
     given bandwidth, and connectivity management actions, such as pass, drop,
-    forward to given nexthop. Noted that Actions are extensibly defined by
-    specific profiles which 3gpp, ietf or other SDO produced. QCI (QoS Class
-    Identifier)) from 3gpp, and  rfc7222 from ietf can become action profiles. .
+    forward to given nexthop. Note that Actions are extensibly defined by
+    specific profiles which 3gpp, ietf or other SDO produces. QCI (QoS Class
+    Identifier)) from 3gpp, and  rfc7222 from ietf can become action profiles.
   </t>
   <t>The following table shows the Action fields</t>
   <texttable anchor="action_field" title="Action Fields">
@@ -2088,11 +2076,11 @@ Agent deletes the tunnel and route on the DPN and responds to the Client (4).</t
       <c>The Action's value.</c>
   </texttable>
 
-  <t>Descriptors define classifiers of specific traffic flow, such as based on
+  <t>Descriptors define classifiers of specific traffic flow such as those based on
     source and destination addresses, protocols, port numbers of
-    TCP/UDP/SCTP/DCCP and if any. Noted that Descriptors are extensibly defined
-    by specific profiles which 3gpp, ietf or other SDO produced. TFT (Traffic
-    flow template) from 3gpp, and  rfc6089 from ietf can become descriptor profiles.
+    TCP/UDP/SCTP/DCCP, etc. Note that Descriptors are extensibly defined
+    by specific profiles which 3gpp, ietf or other SDO produced. The TFT (Traffic
+    flow template) from 3gpp, and rfc6089 from ietf can become descriptor profiles.
   </t>
   <t>The following table shows the Descriptor fields</t>
   <texttable anchor="descriptor_field" title="Descriptor Fields" align="left">
@@ -2113,8 +2101,8 @@ Agent deletes the tunnel and route on the DPN and responds to the Client (4).</t
       <c>Type specific</c>
       <c>The Descriptor's value.</c>
   </texttable>
-  <t>Policies contain a list of rules by their order value. Each rule contains descriptors with
-  optional directionality and actions with order values that specifies ordering if the rule
+  <t>Policies contain a list of Rules by their order value. Each Rule contains Descriptors with
+  optional directionality and Actions with order values that specifies action execution ordering if the Rule
   has multiple actions.</t>
   <t>The following table shows the Policy fields</t>
   <texttable anchor="policy_field" title="Policy Fields" align="left">
@@ -2136,7 +2124,7 @@ Agent deletes the tunnel and route on the DPN and responds to the Client (4).</t
     <ttcol align="left">Description</ttcol>
       <c>ORDER</c>
       <c>[16, INTEGER]</c>
-      <c>Specifies ordering if the multiple rules are present.</c>
+      <c>Specifies rule order if the multiple rules are present.</c>
 
       <c>RULE_DESCRIPTORS</c>
       <c>*[ DESCRIPTOR_ID DIRECTION ]</c>
@@ -2148,11 +2136,11 @@ Agent deletes the tunnel and route on the DPN and responds to the Client (4).</t
       <c>RULE_ACTIONS</c>
       <c>*[ ACTION_ID ORDER ]</c>
       <c>The ACTION_ID refers to an ACTION.  ORDER [8, unsigned integer]
-        specifies action order when multiple actions are present.</c>
+        specifies action execution order when multiple actions are present.</c>
   </texttable>
 
-  <t>A policy-group refers to  a set of policies which are to apply to
-    ports and contexts. Policy-groups consist of the following fields.</t>
+  <t>A Policy-group refers to  a set of policies which are to apply to
+    Ports and Contexts. Policy-groups consist of the following fields.</t>
   <texttable anchor="policygroup_field" title="Policy Group Fields" align="left">
     <ttcol align="left">Field</ttcol>
     <ttcol align="left">Type</ttcol>
@@ -2166,8 +2154,8 @@ Agent deletes the tunnel and route on the DPN and responds to the Client (4).</t
       <c>Indicates each Policy which the Policy-group includes.</c>
   </texttable>
 
-  <t>Port is a set of policies which will apply to contexts or any traffic
-    in the Dataplane node. It contains a list of Policy-groups which apply
+  <t>Port is a set of Policies which will apply to contexts in the
+    Dataplane node. It contains a list of Policy-groups which apply
     to the port.</t>
   <texttable anchor="port_field" title="Port Fields" align="left">
     <ttcol align="left">Field</ttcol>
@@ -2180,20 +2168,10 @@ Agent deletes the tunnel and route on the DPN and responds to the Client (4).</t
       <c>POLICIES</c>
       <c>*[ POLICY_GROUP_ID ]</c>
       <c>Indicates each Policy-Group in the list.</c>
-
-      <c>DPN_GROUP_ID</c>
-      <c>FPC-Identity (<xref target="naming"/>)</c>
-      <c>Indicates DPN-Group in the case of the port is configured to attach
-        to the DPN-group.  When a </c>
-
-      <c>DPNS</c>
-      <c>*[ DPN ]</c>
-      <c>List of the DPNs which the Port accommodates. When DPN-group is indicated,
-        this list is derived from the group definition.  See <xref target="context_dpn_fields"/></c>
   </texttable>
 
-  <t>An endpoint of a mobility session is abstracted as a context. The fields
-    of a context is shown in table <xref target="context_fields"/>.</t>
+  <t>An endpoint of a mobility session is abstracted as a Context. The fields
+    of a Context are shown in table <xref target="context_fields"/>.</t>
   <texttable anchor="context_fields" title="Context Fields" align="left">
     <ttcol align="left">Field</ttcol>
     <ttcol align="left">Type</ttcol>
@@ -2208,43 +2186,52 @@ Agent deletes the tunnel and route on the DPN and responds to the Client (4).</t
         is configured by policies of port(s).  IF the Port is assigned to a DPN that is different
         than the one assigned to this Context it MUST result in an error.</c>
 
+      <c>DPN_GROUP_ID</c>
+      <c>FPC-Identity (<xref target="naming"/>)</c>
+      <c>Indicates DPN-Group in the case of the context is configured to attach
+        to the DPN-group.</c>
+
       <c>DELEGATING IP PREFIXES</c>
       <c>*[ IP_PREFIX ]</c>
       <c>List of IP prefixes to be delegated to the mobile node of the
         context. An IP_PREFIX is an IPv4 or IPv6 PREFIX.</c>
-
-      <c>UPLINK</c>
-      <c>TUN_LOCAL_ADDRESS TUN_REMOTE_ADDRESS TUN_MTU TUN_PAYLOAD_TYPE TUN_TYPE TUN_IF
-        [ MOB_PROFILE_TUN_PARAMS ] [ NEXTHOP ] [ QOS_PARAMS ]
-        [ VENDOR_SPECIFIC_PARAMS ] </c>
-      <c>Uplink information. See <xref target="context_link_fields"/>.</c>
-
-      <c>DOWNLINK</c>
-      <c>TUN_LOCAL_ADDRESS TUN_REMOTE_ADDRESS TUN_MTU TUN_PAYLOAD_TYPE TUN_TYPE TUN_IF
-        [ MOB_PROFILE_TUN_PARAMS ] [ NEXTHOP ] [ QOS_PARAMS ]
-        *[ VENDOR_SPECIFIC_PARAM ] </c>
-      <c>Uplink information. See <xref target="context_link_fields"/>.</c>
 
       <c>PARENT_CONTEXT_ID</c>
       <c>FPC-Identity (<xref target="naming"/>)</c>
       <c>Indicates context which this context associated with. This will help to
         indicate relationships such as default/dedicated bearer relation.</c>
 
-      <c>DPN_GROUP_ID</c>
-      <c>FPC-Identity (<xref target="naming"/>)</c>
-      <c>Indicates DPN-Group in the case of the context is configured to attach
-        to the DPN-group.</c>
+      <c>UPLINK</c>
+      <c>TUN_LOCAL_ADDRESS TUN_REMOTE_ADDRESS TUN_MTU TUN_PAYLOAD_TYPE TUN_TYPE
+        [ MOB_PROFILE_TUN_PARAMS ] [ NEXTHOP ] [ QOS_PARAMS ]
+        [ DPN_SPECIFIC_PARAMS ]
+        *[ VENDOR_SPECIFIC_PARAMS ] </c>
+      <c>Uplink information for the Single DPN Context Structure. See <xref target="context_link_fields"/>.</c>
+
+      <c>DOWNLINK</c>
+      <c>TUN_LOCAL_ADDRESS TUN_REMOTE_ADDRESS TUN_MTU TUN_PAYLOAD_TYPE TUN_TYPE
+        [ MOB_PROFILE_TUN_PARAMS ] [ NEXTHOP ] [ QOS_PARAMS ]
+        [ DPN_SPECIFIC_PARAMS ]
+        *[ VENDOR_SPECIFIC_PARAM ] </c>
+      <c>Downlink information for the Single DPN Context Structure. See <xref target="context_link_fields"/>.</c>
 
       <c>DPNS</c>
-      <c>*[ DPN ]</c>
-      <c>List of the DPNs which the Context accommodates. When DPN-group is indicated,
-        this list is derived from the group definition.  See <xref target="context_dpn_fields"/></c>
+      <c>*[ DPN_ID DPN_DIRECTION TUN_LOCAL_ADDRESS TUN_REMOTE_ADDRESS TUN_MTU TUN_PAYLOAD_TYPE TUN_TYPE
+        [ MOB_PROFILE_TUN_PARAMS ] [ NEXTHOP ] [ QOS_PARAMS ]
+        [ DPN_SPECIFIC_PARAMS ]
+        *[ VENDOR_SPECIFIC_PARAM ] ]</c>
+      <c>List of the DPNs configurations which the multi-DPN Context accommodates. When DPN-group is indicated,
+        this list is derived from the group definition.</c>
   </texttable>
 
   <texttable anchor="context_link_fields" title="Context Downlink/Uplink Field Definitions" align="left">
     <ttcol align="left">Field</ttcol>
     <ttcol align="left">Type</ttcol>
     <ttcol align="left">Description</ttcol>
+      <c>DPN_DIRECTION</c>
+      <c>[1, enumeration]</c>
+      <c>DPN Tunnel direction - either uplink(0) or downlink (1).</c>
+
       <c>TUN_LOCAL_ADDRESS</c>
       <c>IP Address</c>
       <c>Endpoint address of the DPN. [NOTE 1]</c>
@@ -2266,7 +2253,7 @@ Agent deletes the tunnel and route on the DPN and responds to the Client (4).</t
       <c>An enumeration that specifies the tunnel subtype. Current values include IP-in-IP(0), UDP(1)
          GRE(2) and GTP(3).</c>
 
-      <c>INPUT_IF</c>
+      <c>TUN_IF</c>
       <c>[16, unsigned integer]</c>
       <c>Input interface index.</c>
 
@@ -2288,6 +2275,11 @@ Agent deletes the tunnel and route on the DPN and responds to the Client (4).</t
       <c>Specifies profile specific QoS parameter of downlink/uplink, such as QCI/TFT for 3gpp profile,
         rfc6089/7222 for ietf-pmip, or extensions of this specification. [NOTE 1]</c>
 
+      <c>DPN_SPECIFIC_PARAMS</c>
+      <c>[ TUN_IF or Varies]</c>
+      <c>Specifies optional node specific parameters in need such as if-index, tunnel-if-number that must be unique
+         in the DPN.</c>
+
       <c>VENDOR_SPECIFIC_PARAM</c>
       <c> Varies </c>
       <c>Vendor specific parameter. [NOTE 1]</c>
@@ -2295,33 +2287,6 @@ Agent deletes the tunnel and route on the DPN and responds to the Client (4).</t
         NOTE 1 - These parameters are extensible.  The Types may be extended for Field value by
         future specifications or in the case of Vendor Specific Attributes by enterprises.
       </postamble>
-  </texttable>
-
-  <texttable anchor="context_dpn_fields" title="Context DPN Fields" align="left">
-    <ttcol align="left">Field</ttcol>
-    <ttcol align="left">Type</ttcol>
-    <ttcol align="left">Description</ttcol>
-
-    <c>DPN_ID</c>
-    <c>FPC-Identity (<xref target="naming"/>)</c>
-    <c>DPN Identifier.</c>
-
-    <c>DIRECTION</c>
-    <c>[2, bits]</c>
-    <c>Indicates if the DPN serves uplink(0), downlink(1) or
-    both(2).</c>
-
-    <c>MOB_PROFILE_PARAMS</c>
-    <c>TUN_LOCAL_ADDRESS TUN_REMOTE_ADDRESS TUN_MTU
-        TUN_PAYLOAD_TYPE TUN_TYPE
-        [ MOB_PROFILE_TUN_PARAMS ] [ NEXTHOP ] [ QOS_PARAMS ]
-        [ VENDOR_SPECIFIC_PARAMS ] [ TUN_IF ]</c>
-    <c>Mobility Profile information. See <xref target="context_link_fields"/>.</c>
-
-    <c>DPN_PARAMS</c>
-    <c> Varies </c>
-    <c>Specific parameters, such like if-index, tunnel-if-number
-      that must be unique in the DPN.</c>
   </texttable>
 
   <section anchor="topology_structs" title="Topology Structures">
@@ -2334,6 +2299,10 @@ Agent deletes the tunnel and route on the DPN and responds to the Client (4).</t
     <c>DPN_ID</c>
     <c>FPC-Identity. See <xref target="naming"/></c>
     <c>DPN Identifier.</c>
+
+    <c>DPN_NAME</c>
+    <c>[1024, OCTET STRING]</c>
+    <c>Name of the DPN.</c>
 
     <c>IP_ADRRESS</c>
     <c>IP Address</c>
@@ -2358,9 +2327,9 @@ Agent deletes the tunnel and route on the DPN and responds to the Client (4).</t
     <c>FPC-Identity. See <xref target="naming"/></c>
     <c>DPN Group Identifier.</c>
 
-    <c>FORWARDING_PLANE_ROLE</c>
+    <c>DATA_PLANE_ROLE</c>
     <c>Enumeration</c>
-    <c>Defines forwarding-plane role of the DPN-Group, such as access-dpn, L2/L3 anchor-dpn.</c>
+    <c>Defines forwarding-plane role of the DPN-Group in the data-plane, such as access-dpn, L2/L3 anchor-dpn.</c>
 
     <c>ACCESS_TYPE</c>
     <c>Enumeration</c>
@@ -2375,16 +2344,8 @@ Agent deletes the tunnel and route on the DPN and responds to the Client (4).</t
 
     <c>PEER_DPN_GROUPS</c>
     <c>DPN_GROUP_ID REMOTE_ENDPOINT_ADDRESS LOCAL_ENDPOINT_ADDRESS
-    TUN_MTU MOB_PROFILE_TUN_PARAMS FORWARDING_PLANE_ROLE</c>
+    TUN_MTU MOBILITY_PROFILE DATA_PLANE_ROLE</c>
     <c>Indicates DPN-Groups where DPN works as a member of the DPN-Group.</c>
-
-    <c>REMOTE_ENDPOINT_ADDRESS</c>
-    <c>IP Address</c>
-    <c>Defines Endpoint address of the peering DPN-Group.</c>
-
-    <c>LOCAL_ENDPOINT_ADDRESS</c>
-    <c>IP Address</c>
-    <c>Defines Endpoint address of its own DPN-Group to peer the remote DPN-Group. </c>
   </texttable>
   </section>
 
@@ -2523,24 +2484,8 @@ Agent deletes the tunnel and route on the DPN and responds to the Client (4).</t
       is the entity to be cloned and the second argument is the name of the newly cloned entity.
       See <xref target="cloning"/></c>
 
-    <c>DESCRIPTORS</c>
-    <c>*[ DESCRIPTOR ]</c>
-    <c>List of descriptors.</c>
-
-    <c>ACTIONS</c>
-    <c>*[ ACTION ]</c>
-    <c>List of actions.</c>
-
-    <c>POLICIES</c>
-    <c>*[ POLICY ]</c>
-    <c>List of policies.</c>
-
-    <c>POLICY_GROUPS</c>
-    <c>*[ POLICY_GROUP ]</c>
-    <c>List of policy-groups.</c>
-
     <c>PORTS</c>
-    <c>*[ PORT [ COMMAND_SET ] ]</c>
+    <c>*[ PORT ]</c>
     <c>List of ports that may optionally come with Command bitsets, if Command Sets are
       supported by the Agent. See <xref target="commandsets"/>.</c>
 
@@ -2559,26 +2504,6 @@ Agent deletes the tunnel and route on the DPN and responds to the Client (4).</t
     <ttcol align="left">Type</ttcol>
     <ttcol align="left">Operation Types Create(C), Update(U), Query(Q) and Delete(D)</ttcol>
     <ttcol align="left">Description</ttcol>
-
-    <c>DESCRIPTORS</c>
-    <c>*[ DESCRIPTOR ]</c>
-    <c>C,U</c>
-    <c>List of Descriptors</c>
-
-    <c>ACTIONS</c>
-    <c>*[ ACTION ]</c>
-    <c>C,U</c>
-    <c>List of actions.</c>
-
-    <c>POLICIES</c>
-    <c>*[ POLICY ]</c>
-    <c>C,U</c>
-    <c>List of Policies</c>
-
-    <c>POLICY_GROUPS</c>
-    <c>*[ POLICY_GROUP ]</c>
-    <c>C,U</c>
-    <c>List of Policy-groups.</c>
 
     <c>PORTS</c>
     <c>*[ PORT [ COMMAND_SET ] ]</c>
@@ -2631,15 +2556,6 @@ Agent deletes the tunnel and route on the DPN and responds to the Client (4).</t
       </texttable>
       </section>
     </section>
-  </section>
-
-<section title="Security Considerations">
-
-<t>Detailed protocol implementations for DMM Forwarding Policy Configuration must ensure integrity
-of the information exchanged between an FPC Client and an FPC Agent. Required Security Associations
-may be derived from co-located functions, which utilize the FPC Client and FPC Agent respectively.
-</t>
-
   </section>
 
 <section anchor="derived_attrs" title="Derived and Subtype Attributes">
@@ -2874,6 +2790,15 @@ may be derived from co-located functions, which utilize the FPC Client and FPC A
   </t>
  </section>
 </section>
+
+<section title="Security Considerations">
+
+<t>Detailed protocol implementations for DMM Forwarding Policy Configuration must ensure integrity
+of the information exchanged between an FPC Client and an FPC Agent. Required Security Associations
+may be derived from co-located functions, which utilize the FPC Client and FPC Agent respectively.
+</t>
+
+  </section>
 
 <section anchor="IANA" title="IANA Considerations">
 
