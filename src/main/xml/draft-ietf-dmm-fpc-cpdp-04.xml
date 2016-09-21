@@ -432,10 +432,8 @@ DPN         |                 DPN        |
 
            <t><list hangIndent="24" style="hanging">
 
-               <t hangText="Domain-id:">Identifier of Domain.
-               The ID format can be chosen by operator as they like, e.g.
-               URI, UUID, certain length of string and unsigned-integer,
-               etc. </t>
+               <t hangText="Domain-id:">Identifier of Domain. The ID
+               format SHOULD refer to <xref target="naming"></xref>. </t>
 
                <t hangText="Domain-name:">Defines Domain name.
                </t>
@@ -488,9 +486,8 @@ DPN         |                 DPN        |
            <t><list hangIndent="24" style="hanging">
 
                <t hangText="DPN-group-id:"> Defines identifier of
-               DPN-group. The ID format can be chosen by operator as they
-               like, e.g. URI, UUID, certain length of string and
-               unsigned-integer, etc. </t>
+               DPN-group. The ID format SHOULD refer to <xref
+               target="naming"></xref>. </t>
 
                <t hangText="Data-plane-role:"> Defines data-plane
                role of the DPN-group, such as access-dpn, L2/L3 or
@@ -616,9 +613,7 @@ DPN         |                 DPN        |
            <t><list hangIndent="24" style="hanging">
 
                <t hangText="DPN-id:"> Defines identifier of DPN. The ID
-               format can be chose by operator as they like. e.g. URI,
-               UUID, certain length of string and unsigned-integer,
-               etc. </t>
+               format SHOULD refer to <xref target="naming"></xref>.</t>
 
                <t hangText="DPN-name:"> Defines name of DPN.
                </t>
@@ -685,9 +680,8 @@ DPN         |                 DPN        |
            <t><list hangIndent="24" style="hanging">
 
                <t hangText="Descriptor-id:">Identifier of Descriptor.
-               The ID format can be chose by operator as they like. e.g.
-               URI, UUID, certain length of string and unsigned-integer,
-               etc. </t>
+               The ID format SHOULD refer to <xref
+               target="naming"></xref>. </t>
 
                <t hangText="Descriptor-type:">Defines descriptor type,
                which classifies specific traffic flow, such as source
@@ -735,9 +729,7 @@ DPN         |                 DPN        |
            <t><list hangIndent="24" style="hanging">
 
                <t hangText="Action-id:">Identifier of Action. The ID
-               format can be chose by operator as they like. e.g, URI,
-               UUID, certain length of string and unsigned-integer,
-               etc. </t>
+               format SHOULD refer to <xref target="naming"></xref>.</t>
 
                <t hangText="Action-type:">Defines action type, i.e. how to
                treat the specified traffic flow, e.g. pass, drop, forward
@@ -803,9 +795,7 @@ DPN         |                 DPN        |
            <t><list hangIndent="24" style="hanging">
 
                <t hangText="Policy-id:">Identifier of Policy. The ID
-               format can be chose by operator as they like. e.g. URI,
-               UUID, certain length of string and unsigned-integer,
-               etc. </t>
+               format SHOULD refer to <xref target="naming"></xref>.</t>
 
                <t hangText="Rules:">List of Rules which are a collection of
                Descriptors and Actions. All Descriptors MUST be
@@ -866,9 +856,8 @@ DPN         |                 DPN        |
            <t><list hangIndent="24" style="hanging">
 
                <t hangText="Policy-group-id:">Identifier of
-               Policy-group. The ID format can be chose by operator as
-               they like. e.g: URI, UUID, certain length of string and
-               unsigned-integer, etc. </t>
+               Policy-group. The ID format SHOULD refer to <xref
+               target="naming"></xref>. </t>
 
                <t hangText="Policy:">List of Policies in the Policy-group.
                </t>
@@ -921,9 +910,8 @@ DPN         |                 DPN        |
 
         <t><list hangIndent="24" style="hanging">
 
-            <t hangText="Port-id:">Identifier of Port. The ID format can
-            be chose by operator as they like. e.g: URI, UUID, certain
-            length of string and unsigned-integer, etc. </t>
+            <t hangText="Port-id:">Identifier of Port. The ID format
+            SHOULD refer to <xref target="naming"></xref>.</t>
 
             <t hangText="Policy-group-reference:">List of references to
             Policy-groups which apply to the Port. </t>
@@ -976,9 +964,7 @@ DPN         |                 DPN        |
         <t><list hangIndent="24" style="hanging">
 
             <t hangText="Context-id:">Identifier of Context. The ID
-            format can be chose by operator as they like. e.g; URI,
-            UUID, certain length of string and unsigned-integer, etc.,
-            </t>
+            format SHOULD refer to <xref target="naming"></xref>.</t>
 
             <t hangText="Port-reference:">List of Ports applied to the
             Context. Context can be a part of multiple Ports which have
