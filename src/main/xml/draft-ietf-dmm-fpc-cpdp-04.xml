@@ -476,7 +476,7 @@ DPN         |                 DPN        |
             |
             +---Mobility-profile
             |
-            +---DPN-group-peer
+            +---DPN-group-peers
 
               ]]></artwork>
             <postamble></postamble>
@@ -508,7 +508,7 @@ DPN         |                 DPN        |
                parameters of contexts can be automatically derived from
                this profile by FPC Agent. </t>
 
-               <t hangText="DPN-group-peer:"> Defines remote peers of
+               <t hangText="DPN-group-peers:"> Defines remote peers of
                DPN-group with parameters described in <xref
                target="dpn-peers"/>. </t>
 
@@ -517,7 +517,7 @@ DPN         |                 DPN        |
 
         <section anchor="dpn-peers" title="DPN-group Peers">
 
-        <t> DPN-group-peer defines parameters of remote peer DPNs as illustrated in
+        <t> DPN-group-peers defines parameters of remote peer DPNs as illustrated in
         <xref target="fig_dpn-peers-im"/>. </t>
 
         <t>
@@ -527,9 +527,9 @@ DPN         |                 DPN        |
 
 (DPN-groups)
     |
-    +---DPN-group-peer
+    +---DPN-group-peers
           |
-          +---Remote-DPN-group
+          +---Remote-DPN-group-id
           |
           +---Remote-mobility-profile
           |
@@ -548,7 +548,7 @@ DPN         |                 DPN        |
 
            <t><list hangIndent="24" style="hanging">
 
-               <t hangText="Remote-DPN-group:">Indicates peering DPN-Group.
+               <t hangText="Remote-DPN-group-id:">Indicates peering DPN-Group.
                </t>
 
                <t hangText="Remote-mobility-profile:">Defines
@@ -710,7 +710,7 @@ DPN         |                 DPN        |
 
  (FPC-Policy)
      |
-     +---Action
+     +---Actions
             |
             +---Action-id
             |
@@ -767,19 +767,19 @@ DPN         |                 DPN        |
      |
      +---Policies
             |
-            +---Policy--id
+            +---Policy-id
             |
-            +---Rule
+            +---Rules
                   |
                   +---Order
                   |
-                  +---Descriptor
+                  +---Descriptors
                   |      |
                   |      +---Descriptor-id
                   |      |
                   |      +---Direction
                   |
-                  +---Action
+                  +---Actions
                          |
                          +---Action-id
                          |
@@ -810,14 +810,14 @@ DPN         |                 DPN        |
                <t hangText="Order:">Specifies ordering if the Rule has
                multiple Descriptors and Action sets.</t>
 
-               <t hangText="Descriptor:">List of Descriptors.</t>
+               <t hangText="Descriptors:">List of Descriptors.</t>
 
                <t hangText="Descriptor-id:">Indicates each Descriptor in the Rule.</t>
 
                <t hangText="Direction:">Specifies which
                direction applies, such as upstream, downstream or both.</t>
 
-               <t hangText="Action:">List of Actions.</t>
+               <t hangText="Actions:">List of Actions.</t>
 
                <t hangText="Action-id:">Indicates each Action in the rule.</t>
 
@@ -847,7 +847,7 @@ DPN         |                 DPN        |
             |
             +---Policy-group-id
             |
-            +---Policy
+            +---Policies
 
               ]]></artwork>
             <postamble></postamble>
@@ -861,7 +861,7 @@ DPN         |                 DPN        |
                they like. e.g: URI, UUID, certain length of string and
                unsigned-integer, etc. </t>
 
-               <t hangText="Policy:">List of Policies in the Policy-group.
+               <t hangText="Policies:">List of Policies in the Policy-group.
                </t>
 
            </list></t>
@@ -900,11 +900,11 @@ DPN         |                 DPN        |
 
 (FPC-Mobility)
         |
-        +---Port
+        +---Ports
                |
                +---Port-id
                |
-               +---Policy-group-reference
+               +---Policy-groups
 
               ]]></artwork>
             <postamble></postamble>
@@ -917,7 +917,7 @@ DPN         |                 DPN        |
             be chose by operator as they like. e.g: URI, UUID, certain
             length of string and unsigned-integer, etc. </t>
 
-            <t hangText="Policy-group-reference:">List of references to
+            <t hangText="Policy-groups:">List of references to
             Policy-groups which apply to the Port. </t>
 
         </list></t>
@@ -948,15 +948,15 @@ DPN         |                 DPN        |
 
 (FPC-Mobility)
         |
-        +---Context
+        +---Contexts
                |
                +---Context-id
                |
-               +---Port-reference
+               +---Ports
                |
-               +---DPN-group-reference
+               +---DPN-group
                |
-               +---Delegating-ip-prefix
+               +---Delegating-ip-prefixes
 
               ]]></artwork>
             <postamble></postamble>
@@ -970,17 +970,17 @@ DPN         |                 DPN        |
             UUID, certain length of string and unsigned-integer, etc.,
             </t>
 
-            <t hangText="Port-reference:">List of Ports. When a Context
+            <t hangText="Ports:">List of Ports. When a Context
             is applied to Port(s), the context is configured by policies
             of those Port(s). Port-id references indicate Ports which apply
             to the Context. Context can be a part of multiple Ports
             which have different policies. </t>
 
-            <t hangText="DPN-group-reference:">The DPN-group assigned to
+            <t hangText="DPN-group:">The DPN-group assigned to
             the Context.
             </t>
 
-            <t hangText="Delegating-ip-prefix:">List of IP prefixes to
+            <t hangText="Delegating-ip-prefixes:">List of IP prefixes to
             be delegated to the mobile node of the context. </t>
 
         </list></t>
@@ -1004,7 +1004,7 @@ DPN         |                 DPN        |
     |
     +---UL-Tunnel-remote-address
     |
-    +---UL-Mtu-size
+    +---UL-Tunnel-mtu-size
     |
     +---UL-Mobility-specific-tunnel-parameters
     |
@@ -1029,7 +1029,7 @@ DPN         |                 DPN        |
             <t hangText="UL-Tunnel-remote-address:">Specifies uplink
             endpoint address of the remote DPN. </t>
 
-            <t hangText="UL-Mtu-size:">Specifies uplink MTU size of
+            <t hangText="UL-Tunnel-Mtu-size:">Specifies uplink MTU size of
             tunnel. </t>
 
             <t hangText="UL-Mobility-specific-tunnel-parameters:">
@@ -1068,7 +1068,7 @@ DPN         |                 DPN        |
     |
     +---DL-Tunnel-remote-address
     |
-    +---DL-Mtu-size
+    +---DL-Tunnel-Mtu-size
     |
     +---DL-Mobility-specific-tunnel-parameters
     |
@@ -1095,7 +1095,7 @@ DPN         |                 DPN        |
             endpoint address of the remote DPN.
             </t>
 
-            <t hangText="DL-Mtu-size:">Specifies downlink MTU size of
+            <t hangText="DL-Tunnel-Mtu-size:">Specifies downlink MTU size of
             tunnel.</t>
 
             <t hangText="DL-Mobility-specific-tunnel-parameters:">
@@ -1151,7 +1151,7 @@ DPN         |                 DPN        |
          |
          +---Tunnel-remote-address
          |
-         +---Mtu-size
+         +---Tunnel-mtu-size
          |
          +---Mobility-specific-tunnel-parameters
          |
@@ -1182,7 +1182,7 @@ DPN         |                 DPN        |
             <t hangText="Tunnel-remote-address:">Specifies endpoint
             address of remote DPN at the uplink or downlink.</t>
 
-            <t hangText="Mtu-size:">Specifies the MTU size of
+            <t hangText="Tunnel-mtu-size:">Specifies the MTU size of
             tunnel on uplink or downlink. </t>
 
             <t hangText="Mobility-specific-tunnel-parameters:">
