@@ -16,6 +16,15 @@ module ietf-dmm-fpcbase {
         reference "draft-ietf-dmm-fpc-cpdp-04";
     }
 
+    feature fpc-basic-agent {
+        description "This is an agent co-located with a DPN.  In this case
+        only DPN Peer Groups, the DPN Id and Control Protocols are exposed
+        along with the core structures.";
+    }
+    feature fpc-multi-dpn {
+        description "The agent supports multiple DPNs.";
+    }
+
     typedef fpc-identity {
         type union {
             type uint32;
@@ -43,18 +52,22 @@ module ietf-dmm-fpcbase {
     }
 
     // Descriptor Structure
-    typedef fpc-descriptor-id {
+    typedef fpc-descriptor-id-type {
         type fpcbase:fpc-identity;
         description "Descriptor-ID";
     }
     identity fpc-descriptor-type {
         description "A traffic descriptor";
     }
+    grouping fpc-descriptor-id {
+      leaf descriptor-id {
+        type fpcbase:fpc-identity;
+      }
+    }
     grouping fpc-descriptor {
-        leaf descriptor-id {
-              type fpcbase:fpc-descriptor-id;
-        }
+        uses fpcbase:fpc-descriptor-id;
         leaf descriptor-type {
+          mandatory true;
           type identityref {
             base "fpc-descriptor-type";
           }
@@ -70,18 +83,22 @@ module ietf-dmm-fpcbase {
     }
 
     // Action Structure
-    typedef fpc-action-id {
+    typedef fpc-action-id-type {
         type fpcbase:fpc-identity;
         description "Action-ID";
     }
     identity fpc-action-type {
         description "Action Type";
     }
+    grouping fpc-action-id {
+      leaf action-id {
+        type fpcbase:fpc-action-id-type;
+      }
+    }
     grouping fpc-action {
-        leaf action-id {
-            type fpcbase:fpc-action-id;
-        }
+        uses fpcbase:fpc-action-id;
         leaf action-type {
+          mandatory true;
           type identityref {
             base "fpc-action-type";
           }
@@ -99,17 +116,21 @@ module ietf-dmm-fpcbase {
     // Rule Structure
     grouping fpc-rule {
         description
-          "FPC Rule";
-        list action {
+          "FPC Rule.  When no actions are present the action is DROP.
+          When no Descriptors are empty the default is 'all traffic'.";
+        list descriptors {
+          key descriptor-id;
+          uses fpcbase:fpc-descriptor-id;
+          leaf direction {
+            type fpc-direction;
+          }
+        }
+        list actions {
           key action-id;
           leaf order {
               type uint32;
           }
-          uses fpcbase:fpc-action;
-        }
-        list descriptor {
-          key descriptor-id;
-          uses fpcbase:fpc-descriptor;
+          uses fpcbase:fpc-action-id;
         }
     }
 
@@ -121,7 +142,7 @@ module ietf-dmm-fpcbase {
         leaf policy-id {
             type fpcbase:fpc-policy-id;
         }
-        list rule {
+        list rules {
             key order;
             leaf order {
               type uint32;
@@ -135,12 +156,12 @@ module ietf-dmm-fpcbase {
         type fpcbase:fpc-identity;
     }
     grouping fpc-policy-group {
-        leaf policy-group-id {
-            type fpcbase:fpc-policy-group-id;
-        }
-        leaf-list policy {
-            type fpcbase:fpc-policy-id;
-        }
+      leaf policy-group-id {
+        type fpcbase:fpc-policy-group-id;
+      }
+      leaf-list policies {
+        type fpcbase:fpc-policy-id;
+      }
     }
 
     // Mobility Structures
@@ -152,9 +173,8 @@ module ietf-dmm-fpcbase {
         leaf port-id {
             type fpcbase:fpc-port-id;
         }
-        list policy-groups {
-            key policy-group-id;
-            uses fpcbase:fpc-policy-group;
+        leaf-list policy-groups {
+            type fpcbase:fpc-policy-group-id;
         }
     }
 
@@ -164,31 +184,31 @@ module ietf-dmm-fpcbase {
     }
     grouping fpc-context-profile {
         description "A profile that applies to a specific direction";
-        leaf remote-address {
+        leaf tunnel-local-address {
             type inet:ip-address;
             description "Uplink endpoint address of the DPN which agent exists.";
         }
-        leaf local-address {
+        leaf tunnel-remote-address {
             type inet:ip-address;
             description "Uplink endpoint address of the DPN which agent exists.";
         }
-        leaf mtu {
+        leaf tunnel-mtu-size {
             type uint32;
             description "Tunnel MTU size";
         }
-        container mobility-profile {
+        container mobility-tunnel-parameters {
             description "Specifies profile specific uplink tunnel parameters to the DPN which the agent exists. The profiles includes GTP/TEID for 3gpp profile, GRE/Key for ietf-pmip profile, or new profile if anyone will define it.";
             uses fpcbase:mobility-info;
         }
         container nexthop {
             uses fpcbase:fpc-nexthop;
         }
-        container qos-profile {
+        container qos-profile-parameters {
             uses fpcbase:fpc-qos-profile;
         }
         container dpn-parameters {
         }
-        list vendor-params {
+        list vendor-parameters {
             key "vendor-id vendor-type";
             uses fpcbase:vendor-attributes;
         }
@@ -200,18 +220,7 @@ module ietf-dmm-fpcbase {
          enum downlink;
        }
     }
-    grouping assignable-dpns {
-        list dpns {
-            key dpn-id;
-            leaf dpn-id {
-                type fpcbase:fpc-dpn-id;
-            }
-            leaf direction {
-                type fpcbase:fpc-direction;
-            }
-            uses fpcbase:fpc-context-profile;
-        }
-    }
+
     grouping fpc-context {
         leaf context-id {
             type fpcbase:fpc-context-id;
@@ -219,19 +228,35 @@ module ietf-dmm-fpcbase {
         leaf-list ports {
             type fpcbase:fpc-port-id;
         }
+        leaf dpn-group {
+          type fpcbase:fpc-dpn-group-id;
+        }
         leaf-list delegating-ip-prefixes {
             type inet:ip-prefix;
         }
         container ul {
+            if-feature fpcbase:fpc-basic-agent;
             uses fpcbase:fpc-context-profile;
         }
         container dl {
+            if-feature fpcbase:fpc-basic-agent;
+            uses fpcbase:fpc-context-profile;
+        }
+        list dpns {
+            if-feature fpcbase:fpc-multi-dpn;
+            key "dpn-id direction";
+            leaf dpn-id {
+                type fpcbase:fpc-dpn-id;
+            }
+            leaf direction {
+                mandatory true;
+                type fpcbase:fpc-direction;
+            }
             uses fpcbase:fpc-context-profile;
         }
         leaf parent-context {
             type fpcbase:fpc-context-id;
         }
-        uses fpcbase:assignable-dpns;
     }
 
     // Mobility (Tunnel) Information
@@ -320,6 +345,22 @@ module ietf-dmm-fpcbase {
     }
 
     // Topology
+    typedef fpc-domain-id {
+        type fpcbase:fpc-identity;
+    }
+    grouping fpc-domain {
+      leaf domain-id {
+        type fpcbase:fpc-domain-id;
+      }
+      leaf domain-name {
+        type string;
+      }
+      leaf domain-type {
+        type string;
+      }
+    }
+
+
     typedef fpc-dpn-id {
         type fpcbase:fpc-identity;
         description "DPN Identifier";
@@ -329,18 +370,16 @@ module ietf-dmm-fpcbase {
     }
     grouping fpc-dpn {
         leaf dpn-id {
-            type fpcbase:fpc-dpn-id;
+          type fpcbase:fpc-dpn-id;
         }
-        leaf address {
-            type inet:ip-address;
-        }
-        leaf-list control-protocols {
-            type identityref {
-                base "fpcbase:fpc-dpn-control-protocol";
-            }
+        leaf dpn-name {
+          type string;
         }
         leaf-list dpn-groups {
-            type fpcbase:fpc-dpn-group-id;
+          type fpcbase:fpc-dpn-group-id;
+        }
+        leaf node-reference {
+          type instance-identifier;
         }
     }
 
@@ -362,20 +401,24 @@ module ietf-dmm-fpcbase {
         leaf remote-dpn-group-id {
             type fpcbase:fpc-dpn-group-id;
         }
+        leaf remote-mobility-profile {
+            type identityref {
+                base "fpcbase:fpc-mobility-profile-type";
+            }
+        }
+        leaf remote-data-plane-role {
+            type identityref {
+                base "fpcbase:fpc-forwaridingplane-role";
+            }
+        }
         leaf remote-endpoint-address {
             type inet:ip-address;
         }
         leaf local-endpoint-address {
             type inet:ip-address;
         }
-        leaf mtu-size {
+        leaf tunnel-mtu-size {
             type uint32;
-        }
-        uses fpcbase:mobility-info;
-        leaf fowarding-role {
-            type identityref {
-                base "fpcbase:fpc-forwaridingplane-role";
-            }
         }
     }
 
