@@ -100,7 +100,7 @@ module ietf-dmm-fpcagent {
                   uses fpcbase:fpc-port;
               }
               list monitors {
-                  uses fpcbase:monitor-config
+                  uses fpcbase:monitor-config;
               }
             }
             container fpc-topology {
