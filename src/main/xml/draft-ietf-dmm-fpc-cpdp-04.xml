@@ -2877,6 +2877,15 @@ module ietf-dmm-fpcbase {
         reference "draft-ietf-dmm-fpc-cpdp-04";
     }
 
+    feature fpc-basic-agent {
+        description "This is an agent co-located with a DPN.  In this case
+        only DPN Peer Groups, the DPN Id and Control Protocols are exposed
+        along with the core structures.";
+    }
+    feature fpc-multi-dpn {
+        description "The agent supports multiple DPNs.";
+    }
+
     typedef fpc-identity {
         type union {
             type uint32;
@@ -2904,18 +2913,22 @@ module ietf-dmm-fpcbase {
     }
 
     // Descriptor Structure
-    typedef fpc-descriptor-id {
+    typedef fpc-descriptor-id-type {
         type fpcbase:fpc-identity;
         description "Descriptor-ID";
     }
     identity fpc-descriptor-type {
         description "A traffic descriptor";
     }
+    grouping fpc-descriptor-id {
+      leaf descriptor-id {
+        type fpcbase:fpc-identity;
+      }
+    }
     grouping fpc-descriptor {
-        leaf descriptor-id {
-              type fpcbase:fpc-descriptor-id;
-        }
+        uses fpcbase:fpc-descriptor-id;
         leaf descriptor-type {
+          mandatory true;
           type identityref {
             base "fpc-descriptor-type";
           }
@@ -2931,18 +2944,22 @@ module ietf-dmm-fpcbase {
     }
 
     // Action Structure
-    typedef fpc-action-id {
+    typedef fpc-action-id-type {
         type fpcbase:fpc-identity;
         description "Action-ID";
     }
     identity fpc-action-type {
         description "Action Type";
     }
+    grouping fpc-action-id {
+      leaf action-id {
+        type fpcbase:fpc-action-id-type;
+      }
+    }
     grouping fpc-action {
-        leaf action-id {
-            type fpcbase:fpc-action-id;
-        }
+        uses fpcbase:fpc-action-id;
         leaf action-type {
+          mandatory true;
           type identityref {
             base "fpc-action-type";
           }
@@ -2960,17 +2977,21 @@ module ietf-dmm-fpcbase {
     // Rule Structure
     grouping fpc-rule {
         description
-          "FPC Rule";
-        list action {
+          "FPC Rule.  When no actions are present the action is DROP.
+          When no Descriptors are empty the default is 'all traffic'.";
+        list descriptors {
+          key descriptor-id;
+          uses fpcbase:fpc-descriptor-id;
+          leaf direction {
+            type fpc-direction;
+          }
+        }
+        list actions {
           key action-id;
           leaf order {
               type uint32;
           }
-          uses fpcbase:fpc-action;
-        }
-        list descriptor {
-          key descriptor-id;
-          uses fpcbase:fpc-descriptor;
+          uses fpcbase:fpc-action-id;
         }
     }
 
@@ -2982,7 +3003,7 @@ module ietf-dmm-fpcbase {
         leaf policy-id {
             type fpcbase:fpc-policy-id;
         }
-        list rule {
+        list rules {
             key order;
             leaf order {
               type uint32;
@@ -2996,12 +3017,12 @@ module ietf-dmm-fpcbase {
         type fpcbase:fpc-identity;
     }
     grouping fpc-policy-group {
-        leaf policy-group-id {
-            type fpcbase:fpc-policy-group-id;
-        }
-        leaf-list policy {
-            type fpcbase:fpc-policy-id;
-        }
+      leaf policy-group-id {
+        type fpcbase:fpc-policy-group-id;
+      }
+      leaf-list policies {
+        type fpcbase:fpc-policy-id;
+      }
     }
 
     // Mobility Structures
@@ -3013,9 +3034,8 @@ module ietf-dmm-fpcbase {
         leaf port-id {
             type fpcbase:fpc-port-id;
         }
-        list policy-groups {
-            key policy-group-id;
-            uses fpcbase:fpc-policy-group;
+        leaf-list policy-groups {
+            type fpcbase:fpc-policy-group-id;
         }
     }
 
@@ -3025,31 +3045,31 @@ module ietf-dmm-fpcbase {
     }
     grouping fpc-context-profile {
         description "A profile that applies to a specific direction";
-        leaf remote-address {
+        leaf tunnel-local-address {
             type inet:ip-address;
             description "Uplink endpoint address of the DPN which agent exists.";
         }
-        leaf local-address {
+        leaf tunnel-remote-address {
             type inet:ip-address;
             description "Uplink endpoint address of the DPN which agent exists.";
         }
-        leaf mtu {
+        leaf tunnel-mtu-size {
             type uint32;
             description "Tunnel MTU size";
         }
-        container mobility-profile {
+        container mobility-tunnel-parameters {
             description "Specifies profile specific uplink tunnel parameters to the DPN which the agent exists. The profiles includes GTP/TEID for 3gpp profile, GRE/Key for ietf-pmip profile, or new profile if anyone will define it.";
             uses fpcbase:mobility-info;
         }
         container nexthop {
             uses fpcbase:fpc-nexthop;
         }
-        container qos-profile {
+        container qos-profile-parameters {
             uses fpcbase:fpc-qos-profile;
         }
         container dpn-parameters {
         }
-        list vendor-params {
+        list vendor-parameters {
             key "vendor-id vendor-type";
             uses fpcbase:vendor-attributes;
         }
@@ -3061,18 +3081,7 @@ module ietf-dmm-fpcbase {
          enum downlink;
        }
     }
-    grouping assignable-dpns {
-        list dpns {
-            key dpn-id;
-            leaf dpn-id {
-                type fpcbase:fpc-dpn-id;
-            }
-            leaf direction {
-                type fpcbase:fpc-direction;
-            }
-            uses fpcbase:fpc-context-profile;
-        }
-    }
+
     grouping fpc-context {
         leaf context-id {
             type fpcbase:fpc-context-id;
@@ -3080,24 +3089,45 @@ module ietf-dmm-fpcbase {
         leaf-list ports {
             type fpcbase:fpc-port-id;
         }
+        leaf dpn-group {
+          type fpcbase:fpc-dpn-group-id;
+        }
         leaf-list delegating-ip-prefixes {
             type inet:ip-prefix;
         }
         container ul {
+            if-feature fpcbase:fpc-basic-agent;
             uses fpcbase:fpc-context-profile;
         }
         container dl {
+            if-feature fpcbase:fpc-basic-agent;
+            uses fpcbase:fpc-context-profile;
+        }
+        list dpns {
+            if-feature fpcbase:fpc-multi-dpn;
+            key "dpn-id direction";
+            leaf dpn-id {
+                type fpcbase:fpc-dpn-id;
+            }
+            leaf direction {
+                mandatory true;
+                type fpcbase:fpc-direction;
+            }
             uses fpcbase:fpc-context-profile;
         }
         leaf parent-context {
             type fpcbase:fpc-context-id;
         }
-        uses fpcbase:assignable-dpns;
     }
 
     // Mobility (Tunnel) Information
     grouping mobility-info {
         choice profile-parameters {
+            case nothing {
+              leaf none {
+                type empty;
+              }
+            }
         }
     }
 
@@ -3176,6 +3206,22 @@ module ietf-dmm-fpcbase {
     }
 
     // Topology
+    typedef fpc-domain-id {
+        type fpcbase:fpc-identity;
+    }
+    grouping fpc-domain {
+      leaf domain-id {
+        type fpcbase:fpc-domain-id;
+      }
+      leaf domain-name {
+        type string;
+      }
+      leaf domain-type {
+        type string;
+      }
+    }
+
+
     typedef fpc-dpn-id {
         type fpcbase:fpc-identity;
         description "DPN Identifier";
@@ -3185,18 +3231,16 @@ module ietf-dmm-fpcbase {
     }
     grouping fpc-dpn {
         leaf dpn-id {
-            type fpcbase:fpc-dpn-id;
+          type fpcbase:fpc-dpn-id;
         }
-        leaf address {
-            type inet:ip-address;
-        }
-        leaf-list control-protocols {
-            type identityref {
-                base "fpcbase:fpc-dpn-control-protocol";
-            }
+        leaf dpn-name {
+          type string;
         }
         leaf-list dpn-groups {
-            type fpcbase:fpc-dpn-group-id;
+          type fpcbase:fpc-dpn-group-id;
+        }
+        leaf node-reference {
+          type instance-identifier;
         }
     }
 
@@ -3218,20 +3262,24 @@ module ietf-dmm-fpcbase {
         leaf remote-dpn-group-id {
             type fpcbase:fpc-dpn-group-id;
         }
+        leaf remote-mobility-profile {
+            type identityref {
+                base "fpcbase:fpc-mobility-profile-type";
+            }
+        }
+        leaf remote-data-plane-role {
+            type identityref {
+                base "fpcbase:fpc-forwaridingplane-role";
+            }
+        }
         leaf remote-endpoint-address {
             type inet:ip-address;
         }
         leaf local-endpoint-address {
             type inet:ip-address;
         }
-        leaf mtu-size {
+        leaf tunnel-mtu-size {
             type uint32;
-        }
-        uses fpcbase:mobility-info;
-        leaf fowarding-role {
-            type identityref {
-                base "fpcbase:fpc-forwaridingplane-role";
-            }
         }
     }
 
@@ -3354,15 +3402,6 @@ module ietf-dmm-fpcagent {
         description "Changes based on -04 version of FPC draft.";
         reference "draft-ietf-dmm-fpc-cpdp-04";
     }
-
-    feature fpc-basic-agent {
-        description "This is an agent co-located with a DPN.  In this case
-        only DPN Peer Groups, the DPN Id and Control Protocols are exposed
-        along with the core structures.";
-    }
-    feature fpc-multi-dpn {
-        description "The agent supports multiple DPNs.";
-    }
     feature fpc-cloning {
       description "An ability to support cloning in the RPC.";
     }
@@ -3395,32 +3434,108 @@ module ietf-dmm-fpcagent {
         type fpcbase:fpc-identity;
     }
 
+    grouping basename-info {
+          leaf basename {
+            if-feature fpcagent:fpc-basename-registry;
+            description "Rules Basename";
+            type fpcbase:fpc-identity;
+          }
+          leaf base-state {
+            if-feature fpcagent:fpc-basename-registry;
+            type string;
+          }
+          leaf base-checkpoint {
+            if-feature fpcagent:fpc-basename-registry;
+            type string;
+          }
+    }
+
     // Top Level Structures
-    container fpc-entities {
-      list contexts {
-          key context-id;
-          uses fpcbase:fpc-context;
-      }
-      list ports {
-          key port-id;
-          uses fpcbase:fpc-port;
-      }
-      list policy-groups {
-          key "policy-group-id";
-          uses fpcbase:fpc-policy-group;
-      }
-      list policies {
-          key "policy-id";
-          uses fpcbase:fpc-policy;
-      }
-      list descriptors {
-        key descriptor-id;
-        uses fpcbase:fpc-descriptor;
-      }
-      list actions {
-          key action-id;
-          uses fpcbase:fpc-action;
-      }
+    container tenants {
+        description "";
+
+        list tenant {
+            description "";
+            key "tenant-id";
+            leaf tenant-id {
+                type fpcbase:fpc-identity;
+            }
+
+            container fpc-policy {
+              list policy-groups {
+                  key "policy-group-id";
+                  uses fpcbase:fpc-policy-group;
+              }
+              list policies {
+                  key "policy-id";
+                  uses fpcbase:fpc-policy;
+              }
+              list descriptors {
+                key descriptor-id;
+                uses fpcbase:fpc-descriptor;
+              }
+              list actions {
+                  key action-id;
+                  uses fpcbase:fpc-action;
+              }
+            }
+
+            container fpc-mobility {
+              config false;
+              list contexts {
+                  key context-id;
+                  uses fpcbase:fpc-context;
+              }
+              list ports {
+                  key port-id;
+                  uses fpcbase:fpc-port;
+              }
+              list monitors {
+                  uses fpcbase:monitor-config;
+              }
+            }
+            container fpc-topology {
+              // Basic Agent Topology Structures
+              list domains {
+                key domain-id;
+                uses fpcbase:fpc-domain;
+                uses fpcagent:basename-info;
+              }
+
+              list dpn-group-peers {
+                  if-feature fpcbase:fpc-basic-agent;
+                  key "remote-dpn-group-id";
+                  uses fpcbase:fpc-dpn-peer-group;
+              }
+              leaf dpn-id {
+                if-feature fpcbase:fpc-basic-agent;
+                type fpcbase:fpc-dpn-id;
+              }
+              leaf-list control-protocols {
+                if-feature fpcbase:fpc-basic-agent;
+                type identityref {
+                  base "fpcbase:fpc-dpn-control-protocol";
+                }
+              }
+
+              list dpn-groups {
+                  if-feature fpcbase:fpc-multi-dpn;
+                  key dpn-group-id;
+                  uses fpcagent:fpc-dpn-group;
+                  list domains {
+                    key domain-id;
+                    uses fpcbase:fpc-domain;
+                    uses fpcagent:basename-info;
+                  }
+              }
+              list dpns {
+                  if-feature fpcbase:fpc-multi-dpn;
+                  key dpn-id;
+                  uses fpcbase:fpc-dpn;
+              }
+            }
+
+        }
     }
 
     container fpc-agent-info {
@@ -3453,33 +3568,15 @@ module ietf-dmm-fpcagent {
           type fpcagent:error-type-id;
         }
       }
-
-      // Base Name Registry Feature
-      list basename-registry {
-          description "A registy for multiple clients operating upon the same base,
-            e.g. '/mcc:01/mnc:01' to determine if a Client has already provisioned
-            common Policy on the Agent / DPN";
-          if-feature fpcagent:fpc-basename-registry;
-          key basename;
-          leaf basename {
-              type fpcbase:fpc-identity;
-          }
-          leaf state {
-              type string;
-          }
-          leaf checkpoint {
-              type string;
-          }
-      }
     }
 
 
     // Multi-DPN Agent Structures
     grouping fpc-dpn-group {
-        leaf group-id {
+        leaf dpn-group-id {
             type fpcbase:fpc-dpn-group-id;
         }
-        leaf fowarding-role {
+        leaf data-plane-role {
             type identityref {
                 base "fpcbase:fpc-forwaridingplane-role";
             }
@@ -3500,35 +3597,6 @@ module ietf-dmm-fpcagent {
         }
     }
 
-    container fpc-topology {
-      // Basic Agent Topology Structures
-      list dpn-group-peers {
-          if-feature fpc-basic-agent;
-          key "remote-dpn-group-id";
-          uses fpcbase:fpc-dpn-peer-group;
-      }
-      leaf dpn-id {
-        if-feature fpc-basic-agent;
-        type fpcbase:fpc-dpn-id;
-      }
-      leaf-list control-protocols {
-        if-feature fpc-basic-agent;
-        type identityref {
-          base "fpcbase:fpc-dpn-control-protocol";
-        }
-      }
-
-      list dpn-groups {
-          if-feature fpc-multi-dpn;
-          key group-id;
-          uses fpcagent:fpc-dpn-group;
-      }
-      list dpns {
-          if-feature fpc-multi-dpn;
-          key dpn-id;
-          uses fpcbase:fpc-dpn;
-      }
-    }
 
     // RPC
     // RPC Specific Structures
@@ -3567,10 +3635,11 @@ module ietf-dmm-fpcagent {
         unknown - the location of the references are unknown.  This is treated as
           a 'storage' type.";
       type enumeration {
-        enum op { value 0; }
-        enum bundle { value 1; }
-        enum storage { value 2; }
-        enum unknown { value 3; }
+        enum none { value 0; }
+        enum op { value 1; }
+        enum bundle { value 2; }
+        enum storage { value 3; }
+        enum unknown { value 4; }
       }
     }
 
@@ -3635,18 +3704,6 @@ module ietf-dmm-fpcagent {
 
     // Output Structure
     grouping payload {
-      list descriptors {
-        uses fpcbase:fpc-descriptor;
-      }
-      list actions {
-        uses fpcbase:fpc-action;
-      }
-      list policies {
-        uses fpcbase:fpc-policy;
-      }
-      list policy-groups {
-        uses fpcbase:fpc-policy-group;
-      }
       list ports {
         uses fpcagent:port-operation;
       }
@@ -3719,8 +3776,11 @@ module ietf-dmm-fpcagent {
             }
           }
         }
-        case config-success {
+        case create-or-update-success {
           uses fpcagent:payload;
+        }
+        case delete_or_query-success {
+          uses fpcbase:targets-value;
         }
         case empty-case {
         }
@@ -3743,6 +3803,10 @@ module ietf-dmm-fpcagent {
     rpc configure-bundles {
       if-feature fpcagent:fpc-bundles;
       input {
+        leaf highest-op-ref-scope {
+            if-feature operation-ref-scope;
+            type fpcagent:ref-scope;
+        }
         list bundles {
           key op-id;
           uses fpcagent:op-input;
@@ -5012,9 +5076,13 @@ module ietf-dmm-threegpp {
         reference "draft-ietf-dmm-fpc-cpdp-04";
     }
 
+    identity threeGPP-access-type {
+      base "fpcbase:fpc-access-type";
+    }
+
     // Profile Type
     identity threeGPP-mobility {
-        base "fpcbase:fpc-mobility-profile-type";
+         base "fpcbase:fpc-mobility-profile-type";
     }
 
     // Tunnel Types
@@ -5047,7 +5115,7 @@ module ietf-dmm-threegpp {
     }
 
     // QoS Profile
-    identity threeGPP-QoS-Profile {
+    identity threeGPP-qos-profile-parameters {
         base "fpcbase:fpc-qos-type";
     }
 
@@ -5254,116 +5322,159 @@ module ietf-dmm-threegpp {
     }
 
     // Descriptors update - goes to Entities, Configure and Configure Bundles
-    augment "/fpcagent:fpc-entities/fpcagent:descriptors/fpcagent:descriptor-value" {
-      case threegpp-tft {
-          uses threegpp:tft;
-      }
-    }
-    augment "/fpcagent:configure/fpcagent:input/fpcagent:op_body/fpcagent:create_or_update/fpcagent:descriptors/fpcagent:descriptor-value" {
-      case threegpp-tft {
-          uses threegpp:tft;
-      }
-    }
-    augment "/fpcagent:configure-bundles/fpcagent:input/fpcagent:bundles/fpcagent:op_body/fpcagent:create_or_update/fpcagent:descriptors/fpcagent:descriptor-value" {
+    augment "/fpcagent:tenants/fpcagent:tenant/fpcagent:fpc-policy/fpcagent:descriptors/fpcagent:descriptor-value" {
       case threegpp-tft {
           uses threegpp:tft;
       }
     }
 
-    // Topology
-    augment "/fpcagent:fpc-topology/fpcagent:dpn-groups/fpcagent:dpn-group-peers/fpcagent:profile-parameters" {
+    // Contexts Update - Contexts / UL / mob-profile
+    augment "/fpcagent:tenants/fpcagent:tenant/fpcagent:fpc-mobility/fpcagent:contexts/fpcagent:ul/fpcagent:mobility-tunnel-parameters/fpcagent:profile-parameters" {
+      case threegpp-tunnel {
+          uses threegpp:threeGPP-tunnel;
+          uses threegpp:tft;
+      }
+    }
+    augment "/fpcagent:configure/fpcagent:input/fpcagent:op_body/fpcagent:create_or_update/fpcagent:contexts/fpcagent:ul/fpcagent:mobility-tunnel-parameters/fpcagent:profile-parameters" {
+      case threegpp-tunnel {
+          uses threegpp:threeGPP-tunnel;
+          uses threegpp:tft;
+      }
+    }
+    augment "/fpcagent:configure-bundles/fpcagent:input/fpcagent:bundles/fpcagent:op_body/fpcagent:create_or_update/fpcagent:contexts/fpcagent:ul/fpcagent:mobility-tunnel-parameters/fpcagent:profile-parameters" {
+      case threegpp-tunnel {
+          uses threegpp:threeGPP-tunnel;
+          uses threegpp:tft;
+      }
+    }
+    augment "/fpcagent:configure/fpcagent:output/fpcagent:result-type/fpcagent:create-or-update-success/fpcagent:contexts/fpcagent:ul/fpcagent:mobility-tunnel-parameters/fpcagent:profile-parameters" {
+      case threegpp-tunnel {
+          uses threegpp:threeGPP-tunnel;
+          uses threegpp:tft;
+      }
+    }
+    augment "/fpcagent:configure-bundles/fpcagent:output/fpcagent:bundles/fpcagent:result-type/fpcagent:create-or-update-success/fpcagent:contexts/fpcagent:ul/fpcagent:mobility-tunnel-parameters/fpcagent:profile-parameters" {
       case threegpp-tunnel {
           uses threegpp:threeGPP-tunnel;
           uses threegpp:tft;
       }
     }
 
-    // Contexts Update - Contexts / UL / mob-profile, Contexts / DL / mob-profile and Contexts / dpns / mobility-profile
-    augment "/fpcagent:fpc-entities/fpcagent:contexts/fpcagent:ul/fpcagent:mobility-profile/fpcagent:profile-parameters" {
+    // Contexts Update - Contexts / DL / mob-profile
+    augment "/fpcagent:tenants/fpcagent:tenant/fpcagent:fpc-mobility/fpcagent:contexts/fpcagent:dl/fpcagent:mobility-tunnel-parameters/fpcagent:profile-parameters" {
       case threegpp-tunnel {
           uses threegpp:threeGPP-tunnel;
           uses threegpp:tft;
       }
     }
-    augment "/fpcagent:configure/fpcagent:input/fpcagent:op_body/fpcagent:create_or_update/fpcagent:contexts/fpcagent:ul/fpcagent:mobility-profile/fpcagent:profile-parameters" {
+    augment "/fpcagent:configure/fpcagent:input/fpcagent:op_body/fpcagent:create_or_update/fpcagent:contexts/fpcagent:dl/fpcagent:mobility-tunnel-parameters/fpcagent:profile-parameters" {
       case threegpp-tunnel {
           uses threegpp:threeGPP-tunnel;
           uses threegpp:tft;
       }
     }
-    augment "/fpcagent:configure-bundles/fpcagent:input/fpcagent:bundles/fpcagent:op_body/fpcagent:create_or_update/fpcagent:contexts/fpcagent:ul/fpcagent:mobility-profile/fpcagent:profile-parameters" {
+    augment "/fpcagent:configure-bundles/fpcagent:input/fpcagent:bundles/fpcagent:op_body/fpcagent:create_or_update/fpcagent:contexts/fpcagent:dl/fpcagent:mobility-tunnel-parameters/fpcagent:profile-parameters" {
       case threegpp-tunnel {
           uses threegpp:threeGPP-tunnel;
           uses threegpp:tft;
       }
     }
-
-    augment "/fpcagent:fpc-entities/fpcagent:contexts/fpcagent:dl/fpcagent:mobility-profile/fpcagent:profile-parameters" {
+    augment "/fpcagent:configure/fpcagent:output/fpcagent:result-type/fpcagent:create-or-update-success/fpcagent:contexts/fpcagent:dl/fpcagent:mobility-tunnel-parameters/fpcagent:profile-parameters" {
       case threegpp-tunnel {
           uses threegpp:threeGPP-tunnel;
           uses threegpp:tft;
       }
     }
-    augment "/fpcagent:configure/fpcagent:input/fpcagent:op_body/fpcagent:create_or_update/fpcagent:contexts/fpcagent:dl/fpcagent:mobility-profile/fpcagent:profile-parameters" {
-      case threegpp-tunnel {
-          uses threegpp:threeGPP-tunnel;
-          uses threegpp:tft;
-      }
-    }
-    augment "/fpcagent:configure-bundles/fpcagent:input/fpcagent:bundles/fpcagent:op_body/fpcagent:create_or_update/fpcagent:contexts/fpcagent:dl/fpcagent:mobility-profile/fpcagent:profile-parameters" {
+    augment "/fpcagent:configure-bundles/fpcagent:output/fpcagent:bundles/fpcagent:result-type/fpcagent:create-or-update-success/fpcagent:contexts/fpcagent:dl/fpcagent:mobility-tunnel-parameters/fpcagent:profile-parameters" {
       case threegpp-tunnel {
           uses threegpp:threeGPP-tunnel;
           uses threegpp:tft;
       }
     }
 
-    augment "/fpcagent:fpc-entities/fpcagent:contexts/fpcagent:dpns/fpcagent:mobility-profile/fpcagent:profile-parameters" {
+
+    // Contexts Update -  Contexts / dpns / mobility-tunnel-parameters
+    augment "/fpcagent:tenants/fpcagent:tenant/fpcagent:fpc-mobility/fpcagent:contexts/fpcagent:dpns/fpcagent:mobility-tunnel-parameters/fpcagent:profile-parameters" {
       case threegpp-tunnel {
           uses threegpp:threeGPP-tunnel;
           uses threegpp:tft;
       }
     }
-    augment "/fpcagent:configure/fpcagent:input/fpcagent:op_body/fpcagent:create_or_update/fpcagent:contexts/fpcagent:dpns/fpcagent:mobility-profile/fpcagent:profile-parameters" {
+    augment "/fpcagent:configure/fpcagent:input/fpcagent:op_body/fpcagent:create_or_update/fpcagent:contexts/fpcagent:dpns/fpcagent:mobility-tunnel-parameters/fpcagent:profile-parameters" {
       case threegpp-tunnel {
           uses threegpp:threeGPP-tunnel;
           uses threegpp:tft;
       }
     }
-    augment "/fpcagent:configure-bundles/fpcagent:input/fpcagent:bundles/fpcagent:op_body/fpcagent:create_or_update/fpcagent:contexts/fpcagent:dpns/fpcagent:mobility-profile/fpcagent:profile-parameters" {
+    augment "/fpcagent:configure-bundles/fpcagent:input/fpcagent:bundles/fpcagent:op_body/fpcagent:create_or_update/fpcagent:contexts/fpcagent:dpns/fpcagent:mobility-tunnel-parameters/fpcagent:profile-parameters" {
+      case threegpp-tunnel {
+          uses threegpp:threeGPP-tunnel;
+          uses threegpp:tft;
+      }
+    }
+    augment "/fpcagent:configure/fpcagent:output/fpcagent:result-type/fpcagent:create-or-update-success/fpcagent:contexts/fpcagent:dpns/fpcagent:mobility-tunnel-parameters/fpcagent:profile-parameters" {
+      case threegpp-tunnel {
+          uses threegpp:threeGPP-tunnel;
+          uses threegpp:tft;
+      }
+    }
+    augment "/fpcagent:configure-bundles/fpcagent:output/fpcagent:bundles/fpcagent:result-type/fpcagent:create-or-update-success/fpcagent:contexts/fpcagent:dpns/fpcagent:mobility-tunnel-parameters/fpcagent:profile-parameters" {
       case threegpp-tunnel {
           uses threegpp:threeGPP-tunnel;
           uses threegpp:tft;
       }
     }
 
-    // QoS Updates - Context / UL / qosprofile, Context / DL / QoS Profile
-    augment "/fpcagent:fpc-entities/fpcagent:contexts/fpcagent:ul/fpcagent:qos-profile/fpcagent:value" {
+
+    // QoS Updates - Context / UL / qosprofile
+    augment "/fpcagent:tenants/fpcagent:tenant/fpcagent:fpc-mobility/fpcagent:contexts/fpcagent:ul/fpcagent:qos-profile-parameters/fpcagent:value" {
       case threegpp-qos {
           uses threegpp:threeGPP-QoS;
       }
     }
-    augment "/fpcagent:configure/fpcagent:input/fpcagent:op_body/fpcagent:create_or_update/fpcagent:contexts/fpcagent:ul/fpcagent:qos-profile/fpcagent:value" {
+    augment "/fpcagent:configure/fpcagent:input/fpcagent:op_body/fpcagent:create_or_update/fpcagent:contexts/fpcagent:ul/fpcagent:qos-profile-parameters/fpcagent:value" {
       case threegpp-qos {
           uses threegpp:threeGPP-QoS;
       }
     }
-    augment "/fpcagent:configure-bundles/fpcagent:input/fpcagent:bundles/fpcagent:op_body/fpcagent:create_or_update/fpcagent:contexts/fpcagent:ul/fpcagent:qos-profile/fpcagent:value" {
+    augment "/fpcagent:configure-bundles/fpcagent:input/fpcagent:bundles/fpcagent:op_body/fpcagent:create_or_update/fpcagent:contexts/fpcagent:ul/fpcagent:qos-profile-parameters/fpcagent:value" {
+      case threegpp-qos {
+          uses threegpp:threeGPP-QoS;
+      }
+    }
+    augment "/fpcagent:configure/fpcagent:output/fpcagent:result-type/fpcagent:create-or-update-success/fpcagent:contexts/fpcagent:ul/fpcagent:qos-profile-parameters/fpcagent:value" {
+      case threegpp-qos {
+          uses threegpp:threeGPP-QoS;
+      }
+    }
+    augment "/fpcagent:configure-bundles/fpcagent:output/fpcagent:bundles/fpcagent:result-type/fpcagent:create-or-update-success/fpcagent:contexts/fpcagent:ul/fpcagent:qos-profile-parameters/fpcagent:value" {
       case threegpp-qos {
           uses threegpp:threeGPP-QoS;
       }
     }
 
-    augment "/fpcagent:fpc-entities/fpcagent:contexts/fpcagent:dl/fpcagent:qos-profile/fpcagent:value" {
+    // QoS Updates -  Context / DL / QoS Profile
+    augment "/fpcagent:tenants/fpcagent:tenant/fpcagent:fpc-mobility/fpcagent:contexts/fpcagent:dl/fpcagent:qos-profile-parameters/fpcagent:value" {
       case threegpp-qos {
           uses threegpp:threeGPP-QoS;
       }
     }
-    augment "/fpcagent:configure/fpcagent:input/fpcagent:op_body/fpcagent:create_or_update/fpcagent:contexts/fpcagent:dl/fpcagent:qos-profile/fpcagent:value" {
+    augment "/fpcagent:configure/fpcagent:input/fpcagent:op_body/fpcagent:create_or_update/fpcagent:contexts/fpcagent:dl/fpcagent:qos-profile-parameters/fpcagent:value" {
       case threegpp-qos {
           uses threegpp:threeGPP-QoS;
       }
     }
-    augment "/fpcagent:configure-bundles/fpcagent:input/fpcagent:bundles/fpcagent:op_body/fpcagent:create_or_update/fpcagent:contexts/fpcagent:dl/fpcagent:qos-profile/fpcagent:value" {
+    augment "/fpcagent:configure-bundles/fpcagent:input/fpcagent:bundles/fpcagent:op_body/fpcagent:create_or_update/fpcagent:contexts/fpcagent:dl/fpcagent:qos-profile-parameters/fpcagent:value" {
+      case threegpp-qos {
+          uses threegpp:threeGPP-QoS;
+      }
+    }
+    augment "/fpcagent:configure/fpcagent:output/fpcagent:result-type/fpcagent:create-or-update-success/fpcagent:contexts/fpcagent:dl/fpcagent:qos-profile-parameters/fpcagent:value" {
+      case threegpp-qos {
+          uses threegpp:threeGPP-QoS;
+      }
+    }
+    augment "/fpcagent:configure-bundles/fpcagent:output/fpcagent:bundles/fpcagent:result-type/fpcagent:create-or-update-success/fpcagent:contexts/fpcagent:dl/fpcagent:qos-profile-parameters/fpcagent:value" {
       case threegpp-qos {
           uses threegpp:threeGPP-QoS;
       }
@@ -5381,13 +5492,19 @@ module ietf-dmm-threegpp {
       }
     }
 
-    augment "/fpcagent:fpc-entities/fpcagent:contexts" {
+    augment "/fpcagent:tenants/fpcagent:tenant/fpcagent:fpc-mobility/fpcagent:contexts" {
       uses threegpp:threegpp-properties;
     }
     augment "/fpcagent:configure/fpcagent:input/fpcagent:op_body/fpcagent:create_or_update/fpcagent:contexts" {
       uses threegpp:threegpp-properties;
     }
     augment "/fpcagent:configure-bundles/fpcagent:input/fpcagent:bundles/fpcagent:op_body/fpcagent:create_or_update/fpcagent:contexts" {
+       uses threegpp:threegpp-properties;
+    }
+    augment "/fpcagent:configure/fpcagent:output/fpcagent:result-type/fpcagent:create-or-update-success/fpcagent:contexts" {
+      uses threegpp:threegpp-properties;
+    }
+    augment "/fpcagent:configure-bundles/fpcagent:output/fpcagent:bundles/fpcagent:result-type/fpcagent:create-or-update-success/fpcagent:contexts" {
        uses threegpp:threegpp-properties;
     }
 
@@ -5407,7 +5524,7 @@ module ietf-dmm-threegpp {
         uses threegpp:threegpp-commandset;
       }
     }
-    augment "/fpcagent:configure/fpcagent:output/fpcagent:result-type/fpcagent:config-success/fpcagent:contexts/fpcagent:instructions/fpcagent:instr-type" {
+    augment "/fpcagent:configure/fpcagent:output/fpcagent:result-type/fpcagent:create-or-update-success/fpcagent:contexts/fpcagent:instructions/fpcagent:instr-type" {
       case instr-3gpp-mob {
         uses threegpp:threegpp-commandset;
       }
@@ -5417,7 +5534,7 @@ module ietf-dmm-threegpp {
         uses threegpp:threegpp-commandset;
       }
     }
-    augment "/fpcagent:configure/fpcagent:output/fpcagent:result-type/fpcagent:config-success/fpcagent:ports/fpcagent:instructions/fpcagent:instr-type" {
+    augment "/fpcagent:configure/fpcagent:output/fpcagent:result-type/fpcagent:create-or-update-success/fpcagent:ports/fpcagent:instructions/fpcagent:instr-type" {
       case instr-3gpp-mob {
         uses threegpp:threegpp-commandset;
       }
@@ -5433,7 +5550,7 @@ module ietf-dmm-threegpp {
         uses threegpp:threegpp-commandset;
       }
     }
-    augment "/fpcagent:configure-bundles/fpcagent:output/fpcagent:bundles/fpcagent:result-type/fpcagent:config-success/fpcagent:contexts/fpcagent:instructions/fpcagent:instr-type" {
+    augment "/fpcagent:configure-bundles/fpcagent:output/fpcagent:bundles/fpcagent:result-type/fpcagent:create-or-update-success/fpcagent:contexts/fpcagent:instructions/fpcagent:instr-type" {
       case instr-3gpp-mob {
         uses threegpp:threegpp-commandset;
       }
@@ -5443,7 +5560,7 @@ module ietf-dmm-threegpp {
         uses threegpp:threegpp-commandset;
       }
     }
-    augment "/fpcagent:configure-bundles/fpcagent:output/fpcagent:bundles/fpcagent:result-type/fpcagent:config-success/fpcagent:ports/fpcagent:instructions/fpcagent:instr-type" {
+    augment "/fpcagent:configure-bundles/fpcagent:output/fpcagent:bundles/fpcagent:result-type/fpcagent:create-or-update-success/fpcagent:ports/fpcagent:instructions/fpcagent:instr-type" {
       case instr-3gpp-mob {
         uses threegpp:threegpp-commandset;
       }
@@ -5453,7 +5570,14 @@ module ietf-dmm-threegpp {
     augment "/fpcagent:configure/fpcagent:input/fpcagent:op_body/fpcagent:delete_or_query/fpcagent:targets" {
       uses threegpp:teid-value;
     }
+    augment "/fpcagent:configure/fpcagent:output/fpcagent:result-type/fpcagent:delete_or_query-success/fpcagent:targets" {
+      uses threegpp:teid-value;
+    }
+
     augment "/fpcagent:configure-bundles/fpcagent:input/fpcagent:bundles/fpcagent:op_body/fpcagent:delete_or_query/fpcagent:targets" {
+      uses threegpp:teid-value;
+    }
+    augment "/fpcagent:configure-bundles/fpcagent:output/fpcagent:bundles/fpcagent:result-type/fpcagent:delete_or_query-success/fpcagent:targets" {
       uses threegpp:teid-value;
     }
 }
@@ -5486,6 +5610,10 @@ module ietf-dmm-fpc-pmip {
     revision 2016-01-19 {
         description "Changes based on -01 version of FPCP draft.";
         reference "draft-ietf-dmm-fpc-cpdp-01";
+    }
+
+    identity ietf-pmip-access-type {
+      base "fpcbase:fpc-access-type";
     }
 
     identity fpcp-qos-index-pmip {
@@ -5548,82 +5676,64 @@ module ietf-dmm-fpc-pmip {
     }
 
     // Descriptors update - goes to Entities, Configure and Configure Bundles
-    augment "/fpcagent:fpc-entities/fpcagent:descriptors/fpcagent:descriptor-value" {
-      case pmip-selector {
-          uses traffic-selectors:traffic-selector;
-      }
-    }
-    augment "/fpcagent:configure/fpcagent:input/fpcagent:op_body/fpcagent:create_or_update/fpcagent:descriptors/fpcagent:descriptor-value" {
-      case pmip-selector {
-          uses traffic-selectors:traffic-selector;
-      }
-    }
-    augment "/fpcagent:configure-bundles/fpcagent:input/fpcagent:bundles/fpcagent:op_body/fpcagent:create_or_update/fpcagent:descriptors/fpcagent:descriptor-value" {
+    augment "/fpcagent:tenants/fpcagent:tenant/fpcagent:fpc-policy/fpcagent:descriptors/fpcagent:descriptor-value" {
       case pmip-selector {
           uses traffic-selectors:traffic-selector;
       }
     }
 
-    // Topology
-    augment "/fpcagent:fpc-topology/fpcagent:dpn-groups/fpcagent:dpn-group-peers/fpcagent:profile-parameters" {
+    // Contexts Update - Contexts / UL / mob-profile, Contexts / DL / mob-profile and Contexts / dpns / mobility-tunnel-parameters
+    augment "/fpcagent:tenants/fpcagent:tenant/fpcagent:fpc-mobility/fpcagent:contexts/fpcagent:ul/fpcagent:mobility-tunnel-parameters/fpcagent:profile-parameters" {
+      case pmip-tunnel {
+        uses fpc-pmip:pmip-mobility;
+        uses traffic-selectors:traffic-selector;
+      }
+    }
+    augment "/fpcagent:configure/fpcagent:input/fpcagent:op_body/fpcagent:create_or_update/fpcagent:contexts/fpcagent:ul/fpcagent:mobility-tunnel-parameters/fpcagent:profile-parameters" {
+      case pmip-tunnel {
+        uses fpc-pmip:pmip-mobility;
+        uses traffic-selectors:traffic-selector;
+      }
+    }
+    augment "/fpcagent:configure-bundles/fpcagent:input/fpcagent:bundles/fpcagent:op_body/fpcagent:create_or_update/fpcagent:contexts/fpcagent:ul/fpcagent:mobility-tunnel-parameters/fpcagent:profile-parameters" {
       case pmip-tunnel {
         uses fpc-pmip:pmip-mobility;
         uses traffic-selectors:traffic-selector;
       }
     }
 
-    // Contexts Update - Contexts / UL / mob-profile, Contexts / DL / mob-profile and Contexts / dpns / mobility-profile
-    augment "/fpcagent:fpc-entities/fpcagent:contexts/fpcagent:ul/fpcagent:mobility-profile/fpcagent:profile-parameters" {
+    augment "/fpcagent:tenants/fpcagent:tenant/fpcagent:fpc-mobility/fpcagent:contexts/fpcagent:dl/fpcagent:mobility-tunnel-parameters/fpcagent:profile-parameters" {
       case pmip-tunnel {
         uses fpc-pmip:pmip-mobility;
         uses traffic-selectors:traffic-selector;
       }
     }
-    augment "/fpcagent:configure/fpcagent:input/fpcagent:op_body/fpcagent:create_or_update/fpcagent:contexts/fpcagent:ul/fpcagent:mobility-profile/fpcagent:profile-parameters" {
+    augment "/fpcagent:configure/fpcagent:input/fpcagent:op_body/fpcagent:create_or_update/fpcagent:contexts/fpcagent:dl/fpcagent:mobility-tunnel-parameters/fpcagent:profile-parameters" {
       case pmip-tunnel {
         uses fpc-pmip:pmip-mobility;
         uses traffic-selectors:traffic-selector;
       }
     }
-    augment "/fpcagent:configure-bundles/fpcagent:input/fpcagent:bundles/fpcagent:op_body/fpcagent:create_or_update/fpcagent:contexts/fpcagent:ul/fpcagent:mobility-profile/fpcagent:profile-parameters" {
-      case pmip-tunnel {
-        uses fpc-pmip:pmip-mobility;
-        uses traffic-selectors:traffic-selector;
-      }
-    }
-
-    augment "/fpcagent:fpc-entities/fpcagent:contexts/fpcagent:dl/fpcagent:mobility-profile/fpcagent:profile-parameters" {
-      case pmip-tunnel {
-        uses fpc-pmip:pmip-mobility;
-        uses traffic-selectors:traffic-selector;
-      }
-    }
-    augment "/fpcagent:configure/fpcagent:input/fpcagent:op_body/fpcagent:create_or_update/fpcagent:contexts/fpcagent:dl/fpcagent:mobility-profile/fpcagent:profile-parameters" {
-      case pmip-tunnel {
-        uses fpc-pmip:pmip-mobility;
-        uses traffic-selectors:traffic-selector;
-      }
-    }
-    augment "/fpcagent:configure-bundles/fpcagent:input/fpcagent:bundles/fpcagent:op_body/fpcagent:create_or_update/fpcagent:contexts/fpcagent:dl/fpcagent:mobility-profile/fpcagent:profile-parameters" {
+    augment "/fpcagent:configure-bundles/fpcagent:input/fpcagent:bundles/fpcagent:op_body/fpcagent:create_or_update/fpcagent:contexts/fpcagent:dl/fpcagent:mobility-tunnel-parameters/fpcagent:profile-parameters" {
       case pmip-tunnel {
         uses fpc-pmip:pmip-mobility;
         uses traffic-selectors:traffic-selector;
       }
     }
 
-    augment "/fpcagent:fpc-entities/fpcagent:contexts/fpcagent:dpns/fpcagent:mobility-profile/fpcagent:profile-parameters" {
+    augment "/fpcagent:tenants/fpcagent:tenant/fpcagent:fpc-mobility/fpcagent:contexts/fpcagent:dpns/fpcagent:mobility-tunnel-parameters/fpcagent:profile-parameters" {
       case pmip-tunnel {
         uses fpc-pmip:pmip-mobility;
         uses traffic-selectors:traffic-selector;
       }
     }
-    augment "/fpcagent:configure/fpcagent:input/fpcagent:op_body/fpcagent:create_or_update/fpcagent:contexts/fpcagent:dpns/fpcagent:mobility-profile/fpcagent:profile-parameters" {
+    augment "/fpcagent:configure/fpcagent:input/fpcagent:op_body/fpcagent:create_or_update/fpcagent:contexts/fpcagent:dpns/fpcagent:mobility-tunnel-parameters/fpcagent:profile-parameters" {
       case pmip-tunnel {
         uses fpc-pmip:pmip-mobility;
         uses traffic-selectors:traffic-selector;
       }
     }
-    augment "/fpcagent:configure-bundles/fpcagent:input/fpcagent:bundles/fpcagent:op_body/fpcagent:create_or_update/fpcagent:contexts/fpcagent:dpns/fpcagent:mobility-profile/fpcagent:profile-parameters" {
+    augment "/fpcagent:configure-bundles/fpcagent:input/fpcagent:bundles/fpcagent:op_body/fpcagent:create_or_update/fpcagent:contexts/fpcagent:dpns/fpcagent:mobility-tunnel-parameters/fpcagent:profile-parameters" {
       case pmip-tunnel {
         uses fpc-pmip:pmip-mobility;
         uses traffic-selectors:traffic-selector;
@@ -5631,33 +5741,33 @@ module ietf-dmm-fpc-pmip {
     }
 
     // QoS Updates - Context / UL / qosprofile, Context / DL / QoS Profile
-    augment "/fpcagent:fpc-entities/fpcagent:contexts/fpcagent:ul/fpcagent:qos-profile/fpcagent:value" {
+    augment "/fpcagent:tenants/fpcagent:tenant/fpcagent:fpc-mobility/fpcagent:contexts/fpcagent:ul/fpcagent:qos-profile-parameters/fpcagent:value" {
       case qos-pmip {
           uses qos-pmip:qosattribute;
       }
     }
-    augment "/fpcagent:configure/fpcagent:input/fpcagent:op_body/fpcagent:create_or_update/fpcagent:contexts/fpcagent:ul/fpcagent:qos-profile/fpcagent:value" {
+    augment "/fpcagent:configure/fpcagent:input/fpcagent:op_body/fpcagent:create_or_update/fpcagent:contexts/fpcagent:ul/fpcagent:qos-profile-parameters/fpcagent:value" {
       case qos-pmip {
           uses qos-pmip:qosattribute;
       }
     }
-    augment "/fpcagent:configure-bundles/fpcagent:input/fpcagent:bundles/fpcagent:op_body/fpcagent:create_or_update/fpcagent:contexts/fpcagent:ul/fpcagent:qos-profile/fpcagent:value" {
+    augment "/fpcagent:configure-bundles/fpcagent:input/fpcagent:bundles/fpcagent:op_body/fpcagent:create_or_update/fpcagent:contexts/fpcagent:ul/fpcagent:qos-profile-parameters/fpcagent:value" {
       case qos-pmip {
           uses qos-pmip:qosattribute;
       }
     }
 
-    augment "/fpcagent:fpc-entities/fpcagent:contexts/fpcagent:dl/fpcagent:qos-profile/fpcagent:value" {
+    augment "/fpcagent:tenants/fpcagent:tenant/fpcagent:fpc-mobility/fpcagent:contexts/fpcagent:dl/fpcagent:qos-profile-parameters/fpcagent:value" {
       case qos-pmip {
           uses qos-pmip:qosattribute;
       }
     }
-    augment "/fpcagent:configure/fpcagent:input/fpcagent:op_body/fpcagent:create_or_update/fpcagent:contexts/fpcagent:dl/fpcagent:qos-profile/fpcagent:value" {
+    augment "/fpcagent:configure/fpcagent:input/fpcagent:op_body/fpcagent:create_or_update/fpcagent:contexts/fpcagent:dl/fpcagent:qos-profile-parameters/fpcagent:value" {
       case qos-pmip {
           uses qos-pmip:qosattribute;
       }
     }
-    augment "/fpcagent:configure-bundles/fpcagent:input/fpcagent:bundles/fpcagent:op_body/fpcagent:create_or_update/fpcagent:contexts/fpcagent:dl/fpcagent:qos-profile/fpcagent:value" {
+    augment "/fpcagent:configure-bundles/fpcagent:input/fpcagent:bundles/fpcagent:op_body/fpcagent:create_or_update/fpcagent:contexts/fpcagent:dl/fpcagent:qos-profile-parameters/fpcagent:value" {
       case qos-pmip {
           uses qos-pmip:qosattribute;
       }
@@ -5680,7 +5790,7 @@ module ietf-dmm-fpc-pmip {
         uses fpc-pmip:pmip-commandset;
       }
     }
-    augment "/fpcagent:configure/fpcagent:output/fpcagent:result-type/fpcagent:config-success/fpcagent:contexts/fpcagent:instructions/fpcagent:instr-type" {
+    augment "/fpcagent:configure/fpcagent:output/fpcagent:result-type/fpcagent:create-or-update-success/fpcagent:contexts/fpcagent:instructions/fpcagent:instr-type" {
       case pmip-instr {
         uses fpc-pmip:pmip-commandset;
       }
@@ -5690,7 +5800,7 @@ module ietf-dmm-fpc-pmip {
         uses fpc-pmip:pmip-commandset;
       }
     }
-    augment "/fpcagent:configure/fpcagent:output/fpcagent:result-type/fpcagent:config-success/fpcagent:ports/fpcagent:instructions/fpcagent:instr-type" {
+    augment "/fpcagent:configure/fpcagent:output/fpcagent:result-type/fpcagent:create-or-update-success/fpcagent:ports/fpcagent:instructions/fpcagent:instr-type" {
       case pmip-instr {
         uses fpc-pmip:pmip-commandset;
       }
@@ -5706,7 +5816,7 @@ module ietf-dmm-fpc-pmip {
         uses fpc-pmip:pmip-commandset;
       }
     }
-    augment "/fpcagent:configure-bundles/fpcagent:output/fpcagent:bundles/fpcagent:result-type/fpcagent:config-success/fpcagent:contexts/fpcagent:instructions/fpcagent:instr-type" {
+    augment "/fpcagent:configure-bundles/fpcagent:output/fpcagent:bundles/fpcagent:result-type/fpcagent:create-or-update-success/fpcagent:contexts/fpcagent:instructions/fpcagent:instr-type" {
       case pmip-instr {
         uses fpc-pmip:pmip-commandset;
       }
@@ -5717,7 +5827,7 @@ module ietf-dmm-fpc-pmip {
         uses fpc-pmip:pmip-commandset;
       }
     }
-    augment "/fpcagent:configure-bundles/fpcagent:output/fpcagent:bundles/fpcagent:result-type/fpcagent:config-success/fpcagent:ports/fpcagent:instructions/fpcagent:instr-type" {
+    augment "/fpcagent:configure-bundles/fpcagent:output/fpcagent:bundles/fpcagent:result-type/fpcagent:create-or-update-success/fpcagent:ports/fpcagent:instructions/fpcagent:instr-type" {
       case pmip-instr {
         uses fpc-pmip:pmip-commandset;
       }
@@ -5792,23 +5902,19 @@ module ietf-dmm-fpc-policyext {
         choice value {
           case port-ref {
             leaf port-ref {
-              type leafref {
-                path "/fpcagent:fpc-entities/fpcagent:ports/fpcagent:port-id";
-              }
+              type fpcbase:fpc-port-id;
             }
           }
           case context-ref {
             leaf context-ref {
-              type leafref {
-                path "/fpcagent:fpc-entities/fpcagent:contexts/fpcagent:context-id";
-              }
+              type fpcbase:fpc-context-id;
             }
           }
         }
       }
     }
 
-    augment "/fpcagent:fpc-entities/fpcagent:actions/fpcagent:action-value" {
+    augment "/fpcagent:tenants/fpcagent:tenant/fpcagent:fpc-policy/fpcagent:actions/fpcagent:action-value" {
       case simple-nat {
           uses fpcpolicyext:simple-nat;
       }
@@ -5836,7 +5942,7 @@ module ietf-dmm-fpc-policyext {
         }
     }
 
-    augment "/fpcagent:fpc-entities/fpcagent:descriptors/fpcagent:descriptor-value" {
+    augment "/fpcagent:tenants/fpcagent:tenant/fpcagent:fpc-policy/fpcagent:descriptors/fpcagent:descriptor-value" {
       case prefix-descriptor {
           uses fpcpolicyext:prefix-traffic-descriptor;
       }
@@ -5855,39 +5961,33 @@ module ietf-dmm-fpc-policyext {
  <figure anchor="fig-ietf-dmm-fpc-fpcagent-tree"
               title="YANG FPC Agent Tree">
 <artwork align="center"><![CDATA[
+module: ietf-dmm-fpcagent
    +--rw tenants
    |  +--rw tenant* [tenant-id]
-   |     +--rw tenant-id       uint32
+   |     +--rw tenant-id       fpcbase:fpc-identity
    |     +--rw fpc-policy
    |     |  +--rw policy-groups* [policy-group-id]
    |     |  |  +--rw policy-group-id    fpcbase:fpc-policy-group-id
-   |     |  |  +--rw policy*            fpcbase:fpc-policy-id
+   |     |  |  +--rw policies*          fpcbase:fpc-policy-id
    |     |  +--rw policies* [policy-id]
    |     |  |  +--rw policy-id    fpcbase:fpc-policy-id
-   |     |  |  +--rw rule* [order]
-   |     |  |     +--rw order         uint32
-   |     |  |     +--rw action* [action-id]
-   |     |  |     |  +--rw order?         uint32
-   |     |  |     |  +--rw action-id      fpcbase:fpc-action-id
-   |     |  |     |  +--rw action-type?   identityref
-   |     |  |     |  +--rw (action-value)?
-   |     |  |     |     +--:(drop)
-   |     |  |     |        +--rw drop?          empty
-   |     |  |     +--rw descriptor* [descriptor-id]
-   |     |  |        +--rw descriptor-id      fpcbase:fpc-descriptor-id
-   |     |  |        +--rw descriptor-type?   identityref
-   |     |  |        +--rw (descriptor-value)?
-   |     |  |           +--:(all-traffic)
-   |     |  |              +--rw all-traffic?       empty
+   |     |  |  +--rw rules* [order]
+   |     |  |     +--rw order          uint32
+   |     |  |     +--rw descriptors* [descriptor-id]
+   |     |  |     |  +--rw descriptor-id    fpcbase:fpc-identity
+   |     |  |     |  +--rw direction?       fpc-direction
+   |     |  |     +--rw actions* [action-id]
+   |     |  |        +--rw order?       uint32
+   |     |  |        +--rw action-id    fpcbase:fpc-action-id-type
    |     |  +--rw descriptors* [descriptor-id]
-   |     |  |  +--rw descriptor-id      fpcbase:fpc-descriptor-id
-   |     |  |  +--rw descriptor-type?   identityref
+   |     |  |  +--rw descriptor-id      fpcbase:fpc-identity
+   |     |  |  +--rw descriptor-type    identityref
    |     |  |  +--rw (descriptor-value)?
    |     |  |     +--:(all-traffic)
    |     |  |        +--rw all-traffic?       empty
    |     |  +--rw actions* [action-id]
-   |     |     +--rw action-id      fpcbase:fpc-action-id
-   |     |     +--rw action-type?   identityref
+   |     |     +--rw action-id      fpcbase:fpc-action-id-type
+   |     |     +--rw action-type    identityref
    |     |     +--rw (action-value)?
    |     |        +--:(drop)
    |     |           +--rw drop?          empty
@@ -5895,12 +5995,13 @@ module ietf-dmm-fpc-policyext {
    |     |  +--ro contexts* [context-id]
    |     |  |  +--ro context-id                fpcbase:fpc-context-id
    |     |  |  +--ro ports*                    fpcbase:fpc-port-id
+   |     |  |  +--ro dpn-group?                fpcbase:fpc-dpn-group-id
    |     |  |  +--ro delegating-ip-prefixes*   inet:ip-prefix
-   |     |  |  +--ro ul
-   |     |  |  |  +--ro remote-address?     inet:ip-address
-   |     |  |  |  +--ro local-address?      inet:ip-address
-   |     |  |  |  +--ro mtu?                uint32
-   |     |  |  |  +--ro mobility-profile
+   |     |  |  +--ro ul {fpcbase:fpc-basic-agent}?
+   |     |  |  |  +--ro tunnel-local-address?         inet:ip-address
+   |     |  |  |  +--ro tunnel-remote-address?        inet:ip-address
+   |     |  |  |  +--ro tunnel-mtu-size?              uint32
+   |     |  |  |  +--ro mobility-tunnel-parameters
    |     |  |  |  |  +--ro (profile-parameters)?
    |     |  |  |  |     +--:(nothing)
    |     |  |  |  |        +--ro none?   empty
@@ -5911,21 +6012,21 @@ module ietf-dmm-fpc-policyext {
    |     |  |  |  |     |  +--ro ip?             inet:ip-address
    |     |  |  |  |     +--:(servicepath)
    |     |  |  |  |        +--ro servicepath?    fpcbase:fpcp-service-path-id
-   |     |  |  |  +--ro qos-profile
+   |     |  |  |  +--ro qos-profile-parameters
    |     |  |  |  |  +--ro qos-type?   identityref
    |     |  |  |  |  +--ro (value)?
    |     |  |  |  +--ro dpn-parameters
-   |     |  |  |  +--ro vendor-params* [vendor-id vendor-type]
+   |     |  |  |  +--ro vendor-parameters* [vendor-id vendor-type]
    |     |  |  |     +--ro vendor-id      fpcbase:fpc-identity
    |     |  |  |     +--ro vendor-type    identityref
    |     |  |  |     +--ro (value)?
    |     |  |  |        +--:(empty-type)
    |     |  |  |           +--ro empty-type?    empty
-   |     |  |  +--ro dl
-   |     |  |  |  +--ro remote-address?     inet:ip-address
-   |     |  |  |  +--ro local-address?      inet:ip-address
-   |     |  |  |  +--ro mtu?                uint32
-   |     |  |  |  +--ro mobility-profile
+   |     |  |  +--ro dl {fpcbase:fpc-basic-agent}?
+   |     |  |  |  +--ro tunnel-local-address?         inet:ip-address
+   |     |  |  |  +--ro tunnel-remote-address?        inet:ip-address
+   |     |  |  |  +--ro tunnel-mtu-size?              uint32
+   |     |  |  |  +--ro mobility-tunnel-parameters
    |     |  |  |  |  +--ro (profile-parameters)?
    |     |  |  |  |     +--:(nothing)
    |     |  |  |  |        +--ro none?   empty
@@ -5936,49 +6037,47 @@ module ietf-dmm-fpc-policyext {
    |     |  |  |  |     |  +--ro ip?             inet:ip-address
    |     |  |  |  |     +--:(servicepath)
    |     |  |  |  |        +--ro servicepath?    fpcbase:fpcp-service-path-id
-   |     |  |  |  +--ro qos-profile
+   |     |  |  |  +--ro qos-profile-parameters
    |     |  |  |  |  +--ro qos-type?   identityref
    |     |  |  |  |  +--ro (value)?
    |     |  |  |  +--ro dpn-parameters
-   |     |  |  |  +--ro vendor-params* [vendor-id vendor-type]
+   |     |  |  |  +--ro vendor-parameters* [vendor-id vendor-type]
+   |     |  |  |     +--ro vendor-id      fpcbase:fpc-identity
+   |     |  |  |     +--ro vendor-type    identityref
+   |     |  |  |     +--ro (value)?
+   |     |  |  |        +--:(empty-type)
+   |     |  |  |           +--ro empty-type?    empty
+   |     |  |  +--ro dpns* [dpn-id direction] {fpcbase:fpc-multi-dpn}?
+   |     |  |  |  +--ro dpn-id                        fpcbase:fpc-dpn-id
+   |     |  |  |  +--ro direction                     fpcbase:fpc-direction
+   |     |  |  |  +--ro tunnel-local-address?         inet:ip-address
+   |     |  |  |  +--ro tunnel-remote-address?        inet:ip-address
+   |     |  |  |  +--ro tunnel-mtu-size?              uint32
+   |     |  |  |  +--ro mobility-tunnel-parameters
+   |     |  |  |  |  +--ro (profile-parameters)?
+   |     |  |  |  |     +--:(nothing)
+   |     |  |  |  |        +--ro none?   empty
+   |     |  |  |  +--ro nexthop
+   |     |  |  |  |  +--ro nexthop-type?   identityref
+   |     |  |  |  |  +--ro (nexthop-value)?
+   |     |  |  |  |     +--:(ip)
+   |     |  |  |  |     |  +--ro ip?             inet:ip-address
+   |     |  |  |  |     +--:(servicepath)
+   |     |  |  |  |        +--ro servicepath?    fpcbase:fpcp-service-path-id
+   |     |  |  |  +--ro qos-profile-parameters
+   |     |  |  |  |  +--ro qos-type?   identityref
+   |     |  |  |  |  +--ro (value)?
+   |     |  |  |  +--ro dpn-parameters
+   |     |  |  |  +--ro vendor-parameters* [vendor-id vendor-type]
    |     |  |  |     +--ro vendor-id      fpcbase:fpc-identity
    |     |  |  |     +--ro vendor-type    identityref
    |     |  |  |     +--ro (value)?
    |     |  |  |        +--:(empty-type)
    |     |  |  |           +--ro empty-type?    empty
    |     |  |  +--ro parent-context?           fpcbase:fpc-context-id
-   |     |  |  +--ro dpns* [dpn-id]
-   |     |  |     +--ro dpn-id              fpcbase:fpc-dpn-id
-   |     |  |     +--ro direction?          fpcbase:fpc-direction
-   |     |  |     +--ro remote-address?     inet:ip-address
-   |     |  |     +--ro local-address?      inet:ip-address
-   |     |  |     +--ro mtu?                uint32
-   |     |  |     +--ro mobility-profile
-   |     |  |     |  +--ro (profile-parameters)?
-   |     |  |     |     +--:(nothing)
-   |     |  |     |        +--ro none?   empty
-   |     |  |     +--ro nexthop
-   |     |  |     |  +--ro nexthop-type?   identityref
-   |     |  |     |  +--ro (nexthop-value)?
-   |     |  |     |     +--:(ip)
-   |     |  |     |     |  +--ro ip?             inet:ip-address
-   |     |  |     |     +--:(servicepath)
-   |     |  |     |        +--ro servicepath?    fpcbase:fpcp-service-path-id
-   |     |  |     +--ro qos-profile
-   |     |  |     |  +--ro qos-type?   identityref
-   |     |  |     |  +--ro (value)?
-   |     |  |     +--ro dpn-parameters
-   |     |  |     +--ro vendor-params* [vendor-id vendor-type]
-   |     |  |        +--ro vendor-id      fpcbase:fpc-identity
-   |     |  |        +--ro vendor-type    identityref
-   |     |  |        +--ro (value)?
-   |     |  |           +--:(empty-type)
-   |     |  |              +--ro empty-type?    empty
    |     |  +--ro ports* [port-id]
    |     |  |  +--ro port-id          fpcbase:fpc-port-id
-   |     |  |  +--ro policy-groups* [policy-group-id]
-   |     |  |     +--ro policy-group-id    fpcbase:fpc-policy-group-id
-   |     |  |     +--ro policy*            fpcbase:fpc-policy-id
+   |     |  |  +--ro policy-groups*   fpcbase:fpc-policy-group-id
    |     |  +--ro monitors*
    |     |     +--ro monitor-id?         fpcbase:fpc-identity
    |     |     +--ro target?             fpc-identity
@@ -5995,47 +6094,55 @@ module ietf-dmm-fpc-policyext {
    |     |        +--:(events-config)
    |     |           +--ro event-ids*          uint32
    |     +--rw fpc-topology
-   |        +--rw dpn-group-peers* [remote-dpn-group-id] {fpc-basic-agent}?
+   |        +--rw domains* [domain-id]
+   |        |  +--rw domain-id          fpcbase:fpc-domain-id
+   |        |  +--rw domain-name?       string
+   |        |  +--rw domain-type?       string
+   |        |  +--rw basename?          fpcbase:fpc-identity {fpcagent:fpc-basename-registry}?
+   |        |  +--rw base-state?        string {fpcagent:fpc-basename-registry}?
+   |        |  +--rw base-checkpoint?   string {fpcagent:fpc-basename-registry}?
+   |        +--rw dpn-group-peers* [remote-dpn-group-id] {fpcbase:fpc-basic-agent}?
    |        |  +--rw remote-dpn-group-id        fpcbase:fpc-dpn-group-id
+   |        |  +--rw remote-mobility-profile?   identityref
+   |        |  +--rw remote-data-plane-role?    identityref
    |        |  +--rw remote-endpoint-address?   inet:ip-address
    |        |  +--rw local-endpoint-address?    inet:ip-address
-   |        |  +--rw mtu-size?                  uint32
-   |        |  +--rw (profile-parameters)?
-   |        |  |  +--:(nothing)
-   |        |  |     +--rw none?                      empty
-   |        |  +--rw fowarding-role?            identityref
-   |        +--rw dpn-id?              fpcbase:fpc-dpn-id {fpc-basic-agent}?
-   |        +--rw control-protocols*   identityref {fpc-basic-agent}?
-   |        +--rw dpn-groups* [group-id] {fpc-multi-dpn}?
-   |        |  +--rw group-id            fpcbase:fpc-dpn-group-id
-   |        |  +--rw fowarding-role?     identityref
+   |        |  +--rw tunnel-mtu-size?           uint32
+   |        +--rw dpn-id?              fpcbase:fpc-dpn-id {fpcbase:fpc-basic-agent}?
+   |        +--rw control-protocols*   identityref {fpcbase:fpc-basic-agent}?
+   |        +--rw dpn-groups* [dpn-group-id] {fpcbase:fpc-multi-dpn}?
+   |        |  +--rw dpn-group-id        fpcbase:fpc-dpn-group-id
+   |        |  +--rw data-plane-role?    identityref
    |        |  +--rw access-type?        identityref
    |        |  +--rw mobility-profile?   identityref
    |        |  +--rw dpn-group-peers* [remote-dpn-group-id]
-   |        |     +--rw remote-dpn-group-id        fpcbase:fpc-dpn-group-id
-   |        |     +--rw remote-endpoint-address?   inet:ip-address
-   |        |     +--rw local-endpoint-address?    inet:ip-address
-   |        |     +--rw mtu-size?                  uint32
-   |        |     +--rw (profile-parameters)?
-   |        |     |  +--:(nothing)
-   |        |     |     +--rw none?                      empty
-   |        |     +--rw fowarding-role?            identityref
-   |        +--rw dpns* [dpn-id] {fpc-multi-dpn}?
-   |           +--rw dpn-id               fpcbase:fpc-dpn-id
-   |           +--rw address?             inet:ip-address
-   |           +--rw control-protocols*   identityref
-   |           +--rw dpn-groups*          fpcbase:fpc-dpn-group-id
+   |        |  |  +--rw remote-dpn-group-id        fpcbase:fpc-dpn-group-id
+   |        |  |  +--rw remote-mobility-profile?   identityref
+   |        |  |  +--rw remote-data-plane-role?    identityref
+   |        |  |  +--rw remote-endpoint-address?   inet:ip-address
+   |        |  |  +--rw local-endpoint-address?    inet:ip-address
+   |        |  |  +--rw tunnel-mtu-size?           uint32
+   |        |  +--rw domains* [domain-id]
+   |        |     +--rw domain-id          fpcbase:fpc-domain-id
+   |        |     +--rw domain-name?       string
+   |        |     +--rw domain-type?       string
+   |        |     +--rw basename?          fpcbase:fpc-identity {fpcagent:fpc-basename-registry}?
+   |        |     +--rw base-state?        string {fpcagent:fpc-basename-registry}?
+   |        |     +--rw base-checkpoint?   string {fpcagent:fpc-basename-registry}?
+   |        +--rw dpns* [dpn-id] {fpcbase:fpc-multi-dpn}?
+   |           +--rw dpn-id            fpcbase:fpc-dpn-id
+   |           +--rw dpn-name?         string
+   |           +--rw dpn-groups*       fpcbase:fpc-dpn-group-id
+   |           +--rw node-reference?   instance-identifier
    +--rw fpc-agent-info
       +--rw supported-features*      string
       +--rw supported-events* [event]
       |  +--rw event       identityref
       |  +--rw event-id?   fpcbase:event-type-id
       +--rw supported-error-types* [error-type]
-      |  +--rw error-type       identityref
-      |  +--rw error-type-id?   fpcagent:error-type-id
-      +--rw basename-registry* [basename] {fpcagent:fpc-basename-registry}?
-         +--rw basename      fpcbase:fpc-identity
-         +--rw state?        string
+         +--rw error-type       identityref
+         +--rw error-type-id?   fpcagent:error-type-id
+rpcs: ...
      ]]></artwork>
         <postamble></postamble>
       </figure>
