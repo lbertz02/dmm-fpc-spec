@@ -16,15 +16,6 @@ module ietf-dmm-fpcagent {
         description "Changes based on -04 version of FPC draft.";
         reference "draft-ietf-dmm-fpc-cpdp-04";
     }
-
-    feature fpc-basic-agent {
-        description "This is an agent co-located with a DPN.  In this case
-        only DPN Peer Groups, the DPN Id and Control Protocols are exposed
-        along with the core structures.";
-    }
-    feature fpc-multi-dpn {
-        description "The agent supports multiple DPNs.";
-    }
     feature fpc-cloning {
       description "An ability to support cloning in the RPC.";
     }
@@ -57,8 +48,23 @@ module ietf-dmm-fpcagent {
         type fpcbase:fpc-identity;
     }
 
-    // Top Level Structures
+    grouping basename-info {
+          leaf basename {
+            if-feature fpcagent:fpc-basename-registry;
+            description "Rules Basename";
+            type fpcbase:fpc-identity;
+          }
+          leaf base-state {
+            if-feature fpcagent:fpc-basename-registry;
+            type string;
+          }
+          leaf base-checkpoint {
+            if-feature fpcagent:fpc-basename-registry;
+            type string;
+          }
+    }
 
+    // Top Level Structures
     container tenants {
         description "";
 
@@ -66,8 +72,7 @@ module ietf-dmm-fpcagent {
             description "";
             key "tenant-id";
             leaf tenant-id {
-                type uint32;
-                description "";
+                type fpcbase:fpc-identity;
             }
 
             container fpc-policy {
@@ -105,29 +110,40 @@ module ietf-dmm-fpcagent {
             }
             container fpc-topology {
               // Basic Agent Topology Structures
+              list domains {
+                key domain-id;
+                uses fpcbase:fpc-domain;
+                uses fpcagent:basename-info;
+              }
+
               list dpn-group-peers {
-                  if-feature fpc-basic-agent;
+                  if-feature fpcbase:fpc-basic-agent;
                   key "remote-dpn-group-id";
                   uses fpcbase:fpc-dpn-peer-group;
               }
               leaf dpn-id {
-                if-feature fpc-basic-agent;
+                if-feature fpcbase:fpc-basic-agent;
                 type fpcbase:fpc-dpn-id;
               }
               leaf-list control-protocols {
-                if-feature fpc-basic-agent;
+                if-feature fpcbase:fpc-basic-agent;
                 type identityref {
                   base "fpcbase:fpc-dpn-control-protocol";
                 }
               }
 
               list dpn-groups {
-                  if-feature fpc-multi-dpn;
-                  key group-id;
+                  if-feature fpcbase:fpc-multi-dpn;
+                  key dpn-group-id;
                   uses fpcagent:fpc-dpn-group;
+                  list domains {
+                    key domain-id;
+                    uses fpcbase:fpc-domain;
+                    uses fpcagent:basename-info;
+                  }
               }
               list dpns {
-                  if-feature fpc-multi-dpn;
+                  if-feature fpcbase:fpc-multi-dpn;
                   key dpn-id;
                   uses fpcbase:fpc-dpn;
               }
@@ -166,33 +182,15 @@ module ietf-dmm-fpcagent {
           type fpcagent:error-type-id;
         }
       }
-
-      // Base Name Registry Feature
-      list basename-registry {
-          description "A registy for multiple clients operating upon the same base,
-            e.g. '/mcc:01/mnc:01' to determine if a Client has already provisioned
-            common Policy on the Agent / DPN";
-          if-feature fpcagent:fpc-basename-registry;
-          key basename;
-          leaf basename {
-              type fpcbase:fpc-identity;
-          }
-          leaf state {
-              type string;
-          }
-          leaf checkpoint {
-              type string;
-          }
-      }
     }
 
 
     // Multi-DPN Agent Structures
     grouping fpc-dpn-group {
-        leaf group-id {
+        leaf dpn-group-id {
             type fpcbase:fpc-dpn-group-id;
         }
-        leaf fowarding-role {
+        leaf data-plane-role {
             type identityref {
                 base "fpcbase:fpc-forwaridingplane-role";
             }
