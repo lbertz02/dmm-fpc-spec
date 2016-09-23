@@ -3,7 +3,6 @@
      by Daniel M Kohn (private) -->
 <!DOCTYPE rfc SYSTEM "rfc2629.dtd" [
 <!ENTITY rfc2119 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2119.xml">
-<!ENTITY RFC3344 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.3344.xml">
 <!ENTITY RFC3775 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.3775.xml">
 <!ENTITY RFC4225 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4225.xml">
 <!ENTITY RFC4866 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4866.xml">
@@ -15,11 +14,11 @@
 <!ENTITY RFC4605 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4605.xml">
 <!ENTITY RFC6224 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6224.xml">
 <!ENTITY RFC7333 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7333.xml">
-<!ENTITY RFC7429 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7429.xml">
 <!ENTITY RFC6088 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6088.xml">
 <!ENTITY RFC6089 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6089.xml">
 <!ENTITY RFC7222 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7222.xml">
 <!ENTITY RFC6241 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6241.xml">
+<!ENTITY IDPGRP SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.bertz-dime-policygroups.xml">
 <!ENTITY I-D.ietf-dmm-requirements SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-dmm-requirements.xml">
 <!ENTITY I-D.ietf-dmm-deployment-models SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-dmm-deployment-models.xml">
 <!ENTITY I-D.ietf-netconf-restconf SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-netconf-restconf.xml">
@@ -40,6 +39,51 @@
 
   <front>
     <title abbrev="DMM FPC Protocol">Protocol for Forwarding Policy Configuration (FPC) in DMM</title>
+
+     <author fullname="Satoru Matsushima" initials="S." surname="Matsushima">
+      <organization abbrev="SoftBank">SoftBank</organization>
+
+      <address>
+        <postal>
+
+          <street>1-9-1,Higashi-Shimbashi,Minato-Ku</street>
+
+          <city>Tokyo  105-7322</city>
+
+          <region></region>
+
+          <code></code>
+
+          <country>Japan</country>
+        </postal>
+
+        <phone></phone>
+
+        <email>satoru.matsushima@g.softbank.co.jp</email>
+      </address>
+    </author>
+
+    <author initials="L." surname="Bertz" fullname="Lyle Bertz">
+    <organization abbrev="Sprint"></organization>
+    <address>
+    <postal>
+              <street>6220 Sprint Parkway</street>
+
+              <city>Overland Park  KS, 66251</city>
+
+              <region></region>
+
+              <code></code>
+
+              <country>USA</country>
+            </postal>
+
+            <phone></phone>
+
+            <email>lyleb551144@gmail.com</email>
+
+    </address>
+    </author>
 
     <author fullname="Marco Liebsch" initials="M." surname="Liebsch">
       <organization abbrev="NEC">NEC Laboratories Europe</organization>
@@ -62,29 +106,6 @@
         <phone>+49 6221 4342146</phone>
 
         <email>liebsch@neclab.eu</email>
-      </address>
-    </author>
-
- <author fullname="Satoru Matsushima" initials="S." surname="Matsushima">
-      <organization abbrev="SoftBank">SoftBank</organization>
-
-      <address>
-        <postal>
-
-          <street>1-9-1,Higashi-Shimbashi,Minato-Ku</street>
-
-          <city>Tokyo  105-7322</city>
-
-          <region></region>
-
-          <code></code>
-
-          <country>Japan</country>
-        </postal>
-
-        <phone></phone>
-
-        <email>satoru.matsushima@g.softbank.co.jp</email>
       </address>
     </author>
 
@@ -128,28 +149,6 @@
         <phone></phone>
 
         <email>danny.moses@intel.com</email>
-
-</address>
-</author>
-
-<author initials="L." surname="Bertz" fullname="Lyle Bertz">
-<organization abbrev="Sprint"></organization>
-<address>
-<postal>
-          <street>6220 Sprint Parkway</street>
-
-          <city>Overland Park  KS, 66251</city>
-
-          <region></region>
-
-          <code></code>
-
-          <country>USA</country>
-        </postal>
-
-        <phone></phone>
-
-        <email>lyleb551144@gmail.com</email>
 
 </address>
 </author>
@@ -2744,6 +2743,118 @@ Agent deletes the tunnel and route on the DPN and responds to the Client (4).</t
   </t>
  </section>
 </section>
+<section title="Implementation Status">
+<t>Two FPC Agent implementations have been made to date.  The first was based upon Version 03 of the
+  draft and followed Model 1.  The second follows Version 04 of the document. Both implementations were
+  OpenDaylight plug-ins developed in Java by Sprint.   Version 03 was known as fpcagent and version 04's
+  implementation is simply referred to as 'fpc'.</t>
+ <t>fpcagent's intent was to provide a proof of concept for FPC Version 03 Model 1 in January 2016 and research various
+  optimiziations, errors, corrections and optimizations that the Agent could make when supporting multiple
+  DPNs.</t>
+ <t>As the code developed to support OpenFlow and a proprietary DPN from a 3rd party, several of the
+  advantages of a multi-DPN Agent became obvious including the use of machine learning to reduce the
+  number of Flows and Policy entities placed on the DPN.  This work has driven new efforts in the
+  DIME WG, namely Diameter Policy Groups <xref target="I-D.bertz-dime-policygroups"/>.</t>
+<t>A throughput performance of tens per second using various NetConf based solutions in OpenDaylight
+  made fpcagent undesirable for call processing.   The RPC implementration improved throughput by an
+  order of magnitude but was not useful based upon FPC's Version 03 design using either model.  During
+  this time the features of version 04 and its converged model became attractive and teh fpcagent project
+  was closed in August 2016. fpcagent will no longer be developed and will remain a proprietary implemenation.</t>
+<t>The learnings of fpcagent has influenced the second project, fpc. Fpc is also an OpenDaylight project but
+  is intended for open source release, if circumstances permit.  It is also scoped to be a fully compliant
+  FPC Agent that supports multiple DPNs including those that communicate via OpenFlow. The following features
+  present in this draft and developed by the FPC co-authors have already lead to an order of magnitude improvement.
+  <list hangIndent="4" style="hanging">
+  <t>Migration of non-realtime provisioning of entities such as topology and policy allowed the implementation
+    to focus only on the rpc.</t>
+  <t>Using only 5 messages and 2 notifications has also reduced implementation time.  As of this writing the
+    project is 4 weeks old and currently supports CONFIGURE and CONFIGURE_BUNDLES based upon the effort of
+    3 part time engineers.</t>
+  <t>Command Sets, an optional feature in this specfication, have eliminated 80% of the time spent determining what needs to be done with a Context
+    during a Create or Update operation.</t>
+  <t>The addition of the DPN List in a Context Delete operation permits the Agent to avoid lookups of Context
+    data in the Cache entirely.  For 3GPP support, extra attributes are required in the Delete to avoid any
+    cache lookup.</t>
+  <t>Op Reference is an optional feature modeled after video delivery. It has reduced unnecessary cache lookups.
+    It also has the additional benefit of allowing an Agent to become cacheless and effectively act
+    as a FPC protocol adapater remotely with multi-DPN support or colocated on the DPN in a single-DPN support model.</t>
+  <t>Multi-tenant support allows for Cache searches to be partitioned for clustering and perforamnce improvements. This
+    has not been capitalized upon by the current implementation but is part of the development roadmap.</t>
+  <t>Use of Contexts to pre-provision policy has also eliminated any processing of Ports for DPNs which permitted
+    the code for CONFIGURE and CONFIGURE_BUNDLES to be implemented as a simple nested FOR loops (see below).</t>
+  </list>
+ </t>
+  <t>Current performance results without code optimizations or tuning allow 2-5K FPC Contexts processed per second
+  on a Mac laptop sourced in 2013.  This results in 2x the number of transactions on the southbound interface to a
+  proprietary DPN API on the same machine.</t>
+  <t>fpc currently supports the following after 3 weeks of development by two part time engineers:
+  <list hangIndent="24" style="hanging">
+  <t>1 proprietary DPN API</t>
+  <t>Policy and Topology as defined in this specification using OpenDaylight North Bound Interfaces such as
+    NetConf and RestConf</t>
+  <t>CONFIGURE and CONFIGURE_BUNDLES (all operations)</t>
+  <t>DPN assignment, Tunnel allocations and IPv4 address assignment by the Agent or Client.</t>
+  <t>Immediate Response is always an OK_NOTIFY_FOLLOWS.</t>
+  </list>
+  </t>
+  <t>
+        <figure anchor="pseudo_code"
+              title="fpc pseudo code">
+        <artwork align="center"><![CDATA[
+assignment system (receives rpc call):
+  perform basic operation integrity check
+  if CONFIGURE then
+    goto assignments
+    if assignments was ok then
+      send request to activation system
+      respond back to client with assignment data
+    else
+      send back error
+    end if
+  else if CONFIGURE_BUNDLES then
+    for each operation in bundles
+    goto assignments
+    if assignments was ok then
+      hold onto data
+    else
+      return error with the assignments that occurred in
+        prior operations (best effort)
+    end if
+    end for
+    send bundles to activation systems
+  end if
+
+assignments:
+  assign DPN, IPv4 Address and/or tunnel info as requried
+  if an error occurs undo all assigments in this operation
+  return result
+
+activation system:
+  build cache according to op-ref and operation type
+  for each operation
+    for each Context
+      for each DPN / direction in Context
+        perform actions on DPN according to Command Set
+      end for
+    end for
+  end for
+  commit changes to in memory cache
+  log transaction for tracking and nofication (CONFIG_RESULT_NOTIFY)
+
+      ]]></artwork>
+    </figure>
+  </t>
+
+<t>As of this writing (Sept 2016) the implementation is 3 weeks old an considered pre-alpha.  It is scheduled to
+  be conformant to all FPC version 04 aspects within 60 days.</t>
+<t>For further information please contact Lyle Bertz who is also a co-author of this document.</t>
+
+<t>NOTE: Tenant support requires binding a Client ID to a Tenant ID (it is a one to many relation) but that
+  is outside of the scope of this specification.  Otherwise, the specification is complete in terms
+  of providing sufficient information to implement an Agent.</t>
+
+</section>
+
 
 <section title="Security Considerations">
 
@@ -2790,7 +2901,6 @@ Such protocol-specific details will be described in separate documents and may r
     <references title="Normative References">
     &rfc2119;
     &RFC7333;
-    &RFC7429;
     &RFC6088;
     &RFC6089;
 
@@ -2799,8 +2909,8 @@ Such protocol-specific details will be described in separate documents and may r
     <references title="Informative References">
     &I-D.ietf-dmm-deployment-models;
     &I-D.ietf-netconf-restconf;
+    &IDPGRP;
     &RFC5213;
-    &RFC3344;
     &RFC7222;
     &RFC6241;
 
