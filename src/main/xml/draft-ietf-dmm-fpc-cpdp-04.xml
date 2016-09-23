@@ -2084,22 +2084,7 @@ Agent deletes the tunnel and route on the DPN and responds to the Client (4).</t
       <c>VALUE</c>
       <c>Type specific</c>
 
-<<<<<<< HEAD
-    <!-- Descriptors -->
       <c>DESCRIPTOR</c>
-=======
-  <t>Descriptors define classifiers of specific traffic flow such as those based on
-    source and destination addresses, protocols, port numbers of
-    TCP/UDP/SCTP/DCCP, etc. Note that Descriptors are extensibly defined
-    by specific profiles which 3gpp, ietf or other SDO produced. The TFT (Traffic
-    flow template) from 3gpp, and <xref target="RFC6089"></xref> from ietf can become descriptor profiles.
-  </t>
-  <t>The following table shows the Descriptor fields</t>
-  <texttable anchor="descriptor_field" title="Descriptor Fields" align="left">
-    <ttcol align="left">Field</ttcol>
-    <ttcol align="left">Type</ttcol>
-    <ttcol align="left">Description</ttcol>
->>>>>>> ba882934d2c5ccbc7ee2bf5752f0049c8f0a09a0
       <c>DESCRIPTOR_ID </c>
       <c>FPC-Identity (<xref target="naming"/>)</c>
 
@@ -2183,11 +2168,6 @@ Agent deletes the tunnel and route on the DPN and responds to the Client (4).</t
 
       <c>DPN_GROUP_ID</c>
       <c>FPC-Identity (<xref target="naming"/>)</c>
-<<<<<<< HEAD
-=======
-      <c>Indicates DPN-group in the case of the context is configured to attach
-        to the DPN-group.</c>
->>>>>>> ba882934d2c5ccbc7ee2bf5752f0049c8f0a09a0
 
       <c>DELEGATING IP PREFIXES</c>
       <c>*[ IP_PREFIX ]</c>
@@ -2252,12 +2232,7 @@ Agent deletes the tunnel and route on the DPN and responds to the Client (4).</t
 
       <c>QOS_PROFILE_PARAMS</c>
       <c>[ 3GPP_QOS | PMIP_QOS ]</c>
-<<<<<<< HEAD
       <c>[NOTE 1]</c>
-=======
-      <c>Specifies profile specific QoS parameter of downlink/uplink, such as QCI/TFT for 3gpp profile,
-        <xref target="RFC6089"></xref>/<xref target="RFC7222"></xref> for ietf-pmip, or extensions of this specification. [NOTE 1]</c>
->>>>>>> ba882934d2c5ccbc7ee2bf5752f0049c8f0a09a0
 
       <c>DPN_SPECIFIC_PARAMS</c>
       <c>[ TUN_IF or Varies]</c>
@@ -2296,7 +2271,6 @@ Agent deletes the tunnel and route on the DPN and responds to the Client (4).</t
     <ttcol align="left">Field</ttcol>
     <ttcol align="left">Type</ttcol>
 
-<<<<<<< HEAD
     <c>DOMAIN_ID</c>
     <c>[1024, OCTET STRING]</c>
 
@@ -2305,11 +2279,6 @@ Agent deletes the tunnel and route on the DPN and responds to the Client (4).</t
 
     <c>DOMAIN_TYPE</c>
     <c>[1024, OCTET STRING]</c>
-=======
-    <c>DPN_GROUPS</c>
-    <c>FPC-Identity. See <xref target="naming"/></c>
-    <c>Indicates DPN-groups where DPN works as a member of the DPN-group.</c>
->>>>>>> ba882934d2c5ccbc7ee2bf5752f0049c8f0a09a0
   </texttable>
 
   <texttable anchor="dpn_groups" title="DPN Groups" suppress-title="false">
@@ -2320,33 +2289,17 @@ Agent deletes the tunnel and route on the DPN and responds to the Client (4).</t
     <c>FPC-Identity. See <xref target="naming"/></c>
 
     <c>DATA_PLANE_ROLE</c>
-<<<<<<< HEAD
     <c>[4, ENUMERATION (data-plane, such as access-dpn, L2/L3 anchor-dpn.)] </c>
 
     <c>ACCESS_TYPE</c>
     <c>[4, ENUMERATION ()ethernet(802.3/11), 3gpp cellular(S1,RAB)]</c>
-=======
-    <c>Enumeration</c>
-    <c>Defines forwarding-plane role of the DPN-group in the data-plane, such as access-dpn, L2/L3 anchor-dpn.</c>
-
-    <c>ACCESS_TYPE</c>
-    <c>Enumeration</c>
-    <c>Defines access type which the DPN-group capable, such as ethernet(802.3/11), 3gpp cellular(S1,
-      RAB), if any. </c>
->>>>>>> ba882934d2c5ccbc7ee2bf5752f0049c8f0a09a0
 
     <c>MOBILITY_PROFILE</c>
     <c>[4, ENUMERATION (ietf-pmip, 3gpp, or new profile)]</c>
 
     <c>PEER_DPN_GROUPS</c>
-<<<<<<< HEAD
     <c>* [ DPN_GROUP_ID MOBILITY_PROFILE REMOTE_ENDPOINT_ADDRESS LOCAL_ENDPOINT_ADDRESS
     TUN_MTU DATA_PLANE_ROLE ]</c>
-=======
-    <c>DPN_GROUP_ID REMOTE_ENDPOINT_ADDRESS LOCAL_ENDPOINT_ADDRESS
-    TUN_MTU MOBILITY_PROFILE DATA_PLANE_ROLE</c>
-    <c>Indicates DPN-groups where DPN works as a member of the DPN-group.</c>
->>>>>>> ba882934d2c5ccbc7ee2bf5752f0049c8f0a09a0
   </texttable>
   </section>
 
