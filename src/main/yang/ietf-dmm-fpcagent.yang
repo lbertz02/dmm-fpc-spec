@@ -99,7 +99,9 @@ module ietf-dmm-fpcagent {
                   key port-id;
                   uses fpcbase:fpc-port;
               }
-
+              list monitors {
+                  uses fpcbase:monitor-config
+              }
             }
             container fpc-topology {
               // Basic Agent Topology Structures

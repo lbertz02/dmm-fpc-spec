@@ -218,7 +218,9 @@
             consequence of the control plane. One or multiple Contexts
             which have same sets of policies are assigned Ports which
             abstract those policiy sets. A Context can belong to multiple
-            Ports which serve different kinds of purpose and policy. </t>
+            Ports which serve different kinds of purpose and policy. Monitors
+            aprovide a mechanism to produce reports when events regarding
+            Ports, Sessions, DPNs or the Agent occurs.</t>
 
         </list>
         </t>
@@ -1217,7 +1219,69 @@ DPN         |                 DPN        |
 
         </section>
 
+   <section anchor="monitor_overview" title="Monitors">
+        <t>Monitors provide a mechanism to produce reports when events
+        occur. A Monitor will have a target that specifies what is to be
+        watched. </t>
+        <t>When a Monitor is specified, the configuration MUST be applicable
+        to the attribute/entity monitored, e.g. a Monitor using a
+        Threshold configuration cannot be applied to a context but it
+        can be applied to a numeric property. </t>
 
+        <t>
+        <figure anchor="fig_monitor-im"
+                  title="Common Monitor Model Structure">
+            <artwork align="center"><![CDATA[
+
+(FPC-Mobility)
+        |
+        +---Monitors
+               |
+               +---Monitor-id
+               |
+               +---Target
+               |
+               +---Configuration
+
+              ]]></artwork>
+            <postamble></postamble>
+          </figure>
+        </t>
+
+        <t><list hangIndent="24" style="hanging">
+
+            <t hangText="Monitor-id:"> Name of the Monitor. The ID
+               format SHOULD refer to <xref target="naming"></xref>.</t>
+
+            <t hangText="Target:"> Target to be monitored. This may be
+              an event, a Context, a Port or  attribute(s) of Contexts.
+              When the type is an attribute(s) of a Context, the target name
+              is a concatenation of the Context-Id and the relative path
+              (separated by '/') to the attribute(s)to be monitored.  </t>
+
+            <t hangText="Configuration:"> Determined by the Monitor subtype.
+              Four report types are defined:
+              <list style="symbols">
+                  <t>Periodic reporting specifies an interval by which a
+                  notification is sent to the Client.</t>
+                  <t>Event reporting specifies a list of even types
+                  that, if they occur and are related to the monitored
+                  attribute, will result in sending a notfication to the
+                  Client</t>
+                  <t>Scheduled reporting specifies the time (in seconds
+                  since Jan 1, 1970) when a notificaiton for the monitor should
+                  be sent to the Client. Once this Monitor's notification is
+                  completed the Monitor is automatically de-registered.</t>
+                  <t>Threshold reporting specifies one or both of a low
+                  and high threshold. When these values are crossed a
+                  corresponding notification is sent to the Client.</t>
+              </list>
+            </t>
+
+              </list>
+       </t>
+
+    </section>
 
     <!--
 
@@ -1376,6 +1440,7 @@ DPN         |                 DPN        |
       <c>An asynchronous notification from Agent to Client based upon a registered MONITOR.</c>
     </texttable>
 
+  <section anchor="conf-processing" title="CONF and CONF_BUNDLES Messages">
     <section anchor="agent-processing" title="Agent Operation Processing">
       <t>The Agent will process entities provided in an operation in the following order:
         <list style="numbers">
@@ -1471,6 +1536,34 @@ DPN         |                 DPN        |
 
         <t>The values of the CONFIG_RESULT_NOTIFY are detailed in <xref target="ayncnotify_detail"/>.</t>
       </section>
+    </section>
+    </section>
+        <section anchor="monitor_descr" title="Monitors">
+        <t>When a monitor has a reporting configuration of SCHEDULED it
+        is automatically de-registered after the NOTIFY occurs. An Agent
+        or DPN may temporarily suspend monitoring if insufficient
+        resources exist.  In such a case the Agent MUST notify the
+        Client.</t>
+
+        <t>All monitored data can be requested by the Client at any time
+        using the PROBE message. Thus, reporting configuration is
+        optional and when not present only PROBE messages may be used
+        for monitoring. If a SCHEDULED or PERIODIC configuration is
+        provided during registration with the time related value (time
+        or period respectively) of 0 a NOTIFY is immediately sent and
+        the monitor is immediately de-registered. This method should,
+        when a MONITOR has not been installed, result in an immediate
+        NOTIFY sufficient for the Client's needs and lets the Agent realize the Client has
+        no further need for the monitor to be registered. An Agent may
+        reject a registration if it or the DPN has insufficient
+        resources.</t>
+
+        <t>PROBE messages are also used by a Client to retrieve information about a
+        previously installed monitor. The PROBE message SHOULD identify
+        one or more monitors by means of including the associated
+        monitor identifier. An Agent receiving a PROBE message
+        sends the requested information in a single or multiple NOTIFY
+        messages.</t>
     </section>
   </section>
   <section anchor="protoperation" title="Protocol Operation">
@@ -1855,83 +1948,6 @@ Agent deletes the tunnel and route on the DPN and responds to the Client (4).</t
     </section>
   </section>
 
-    <section anchor="monitor_descr" title="Monitors">
-
-        <t>Monitors provide a mechanism to produce reports when events
-        occur.  Unlike Ports and Contexts a Monitor will have a target
-        that may be events specified by their type, attributes of an
-        entity or any FPC identity except other monitors. In such cases, the
-        target name is a concatenation of the FPC Identity and the
-        relative path (separated by '/') to the attribute(s) to be
-        monitored. </t>
-
-        <t>Monitors MUST be registered with the Agent.  The registration
-        specifies the monitor id, attribute to monitor and optional
-        reporting configuration. When a Monitor registration is applied,
-        the reporting configuration MUST be applicable to the attribute
-        monitored, e.g. a Monitor using a Threshold configuration cannot
-        be applied to a context but it can be applied to a numeric
-        Context property. </t>
-
-        <t>Four report types are defined:
-            <list style="symbols">
-                <t>Periodic reporting specifies an interval by which a
-                NOTIFY is sent to the Client.</t>
-                <t>Event reporting specifies a list of EVENT_TYPE_IDs
-                that, if they occur and are related to the monitored
-                attribute, will result in sending a NOTIFY to the
-                Client</t>
-                <t>Scheduled reporting specifies the time (in seconds
-                since Jan 1, 1970) when a NOTIFY for the monitor should
-                be sent to the Client. Once this Monitor's NOTIFY is
-                completed the Monitor is automatically de-registered.</t>
-                <t>Threshold reporting specifies one or both of a low
-                and high threshold. When these values are crossed a
-                corresponding NOTIFY is sent to the Client.</t>
-            </list>
-        </t>
-
-        <t>All monitored data can be requested by the Client at any time
-        using the PROBE message. Thus, reporting configuration is
-        optional and when not present only PROBE messages may be used
-        for monitoring. If a SCHEDULED or PERIODIC configuration is
-        provided during registration with the time related value (time
-        or period respectively) of 0 a NOTIFY is immediately sent and
-        the monitor is immediately de-registered. This method should,
-        when a MONITOR has not been installed, result in an immediate
-        NOTIFY sufficient for the Client's needs and lets the Agent realize the Client has
-        no further need for the monitor to be registered. An Agent may
-        reject a registration if it or the DPN has insufficient
-        resources.</t>
-
-        <t>MONITOR_DEREG is used by a Client to remove a monitor from an
-        Agent. The message identifies one or multiple monitors by
-        including the MONITOR_ID. The message also includes an optional
-        Boolean value that, when true, will result in NOTIFY messages
-        being sent for the MONITOR_ID to the Client.</t>
-
-        <t>When a monitor has a reporting configuration of SCHEDULED it
-        is automatically de-registered after the NOTIFY occurs. An Agent
-        or DPN may temporarily suspend monitoring if insufficient
-        resources exist.  In such a case the Agent MUST notify the
-        Client.</t>
-
-        <t>PROBE are used by a Client to retrieve information about a
-        previously installed monitor. The PROBE message SHOULD identify
-        one or more monitors by means of including the associated
-        monitor identifier. An Agent receiving a PROBE message
-        sends the requested information in a single or multiple NOTIFY
-        messages.</t>
-
-        <t>NOTIFY are used by an Agent to report the status of a monitor
-        to a Client. This message contains the MONITOR_ID, a
-        NOTIFICATION_ID to permit the Client to distinguish amongst many
-        monitoring related requests, a TRIGGER that caused the NOTIFY
-        message, the timestamp of when the monitored information was
-        record for the message along with the value of the monitored
-        attribute.</t>
-
-    </section>
 
 
 
@@ -2049,82 +2065,69 @@ Agent deletes the tunnel and route on the DPN and responds to the Client (4).</t
   in a parent context MAY be inherited by its descendants.  This permits concise over the wire
   representation.  When a Client deletes a parent Context all children are also deleted.</t>
 
-  <t>Actions defines how to apply action to classified traffic flow by Descriptors,
-    such as traffic management related action such as shaping, policing based on
-    given bandwidth, and connectivity management actions, such as pass, drop,
-    forward to given nexthop. Note that Actions are extensibly defined by
-    specific profiles which 3gpp, ietf or other SDO produces. QCI (QoS Class
-    Identifier)) from 3gpp, and  rfc7222 from ietf can become action profiles.
-  </t>
-  <t>The following table shows the Action fields</t>
-  <texttable anchor="action_field" title="Action Fields">
+<section anchor="policystructs" title="Policy Structures">
+  <t>The following table shows the Policy structures and fields</t>
+  <texttable anchor="policy-structs" title="Action Fields">
+    <ttcol align="left">Structure</ttcol>
     <ttcol align="left">Field</ttcol>
     <ttcol align="left">Type</ttcol>
-    <ttcol align="left">Description</ttcol>
+    <!-- Actions -->
+      <c>ACTION</c>
       <c>ACTION_ID </c>
       <c>FPC-Identity (<xref target="naming"/>)</c>
-      <c>An Action's Identifier.</c>
 
+      <c>ACTION</c>
       <c>TYPE</c>
       <c>[32, unsigned integer]</c>
-      <c>Defines action type how to treat specified traffic flow,
-        such as pass, drop, forward to given nexthop value and shape,
-        police based on given bandwidth value, etc.</c>
 
+      <c>ACTION</c>
       <c>VALUE</c>
       <c>Type specific</c>
-      <c>The Action's value.</c>
-  </texttable>
 
-  <t>Descriptors define classifiers of specific traffic flow such as those based on
-    source and destination addresses, protocols, port numbers of
-    TCP/UDP/SCTP/DCCP, etc. Note that Descriptors are extensibly defined
-    by specific profiles which 3gpp, ietf or other SDO produced. The TFT (Traffic
-    flow template) from 3gpp, and rfc6089 from ietf can become descriptor profiles.
-  </t>
-  <t>The following table shows the Descriptor fields</t>
-  <texttable anchor="descriptor_field" title="Descriptor Fields" align="left">
-    <ttcol align="left">Field</ttcol>
-    <ttcol align="left">Type</ttcol>
-    <ttcol align="left">Description</ttcol>
+    <!-- Descriptors -->
+      <c>DESCRIPTOR</c>
       <c>DESCRIPTOR_ID </c>
       <c>FPC-Identity (<xref target="naming"/>)</c>
-      <c>A Descriptor's Identifier.</c>
 
+      <c>DESCRIPTOR</c>
       <c>TYPE</c>
       <c>[32, unsigned integer]</c>
-      <c>Defines descriptor type, which classifies specific traffic flow, such as
-        source and destination addresses, protocols, port numbers of
-        TCP/UDP/SCTP/DCCP or if any.</c>
 
+      <c>DESCRIPTOR</c>
       <c>VALUE</c>
       <c>Type specific</c>
-      <c>The Descriptor's value.</c>
+
+    <!-- Policies -->
+      <c>POLICY</c>
+      <c>POLICY_ID</c>
+      <c>FPC-Identity (<xref target="naming"/>)</c>
+
+      <c>POLICY</c>
+      <c>RULES</c>
+      <c>*[ RULE ] (See <xref target="rule_field"/>)</c>
+
+    <!-- Policy Groups -->
+      <c>POLICY-GROUP</c>
+      <c>POLICY_GROUP_ID</c>
+      <c>FPC-Identity (<xref target="naming"/>)</c>
+
+      <c>POLICY-GROUP</c>
+      <c>POLICIES</c>
+      <c>*[ POLICY_ID ]</c>
   </texttable>
+
   <t>Policies contain a list of Rules by their order value. Each Rule contains Descriptors with
   optional directionality and Actions with order values that specifies action execution ordering if the Rule
   has multiple actions.</t>
-  <t>The following table shows the Policy fields</t>
-  <texttable anchor="policy_field" title="Policy Fields" align="left">
-    <ttcol align="left">Field</ttcol>
-    <ttcol align="left">Type</ttcol>
-    <ttcol align="left">Description</ttcol>
-      <c>POLICY_ID</c>
-      <c>FPC-Identity (<xref target="naming"/>)</c>
-      <c>A Policy's Identifier.</c>
 
-      <c>RULES</c>
-      <c>*[ RULE ]</c>
-      <c>List of rules. See <xref target="rule_field"/></c>
-  </texttable>
   <t>Rules consist of the following fields.</t>
-  <texttable anchor="rule_field" title="Rule Fields" align="left">
+  <texttable anchor="rule_field" title="Rule Fields">
     <ttcol align="left">Field</ttcol>
     <ttcol align="left">Type</ttcol>
-    <ttcol align="left">Description</ttcol>
+    <ttcol align="left">Notes</ttcol>
       <c>ORDER</c>
       <c>[16, INTEGER]</c>
-      <c>Specifies rule order if the multiple rules are present.</c>
+      <c></c>
 
       <c>RULE_DESCRIPTORS</c>
       <c>*[ DESCRIPTOR_ID DIRECTION ]</c>
@@ -2138,115 +2141,77 @@ Agent deletes the tunnel and route on the DPN and responds to the Client (4).</t
       <c>The ACTION_ID refers to an ACTION.  ORDER [8, unsigned integer]
         specifies action execution order when multiple actions are present.</c>
   </texttable>
-
-  <t>A Policy-group refers to  a set of policies which are to apply to
-    Ports and Contexts. Policy-groups consist of the following fields.</t>
-  <texttable anchor="policygroup_field" title="Policy Group Fields" align="left">
-    <ttcol align="left">Field</ttcol>
-    <ttcol align="left">Type</ttcol>
-    <ttcol align="left">Description</ttcol>
-      <c>POLICY_GROUP_ID</c>
-      <c>FPC-Identity (<xref target="naming"/>)</c>
-      <c>A Policy-Groups's Identifier.</c>
-
-      <c>POLICIES</c>
-      <c>*[ POLICY_ID ]</c>
-      <c>Indicates each Policy which the Policy-group includes.</c>
-  </texttable>
-
+</section>
+<section anchor="mobilitystructs" title="Mobilty Structures">
   <t>Port is a set of Policies which will apply to contexts in the
     Dataplane node. It contains a list of Policy-groups which apply
     to the port.</t>
-  <texttable anchor="port_field" title="Port Fields" align="left">
+  <texttable anchor="port_field" title="Port Fields">
     <ttcol align="left">Field</ttcol>
     <ttcol align="left">Type</ttcol>
-    <ttcol align="left">Description</ttcol>
       <c>PORT_ID</c>
       <c>FPC-Identity (<xref target="naming"/>)</c>
-      <c>A Port's Identifier.</c>
 
       <c>POLICIES</c>
       <c>*[ POLICY_GROUP_ID ]</c>
-      <c>Indicates each Policy-Group in the list.</c>
   </texttable>
 
   <t>An endpoint of a mobility session is abstracted as a Context. The fields
     of a Context are shown in table <xref target="context_fields"/>.</t>
-  <texttable anchor="context_fields" title="Context Fields" align="left">
+  <texttable anchor="context_fields" title="Context Fields" >
     <ttcol align="left">Field</ttcol>
     <ttcol align="left">Type</ttcol>
-    <ttcol align="left">Description</ttcol>
       <c>CONTEXT_ID</c>
       <c>FPC-Identity (<xref target="naming"/>)</c>
-      <c>A Context's Identifier.</c>
 
       <c>PORTS</c>
       <c>*[ PORT_ID ]</c>
-      <c>List of Ports. When a context is applied to port(s), the context
-        is configured by policies of port(s).  IF the Port is assigned to a DPN that is different
-        than the one assigned to this Context it MUST result in an error.</c>
 
       <c>DPN_GROUP_ID</c>
       <c>FPC-Identity (<xref target="naming"/>)</c>
-      <c>Indicates DPN-Group in the case of the context is configured to attach
-        to the DPN-group.</c>
 
       <c>DELEGATING IP PREFIXES</c>
       <c>*[ IP_PREFIX ]</c>
-      <c>List of IP prefixes to be delegated to the mobile node of the
-        context. An IP_PREFIX is an IPv4 or IPv6 PREFIX.</c>
 
       <c>PARENT_CONTEXT_ID</c>
       <c>FPC-Identity (<xref target="naming"/>)</c>
-      <c>Indicates context which this context associated with. This will help to
-        indicate relationships such as default/dedicated bearer relation.</c>
 
-      <c>UPLINK</c>
-      <c>TUN_LOCAL_ADDRESS TUN_REMOTE_ADDRESS TUN_MTU TUN_PAYLOAD_TYPE TUN_TYPE
-        [ MOB_PROFILE_TUN_PARAMS ] [ NEXTHOP ] [ QOS_PARAMS ]
-        [ DPN_SPECIFIC_PARAMS ]
-        *[ VENDOR_SPECIFIC_PARAMS ] </c>
-      <c>Uplink information for the Single DPN Context Structure. See <xref target="context_link_fields"/>.</c>
+      <c>UPLINK [NOTE 1]</c>
+      <c>MOB_FIELDS</c>
 
-      <c>DOWNLINK</c>
-      <c>TUN_LOCAL_ADDRESS TUN_REMOTE_ADDRESS TUN_MTU TUN_PAYLOAD_TYPE TUN_TYPE
-        [ MOB_PROFILE_TUN_PARAMS ] [ NEXTHOP ] [ QOS_PARAMS ]
-        [ DPN_SPECIFIC_PARAMS ]
-        *[ VENDOR_SPECIFIC_PARAM ] </c>
-      <c>Downlink information for the Single DPN Context Structure. See <xref target="context_link_fields"/>.</c>
 
-      <c>DPNS</c>
-      <c>*[ DPN_ID DPN_DIRECTION TUN_LOCAL_ADDRESS TUN_REMOTE_ADDRESS TUN_MTU TUN_PAYLOAD_TYPE TUN_TYPE
-        [ MOB_PROFILE_TUN_PARAMS ] [ NEXTHOP ] [ QOS_PARAMS ]
-        [ DPN_SPECIFIC_PARAMS ]
-        *[ VENDOR_SPECIFIC_PARAM ] ]</c>
-      <c>List of the DPNs configurations which the multi-DPN Context accommodates. When DPN-group is indicated,
-        this list is derived from the group definition.</c>
+      <c>DOWNLINK [NOTE 1]</c>
+      <c>MOB_FIELDS</c>
+
+      <c>DPNS [NOTE 2]</c>
+      <c>*[ DPN_ID DPN_DIRECTION MOB_FIELDS</c>
+
+      <c>MOB_FIELDS</c>
+      <c> All parameters from <xref target="context_link_fields"/> </c>
   </texttable>
 
-  <texttable anchor="context_link_fields" title="Context Downlink/Uplink Field Definitions" align="left">
+      <t>NOTE 1 - These fields are present when the Agent supports only a single DPN.</t>
+      <t>NOTE 2 - This fields is present when the Agent supports multiple DPNs.</t>
+
+  <texttable anchor="context_link_fields" title="Context Downlink/Uplink Field Definitions">
     <ttcol align="left">Field</ttcol>
     <ttcol align="left">Type</ttcol>
-    <ttcol align="left">Description</ttcol>
-      <c>DPN_DIRECTION</c>
-      <c>[1, enumeration]</c>
-      <c>DPN Tunnel direction - either uplink(0) or downlink (1).</c>
-
+    <ttcol align="left">Detail</ttcol>
       <c>TUN_LOCAL_ADDRESS</c>
       <c>IP Address</c>
-      <c>Endpoint address of the DPN. [NOTE 1]</c>
+      <c>[NOTE 1]</c>
 
       <c>TUN_REMOTE_ADDRESS</c>
       <c>IP Address</c>
-      <c>Endpoint address of the remote DPN. [NOTE 1]</c>
+      <c>[NOTE 1]</c>
 
       <c>TUN_MTU</c>
       <c>[32, unsigned integer]</c>
-      <c>Specifies profile specific direction (uplink/downlink) tunnel's MTU.</c>
+      <c></c>
 
       <c>TUN_PAYLOAD_TYPE</c>
       <c>[2, bits]</c>
-      <c>An enumeraiton of the tunnel payload type: payload_ipv4(0), payload_ipv6(1) or payload_dual(2).</c>
+      <c>An enumeration of the tunnel payload type: payload_ipv4(0), payload_ipv6(1) or payload_dual(2).</c>
 
       <c>TUN_TYPE</c>
       <c>[8, unsigned integer]</c>
@@ -2257,23 +2222,18 @@ Agent deletes the tunnel and route on the DPN and responds to the Client (4).</t
       <c>[16, unsigned integer]</c>
       <c>Input interface index.</c>
 
-      <c>MOB_PROFILE_TUN_PARAMS</c>
+      <c>MOBILITY_SPECIFIC_TUN_PARAMS</c>
       <c>[ IETF_PMIP_MOB_PROFILE |
            3GPP_MOB_PROFILE ]</c>
-      <c>Specifies profile specific direction (uplink/downlink) tunnel parameters to the
-        DPN. The profiles includes GTP/TEID for 3gpp profile, GRE/Key for ietf-pmip profile,
-        or new profile if anyone will define it. [NOTE 1]</c>
+      <c>[NOTE 1]</c>
 
       <c>NEXTHOP</c>
       <c>[ IP Address | MAC Address | SPI | MPLS Label | SID | Interface Index ] (See <xref target="nexthop_subtypes"/>).</c>
-      <c>Indicates nexthop information of downlink in access network or the uplink in external
-        network, such as IP address, MAC address, SPI of service function chain, SID of segment
-        routing, or if any. [NOTE 1]</c>
+      <c>[NOTE 1]</c>
 
-      <c>QOS_PARAMS</c>
+      <c>QOS_PROFILE_PARAMS</c>
       <c>[ 3GPP_QOS | PMIP_QOS ]</c>
-      <c>Specifies profile specific QoS parameter of downlink/uplink, such as QCI/TFT for 3gpp profile,
-        rfc6089/7222 for ietf-pmip, or extensions of this specification. [NOTE 1]</c>
+      <c>[NOTE 1]</c>
 
       <c>DPN_SPECIFIC_PARAMS</c>
       <c>[ TUN_IF or Varies]</c>
@@ -2281,97 +2241,90 @@ Agent deletes the tunnel and route on the DPN and responds to the Client (4).</t
          in the DPN.</c>
 
       <c>VENDOR_SPECIFIC_PARAM</c>
-      <c> Varies </c>
-      <c>Vendor specific parameter. [NOTE 1]</c>
+      <c>*[ Varies ]</c>
+      <c>[NOTE 1]</c>
       <postamble>
         NOTE 1 - These parameters are extensible.  The Types may be extended for Field value by
         future specifications or in the case of Vendor Specific Attributes by enterprises.
       </postamble>
   </texttable>
-
+</section>
   <section anchor="topology_structs" title="Topology Structures">
-  <t>This section defines topology structures such as DPNs and DPN Groups.</t>
-  <texttable anchor="dpn_fields" title="DPN Fields" align="left">
+  <t>This section defines topology structures such as Domains, DPNs and DPN Groups.</t>
+  <texttable anchor="dpn_fields" title="DPN Fields">
     <ttcol align="left">Field</ttcol>
     <ttcol align="left">Type</ttcol>
-    <ttcol align="left">Description</ttcol>
 
     <c>DPN_ID</c>
     <c>FPC-Identity. See <xref target="naming"/></c>
-    <c>DPN Identifier.</c>
 
     <c>DPN_NAME</c>
     <c>[1024, OCTET STRING]</c>
-    <c>Name of the DPN.</c>
-
-    <c>IP_ADRRESS</c>
-    <c>IP Address</c>
-    <c>DPN's IP Address.</c>
-
-    <c>CONTROL_PROTOCOL</c>
-    <c>Enumeration</c>
-    <c>Specifies control protocol, such as BGP, Netconf, Restconf, FORCES, XMPP,
-      Openflow, if any.</c>
 
     <c>DPN_GROUPS</c>
-    <c>FPC-Identity. See <xref target="naming"/></c>
-    <c>Indicates DPN-Groups where DPN works as a member of the DPN-Group.</c>
+    <c>* [ FPC-Identity ] See <xref target="naming"/></c>
+
+    <c>NODE_REFERENCE</c>
+    <c>[1024, OCTET STRING]</c>
   </texttable>
 
-  <texttable anchor="dpn_groups" title="DPN Groups" suppress-title="false" align="left">
+  <texttable anchor="domain_fields" title="Domain Fields">
     <ttcol align="left">Field</ttcol>
     <ttcol align="left">Type</ttcol>
-    <ttcol align="left">Description</ttcol>
+
+    <c>DOMAIN_ID</c>
+    <c>[1024, OCTET STRING]</c>
+
+    <c>DOMAIN_NAME</c>
+    <c>[1024, OCTET STRING]</c>
+
+    <c>DOMAIN_TYPE</c>
+    <c>[1024, OCTET STRING]</c>
+  </texttable>
+
+  <texttable anchor="dpn_groups" title="DPN Groups" suppress-title="false">
+    <ttcol align="left">Field</ttcol>
+    <ttcol align="left">Type</ttcol>
 
     <c>DPN_GROUP_ID</c>
     <c>FPC-Identity. See <xref target="naming"/></c>
-    <c>DPN Group Identifier.</c>
 
     <c>DATA_PLANE_ROLE</c>
-    <c>Enumeration</c>
-    <c>Defines forwarding-plane role of the DPN-Group in the data-plane, such as access-dpn, L2/L3 anchor-dpn.</c>
+    <c>[4, ENUMERATION (data-plane, such as access-dpn, L2/L3 anchor-dpn.)] </c>
 
     <c>ACCESS_TYPE</c>
-    <c>Enumeration</c>
-    <c>Defines access type which the DPN-Group capable, such as ethernet(802.3/11), 3gpp cellular(S1,
-      RAB), if any. </c>
+    <c>[4, ENUMERATION ()ethernet(802.3/11), 3gpp cellular(S1,RAB)]</c>
 
     <c>MOBILITY_PROFILE</c>
-    <c><xref target="context_link_fields"/></c>
-    <c>Defines supporting mobility profile, such as ietf-pmip, 3gpp, or new profile if anyone will define
-      it. When those profiles are correctly defined, some or all of forwarding-plane parameters of
-      contexts can be automatically derived from the profile by FPC agent.</c>
+    <c>[4, ENUMERATION (ietf-pmip, 3gpp, or new profile)]</c>
 
     <c>PEER_DPN_GROUPS</c>
-    <c>DPN_GROUP_ID REMOTE_ENDPOINT_ADDRESS LOCAL_ENDPOINT_ADDRESS
-    TUN_MTU MOBILITY_PROFILE DATA_PLANE_ROLE</c>
-    <c>Indicates DPN-Groups where DPN works as a member of the DPN-Group.</c>
+    <c>* [ DPN_GROUP_ID MOBILITY_PROFILE REMOTE_ENDPOINT_ADDRESS LOCAL_ENDPOINT_ADDRESS
+    TUN_MTU DATA_PLANE_ROLE ]</c>
   </texttable>
   </section>
 
   <section anchor="mess_notifications" title="Monitors">
-    <texttable anchor="monitor_structs" title="Monitor Structures and Attributes" align="left">
+    <texttable anchor="monitor_structs" title="Monitor Structures and Attributes">
       <ttcol align="left">Field</ttcol>
       <ttcol align="left">Type</ttcol>
       <ttcol align="left">Description</ttcol>
 
+      <c>MONITOR</c>
+      <c>MONITOR_ID TARGET [REPORT_CONFIG]</c>
+      <c></c>
+
       <c>MONITOR_ID</c>
       <c>FPC-Identity. See <xref target="naming"/></c>
-      <c>Identifies a registered monitor.</c>
+      <c></c>
 
       <c>EVENT_TYPE_ID</c>
       <c>[8, Event Type ID]</c>
       <c>Identifies an event type (unsigned integer).</c>
 
-      <c>MONITOR</c>
-      <c>MONITOR_ID TARGET [REPORT_CONFIG]</c>
-      <c>A Monitor.</c>
-
       <c>TARGET</c>
-      <c>FPC-Identity. See <xref target="naming"/></c>
-      <c>A Target MAY be an entity, e.g. Context, port, etc. or it may be the attribute of an entity.  When
-      it is an attribute the fully qualified path (instance identifier) is reuqired.  This is equal to the
-      FPC-Identity of the top level structure concatenated by a '/' and the relative path to the attribute.</c>
+      <c>OCTET STRING (See <xref target="monitor_overview"/>)</c>
+      <c></c>
 
       <c>REPORT_CONFIG</c>
       <c>[8, REPORT-TYPE] [TYPE_SPECIFIC_INFO]</c>
@@ -2393,7 +2346,7 @@ Agent deletes the tunnel and route on the DPN and responds to the Client (4).</t
       <c>*[EVENT_TYPE_ID]</c>
       <c>List of events that triggers a report.</c>
     </texttable>
-    <texttable anchor="notify_structs" title="Monitor Notifications" align="left">
+    <texttable anchor="notify_structs" title="Monitor Notifications">
       <ttcol align="left">Field</ttcol>
       <ttcol align="left">Type</ttcol>
       <ttcol align="left">Description</ttcol>
@@ -2558,7 +2511,7 @@ Agent deletes the tunnel and route on the DPN and responds to the Client (4).</t
     </section>
   </section>
 
-<section anchor="derived_attrs" title="Derived and Subtype Attributes">
+<section anchor="derived_attrs" title="Derived and Subtyped Attributes">
 <t>This section notes derived attributes.</t>
   <texttable anchor="descriptor_subtypes" title="Descriptor Subtypes" align="left">
     <ttcol align="left">Field</ttcol>
