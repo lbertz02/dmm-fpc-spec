@@ -17,6 +17,7 @@
 <!ENTITY RFC7333 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7333.xml">
 <!ENTITY RFC7429 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7429.xml">
 <!ENTITY RFC6088 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6088.xml">
+<!ENTITY RFC6089 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6089.xml">
 <!ENTITY RFC7222 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7222.xml">
 <!ENTITY RFC6241 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6241.xml">
 <!ENTITY I-D.ietf-dmm-requirements SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-dmm-requirements.xml">
@@ -366,7 +367,7 @@ DPN         |                 DPN        |
         |     |
         |     +---Domains
         |     |
-        |     +---DPN-Groups
+        |     +---DPN-groups
         |     |
         |     +---DPNs
         |
@@ -433,16 +434,15 @@ DPN         |                 DPN        |
 
            <t><list hangIndent="24" style="hanging">
 
-               <t hangText="Domain-id:">Identifier of Domain.
-               The ID format can be chosen by operator as they like, e.g.
-               URI, UUID, certain length of string and unsigned-integer,
-               etc. </t>
+               <t hangText="Domain-id:">Identifier of Domain. The ID
+               format SHOULD refer to <xref target="naming"></xref>. </t>
 
                <t hangText="Domain-name:">Defines Domain name.
                </t>
 
-               <t hangText="Domain-type:">Specifies the type of
-               Domain. </t>
+               <t hangText="Domain-type:">Specifies which type of
+               communication allowed within the domain, such as ipv4,
+               ipv6, ipv4v6 or ieee802. </t>
 
            </list></t>
 
@@ -478,7 +478,7 @@ DPN         |                 DPN        |
             |
             +---Mobility-profile
             |
-            +---DPN-group-peer
+            +---DPN-group-peers
 
               ]]></artwork>
             <postamble></postamble>
@@ -488,19 +488,18 @@ DPN         |                 DPN        |
            <t><list hangIndent="24" style="hanging">
 
                <t hangText="DPN-group-id:"> Defines identifier of
-               DPN-Group. The ID format can be chosen by operator as they
-               like, e.g. URI, UUID, certain length of string and
-               unsigned-integer, etc. </t>
+               DPN-group. The ID format SHOULD refer to <xref
+               target="naming"></xref>. </t>
 
                <t hangText="Data-plane-role:"> Defines data-plane
-               role of the DPN-Group, such as access-dpn, L2/L3 or
+               role of the DPN-group, such as access-dpn, L2/L3 or
                anchor-dpn. </t>
 
                <t hangText="Domains:"> Specifies domains which the
                DPN-group belongs to.</t>
 
                <t hangText="Access-type:"> Defines access type which the
-               DPN-Group supports such as ethernet(802.3/11), 3gpp
+               DPN-group supports such as ethernet(802.3/11), 3gpp
                cellular(S1, RAB), if any. </t>
 
                <t hangText="Mobility-profile:"> Defines supported
@@ -510,7 +509,7 @@ DPN         |                 DPN        |
                parameters of contexts can be automatically derived from
                this profile by FPC Agent. </t>
 
-               <t hangText="DPN-group-peer:"> Defines remote peers of
+               <t hangText="DPN-group-peers:"> Defines remote peers of
                DPN-group with parameters described in <xref
                target="dpn-peers"/>. </t>
 
@@ -519,7 +518,7 @@ DPN         |                 DPN        |
 
         <section anchor="dpn-peers" title="DPN-group Peers">
 
-        <t> DPN-group-peer defines parameters of remote peer DPNs as illustrated in
+        <t> DPN-group-peers defines parameters of remote peer DPNs as illustrated in
         <xref target="fig_dpn-peers-im"/>. </t>
 
         <t>
@@ -529,7 +528,7 @@ DPN         |                 DPN        |
 
 (DPN-groups)
     |
-    +---DPN-group-peer
+    +---DPN-group-peers
           |
           +---Remote-DPN-group
           |
@@ -550,7 +549,7 @@ DPN         |                 DPN        |
 
            <t><list hangIndent="24" style="hanging">
 
-               <t hangText="Remote-DPN-group:">Indicates peering DPN-Group.
+               <t hangText="Remote-DPN-group:">Indicates peering DPN-group.
                </t>
 
                <t hangText="Remote-mobility-profile:">Defines
@@ -560,14 +559,14 @@ DPN         |                 DPN        |
                </t>
 
                <t hangText="Remote-data-plane-role:">Defines
-               forwarding-plane role of peering DPN-Group.</t>
+               forwarding-plane role of peering DPN-group.</t>
 
                <t hangText="Remote-endpoint-address:">Defines Endpoint
-               address of the peering DPN-Group.</t>
+               address of the peering DPN-group.</t>
 
                <t hangText="Local-endpoint-address:">Defines Endpoint
-               address of its own DPN-Group to peer the remote
-               DPN-Group.</t>
+               address of its own DPN-group to peer the remote
+               DPN-group.</t>
 
                <t hangText="Tunnel-MTU-size:">Defines MTU size of tunnel.
                </t>
@@ -605,6 +604,8 @@ DPN         |                 DPN        |
             +---DPN-name
             |
             +---DPN-groups
+            |
+            +---Node-reference
 
               ]]></artwork>
             <postamble></postamble>
@@ -614,15 +615,18 @@ DPN         |                 DPN        |
            <t><list hangIndent="24" style="hanging">
 
                <t hangText="DPN-id:"> Defines identifier of DPN. The ID
-               format can be chose by operator as they like. e.g. URI,
-               UUID, certain length of string and unsigned-integer,
-               etc. </t>
+               format SHOULD refer to <xref target="naming"></xref>.</t>
 
                <t hangText="DPN-name:"> Defines name of DPN.
                </t>
 
-               <t hangText="DPN-groups:">List of DPN-Group
+               <t hangText="DPN-groups:">List of DPN-group
                which the DPN belongs to. </t>
+
+               <t hangText="Node-reference:">Indicates an actual node to
+               which the Agent binds the DPN. The Agent SHOULD maintain
+               that nodes information including IP address of management
+               and control protocol to connect them.</t>
 
            </list></t>
 
@@ -678,9 +682,8 @@ DPN         |                 DPN        |
            <t><list hangIndent="24" style="hanging">
 
                <t hangText="Descriptor-id:">Identifier of Descriptor.
-               The ID format can be chose by operator as they like. e.g.
-               URI, UUID, certain length of string and unsigned-integer,
-               etc. </t>
+               The ID format SHOULD refer to <xref
+               target="naming"></xref>. </t>
 
                <t hangText="Descriptor-type:">Defines descriptor type,
                which classifies specific traffic flow, such as source
@@ -728,9 +731,7 @@ DPN         |                 DPN        |
            <t><list hangIndent="24" style="hanging">
 
                <t hangText="Action-id:">Identifier of Action. The ID
-               format can be chose by operator as they like. e.g, URI,
-               UUID, certain length of string and unsigned-integer,
-               etc. </t>
+               format SHOULD refer to <xref target="naming"></xref>.</t>
 
                <t hangText="Action-type:">Defines action type, i.e. how to
                treat the specified traffic flow, e.g. pass, drop, forward
@@ -796,9 +797,7 @@ DPN         |                 DPN        |
            <t><list hangIndent="24" style="hanging">
 
                <t hangText="Policy-id:">Identifier of Policy. The ID
-               format can be chose by operator as they like. e.g. URI,
-               UUID, certain length of string and unsigned-integer,
-               etc. </t>
+               format SHOULD refer to <xref target="naming"></xref>.</t>
 
                <t hangText="Rules:">List of Rules which are a collection of
                Descriptors and Actions. All Descriptors MUST be
@@ -859,9 +858,8 @@ DPN         |                 DPN        |
            <t><list hangIndent="24" style="hanging">
 
                <t hangText="Policy-group-id:">Identifier of
-               Policy-group. The ID format can be chose by operator as
-               they like. e.g: URI, UUID, certain length of string and
-               unsigned-integer, etc. </t>
+               Policy-group. The ID format SHOULD refer to <xref
+               target="naming"></xref>. </t>
 
                <t hangText="Policy:">List of Policies in the Policy-group.
                </t>
@@ -879,8 +877,7 @@ DPN         |                 DPN        |
         session is abstracted as a Context with its associated runtime
         concrete attributes, such as tunnel endpoints, tunnel
         identifiers, delegated prefix(es) and routing information, etc.
-        A Port abstracts a set of policies that the Contexts applies
-        to.</t>
+        A Port abstracts a set of policies applied to the Context.</t>
 
         <section anchor="port" title="Port">
 
@@ -915,9 +912,8 @@ DPN         |                 DPN        |
 
         <t><list hangIndent="24" style="hanging">
 
-            <t hangText="Port-id:">Identifier of Port. The ID format can
-            be chose by operator as they like. e.g: URI, UUID, certain
-            length of string and unsigned-integer, etc. </t>
+            <t hangText="Port-id:">Identifier of Port. The ID format
+            SHOULD refer to <xref target="naming"></xref>.</t>
 
             <t hangText="Policy-group-reference:">List of references to
             Policy-groups which apply to the Port. </t>
@@ -959,6 +955,8 @@ DPN         |                 DPN        |
                +---DPN-group-reference
                |
                +---Delegating-ip-prefix
+               |
+               +---Parent-context
 
               ]]></artwork>
             <postamble></postamble>
@@ -968,15 +966,11 @@ DPN         |                 DPN        |
         <t><list hangIndent="24" style="hanging">
 
             <t hangText="Context-id:">Identifier of Context. The ID
-            format can be chose by operator as they like. e.g; URI,
-            UUID, certain length of string and unsigned-integer, etc.,
-            </t>
+            format SHOULD refer to <xref target="naming"></xref>.</t>
 
-            <t hangText="Port-reference:">List of Ports. When a Context
-            is applied to Port(s), the context is configured by policies
-            of those Port(s). Port-id references indicate Ports which apply
-            to the Context. Context can be a part of multiple Ports
-            which have different policies. </t>
+            <t hangText="Port-reference:">List of Ports applied to the
+            Context. Context can be a part of multiple Ports which have
+            different policies. </t>
 
             <t hangText="DPN-group-reference:">The DPN-group assigned to
             the Context.
@@ -984,6 +978,9 @@ DPN         |                 DPN        |
 
             <t hangText="Delegating-ip-prefix:">List of IP prefixes to
             be delegated to the mobile node of the context. </t>
+
+            <t hangText="Parent-context:">Indicates context which the
+            context inherits. </t>
 
         </list></t>
 
@@ -1046,8 +1043,9 @@ DPN         |                 DPN        |
 
             <t hangText="UL-QoS-profile-specific-parameters:">Specifies
             profile specific QoS parameter of uplink, such as QCI/TFT
-            for 3gpp profile,  rfc6089/7222 for ietf-pmip, or new
-            profiles defined by extensions of this specification. </t>
+            for 3gpp profile,  <xref target="RFC6089"></xref>/<xref
+            target="RFC7222"></xref> for ietf-pmip, or new profiles
+            defined by extensions of this specification. </t>
 
             <t hangText="UL-DPN-specific-parameters:">Specifies optional
             node specific parameters of uplink in need, such as
@@ -1112,8 +1110,9 @@ DPN         |                 DPN        |
 
             <t hangText="DL-QoS-profile-specific-parameters:">Specifies
             profile specific QoS parameter of downlink, such as QCI/TFT
-            for 3gpp profile,  rfc6089/7222 for ietf-pmip, or new
-            profiles defined by extensions of this specification.</t>
+            for 3gpp profile,  <xref target="RFC6089"></xref>/<xref
+            target="RFC7222"></xref> for ietf-pmip, or new profiles
+            defined by extensions of this specification.</t>
 
             <t hangText="DL-DPN-specific-parameters:">Specifies optional
             node specific parameters of downlink in need such as
@@ -1199,8 +1198,9 @@ DPN         |                 DPN        |
             of segment routing, etc. </t>
 
             <t hangText="QoS-profile-specific-parameters:"> Specifies
-            profile specific QoS parameter for uplink or downlink of
-            the DPN, such as QCI/TFT for 3gpp profile,  rfc6089/7222 for
+            profile specific QoS parameter for uplink or downlink of the
+            DPN, such as QCI/TFT for 3gpp profile,  <xref
+            target="RFC6089"></xref>/<xref target="RFC7222"></xref> for
             ietf-pmip, or new profiles defined by extensions of this
             specification. </t>
 
@@ -2084,8 +2084,22 @@ Agent deletes the tunnel and route on the DPN and responds to the Client (4).</t
       <c>VALUE</c>
       <c>Type specific</c>
 
+<<<<<<< HEAD
     <!-- Descriptors -->
       <c>DESCRIPTOR</c>
+=======
+  <t>Descriptors define classifiers of specific traffic flow such as those based on
+    source and destination addresses, protocols, port numbers of
+    TCP/UDP/SCTP/DCCP, etc. Note that Descriptors are extensibly defined
+    by specific profiles which 3gpp, ietf or other SDO produced. The TFT (Traffic
+    flow template) from 3gpp, and <xref target="RFC6089"></xref> from ietf can become descriptor profiles.
+  </t>
+  <t>The following table shows the Descriptor fields</t>
+  <texttable anchor="descriptor_field" title="Descriptor Fields" align="left">
+    <ttcol align="left">Field</ttcol>
+    <ttcol align="left">Type</ttcol>
+    <ttcol align="left">Description</ttcol>
+>>>>>>> ba882934d2c5ccbc7ee2bf5752f0049c8f0a09a0
       <c>DESCRIPTOR_ID </c>
       <c>FPC-Identity (<xref target="naming"/>)</c>
 
@@ -2169,6 +2183,11 @@ Agent deletes the tunnel and route on the DPN and responds to the Client (4).</t
 
       <c>DPN_GROUP_ID</c>
       <c>FPC-Identity (<xref target="naming"/>)</c>
+<<<<<<< HEAD
+=======
+      <c>Indicates DPN-group in the case of the context is configured to attach
+        to the DPN-group.</c>
+>>>>>>> ba882934d2c5ccbc7ee2bf5752f0049c8f0a09a0
 
       <c>DELEGATING IP PREFIXES</c>
       <c>*[ IP_PREFIX ]</c>
@@ -2233,7 +2252,12 @@ Agent deletes the tunnel and route on the DPN and responds to the Client (4).</t
 
       <c>QOS_PROFILE_PARAMS</c>
       <c>[ 3GPP_QOS | PMIP_QOS ]</c>
+<<<<<<< HEAD
       <c>[NOTE 1]</c>
+=======
+      <c>Specifies profile specific QoS parameter of downlink/uplink, such as QCI/TFT for 3gpp profile,
+        <xref target="RFC6089"></xref>/<xref target="RFC7222"></xref> for ietf-pmip, or extensions of this specification. [NOTE 1]</c>
+>>>>>>> ba882934d2c5ccbc7ee2bf5752f0049c8f0a09a0
 
       <c>DPN_SPECIFIC_PARAMS</c>
       <c>[ TUN_IF or Varies]</c>
@@ -2272,6 +2296,7 @@ Agent deletes the tunnel and route on the DPN and responds to the Client (4).</t
     <ttcol align="left">Field</ttcol>
     <ttcol align="left">Type</ttcol>
 
+<<<<<<< HEAD
     <c>DOMAIN_ID</c>
     <c>[1024, OCTET STRING]</c>
 
@@ -2280,6 +2305,11 @@ Agent deletes the tunnel and route on the DPN and responds to the Client (4).</t
 
     <c>DOMAIN_TYPE</c>
     <c>[1024, OCTET STRING]</c>
+=======
+    <c>DPN_GROUPS</c>
+    <c>FPC-Identity. See <xref target="naming"/></c>
+    <c>Indicates DPN-groups where DPN works as a member of the DPN-group.</c>
+>>>>>>> ba882934d2c5ccbc7ee2bf5752f0049c8f0a09a0
   </texttable>
 
   <texttable anchor="dpn_groups" title="DPN Groups" suppress-title="false">
@@ -2290,17 +2320,33 @@ Agent deletes the tunnel and route on the DPN and responds to the Client (4).</t
     <c>FPC-Identity. See <xref target="naming"/></c>
 
     <c>DATA_PLANE_ROLE</c>
+<<<<<<< HEAD
     <c>[4, ENUMERATION (data-plane, such as access-dpn, L2/L3 anchor-dpn.)] </c>
 
     <c>ACCESS_TYPE</c>
     <c>[4, ENUMERATION ()ethernet(802.3/11), 3gpp cellular(S1,RAB)]</c>
+=======
+    <c>Enumeration</c>
+    <c>Defines forwarding-plane role of the DPN-group in the data-plane, such as access-dpn, L2/L3 anchor-dpn.</c>
+
+    <c>ACCESS_TYPE</c>
+    <c>Enumeration</c>
+    <c>Defines access type which the DPN-group capable, such as ethernet(802.3/11), 3gpp cellular(S1,
+      RAB), if any. </c>
+>>>>>>> ba882934d2c5ccbc7ee2bf5752f0049c8f0a09a0
 
     <c>MOBILITY_PROFILE</c>
     <c>[4, ENUMERATION (ietf-pmip, 3gpp, or new profile)]</c>
 
     <c>PEER_DPN_GROUPS</c>
+<<<<<<< HEAD
     <c>* [ DPN_GROUP_ID MOBILITY_PROFILE REMOTE_ENDPOINT_ADDRESS LOCAL_ENDPOINT_ADDRESS
     TUN_MTU DATA_PLANE_ROLE ]</c>
+=======
+    <c>DPN_GROUP_ID REMOTE_ENDPOINT_ADDRESS LOCAL_ENDPOINT_ADDRESS
+    TUN_MTU MOBILITY_PROFILE DATA_PLANE_ROLE</c>
+    <c>Indicates DPN-groups where DPN works as a member of the DPN-group.</c>
+>>>>>>> ba882934d2c5ccbc7ee2bf5752f0049c8f0a09a0
   </texttable>
   </section>
 
@@ -2791,6 +2837,7 @@ Such protocol-specific details will be described in separate documents and may r
     &RFC7333;
     &RFC7429;
     &RFC6088;
+    &RFC6089;
 
     </references>
 
