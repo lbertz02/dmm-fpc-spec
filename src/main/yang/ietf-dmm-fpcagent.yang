@@ -379,6 +379,9 @@ module ietf-dmm-fpcagent {
       leaf op-id {
         type op-identifier;
       }
+      leaf result {
+        type result;
+      }
       choice result-type {
         case err {
           leaf error-type-id {
@@ -407,9 +410,6 @@ module ietf-dmm-fpcagent {
         uses fpcagent:op-input;
       }
       output {
-        leaf result {
-          type result;
-        }
         uses fpcagent:result-body;
       }
     }
