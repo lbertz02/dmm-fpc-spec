@@ -390,10 +390,10 @@ module ietf-dmm-fpcagent {
             }
           }
         }
-        case create-or-update-success {
+        case common-success {
           uses fpcagent:payload;
         }
-        case delete_or_query-success {
+        case delete-success {
           uses fpcbase:targets-value;
         }
         case empty-case {

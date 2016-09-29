@@ -263,6 +263,9 @@ module ietf-dmm-threegpp {
         bit assign-dpn {
           position 6;
         }
+        bit indirect-forward {
+          position 7;
+        }
       }
     }
 
