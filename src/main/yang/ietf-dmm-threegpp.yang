@@ -295,13 +295,13 @@ module ietf-dmm-threegpp {
           uses threegpp:tft;
       }
     }
-    augment "/fpcagent:configure/fpcagent:output/fpcagent:result-type/fpcagent:create-or-update-success/fpcagent:contexts/fpcagent:ul/fpcagent:mobility-tunnel-parameters/fpcagent:profile-parameters" {
+    augment "/fpcagent:configure/fpcagent:output/fpcagent:result-type/fpcagent:common-success/fpcagent:contexts/fpcagent:ul/fpcagent:mobility-tunnel-parameters/fpcagent:profile-parameters" {
       case threegpp-tunnel {
           uses threegpp:threeGPP-tunnel;
           uses threegpp:tft;
       }
     }
-    augment "/fpcagent:configure-bundles/fpcagent:output/fpcagent:bundles/fpcagent:result-type/fpcagent:create-or-update-success/fpcagent:contexts/fpcagent:ul/fpcagent:mobility-tunnel-parameters/fpcagent:profile-parameters" {
+    augment "/fpcagent:configure-bundles/fpcagent:output/fpcagent:bundles/fpcagent:result-type/fpcagent:common-success/fpcagent:contexts/fpcagent:ul/fpcagent:mobility-tunnel-parameters/fpcagent:profile-parameters" {
       case threegpp-tunnel {
           uses threegpp:threeGPP-tunnel;
           uses threegpp:tft;
@@ -327,13 +327,13 @@ module ietf-dmm-threegpp {
           uses threegpp:tft;
       }
     }
-    augment "/fpcagent:configure/fpcagent:output/fpcagent:result-type/fpcagent:create-or-update-success/fpcagent:contexts/fpcagent:dl/fpcagent:mobility-tunnel-parameters/fpcagent:profile-parameters" {
+    augment "/fpcagent:configure/fpcagent:output/fpcagent:result-type/fpcagent:common-success/fpcagent:contexts/fpcagent:dl/fpcagent:mobility-tunnel-parameters/fpcagent:profile-parameters" {
       case threegpp-tunnel {
           uses threegpp:threeGPP-tunnel;
           uses threegpp:tft;
       }
     }
-    augment "/fpcagent:configure-bundles/fpcagent:output/fpcagent:bundles/fpcagent:result-type/fpcagent:create-or-update-success/fpcagent:contexts/fpcagent:dl/fpcagent:mobility-tunnel-parameters/fpcagent:profile-parameters" {
+    augment "/fpcagent:configure-bundles/fpcagent:output/fpcagent:bundles/fpcagent:result-type/fpcagent:common-success/fpcagent:contexts/fpcagent:dl/fpcagent:mobility-tunnel-parameters/fpcagent:profile-parameters" {
       case threegpp-tunnel {
           uses threegpp:threeGPP-tunnel;
           uses threegpp:tft;
@@ -360,13 +360,13 @@ module ietf-dmm-threegpp {
           uses threegpp:tft;
       }
     }
-    augment "/fpcagent:configure/fpcagent:output/fpcagent:result-type/fpcagent:create-or-update-success/fpcagent:contexts/fpcagent:dpns/fpcagent:mobility-tunnel-parameters/fpcagent:profile-parameters" {
+    augment "/fpcagent:configure/fpcagent:output/fpcagent:result-type/fpcagent:common-success/fpcagent:contexts/fpcagent:dpns/fpcagent:mobility-tunnel-parameters/fpcagent:profile-parameters" {
       case threegpp-tunnel {
           uses threegpp:threeGPP-tunnel;
           uses threegpp:tft;
       }
     }
-    augment "/fpcagent:configure-bundles/fpcagent:output/fpcagent:bundles/fpcagent:result-type/fpcagent:create-or-update-success/fpcagent:contexts/fpcagent:dpns/fpcagent:mobility-tunnel-parameters/fpcagent:profile-parameters" {
+    augment "/fpcagent:configure-bundles/fpcagent:output/fpcagent:bundles/fpcagent:result-type/fpcagent:common-success/fpcagent:contexts/fpcagent:dpns/fpcagent:mobility-tunnel-parameters/fpcagent:profile-parameters" {
       case threegpp-tunnel {
           uses threegpp:threeGPP-tunnel;
           uses threegpp:tft;
@@ -390,12 +390,12 @@ module ietf-dmm-threegpp {
           uses threegpp:threeGPP-QoS;
       }
     }
-    augment "/fpcagent:configure/fpcagent:output/fpcagent:result-type/fpcagent:create-or-update-success/fpcagent:contexts/fpcagent:ul/fpcagent:qos-profile-parameters/fpcagent:value" {
+    augment "/fpcagent:configure/fpcagent:output/fpcagent:result-type/fpcagent:common-success/fpcagent:contexts/fpcagent:ul/fpcagent:qos-profile-parameters/fpcagent:value" {
       case threegpp-qos {
           uses threegpp:threeGPP-QoS;
       }
     }
-    augment "/fpcagent:configure-bundles/fpcagent:output/fpcagent:bundles/fpcagent:result-type/fpcagent:create-or-update-success/fpcagent:contexts/fpcagent:ul/fpcagent:qos-profile-parameters/fpcagent:value" {
+    augment "/fpcagent:configure-bundles/fpcagent:output/fpcagent:bundles/fpcagent:result-type/fpcagent:common-success/fpcagent:contexts/fpcagent:ul/fpcagent:qos-profile-parameters/fpcagent:value" {
       case threegpp-qos {
           uses threegpp:threeGPP-QoS;
       }
@@ -417,12 +417,12 @@ module ietf-dmm-threegpp {
           uses threegpp:threeGPP-QoS;
       }
     }
-    augment "/fpcagent:configure/fpcagent:output/fpcagent:result-type/fpcagent:create-or-update-success/fpcagent:contexts/fpcagent:dl/fpcagent:qos-profile-parameters/fpcagent:value" {
+    augment "/fpcagent:configure/fpcagent:output/fpcagent:result-type/fpcagent:common-success/fpcagent:contexts/fpcagent:dl/fpcagent:qos-profile-parameters/fpcagent:value" {
       case threegpp-qos {
           uses threegpp:threeGPP-QoS;
       }
     }
-    augment "/fpcagent:configure-bundles/fpcagent:output/fpcagent:bundles/fpcagent:result-type/fpcagent:create-or-update-success/fpcagent:contexts/fpcagent:dl/fpcagent:qos-profile-parameters/fpcagent:value" {
+    augment "/fpcagent:configure-bundles/fpcagent:output/fpcagent:bundles/fpcagent:result-type/fpcagent:common-success/fpcagent:contexts/fpcagent:dl/fpcagent:qos-profile-parameters/fpcagent:value" {
       case threegpp-qos {
           uses threegpp:threeGPP-QoS;
       }
@@ -449,10 +449,10 @@ module ietf-dmm-threegpp {
     augment "/fpcagent:configure-bundles/fpcagent:input/fpcagent:bundles/fpcagent:op_body/fpcagent:create_or_update/fpcagent:contexts" {
        uses threegpp:threegpp-properties;
     }
-    augment "/fpcagent:configure/fpcagent:output/fpcagent:result-type/fpcagent:create-or-update-success/fpcagent:contexts" {
+    augment "/fpcagent:configure/fpcagent:output/fpcagent:result-type/fpcagent:common-success/fpcagent:contexts" {
       uses threegpp:threegpp-properties;
     }
-    augment "/fpcagent:configure-bundles/fpcagent:output/fpcagent:bundles/fpcagent:result-type/fpcagent:create-or-update-success/fpcagent:contexts" {
+    augment "/fpcagent:configure-bundles/fpcagent:output/fpcagent:bundles/fpcagent:result-type/fpcagent:common-success/fpcagent:contexts" {
        uses threegpp:threegpp-properties;
     }
 
@@ -472,7 +472,7 @@ module ietf-dmm-threegpp {
         uses threegpp:threegpp-commandset;
       }
     }
-    augment "/fpcagent:configure/fpcagent:output/fpcagent:result-type/fpcagent:create-or-update-success/fpcagent:contexts/fpcagent:instructions/fpcagent:instr-type" {
+    augment "/fpcagent:configure/fpcagent:output/fpcagent:result-type/fpcagent:common-success/fpcagent:contexts/fpcagent:instructions/fpcagent:instr-type" {
       case instr-3gpp-mob {
         uses threegpp:threegpp-commandset;
       }
@@ -482,7 +482,7 @@ module ietf-dmm-threegpp {
         uses threegpp:threegpp-commandset;
       }
     }
-    augment "/fpcagent:configure/fpcagent:output/fpcagent:result-type/fpcagent:create-or-update-success/fpcagent:ports/fpcagent:instructions/fpcagent:instr-type" {
+    augment "/fpcagent:configure/fpcagent:output/fpcagent:result-type/fpcagent:common-success/fpcagent:ports/fpcagent:instructions/fpcagent:instr-type" {
       case instr-3gpp-mob {
         uses threegpp:threegpp-commandset;
       }
@@ -498,7 +498,7 @@ module ietf-dmm-threegpp {
         uses threegpp:threegpp-commandset;
       }
     }
-    augment "/fpcagent:configure-bundles/fpcagent:output/fpcagent:bundles/fpcagent:result-type/fpcagent:create-or-update-success/fpcagent:contexts/fpcagent:instructions/fpcagent:instr-type" {
+    augment "/fpcagent:configure-bundles/fpcagent:output/fpcagent:bundles/fpcagent:result-type/fpcagent:common-success/fpcagent:contexts/fpcagent:instructions/fpcagent:instr-type" {
       case instr-3gpp-mob {
         uses threegpp:threegpp-commandset;
       }
@@ -508,7 +508,7 @@ module ietf-dmm-threegpp {
         uses threegpp:threegpp-commandset;
       }
     }
-    augment "/fpcagent:configure-bundles/fpcagent:output/fpcagent:bundles/fpcagent:result-type/fpcagent:create-or-update-success/fpcagent:ports/fpcagent:instructions/fpcagent:instr-type" {
+    augment "/fpcagent:configure-bundles/fpcagent:output/fpcagent:bundles/fpcagent:result-type/fpcagent:common-success/fpcagent:ports/fpcagent:instructions/fpcagent:instr-type" {
       case instr-3gpp-mob {
         uses threegpp:threegpp-commandset;
       }
@@ -518,14 +518,14 @@ module ietf-dmm-threegpp {
     augment "/fpcagent:configure/fpcagent:input/fpcagent:op_body/fpcagent:delete_or_query/fpcagent:targets" {
       uses threegpp:teid-value;
     }
-    augment "/fpcagent:configure/fpcagent:output/fpcagent:result-type/fpcagent:delete_or_query-success/fpcagent:targets" {
+    augment "/fpcagent:configure/fpcagent:output/fpcagent:result-type/fpcagent:delete-success/fpcagent:targets" {
       uses threegpp:teid-value;
     }
 
     augment "/fpcagent:configure-bundles/fpcagent:input/fpcagent:bundles/fpcagent:op_body/fpcagent:delete_or_query/fpcagent:targets" {
       uses threegpp:teid-value;
     }
-    augment "/fpcagent:configure-bundles/fpcagent:output/fpcagent:bundles/fpcagent:result-type/fpcagent:delete_or_query-success/fpcagent:targets" {
+    augment "/fpcagent:configure-bundles/fpcagent:output/fpcagent:bundles/fpcagent:result-type/fpcagent:delete-success/fpcagent:targets" {
       uses threegpp:teid-value;
     }
 }

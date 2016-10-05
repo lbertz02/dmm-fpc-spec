@@ -468,7 +468,7 @@ module ietf-dmm-fpcagent {
           type fpcagent:notification-id;
       }
       leaf timestamp {
-          type uint32;
+          type uint64;
       }
     }
 
