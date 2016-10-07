@@ -417,6 +417,9 @@ module ietf-dmm-fpcagent {
     rpc configure-bundles {
       if-feature fpcagent:fpc-bundles;
       input {
+        leaf client-id {
+          type fpcagent:client-identifier;
+        }
         leaf highest-op-ref-scope {
             if-feature operation-ref-scope;
             type fpcagent:ref-scope;
@@ -431,30 +434,6 @@ module ietf-dmm-fpcagent {
           key op-id;
           uses fpcagent:result-body;
         }
-      }
-    }
-
-    rpc bind-dpn {
-      if-feature fpcagent:fpc-client-binding;
-      input {
-        leaf node-id {
-          type inet:uri;
-        }
-        uses fpcbase:fpc-dpn;
-      }
-      output {
-        uses fpcagent:result-body;
-      }
-    }
-    rpc unbind-dpn {
-      if-feature fpcagent:fpc-client-binding;
-      input {
-        leaf dpn-id {
-          type fpcbase:fpc-dpn-id;
-        }
-      }
-      output {
-        uses fpcagent:result-body;
       }
     }
 
@@ -492,6 +471,9 @@ module ietf-dmm-fpcagent {
         description "Used to register monitoring of parameters/events";
         input {
           uses fpcbase:monitor-config;
+          leaf client-id {
+            type fpcagent:client-identifier;
+          }
         }
         output {
           leaf monitor-result {
@@ -506,6 +488,9 @@ module ietf-dmm-fpcagent {
           list monitors {
             uses fpcbase:monitor-id;
           }
+          leaf client-id {
+            type fpcagent:client-identifier;
+          }
         }
         output {
           leaf monitor-result {
@@ -518,6 +503,9 @@ module ietf-dmm-fpcagent {
         description "Probe the status of a registered monitor";
         input {
           uses fpcbase:targets-value;
+          leaf client-id {
+            type fpcagent:client-identifier;
+          }
         }
         output {
           leaf monitor-result {
