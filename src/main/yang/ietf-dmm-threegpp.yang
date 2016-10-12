@@ -154,15 +154,47 @@ module ietf-dmm-threegpp {
             leaf ipv4-local {
               type inet:ipv4-address;
             }
+            leaf ipv4-local-mask {
+              type inet:ipv4-address;
+            }
+          }
+          case ipv6-address-local {
+            leaf ipv6-address-local {
+              type inet:ipv6-prefix;
+            }
+            leaf ipv6-address-local-mask {
+              type inet:ipv6-prefix;
+            }
           }
           case ipv6-prefix-local {
             leaf ipv6-prefix-local {
               type inet:ipv6-prefix;
             }
           }
+
           case ipv4-ipv6-remote {
             leaf ipv4-ipv6-remote {
               type inet:ip-address;
+            }
+            leaf ipv4-ipv6-remote-mask {
+              type inet:ip-address;
+            }
+          }
+
+          case ipv4-remote {
+            leaf ipv4-remote {
+              type inet:ipv4-address;
+            }
+            leaf ipv4-remote-mask {
+              type inet:ipv4-address;
+            }
+          }
+          case ipv6-address-remote {
+            leaf ipv6-address-remote {
+              type inet:ipv6-prefix;
+            }
+            leaf ipv6-address-remote-mask {
+              type inet:ipv6-prefix;
             }
           }
           case ipv6-prefix-remote {
@@ -170,11 +202,13 @@ module ietf-dmm-threegpp {
               type inet:ipv6-prefix;
             }
           }
-          case next-header {
+
+          case protocol-next-header {
             leaf next-header {
               type uint8;
             }
           }
+
           case local-port {
             leaf local-port {
               type inet:port-number;
@@ -266,6 +300,24 @@ module ietf-dmm-threegpp {
         bit indirect-forward {
           position 7;
         }
+        bit create_new_tft {
+          position 8;
+        }
+        bit delete_existing_tft {
+          position 9;
+        }
+        bit add_filters_to_existing_tft {
+          position 10;
+        }
+        bit replace_filters_in_existing_tft {
+          position 11;
+        }
+        bit delete_filters_from_existing_tft {
+          position 12;
+        }
+        bit no_tft_op {
+          position 13;
+        }
       }
     }
 
@@ -340,39 +392,32 @@ module ietf-dmm-threegpp {
       }
     }
 
-
     // Contexts Update -  Contexts / dpns / mobility-tunnel-parameters
     augment "/fpcagent:tenants/fpcagent:tenant/fpcagent:fpc-mobility/fpcagent:contexts/fpcagent:dpns/fpcagent:mobility-tunnel-parameters/fpcagent:profile-parameters" {
       case threegpp-tunnel {
           uses threegpp:threeGPP-tunnel;
-          uses threegpp:tft;
       }
     }
     augment "/fpcagent:configure/fpcagent:input/fpcagent:op_body/fpcagent:create_or_update/fpcagent:contexts/fpcagent:dpns/fpcagent:mobility-tunnel-parameters/fpcagent:profile-parameters" {
       case threegpp-tunnel {
           uses threegpp:threeGPP-tunnel;
-          uses threegpp:tft;
       }
     }
     augment "/fpcagent:configure-bundles/fpcagent:input/fpcagent:bundles/fpcagent:op_body/fpcagent:create_or_update/fpcagent:contexts/fpcagent:dpns/fpcagent:mobility-tunnel-parameters/fpcagent:profile-parameters" {
       case threegpp-tunnel {
           uses threegpp:threeGPP-tunnel;
-          uses threegpp:tft;
       }
     }
     augment "/fpcagent:configure/fpcagent:output/fpcagent:result-type/fpcagent:common-success/fpcagent:contexts/fpcagent:dpns/fpcagent:mobility-tunnel-parameters/fpcagent:profile-parameters" {
       case threegpp-tunnel {
           uses threegpp:threeGPP-tunnel;
-          uses threegpp:tft;
       }
     }
     augment "/fpcagent:configure-bundles/fpcagent:output/fpcagent:bundles/fpcagent:result-type/fpcagent:common-success/fpcagent:contexts/fpcagent:dpns/fpcagent:mobility-tunnel-parameters/fpcagent:profile-parameters" {
       case threegpp-tunnel {
           uses threegpp:threeGPP-tunnel;
-          uses threegpp:tft;
       }
     }
-
 
     // QoS Updates - Context / UL / qosprofile
     augment "/fpcagent:tenants/fpcagent:tenant/fpcagent:fpc-mobility/fpcagent:contexts/fpcagent:ul/fpcagent:qos-profile-parameters/fpcagent:value" {
@@ -512,30 +557,5 @@ module ietf-dmm-threegpp {
       case instr-3gpp-mob {
         uses threegpp:threegpp-commandset;
       }
-    }
-
-    grouping lbileaf {
-      leaf lbi {
-        type threegpp:ebi-type;
-      }
-    }
-
-    // Deletion Augments - We add the TEID to speed up deletion
-    augment "/fpcagent:configure/fpcagent:input/fpcagent:op_body/fpcagent:delete_or_query/fpcagent:targets" {
-      uses threegpp:teid-value;
-      uses threegpp:lbileaf;
-    }
-    augment "/fpcagent:configure/fpcagent:output/fpcagent:result-type/fpcagent:delete-success/fpcagent:targets" {
-      uses threegpp:teid-value;
-      uses threegpp:lbileaf;
-    }
-
-    augment "/fpcagent:configure-bundles/fpcagent:input/fpcagent:bundles/fpcagent:op_body/fpcagent:delete_or_query/fpcagent:targets" {
-      uses threegpp:teid-value;
-      uses threegpp:lbileaf;
-    }
-    augment "/fpcagent:configure-bundles/fpcagent:output/fpcagent:bundles/fpcagent:result-type/fpcagent:delete-success/fpcagent:targets" {
-      uses threegpp:teid-value;
-      uses threegpp:lbileaf;
     }
 }
