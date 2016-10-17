@@ -45,7 +45,7 @@ module ietf-dmm-fpcbase {
           leaf target {
             type fpc-identity;
           }
-          leaf dpn-id {
+          leaf-list dpns {
                 type fpcbase:fpc-dpn-id;
           }
       }
@@ -192,9 +192,9 @@ module ietf-dmm-fpcbase {
             type inet:ip-address;
             description "Uplink endpoint address of the DPN which agent exists.";
         }
-        leaf tunnel-mtu-size {
+        leaf mtu-size {
             type uint32;
-            description "Tunnel MTU size";
+            description "MTU size";
         }
         container mobility-tunnel-parameters {
             description "Specifies profile specific uplink tunnel parameters to the DPN which the agent exists. The profiles includes GTP/TEID for 3gpp profile, GRE/Key for ietf-pmip profile, or new profile if anyone will define it.";

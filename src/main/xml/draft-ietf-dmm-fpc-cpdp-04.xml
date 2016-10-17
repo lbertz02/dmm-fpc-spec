@@ -539,7 +539,7 @@ DPN         |                 DPN        |
           |
           +---Local-endpoint-address
           |
-          +---Tunnel-MTU-size
+          +---MTU-size
 
               ]]></artwork>
             <postamble></postamble>
@@ -567,7 +567,7 @@ DPN         |                 DPN        |
                address of its own DPN-group to peer the remote
                DPN-group.</t>
 
-               <t hangText="Tunnel-MTU-size:">Defines MTU size of tunnel.
+               <t hangText="MTU-size:">Defines MTU size of traffic between the DPN Group and DPN Peer Group.
                </t>
 
            </list></t>
@@ -1378,6 +1378,37 @@ DPN         |                 DPN        |
             -->
         </section>
 
+      <section anchor="attr_application" title="Attribute Application (Search Order)">
+        <t>An attribute, e.g. a tunnel local ip address, MAY appear in multiple locations.  This is intentional as it
+        provides the Client the ability to reuse attributes, minimize over the wire exchanges and reduce system errors
+        by exchanging less information. The tradeoff is a potential for Agent complexity when looking for speicific
+        attributes.
+        </t>
+        <t>This specification defines a search order for UL/DL information as follows:
+        <list style="numbers">
+          <t>A Context's UL/DL information (Single DPN Case) or the specific DPN entry (multiple DPN support case)</t>
+          <t>DPN Group Peers (when the Remote Address and DPN Group value are provided and Match)</t>
+          <t>DPN Group </t>
+          <t>Data from the Parent Context (if it was specified) according to the order specified above.</t>
+        </list>
+        </t>
+        <t>This informaion's relative location is at the same levels, i.e. relative path, in the Context, DPN Peer Group and DPN Group.
+          For example, when looking for MTU-size it can be found as an attribute of the Context UL (single DPN case), DPN Peer Group  or DPN Group.
+          This consistent relative location permits the Agent to locate attributes in a consistent manner.
+        </t>
+        <t>When the attribute is a direct value of the Context, e.g. IMSI defined in the 3GPP extesnsion, only
+          missing values can be provided by the Parent Context.</t>
+      </section>
+      <section anchor="policy_mobililty" title="Policy and Runtime Data">
+        <t>Contexts and Ports are directly tied to FPC Clients that are supporting runtime, realtime mobility
+        sessions are produced in the mobility control plane. Policy is developed using any number of protocols
+        but they do not need to be delivered by a control plane protocol.</t>
+        <t>When data is delivered as part of a realtime control protocol it should be part of a Context.  If it
+        is a binding to a generic policy that could be used by multiple Contexts a Port is used.  Given the support
+        for pre-configuration of policies and references by identifiers, e.g a Rule ID, most policies do not require
+        realtime delivery.</t>
+      </section>
+
 
 </section>
      <!-- </section> -->
@@ -1394,7 +1425,7 @@ DPN         |                 DPN        |
     <c>Configure processes a single operation.</c>
 
     <c>CONF_BUNDLES</c>
-    <c>1*[HEADER ADMIN_STATE SESSION_STATE OP_TYPE BODY]</c>
+    <c>1*[HEADER ADMIN_STATE SESSION_STATE TRANS_STRATEGY OP_TYPE BODY]</c>
     <c>Configure-bundles takes multiple operations that are to be executed as a group
           with partial failures allowed. They are executed according to the OP_ID value
           in the OP_BODY in ascendig order. If a CONFIGURE_BUNDLES fails, any entities provisioned in the
@@ -1419,6 +1450,10 @@ DPN         |                 DPN        |
     <t>Each message contains a header with the Client Identifier, an execution delay timer and
     an operation identifier. The delay, in ms, is processed as the delay for operation execution
     from the time the operation is received by the Agent.</t>
+
+    <t>The Client Identifier is used by the Agent to associate specific configuration characteristics,
+    e.g. options used by the Client when communicating with the Agent, as well as the association of the Client and tenant in the information
+    model.</t>
 
     <t>Messages that create or update Monitors and Entities, i.e. CONF, CONF_BUNDLES and REG_MONITOR,
     specify an Administrative State which specifies the Administrative state of the message subject(s)
@@ -1464,6 +1499,15 @@ DPN         |                 DPN        |
         for details.</t>
     </list>
     </t>
+    <t>CONF_BUNDLES also has the Transaction Strategy (TRANS_STRATEGY) attribute.  This value specifies the
+    behavior of the Agent when an operation fails while prodessing a CONF_BUNDLES message.  The value of
+    'default' uses the default strategy defined for the message .  The value 'all_or_nothing' will roll back
+    all successfully executed operations within the bundle as well as the operation that failed.</t>
+
+    <t>It is important to note that an envelope protocol used to support this specification may not need to
+    support CONF_BUNDLES messages or specific TRANS_STRATEGY types beyond 'default' when the protocol supports
+    similar semantics.  However, this MUST be clearly defined in the specification that defines how the envelope
+    protocol supports this specificaiton.</t>
 
     <section anchor="agent-processing" title="Agent Operation Processing">
       <t>The Agent will process entities provided in an operation in the following order:

@@ -379,6 +379,9 @@ module ietf-dmm-fpcagent {
       leaf op-id {
         type op-identifier;
       }
+      leaf result {
+        type result;
+      }
       choice result-type {
         case err {
           leaf error-type-id {
@@ -390,10 +393,10 @@ module ietf-dmm-fpcagent {
             }
           }
         }
-        case create-or-update-success {
+        case common-success {
           uses fpcagent:payload;
         }
-        case delete_or_query-success {
+        case delete-success {
           uses fpcbase:targets-value;
         }
         case empty-case {
@@ -407,9 +410,6 @@ module ietf-dmm-fpcagent {
         uses fpcagent:op-input;
       }
       output {
-        leaf result {
-          type result;
-        }
         uses fpcagent:result-body;
       }
     }
@@ -417,6 +417,9 @@ module ietf-dmm-fpcagent {
     rpc configure-bundles {
       if-feature fpcagent:fpc-bundles;
       input {
+        leaf client-id {
+          type fpcagent:client-identifier;
+        }
         leaf highest-op-ref-scope {
             if-feature operation-ref-scope;
             type fpcagent:ref-scope;
@@ -434,30 +437,6 @@ module ietf-dmm-fpcagent {
       }
     }
 
-    rpc bind-dpn {
-      if-feature fpcagent:fpc-client-binding;
-      input {
-        leaf node-id {
-          type inet:uri;
-        }
-        uses fpcbase:fpc-dpn;
-      }
-      output {
-        uses fpcagent:result-body;
-      }
-    }
-    rpc unbind-dpn {
-      if-feature fpcagent:fpc-client-binding;
-      input {
-        leaf dpn-id {
-          type fpcbase:fpc-dpn-id;
-        }
-      }
-      output {
-        uses fpcagent:result-body;
-      }
-    }
-
     // Notification Messages & Structures
     typedef notification-id {
       type uint32;
@@ -468,7 +447,7 @@ module ietf-dmm-fpcagent {
           type fpcagent:notification-id;
       }
       leaf timestamp {
-          type uint32;
+          type uint64;
       }
     }
 
@@ -492,6 +471,9 @@ module ietf-dmm-fpcagent {
         description "Used to register monitoring of parameters/events";
         input {
           uses fpcbase:monitor-config;
+          leaf client-id {
+            type fpcagent:client-identifier;
+          }
         }
         output {
           leaf monitor-result {
@@ -506,6 +488,9 @@ module ietf-dmm-fpcagent {
           list monitors {
             uses fpcbase:monitor-id;
           }
+          leaf client-id {
+            type fpcagent:client-identifier;
+          }
         }
         output {
           leaf monitor-result {
@@ -518,6 +503,9 @@ module ietf-dmm-fpcagent {
         description "Probe the status of a registered monitor";
         input {
           uses fpcbase:targets-value;
+          leaf client-id {
+            type fpcagent:client-identifier;
+          }
         }
         output {
           leaf monitor-result {
