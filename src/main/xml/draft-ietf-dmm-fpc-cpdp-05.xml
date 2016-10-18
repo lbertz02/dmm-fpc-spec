@@ -217,9 +217,9 @@
             etc. Contexts are attached to DPN-groups along with
             consequence of the control plane. One or multiple Contexts
             which have same sets of policies are assigned Ports which
-            abstract those policiy sets. A Context can belong to multiple
+            abstract those policy sets. A Context can belong to multiple
             Ports which serve different kinds of purpose and policy. Monitors
-            aprovide a mechanism to produce reports when events regarding
+            provide a mechanism to produce reports when events regarding
             Ports, Sessions, DPNs or the Agent occurs.</t>
 
         </list>
@@ -342,7 +342,7 @@ DPN         |                 DPN        |
         namely Topology and Policy, are pre-configured, therefore real-time
         data handling capabilities are not required for them. Operators
         that are tenants in the FPC data-plane can configure
-        Toplogy and Policy on the Agent through other means, such as <xref
+        Topology and Policy on the Agent through other means, such as <xref
         target="I-D.ietf-netconf-restconf">Restconf</xref> or <xref
         target="RFC6241">Netconf</xref>. </t>
 
@@ -539,7 +539,7 @@ DPN         |                 DPN        |
           |
           +---Local-endpoint-address
           |
-          +---Tunnel-MTU-size
+          +---MTU-size
 
               ]]></artwork>
             <postamble></postamble>
@@ -567,7 +567,8 @@ DPN         |                 DPN        |
                address of its own DPN-group to peer the remote
                DPN-group.</t>
 
-               <t hangText="Tunnel-MTU-size:">Defines MTU size of tunnel.
+               <t hangText="MTU-size:">Defines MTU size of traffic
+                 between the DPN-Group and this DPN-group-peer.
                </t>
 
            </list></t>
@@ -1004,7 +1005,7 @@ DPN         |                 DPN        |
     |
     +---UL-Tunnel-remote-address
     |
-    +---UL-Tunnel-mtu-size
+    +---UL-MTU-size
     |
     +---UL-Mobility-specific-tunnel-parameters
     |
@@ -1029,8 +1030,7 @@ DPN         |                 DPN        |
             <t hangText="UL-Tunnel-remote-address:">Specifies uplink
             endpoint address of the remote DPN. </t>
 
-            <t hangText="UL-Tunnel-Mtu-size:">Specifies uplink MTU size of
-            tunnel. </t>
+            <t hangText="UL-MTU-size:">Specifies uplink MTU size.</t>
 
             <t hangText="UL-Mobility-specific-tunnel-parameters:">
             Specifies profile specific uplink tunnel parameters to the
@@ -1069,7 +1069,7 @@ DPN         |                 DPN        |
     |
     +---DL-Tunnel-remote-address
     |
-    +---DL-Tunnel-Mtu-size
+    +---DL-MTU-size
     |
     +---DL-Mobility-specific-tunnel-parameters
     |
@@ -1096,7 +1096,7 @@ DPN         |                 DPN        |
             endpoint address of the remote DPN.
             </t>
 
-            <t hangText="DL-Tunnel-Mtu-size:">Specifies downlink MTU size of
+            <t hangText="DL-MTU-size:">Specifies downlink MTU size of
             tunnel.</t>
 
             <t hangText="DL-Mobility-specific-tunnel-parameters:">
@@ -1153,7 +1153,7 @@ DPN         |                 DPN        |
          |
          +---Tunnel-remote-address
          |
-         +---Tunnel-mtu-size
+         +---MTU-size
          |
          +---Mobility-specific-tunnel-parameters
          |
@@ -1184,8 +1184,8 @@ DPN         |                 DPN        |
             <t hangText="Tunnel-remote-address:">Specifies endpoint
             address of remote DPN at the uplink or downlink.</t>
 
-            <t hangText="Tunnel-mtu-size:">Specifies the MTU size of
-            tunnel on uplink or downlink. </t>
+            <t hangText="MTU-size:">Specifies the packet MTU size on
+              uplink or downlink. </t>
 
             <t hangText="Mobility-specific-tunnel-parameters:">
             Specifies profile specific tunnel parameters for uplink or
@@ -1267,10 +1267,10 @@ DPN         |                 DPN        |
                   notification is sent to the Client.</t>
                   <t>Event reporting specifies a list of even types
                   that, if they occur and are related to the monitored
-                  attribute, will result in sending a notfication to the
+                  attribute, will result in sending a notification to the
                   Client</t>
                   <t>Scheduled reporting specifies the time (in seconds
-                  since Jan 1, 1970) when a notificaiton for the monitor should
+                  since Jan 1, 1970) when a notification for the monitor should
                   be sent to the Client. Once this Monitor's notification is
                   completed the Monitor is automatically de-registered.</t>
                   <t>Threshold reporting specifies one or both of a low
@@ -1341,7 +1341,7 @@ DPN         |                 DPN        |
             <t> The identifiers and names in FPC models which reside
             in the same namespace must be unique. That uniqueness must
             be kept in agent or data-plane tenant namespace on an Agent.
-            The tenant namespace uniquenes MUST be applied to all elements
+            The tenant namespace uniqueness MUST be applied to all elements
             of the tenant model, i.e. Topology, Policy and Mobility models. </t>
 
             <t> When a Policy needs to be applied to Contexts in all
@@ -1377,6 +1377,36 @@ DPN         |                 DPN        |
 
             -->
         </section>
+        <section anchor="attr_application" title="Attribute Application (Search Order)">
+        <t>An attribute, e.g. a tunnel local ip address, MAY appear in multiple locations.  This is intentional as it
+        provides the Client the ability to reuse attributes, minimize over the wire exchanges and reduce system errors
+        by exchanging less information. The tradeoff is a potential for Agent complexity when looking for specific
+        attributes.
+        </t>
+        <t>This specification defines a search order for UL/DL information as follows:
+        <list style="numbers">
+          <t>A Context's UL/DL information (Single DPN Case) or the specific DPN entry (multiple DPN support case)</t>
+          <t>DPN Group Peers (when the Remote Address and DPN Group value are provided and Match)</t>
+          <t>DPN Group </t>
+          <t>Data from the Parent Context (if it was specified) according to the order specified above.</t>
+        </list>
+        </t>
+        <t>This information's relative location is at the same levels, i.e. relative path, in the Context, DPN Peer Group and DPN Group.
+          For example, when looking for MTU-size it can be found as an attribute of the Context UL (single DPN case), DPN Peer Group  or DPN Group.
+          This consistent relative location permits the Agent to locate attributes in a consistent manner.
+        </t>
+        <t>When the attribute is a direct value of the Context, e.g. IMSI defined in the 3GPP extension, only
+          missing values can be provided by the Parent Context.</t>
+      </section>
+      <section anchor="policy_mobililty" title="Policy and Runtime Data">
+        <t>Contexts and Ports are directly tied to FPC Clients that are supporting runtime, realtime mobility
+        sessions are produced in the mobility control plane. Policy is developed using any number of protocols
+        but they do not need to be delivered by a control plane protocol.</t>
+        <t>When data is delivered as part of a realtime control protocol it should be part of a Context.  If it
+        is a binding to a generic policy that could be used by multiple Contexts a Port is used.  Given the support
+        for pre-configuration of policies and references by identifiers, e.g a Rule ID, most policies do not require
+        realtime delivery.</t>
+      </section>
 
 
 </section>
@@ -1384,7 +1414,7 @@ DPN         |                 DPN        |
 <section anchor="protocol" title="Protocol">
   <section anchor="messageandsematics" title="Protocol Messages and Semantics">
     <t>Five message types are supported:</t>
-    <texttable anchor="messages" title="Client to Agent Messages">
+<texttable anchor="messages" title="Client to Agent Messages">
     <ttcol align="left">Message</ttcol>
     <ttcol align="left">Type</ttcol>
     <ttcol align="left">Description</ttcol>
@@ -1394,10 +1424,10 @@ DPN         |                 DPN        |
     <c>Configure processes a single operation.</c>
 
     <c>CONF_BUNDLES</c>
-    <c>1*[HEADER ADMIN_STATE SESSION_STATE OP_TYPE BODY]</c>
+    <c>1*[HEADER ADMIN_STATE SESSION_STATE TRANS_STRATEGY OP_TYPE BODY]</c>
     <c>Configure-bundles takes multiple operations that are to be executed as a group
           with partial failures allowed. They are executed according to the OP_ID value
-          in the OP_BODY in ascendig order. If a CONFIGURE_BUNDLES fails, any entities provisioned in the
+          in the OP_BODY in ascending order. If a CONFIGURE_BUNDLES fails, any entities provisioned in the
           CURRENT operation are removed, however, any successful operations completed prior to
           the current operation are preserved in order to reduce system load.</c>
 
@@ -1405,7 +1435,7 @@ DPN         |                 DPN        |
     <c>HEADER ADMIN_STATE *[ MONITOR ]</c>
     <c>Install a monitor at an Agent. The message includes information about the attribute to
       monitor and the reporting method.  Note that a MONITOR_CONFIG is required for this
-      opeation.</c>
+      operation.</c>
 
     <c>DEREG_MONITOR</c>
     <c>HEADER *[ MONITOR_ID ] [ boolean ]</c>
@@ -1420,6 +1450,10 @@ DPN         |                 DPN        |
     an operation identifier. The delay, in ms, is processed as the delay for operation execution
     from the time the operation is received by the Agent.</t>
 
+    <t>The Client Identifier is used by the Agent to associate specific configuration characteristics,
+    e.g. options used by the Client when communicating with the Agent, as well as the association of
+    the Client and tenant in the information model.</t>
+
     <t>Messages that create or update Monitors and Entities, i.e. CONF, CONF_BUNDLES and REG_MONITOR,
     specify an Administrative State which specifies the Administrative state of the message subject(s)
     after the successful completion of the operation. If the status is set to virtual, any existing data on
@@ -1431,7 +1465,7 @@ DPN         |                 DPN        |
     data will be sent via a notify from the Agent to the Client <xref target="asyncnotification"/>. When
     returning an 'ok' of any kind, optional data may be present.</t>
     <t>Two Agent notifications are supported:</t>
-    <texttable anchor="notifications" title="Agent to Client Messages (Notfications)">
+    <texttable anchor="notifications" title="Agent to Client Messages (notifications)">
       <ttcol align="left">Message</ttcol>
       <ttcol align="left">Type</ttcol>
       <ttcol align="left">Description</ttcol>
@@ -1484,7 +1518,7 @@ DPN         |                 DPN        |
     </t>
     <t>When deleting objects only their name needs to be provided.  However, attributes MAY be provided
       if the Client wishes to avoid requiring the Agent cache lookups.</t>
-    <t>When deleting an attribute, a leaf reference should be provided.  This is a path to the attibutes.</t>
+    <t>When deleting an attribute, a leaf reference should be provided.  This is a path to the attributes.</t>
   </section>
     <section anchor="cloning" title="Cloning">
       <t>Cloning is an optional feature that allows a Client to copy one structure to another
@@ -1522,7 +1556,7 @@ DPN         |                 DPN        |
       <t>unknown - the location of the references are unknown. This is treated as a 'storage' type.</t>
   </list></t>
     <t>If supported by the Agent, when cloning instructions are present, the scope MUST NOT be 'none'.  When
-    Ports are present the scope MUST be 'storage' or 'uknown'.
+    Ports are present the scope MUST be 'storage' or 'unknown'.
   </t>
   <t>An agent that only accepts 'op' or 'bundle' reference scope messages is referred to as 'stateless'
     as it has no direct memory of references outside messages themselves. This permits low memory
@@ -1592,7 +1626,7 @@ DPN         |                 DPN        |
   </section>
   <section anchor="protoperation" title="Protocol Operation">
     <section anchor="simple" title="Simple RPC Operation">
-<t>An FPC Client and Agent MUST identify themself using the CLI_ID and AGT_ID respectively to ensure that for all
+<t>An FPC Client and Agent MUST identify themselves using the CLI_ID and AGT_ID respectively to ensure that for all
 transactions a recipient of an FPC message can unambiguously identify the sender of the FPC message.
 <!--All messages between an Agent and a Client must identify the Client and Agent using the CLI_ID and AGT_ID respectively.-->
 A Client MAY direct the Agent to enforce a rule in a particular DPN by including a DPN_ID value in a Context. Otherwise the Agent
@@ -1605,14 +1639,14 @@ the ERROR_TYPE_ID and ERROR_INFORMATION accordingly and MAY clear the Context or
 in the response.</t>
 
 <t>If based upon Agent configuration or the processing of the request possibly taking a significant amount of time the
-  Agent MAY respond with an OK_NOTIFY_FOLLOWS with an optional RESPONSE_BODY containing the paritially completed
+  Agent MAY respond with an OK_NOTIFY_FOLLOWS with an optional RESPONSE_BODY containing the partially completed
   entities. When an OK_NOTIFY_FOLLOWS is sent, the Agent will, upon completion or failure of the operation, respond with an
   asynchronous CONFIG_RESULT_NOTIFY to the Client.</t>
 
 <t>A Client MAY add a property to a Context without providing all required details of the attribute's value. In such case
 the Agent SHOULD determine the missing details and provide the completed property description back to the Client. If the
 processing will take too long or based upon Agent configuration, the Agent MAY respond with an OK_NOTIFY_FOLLOWS with a
-  RESPONSE_BODY containing the paritially completed entities.</t>
+  RESPONSE_BODY containing the partially completed entities.</t>
 <t>
 In case the Agent cannot determine the missing value of an attribute's value per the Client's request, it leaves the
 attribute's value cleared in the RESPONSE_BODY and sets the RESULT to Error, ERROR_TYPE_ID and ERROR_INFORMATION. As example,
@@ -1679,7 +1713,7 @@ adds a new logical Context to the DPN to treat the MN's traffic (1) and includes
 to the CONFIGURE command. The LMA-C identifies the selected Anchor DPN by including the associated DPN identifier.
 </t>
 
-<t>The LMA-C adds properties during the creaton of the new Context. One property is added to specify the
+<t>The LMA-C adds properties during the creation of the new Context. One property is added to specify the
 forwarding tunnel type and endpoints (Anchor DPN, Edge DPN1) in each direction (as required). Another property is
 added to specify the QoS differentiation, which the MN's traffic should experience. At reception of the Context, the
 FPC Agent utilizes local configuration commands to create the tunnel (tun1) as well as the traffic control (tc)
@@ -1687,7 +1721,7 @@ to enable QoS differentiation. After configuration has been completed, the Agent
 traffic destined to the MN's HNP specified as a property in the Context to the configured tunnel interface (tun1).</t>
 
 <t>During handover, the LMA-C receives an updating PBU from the handover target MAG-C2. The PBU refers to a
-new Data-Plane node (Edge DPN2) to represent the new tunnel endpoints in the downlink and uplink, as requried.
+new Data-Plane node (Edge DPN2) to represent the new tunnel endpoints in the downlink and uplink, as required.
 The LMA-C sends a CONFIGURE message (3) to the Agent to modify the existing tunnel property of the existing Context
 and to update the tunnel endpoint from Edge DPN1 to Edge DPN2. Upon reception of the CONFIGURE message, the Agent
 applies updated tunnel property to the local configuration and responds to the Client (4).</t>
@@ -1722,13 +1756,13 @@ applies updated tunnel property to the local configuration and responds to the C
         <postamble></postamble>
       </figure>
 </t>
-<t>When a teardown of the session occurs, MAG-C1 will send a PBU with a lifteime
+<t>When a teardown of the session occurs, MAG-C1 will send a PBU with a lifetime
 value of zero.  The LMA-C sends a CONFIGURE message (1) to the Agent to modify the existing
-tunnel property of the existing Context to delete the tunnel information.) Upon reception of the CONFIGRE message,
+tunnel property of the existing Context to delete the tunnel information.) Upon reception of the CONFIGURE message,
 the Agent removes the tunnel configuration and responds to the Client (2). Per <xref target="RFC5213"/>, the PBA
 is sent back immediately after the PBA is received.</t>
 
-<t>If no valid PBA is recieved after the expiration of the MinDelayBeforeBCEDelete timer (see <xref target="RFC5213"/>),
+<t>If no valid PBA is received after the expiration of the MinDelayBeforeBCEDelete timer (see <xref target="RFC5213"/>),
 the LMA-C will send a CONFIGURE (3) message with a deletion request for the Context.  Upon reception of the message, the
 Agent deletes the tunnel and route on the DPN and responds to the Client (4).</t>
     </section>
@@ -1786,7 +1820,7 @@ Agent deletes the tunnel and route on the DPN and responds to the Client (4).</t
 
   <t>
    As depicted in <xref target="fig_port"/>, the Port represents the anchor
-   of Rules through the Policy-group, Policy, Rule heirarchy configured by any
+   of Rules through the Policy-group, Policy, Rule hierarchy configured by any
    mechanism including RPC or N.  A Client and Agent use the identifier of the associated Policy to directly
    access the Rule and perform modifications of traffic Descriptors or Action
    references.  A Client and Agent use the identifiers to access the Descriptors
@@ -1833,8 +1867,8 @@ Agent deletes the tunnel and route on the DPN and responds to the Client (4).</t
       </figure>
 </t>
 <t>
-   As depicted in <xref target="fig_context"/>, the Context represents a mobiility
-   session heirarchy.  A Client and Agent directly assigns values such as dowlink
+   As depicted in <xref target="fig_context"/>, the Context represents a mobility
+   session hierarchy.  A Client and Agent directly assigns values such as downlink
    traffic descriptors, QoS information, etc.  A Client and Agent use the context
    identifiers to access the descriptors, qos information, etc. to perform modifications.
    From the viewpoint of packet processing, arriving packets are matched against traffic
@@ -1842,7 +1876,7 @@ Agent deletes the tunnel and route on the DPN and responds to the Client (4).</t
    specified in the Context's properties. If present, the final action is to use a Context's
    tunnel information to encapsulate and forward the packet.
   </t>
-<t>A second Context also references context1 in the figure.  Based upon the techology a property
+<t>A second Context also references context1 in the figure.  Based upon the technology a property
   in a parent context MAY be inherited by its descendants.  This permits concise over the wire
   representation.  When a Client deletes a parent Context all children are also deleted.</t>
 </section>
@@ -1851,9 +1885,9 @@ Agent deletes the tunnel and route on the DPN and responds to the Client (4).</t
       <section anchor="bulkopexample" title="Bulk Data in a Single Operation">
         <t>A single operation MAY contain multiple entities.  This permits bundling of requests
         into a single operation.   In the example below two PMIP sessions are created via two PBU
-        messages and sent to the Agent in a single CONFIGURE message (1). Upon receiveing the message,
+        messages and sent to the Agent in a single CONFIGURE message (1). Upon recieveing the message,
         the Agent responds back with an OK_NOTIFY_FOLLOWS (2), completes work on the DPN to activate
-        the assocaited sessions then responds to the Client wiht a CONFIG_RESULT_NOTIFY (3).</t>
+        the associated sessions then responds to the Client with a CONFIG_RESULT_NOTIFY (3).</t>
 <t>
  <figure anchor="fig_bulk_example"
               title="Exemplary Bulk Entity with Asynchronous Notification Sequence (focus on FPC reference point)">
@@ -1973,7 +2007,7 @@ Agent deletes the tunnel and route on the DPN and responds to the Client (4).</t
       </figure>
 </t>
         <t>Cloning has the added advantage of reducing the over the wire data size required to create
-        multiple entities.  This can improve performance if serializaiton / deserialization of multiple
+        multiple entities.  This can improve performance if serialization / deserialization of multiple
         entities incurs some form of performance penalty.</t>
       </section>
       <section anchor="commandsetexample" title="Command Bitsets (Optional)">
@@ -1987,17 +2021,17 @@ Agent deletes the tunnel and route on the DPN and responds to the Client (4).</t
           specify that the HNP should be assigned by the Agent this error is easily detected.  Without
           the Command Set the default behavior of the Agent would be to assign the HNP and then respond
           back to the Client where the error would be detected and subsequent messaging would be required to
-          remedy the error. Such sitations can increase the time to error detection and overall system load
-          withouth the Command Set present.</t>
-          <t>Unambiguous provisioning specification.  The Agent is exactily in sync with the expectations of the
+          remedy the error. Such situations can increase the time to error detection and overall system load
+          without the Command Set present.</t>
+          <t>Unambiguous provisioning specification.  The Agent is exactly in sync with the expectations of the
           Client as opposed to guessing what DPN work could be done based upon data present at the Agent. This
           greatly increases the speed by which the Agent can complete work.</t>
           <t>Permits different technologies with different instructions to be sent in the same message.</t>
         </list>
         </t>
-        <t>As Command Bitsets are technology specfic, e.g. PMIP or 3GPP Mobility, the type of work varies on the DPN and
+        <t>As Command Bitsets are technology specific, e.g. PMIP or 3GPP Mobility, the type of work varies on the DPN and
         the amount of data present in a Context or Port will vary.  Using the technology specific instructions allows the
-        Client to serve multiple technologies and MAY result in a more statless Client as the instructions are transferred
+        Client to serve multiple technologies and MAY result in a more stateless Client as the instructions are transferred
         the Agent which will match the desired, technology specific instructions with the capabilities and over the wire
         protocol of the DPN more efficiently.</t>
       </section>
@@ -2010,13 +2044,13 @@ Agent deletes the tunnel and route on the DPN and responds to the Client (4).</t
         operations in the CONFIG_BUNDLES message or the data store.</t>
         <t>Agents can also be stateless by only supporting the 'none', 'op' and 'bundle' reference scopes.   This does not imply
         they lack storage but merely the search space they use when looking up references for an entity. The figure below shows the caching
-        heirarchy provided by the Reference Scope</t>
+        hierarchy provided by the Reference Scope</t>
         <t>Caches are temporarily created at each level and as the scope includes more caches the amount of
         entities that are searched increases. <xref target="fig_cache_example"/> shows an example cache where
-        each Cache where a containment heirarchy is provided for all caches.</t>
+        each Cache where a containment hierarchy is provided for all caches.</t>
 <t>
         <figure anchor="fig_cache_example"
-              title="Exemplary Heirarchical Cache">
+              title="Exemplary Hierarchical Cache">
         <artwork align="center"><![CDATA[
                        +---------------+
                        | Global Cache  |
@@ -2048,7 +2082,7 @@ Agent deletes the tunnel and route on the DPN and responds to the Client (4).</t
     <section anchor="preprov" title="Pre-provisioning">
       <t>Although Contexts are used for Session based lifecycle elements, Ports may exist outside of a specific
       lifecycle and represent more general policies that may affect multiple Contexts (sessions).   The use of
-      pre-provisioning of Ports permits policy and administrative use cases to be exected.  For example, creating
+      pre-provisioning of Ports permits policy and administrative use cases to be executed.  For example, creating
       tunnels to forward traffic to a trouble management platform and dropping packets to a defective web server
       can be accomplished via provisioning of Ports.</t>
       <t>The figure below shows a CONFIGURE (1) message used to install a Policy-group, policy-group1, using a Context
@@ -2479,7 +2513,7 @@ Agent deletes the tunnel and route on the DPN and responds to the Client (4).</t
 
       <c>TIMESTAMP</c>
       <c>[32, unsigned integer]</c>
-      <c>The time that the notification occured.</c>
+      <c>The time that the notification occurred.</c>
 
       <c>DATA</c>
       <c>*[ OP_ID RESPONSE_BODY (<xref target="op_respbody"/>) ]</c>
@@ -2738,7 +2772,7 @@ Agent deletes the tunnel and route on the DPN and responds to the Client (4).</t
       <t>session - Assign values for the Session Level.  When this involves 'assign-fteid-ip' and 'assign-fteid-teid' this implies the values are part
         of the default bearer.</t>
       <t>uplink - Command applies to uplink.</t>
-      <t>downlink - Comman applies to downlink.</t>
+      <t>downlink - Command applies to downlink.</t>
     </list>
   </t>
  </section>
@@ -2749,17 +2783,17 @@ Agent deletes the tunnel and route on the DPN and responds to the Client (4).</t
   OpenDaylight plug-ins developed in Java by Sprint.   Version 03 was known as fpcagent and version 04's
   implementation is simply referred to as 'fpc'.</t>
  <t>fpcagent's intent was to provide a proof of concept for FPC Version 03 Model 1 in January 2016 and research various
-  optimiziations, errors, corrections and optimizations that the Agent could make when supporting multiple
+  optimizations, errors, corrections and optimizations that the Agent could make when supporting multiple
   DPNs.</t>
  <t>As the code developed to support OpenFlow and a proprietary DPN from a 3rd party, several of the
   advantages of a multi-DPN Agent became obvious including the use of machine learning to reduce the
   number of Flows and Policy entities placed on the DPN.  This work has driven new efforts in the
   DIME WG, namely Diameter Policy Groups <xref target="I-D.bertz-dime-policygroups"/>.</t>
 <t>A throughput performance of tens per second using various NetConf based solutions in OpenDaylight
-  made fpcagent undesirable for call processing.   The RPC implementration improved throughput by an
-  order of magnitude but was not useful based upon FPC's Version 03 design using either model.  During
-  this time the features of version 04 and its converged model became attractive and teh fpcagent project
-  was closed in August 2016. fpcagent will no longer be developed and will remain a proprietary implemenation.</t>
+  made fpcagent undesirable for call processing.   The RPC implementation improved throughput by an
+  order of magnitude but was not useful based upon FPC's Version 03 design using two information models.  During
+  this time the features of version 04 and its converged model became attractive and the fpcagent project
+  was closed in August 2016. fpcagent will no longer be developed and will remain a proprietary implementation.</t>
 <t>The learnings of fpcagent has influenced the second project, fpc. Fpc is also an OpenDaylight project but
   is intended for open source release, if circumstances permit.  It is also scoped to be a fully compliant
   FPC Agent that supports multiple DPNs including those that communicate via OpenFlow. The following features
@@ -2768,17 +2802,17 @@ Agent deletes the tunnel and route on the DPN and responds to the Client (4).</t
   <t>Migration of non-realtime provisioning of entities such as topology and policy allowed the implementation
     to focus only on the rpc.</t>
   <t>Using only 5 messages and 2 notifications has also reduced implementation time.  As of this writing the
-    project is 4 weeks old and currently supports CONFIGURE and CONFIGURE_BUNDLES based upon the effort of
+    project currently supports CONFIGURE and CONFIGURE_BUNDLES based upon the effort of
     3 part time engineers.</t>
-  <t>Command Sets, an optional feature in this specfication, have eliminated 80% of the time spent determining what needs to be done with a Context
+  <t>Command Sets, an optional feature in this specification, have eliminated 80% of the time spent determining what needs to be done with a Context
     during a Create or Update operation.</t>
   <t>The addition of the DPN List in a Context Delete operation permits the Agent to avoid lookups of Context
     data in the Cache entirely.  For 3GPP support, extra attributes are required in the Delete to avoid any
     cache lookup.</t>
   <t>Op Reference is an optional feature modeled after video delivery. It has reduced unnecessary cache lookups.
     It also has the additional benefit of allowing an Agent to become cacheless and effectively act
-    as a FPC protocol adapater remotely with multi-DPN support or colocated on the DPN in a single-DPN support model.</t>
-  <t>Multi-tenant support allows for Cache searches to be partitioned for clustering and perforamnce improvements. This
+    as a FPC protocol adapter remotely with multi-DPN support or colocated on the DPN in a single-DPN support model.</t>
+  <t>Multi-tenant support allows for Cache searches to be partitioned for clustering and performance improvements. This
     has not been capitalized upon by the current implementation but is part of the development roadmap.</t>
   <t>Use of Contexts to pre-provision policy has also eliminated any processing of Ports for DPNs which permitted
     the code for CONFIGURE and CONFIGURE_BUNDLES to be implemented as a simple nested FOR loops (see below).</t>
@@ -2787,7 +2821,7 @@ Agent deletes the tunnel and route on the DPN and responds to the Client (4).</t
   <t>Current performance results without code optimizations or tuning allow 2-5K FPC Contexts processed per second
   on a Mac laptop sourced in 2013.  This results in 2x the number of transactions on the southbound interface to a
   proprietary DPN API on the same machine.</t>
-  <t>fpc currently supports the following after 3 weeks of development by two part time engineers:
+  <t>fpc currently supports the following:
   <list hangIndent="24" style="hanging">
   <t>1 proprietary DPN API</t>
   <t>Policy and Topology as defined in this specification using OpenDaylight North Bound Interfaces such as
@@ -2825,8 +2859,8 @@ assignment system (receives rpc call):
   end if
 
 assignments:
-  assign DPN, IPv4 Address and/or tunnel info as requried
-  if an error occurs undo all assigments in this operation
+  assign DPN, IPv4 Address and/or tunnel info as required
+  if an error occurs undo all assignments in this operation
   return result
 
 activation system:
@@ -2839,13 +2873,13 @@ activation system:
     end for
   end for
   commit changes to in memory cache
-  log transaction for tracking and nofication (CONFIG_RESULT_NOTIFY)
+  log transaction for tracking and notification (CONFIG_RESULT_NOTIFY)
 
       ]]></artwork>
     </figure>
   </t>
 
-<t>As of this writing (Sept 2016) the implementation is 3 weeks old an considered pre-alpha.  It is scheduled to
+<t>As of this writing (Sept 2016) the implementation is considered pre-alpha.  It is scheduled to
   be conformant to all FPC version 04 aspects within 60 days.</t>
 <t>For further information please contact Lyle Bertz who is also a co-author of this document.</t>
 
@@ -2948,7 +2982,7 @@ Such protocol-specific details will be described in separate documents and may r
 
 <t><list style="symbols">
 <t>ietf-dmm-fpcbase (fpcbase) - Defines the base model for model as defined in this document</t>
-<t>ietf-dmm-fpcagent (fpcagent) - Defines the FPC Agent entites and messages as defined in this document</t>
+<t>ietf-dmm-fpcagent (fpcagent) - Defines the FPC Agent entities and messages as defined in this document</t>
 
 <t>ietf-pmip-qos (pmip-qos) - Defines proxy mobile IPv6 QoS parameters per RFC 7222</t>
 <t>ietf-traffic-selectors-types (traffic-selectors) - Defines Traffic Selectors per RFC 6088</t>
