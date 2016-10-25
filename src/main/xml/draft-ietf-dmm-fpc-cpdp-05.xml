@@ -18,7 +18,7 @@
 <!ENTITY RFC6089 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6089.xml">
 <!ENTITY RFC7222 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7222.xml">
 <!ENTITY RFC6241 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6241.xml">
-<!ENTITY IDPGRP SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.bertz-dime-policygroups.xml">
+<!ENTITY I-D.bertz-dime-policygroups SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.bertz-dime-policygroups.xml">
 <!ENTITY I-D.ietf-dmm-requirements SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-dmm-requirements.xml">
 <!ENTITY I-D.ietf-dmm-deployment-models SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-dmm-deployment-models.xml">
 <!ENTITY I-D.ietf-netconf-restconf SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-netconf-restconf.xml">
@@ -2949,7 +2949,7 @@ Such protocol-specific details will be described in separate documents and may r
     <references title="Informative References">
     &I-D.ietf-dmm-deployment-models;
     &I-D.ietf-netconf-restconf;
-    &IDPGRP;
+    &I-D.bertz-dime-policygroups;
     &RFC5213;
     &RFC7222;
     &RFC6241;
