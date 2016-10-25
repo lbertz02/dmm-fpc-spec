@@ -1133,7 +1133,7 @@ DPN         |                 DPN        |
         This Agent MUST maintain a set of Context data for each DPN.
         The Context contains a DPNs list where each entry of the list consists of the parameters
         in <xref target="fig_dpn-context-im"/>. A Context data for one DPN has two
-        entries for each direction of uplink and downlink.
+        entries for each direction of uplink and downlink or, where applicable, a direction of 'both'.
         </t>
 
         <t>
@@ -1176,7 +1176,7 @@ DPN         |                 DPN        |
             context data installed. </t>
 
             <t hangText="Direction:"> Specifies which side of connection
-            at the DPN indicated, "uplink" or "downlink". </t>
+            at the DPN indicated, "uplink", "downlink" or "both". </t>
 
             <t hangText="Tunnel-local-address:"> Specifies endpoint
             address of the DPN at the uplink or downlink. </t>

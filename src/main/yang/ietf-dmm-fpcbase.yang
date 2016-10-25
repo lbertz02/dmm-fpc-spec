@@ -122,7 +122,7 @@ module ietf-dmm-fpcbase {
           key descriptor-id;
           uses fpcbase:fpc-descriptor-id;
           leaf direction {
-            type fpc-direction;
+            type fpcbase:fpc-direction;
           }
         }
         list actions {
@@ -218,6 +218,7 @@ module ietf-dmm-fpcbase {
        type enumeration {
          enum uplink;
          enum downlink;
+         enum both;
        }
     }
 
