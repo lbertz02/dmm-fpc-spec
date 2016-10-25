@@ -2445,20 +2445,20 @@ Agent deletes the tunnel and route on the DPN and responds to the Client (4).</t
       <c>[8, session state] </c>
       <c>C,U</c>
 
-      <c>COMMAND_SET (1)</c>
+      <c>COMMAND_SET</c>
       <c>FPC Command Bitset. See <xref target="commandsets"/>.</c>
-      <c>C,U</c>
+      <c>C,U [NOTE 1]</c>
 
-      <c>CLONES (1)</c>
+      <c>CLONES</c>
       <c>*[ FPC-Identity FPC-Identity ] (<xref target="naming"/>)</c>
-      <c>C,U</c>
+      <c>C,U [NOTE 1]</c>
 
       <c>PORTS</c>
       <c>*[ PORT ]</c>
       <c>C,U</c>
 
       <c>CONTEXTS</c>
-      <c>*[ CONTEXT [ COMMAND_SET (1) ] ]</c>
+      <c>*[ CONTEXT [ COMMAND_SET [NOTE 1] ] ]</c>
       <c>C,U</c>
 
       <c>TARGETS</c>
@@ -2466,7 +2466,7 @@ Agent deletes the tunnel and route on the DPN and responds to the Client (4).</t
       <c>Q,D</c>
 
       <postamble>
-        (1) - Only present if the corresponding feature is supported by the Agent.
+        NOTE 1 - Only present if the corresponding feature is supported by the Agent.
       </postamble>
     </texttable>
 
@@ -2477,26 +2477,32 @@ Agent deletes the tunnel and route on the DPN and responds to the Client (4).</t
 
       <c>PORTS</c>
       <c>*[ PORT ]</c>
-      <c>C,U</c>
+      <c>C,U [NOTE 2]</c>
 
       <c>CONTEXTS</c>
-      <c>*[ CONTEXT [ COMMAND_SET (1) ] ]</c>
-      <c>C,U</c>
+      <c>*[ CONTEXT [ COMMAND_SET [NOTE 1] ] ]</c>
+      <c>C,U [NOTE 2]</c>
 
       <c>TARGETS</c>
       <c>*[ FPC-Identity (<xref target="naming"/>) *[DPN_ID] ]</c>
-      <c>Q,D</c>
+      <c>Q,D [NOTE 2]</c>
 
-      <postamble>
-        (1) - Only present if the corresponding feature is supported by the Agent.
-      </postamble>
+      <c>ERROR_TYPE_ID</c>
+      <c>[32, unsigned integer]</c>
+      <c>All [NOTE 3]</c>
+
+      <c>ERROR_INFORMATION</c>
+      <c>[1024, octet string]</c>
+      <c>All [NOTE 3]</c>
     </texttable>
-
-    <t>If an error occurs the following information is returned.
-    <list>
-      <t>ERROR_TYPE_ID (Unsigned 32) - The identifier of a specific error type
-      </t><t>ERROR_INFORMATION - An OPTIONAL string of no more than 1024 characters.
-    </t></list>
+    <t>Notes:
+      <list>
+        <t>NOTE 1 - Only present if the corresponding feature is supported by the Agent.</t>
+        <t>NOTE 2 - Present in OK and OK_NOTIFY_FOLLOWS for both CONF and CONF_BUNDLES.
+           MAY also be present in an CONF_BUNDLES Error response (ERR) if one of the
+          operations completed successfully.</t>
+        <t>NOTE 3 - Present only for Error (ERR) responses.</t>
+        </list>
     </t>
 
     <texttable anchor="ayncnotify_detail" title="CONFIG_RESULT_NOTIFY Asynchronous Notification Fields">
