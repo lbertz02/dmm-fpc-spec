@@ -240,7 +240,7 @@
 
     </section>
 
-    <section title="Conventions and Terminology">
+    <section title="Conventions">
       <t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
       "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
       document are to be interpreted as described in <xref
@@ -250,6 +250,43 @@
    </section>
 
     <!-- <section anchor="pcmodel" title="Reference Architecture and Information Model"> -->
+
+    <section anchor="terminology" title="Terminology">
+        <t><list hangIndent="24" style="hanging">
+            <t hangText="DPN:">A data-plane node that are capable to
+            deploy data-plane features. DPN may be switches, routers
+            which are realized on regardless of hardware or software
+            based.</t>
+
+            <t hangText="FPC Agent:"> A functional entity in FPC that
+            handle DPNs and provides abstracted data-plane networks to
+            mobility management systems and/or applications through FPC
+            Clients. </t>
+
+            <t hangText="FPC Client:">A functional entity in FPC that
+            is involved into mobility management systems and/or
+            applications to handle DPNs. </t>
+
+
+            <t hangText="Tenant:">An operational entity that manages
+            mobility management systems or applications which require
+            data-plane handling. </t>
+
+            <t hangText="Domain:">One or more DPNs that form a
+            data-plane network. A mobility management system or an
+            application in a tenant may utilize single or multiple
+            domains.</t>
+
+            <t hangText="Port:">A set of forwarding policies. </t>
+
+            <t hangText="Context:">An abstracted endpoint of a mobility
+            session that is associated with runtime attributes. Port may
+            apply to Context with its instantiated forwarding policies.
+            </t>
+
+        </list></t>    
+    
+    </section>
 
     <section anchor="refarch" title="FPC Architecture ">
 
