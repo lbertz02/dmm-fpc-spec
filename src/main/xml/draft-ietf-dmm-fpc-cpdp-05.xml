@@ -254,8 +254,9 @@
     <section anchor="terminology" title="Terminology">
         <t><list hangIndent="24" style="hanging">
             <t hangText="DPN:">A data-plane node that are capable to
-            deploy data-plane features. DPN MAY be realized by switches,
-            routers on regardless of hardware or software.</t>
+            deploy data-plane features. DPN may be switches, routers
+            which are realized on regardless of hardware or software
+            based.</t>
 
             <t hangText="FPC Agent:"> A functional entity in FPC that
             handle DPNs and provides abstracted data-plane networks to
