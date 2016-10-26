@@ -1494,9 +1494,19 @@ DPN         |                 DPN        |
     <t>Messages that create or update Monitors and Entities, i.e. CONF, CONF_BUNDLES and REG_MONITOR,
     specify an Administrative State which specifies the Administrative state of the message subject(s)
     after the successful completion of the operation. If the status is set to virtual, any existing data on
-    the DPN is removed. If the value is set to disabled, then an operation will occur on the DPN IF the entity
-    exists on the DPN. If set to 'active' the DPN will be provisioned. Values are 'enabled', 'disabled' or
-    'virtual'.</t>
+    the DPN is removed. If the value is set to disabled, then an operation to disable the associated
+    entity will occur on the DPN IF that entity exists on the DPN. If set to 'active' the DPN will
+    be provisioned. Values are 'enabled', 'disabled' or 'virtual'.</t>
+
+    <t>CONF_BUNDLES also has the Transaction Strategy (TRANS_STRATEGY) attribute.  This value specifies the
+    behavior of the Agent when an operation fails while prodessing a CONF_BUNDLES message.  The value of
+    'default' uses the default strategy defined for the message.  The value 'all_or_nothing' will roll back
+    all successfully executed operations within the bundle as well as the operation that failed.</t>
+
+    <t>It is important to note that an envelope protocol used to support this specification may not need to
+    support CONF_BUNDLES messages or specific TRANS_STRATEGY types beyond 'default' when the protocol provides
+    similar semantics.  However, this MUST be clearly defined in the specification that defines how the envelope
+    protocol supports this specificaiton.</t>
 
     <t>An Agent will respond with an error, ok, or an ok with indication that remaining
     data will be sent via a notify from the Agent to the Client <xref target="asyncnotification"/>. When
