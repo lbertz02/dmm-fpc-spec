@@ -1812,6 +1812,54 @@ is sent back immediately after the PBA is received.</t>
 <t>If no valid PBA is received after the expiration of the MinDelayBeforeBCEDelete timer (see <xref target="RFC5213"/>),
 the LMA-C will send a CONFIGURE (3) message with a deletion request for the Context.  Upon reception of the message, the
 Agent deletes the tunnel and route on the DPN and responds to the Client (4).</t>
+<t>When a multi-DPN Agent is used the DPN list permits several DPNs to be provisioned in a single message.</t>
+<t>
+ <figure anchor="fig_multidpn_example"
+              title="Exemplary Message Sequence for Multi-DPN Agent">
+        <artwork align="center"><![CDATA[
+
+                        +-----------+            +-------+ +---------+
++------+ +------+     +-----+ FPC   |            | FPC   | |  Anchor |
+|MAG-C1| |MAG-C2|     |LMA-C| Client|            | Agent | |   DPN1  |
++------+ +------+     +-----+-------+            +-------+ +---------+
+[MN attach]  |            |                          |           |
+   |-------------PBU----->|                          |           |
+   |         |            |---(1)--CONFIG(CREATE)--->|           |
+   |         |            |   [ CONTEXT_ID, DPNS [   |--tun1 up->|
+   |         |            |[DPN1,DOWNLINK(QOS/TUN)], |           |
+   |         |            | [DPN1,UPLINK(QOS/TUN)],  |--tc qos-->|
+   |         |            |[DPN2,DOWNLINK(QOS/TUN)], |           |
+   |         |            | [DPN2,UPLINK(QOS/TUN)],  |           |
+   |         |            |     IP_PREFIX(HNP) ]     |           |
+   |         |            |<-(2)- OK_NOTIFY_FOLLOWS -|-route add>|
+   |         |            |                          |           |
+   |<------------PBA------|                          |           |
+   |         |            |                          |           |
+   | +----+               |                          |           |
+   | |Edge|               |                          |           |
+   | |DPN2|               |                          |           |
+   | +----+               |                          |           |
+   |   |<---------------------- tun1 up -------------|           |
+   |   |<---------------------- tc qos --------------|           |
+   |   |<---------------------- route add -----------|           |
+   |   |                  |                          |           |
+   |   |                  |<(3) CONFIG_RESULT_NOTIFY |           |
+   |   |                  |   [ Response Data ]      |           |
+   |   |                  |                          |           |
+      ]]></artwork>
+        <postamble></postamble>
+      </figure>
+</t>
+   <t><xref target="fig_multidpn_example"/> shows how the first 2 messages in <xref target="fig_msc_example"/> are
+       supported when a multi-DPN Agent communicates with both Anchor DPN1 and Edge DPN2.
+       In such a case, the FPC Client sends the donwnlink and uplink for both DPNs in the "DPNS"
+       list of the same Context. Message 1 shows the DPNS list with all entries.  Each entry identifies the DPN
+       and direction (one of 'uplink', 'downlink' or 'both').  Generally, the 'both' direction is not used
+       for normal mobility session processing.  It is commonly used for the instantaition of Policies on a
+       specific DPN (see <xref target="preprov"/>).</t>
+   <t>The Agent responds with an OK_NOTIFY_FOLLOWS while it simultaneoulsy provisions both DPNs. Upon successful
+     completion, the Agent responds to the Client with a CONFIG_RESULT_NOTIFY indicating the operation status.
+    </t>
     </section>
     <section anchor="policy_ex" title="Policy And Mobility on the Agent">
 
@@ -2136,7 +2184,7 @@ Agent deletes the tunnel and route on the DPN and responds to the Client (4).</t
         set aside for pre-provisioning on a DPN.</t>
 <t>
  <figure anchor="fig_policy_example"
-              title="Exemplary Bundle Message (focus on FPC reference point)">
+              title="Exemplary Config Message for policy pre-provisioning">
         <artwork align="center"><![CDATA[
                         +-------Router--------+
 +-----------+           |+-------+ +---------+|
