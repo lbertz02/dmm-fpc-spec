@@ -375,12 +375,7 @@ module ietf-dmm-fpcagent {
       }
     }
 
-    grouping result-body {
-      leaf op-id {
-        type op-identifier;
-      }
-      choice result-type {
-        case err {
+    grouping error-info {
           leaf error-type-id {
             type fpcagent:error-type-id;
           }
@@ -389,6 +384,15 @@ module ietf-dmm-fpcagent {
               length "1..1024";
             }
           }
+    }
+
+    grouping result-body {
+      leaf op-id {
+        type op-identifier;
+      }
+      choice result-type {
+        case err {
+          uses fpcagent:error-info;
         }
         case create-or-update-success {
           uses fpcagent:payload;
@@ -497,6 +501,7 @@ module ietf-dmm-fpcagent {
           leaf monitor-result {
             type fpcagent:result;
           }
+          uses fpcagent:error-info;
         }
     }
 
@@ -511,6 +516,7 @@ module ietf-dmm-fpcagent {
           leaf monitor-result {
             type fpcagent:result;
           }
+          uses fpcagent:error-info;
         }
     }
 
@@ -523,6 +529,7 @@ module ietf-dmm-fpcagent {
           leaf monitor-result {
             type fpcagent:result;
           }
+          uses fpcagent:error-info;
         }
     }
 

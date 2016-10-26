@@ -1509,8 +1509,8 @@ DPN         |                 DPN        |
     protocol supports this specificaiton.</t>
 
     <t>An Agent will respond with an error, ok, or an ok with indication that remaining
-    data will be sent via a notify from the Agent to the Client <xref target="asyncnotification"/>. When
-    returning an 'ok' of any kind, optional data may be present.</t>
+    data will be sent via a notify from the Agent to the Client <xref target="asyncnotification"/> for
+    CONF and CONF_BUNDLES requests. When returning an 'ok' of any kind, optional data may be present.</t>
     <t>Two Agent notifications are supported:</t>
     <texttable anchor="notifications" title="Agent to Client Messages (notifications)">
       <ttcol align="left">Message</ttcol>
@@ -1669,7 +1669,33 @@ DPN         |                 DPN        |
         monitor identifier. An Agent receiving a PROBE message
         sends the requested information in a single or multiple NOTIFY
         messages.</t>
+
+    <section anchor="monitorresponse" title="Operation Response">
+      <section anchor="immediatemonitorresp" title="Immediate Response">
+    <t>Results will be supplied per operation input. Each result contains the
+      RESULT_STATUS and OP_ID that it corresponds to. RESULT_STATUS values are:
+      <list>
+      <t>OK - SUCCESS</t>
+      <t>ERR - An Error has occurred</t>
+      </list>
+    </t>
+    <t>Any OK result will contain no more information.</t>
+    <t>If an error occurs the following information is returned.
+    <list>
+      <t>ERROR_TYPE_ID (Unsigned 32) - The identifier of a specific error type
+      </t><t>ERROR_INFORMATION - An OPTIONAL string of no more than 1024 characters.
+    </t></list>
+    </t>
+      </section>
+      <section anchor="asyncmonitornotification" title="Asynchronous Notification">
+        <t>A NOTIFY is sent as part of de-registraiton, a trigger based upon a Monitor Configuration
+        or a PROBE.   A NOTIFY is comprised of unique Notification Identifier from the Agent,
+        the Monitor ID the notification applies to, the Trigger for the notification, a timestamp
+        of when the notification's associated event occurs and data that is specific to the monitored
+        value's type.</t>
+      </section>
     </section>
+              </section>
   </section>
   <section anchor="protoperation" title="Protocol Operation">
     <section anchor="simple" title="Simple RPC Operation">
