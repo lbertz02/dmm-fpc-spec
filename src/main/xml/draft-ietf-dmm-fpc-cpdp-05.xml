@@ -253,39 +253,39 @@
 
     <section anchor="terminology" title="Terminology">
         <t><list hangIndent="24" style="hanging">
-            <t hangText="DPN:">A data-plane node that are capable to
-            deploy data-plane features. DPN may be switches, routers
-            which are realized on regardless of hardware or software
-            based.</t>
+            <t hangText="DPN:">A data-plane node (DPN) is capable of
+            deploying data-plane features. DPNs may be switches or routers
+            regardless of their realiziation, i.e. whether they are hardware
+            or software based.</t>
 
             <t hangText="FPC Agent:"> A functional entity in FPC that
-            handle DPNs and provides abstracted data-plane networks to
+            manages DPNs and provides abstracted data-plane networks to
             mobility management systems and/or applications through FPC
             Clients. </t>
 
             <t hangText="FPC Client:">A functional entity in FPC that
-            is involved into mobility management systems and/or
-            applications to handle DPNs. </t>
-
+            is integrated with mobility management systems and/or
+            applications to control forwarding policy, mobility sessions
+            and DPNs. </t>
 
             <t hangText="Tenant:">An operational entity that manages
             mobility management systems or applications which require
-            data-plane handling. </t>
+            data-plane functions. </t>
 
             <t hangText="Domain:">One or more DPNs that form a
             data-plane network. A mobility management system or an
-            application in a tenant may utilize single or multiple
+            application in a tenant may utilize a single or multiple
             domains.</t>
 
-            <t hangText="Port:">A set of forwarding policies. </t>
+            <t hangText="Port:">A set of forwarding policies.</t>
 
             <t hangText="Context:">An abstracted endpoint of a mobility
-            session that is associated with runtime attributes. Port may
-            apply to Context with its instantiated forwarding policies.
+            session associated with runtime attributes. Ports may
+            apply to Context which instantiates those forwarding policies
+            on a DPN.
             </t>
+        </list></t>
 
-        </list></t>    
-    
     </section>
 
     <section anchor="refarch" title="FPC Architecture ">
