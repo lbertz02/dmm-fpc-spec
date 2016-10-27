@@ -4357,37 +4357,36 @@ module ietf-pmip-qos {
 
     typedef operational-code {
     	type enumeration {
-    		enum RESPONSE { value 0; }
-    		enum ALLOCATE { value 1; }
-    		enum DE-ALLOCATE { value 2; }
-    		enum MODIFY { value 3; }
-    		enum QUERY { value 4; }
-    		enum NEGOTIATE { value 5; }
+    		enum RESPONSE {
+          value 0;
+          description "Response to a QoS request";
+        }
+    		enum ALLOCATE {
+          value 1;
+          description "Request to allocate QoS resources";
+        }
+    		enum DE-ALLOCATE {
+          value 2;
+          description "Request to de-Allocate QoS resources";
+        }
+    		enum MODIFY {
+          value 3;
+          description "Request to modify QoS parameters for a previously negotiated
+    	         QoS Service Request";
+        }
+    		enum QUERY {
+          value 4;
+          description "Query to list the previously negotiated QoS Service Requests
+    	         that are still active";
+        }
+    		enum NEGOTIATE {
+          value 5;
+          description "Response to a QoS Service Request with a counter QoS proposal";
+        }
     	}
     	description
     		"1-octet Operational code indicates the type of QoS request.
-
-    	      RESPONSE:   (0)
-    	         Response to a QoS request
-
-    	      ALLOCATE:   (1)
-    	         Request to allocate QoS resources
-
-    	      DE-ALLOCATE:   (2)
-    	         Request to de-Allocate QoS resources
-
-    	      MODIFY:   (3)
-    	         Request to modify QoS parameters for a previously negotiated
-    	         QoS Service Request
-
-    	      QUERY:   (4)
-    	         Query to list the previously negotiated QoS Service Requests
-    	         that are still active
-
-    	      NEGOTIATE:   (5)
-                Response to a QoS Service Request with a counter QoS proposal
-
-              Reserved:   (6) to (255)
+    	      Reserved values:   (6) to (255)
                 Currently not used.  Receiver MUST ignore the option received
                 with any value in this range.";
     }
@@ -4397,62 +4396,62 @@ module ietf-pmip-qos {
     //The enumeration value for mapping - don't confuse with the identities
     typedef qos-attrubite-type-enum {
     	type enumeration {
-    		enum Reserved { value 0; }
-    		enum Per-MN-Agg-Max-DL-Bit-Rate { value 1; }
-	        enum Per-MN-Agg-Max-UL-Bit-Rate { value 2; }
-	        enum Per-Session-Agg-Max-DL-Bit-Rate { value 3; }
-	        enum Per-Session-Agg-Max-UL-Bit-Rate { value 4; }
-          enum Allocation-Retention-Priority { value 5; }
-	      	enum Aggregate-Max-DL-Bit-Rate { value 6; }
-	        enum Aggregate-Max-UL-Bit-Rate { value 7; }
-	        enum Guaranteed-DL-Bit-Rate { value 8; }
-	        enum Guaranteed-UL-Bit-Rate { value 9; }
-	        enum QoS-Traffic-Selector { value 10; }
-	        enum QoS-Vendor-Specific-Attribute { value 11; }
+    		enum Reserved {
+          value 0;
+          description "This value is reserved and cannot be used";
+        }
+    		enum Per-MN-Agg-Max-DL-Bit-Rate {
+          value 1;
+          description "Per-Mobile-Node Aggregate Maximum Downlink Bit Rate.";
+        }
+        enum Per-MN-Agg-Max-UL-Bit-Rate {
+          value 2;
+          description "Per-Mobile-Node Aggregate Maximum Uplink Bit Rate.";
+        }
+        enum Per-Session-Agg-Max-DL-Bit-Rate {
+          value 3;
+          description "Per-Mobility-Session Aggregate Maximum Downlink Bit Rate.";
+        }
+        enum Per-Session-Agg-Max-UL-Bit-Rate {
+          value 4;
+          description "Per-Mobility-Session Aggregate Maximum Uplink Bit Rate.";
+        }
+        enum Allocation-Retention-Priority {
+          value 5;
+          description "Allocation and Retention Priority.";
+        }
+        enum Aggregate-Max-DL-Bit-Rate {
+          value 6;
+          description "Aggregate Maximum Downlink Bit Rate.";
+        }
+        enum Aggregate-Max-UL-Bit-Rate {
+          value 7;
+          description "Aggregate Maximum Uplink Bit Rate.";
+        }
+        enum Guaranteed-DL-Bit-Rate {
+          value 8;
+          description "Guaranteed Downlink Bit Rate.";
+        }
+        enum Guaranteed-UL-Bit-Rate {
+          value 9;
+          description "Guaranteed Uplink Bit Rate.";
+        }
+        enum QoS-Traffic-Selector {
+          value 10;
+          description "QoS Traffic Selector.";
+        }
+        enum QoS-Vendor-Specific-Attribute {
+          value 11;
+          description "QoS Vendor-Specific Attribute.";
+        }
     	}
  		description
 		"8-bit unsigned integer indicating the type of the QoS
-	      attribute.  This specification reserves the following values.
-	      (0) -  Reserved
-	         This value is reserved and cannot be used
-
-	      (1) -  Per-MN-Agg-Max-DL-Bit-Rate
-	         Per-Mobile-Node Aggregate Maximum Downlink Bit Rate.
-
-	      (2) -  Per-MN-Agg-Max-UL-Bit-Rate
-	         Per-Mobile-Node Aggregate Maximum Uplink Bit Rate.
-
-	      (3) -  Per-Session-Agg-Max-DL-Bit-Rate
-	         Per-Mobility-Session Aggregate Maximum Downlink Bit Rate.
-
-		    (4) -  Per-Session-Agg-Max-UL-Bit-Rate
-              Per-Mobility-Session Aggregate Maximum Uplink Bit Rate.
-
- 	      (5) -  Allocation-Retention-Priority
- 	         Allocation and Retention Priority.
-
- 	      (6) -  Aggregate-Max-DL-Bit-Rate
- 	         Aggregate Maximum Downlink Bit Rate.
-
- 	      (7) -  Aggregate-Max-UL-Bit-Rate
- 	         Aggregate Maximum Uplink Bit Rate.
-
- 	      (8) -  Guaranteed-DL-Bit-Rate
- 	         Guaranteed Downlink Bit Rate.
-
- 	      (9) -  Guaranteed-UL-Bit-Rate
- 	         Guaranteed Uplink Bit Rate.
-
- 	      (10) -  QoS-Traffic-Selector
- 	         QoS Traffic Selector.
-
- 	      (11) -  QoS-Vendor-Specific-Attribute
- 	        QoS Vendor-Specific Attribute.
-
+	      attribute.  This specification reserves the following reserved values.
  	      (12) to (254) -  Reserved
  	         These values are reserved for future allocation.
 
- 	      (255) -  Reserved
+ 	      (255)  Reserved
  	         This value is reserved and cannot be used.";
     }
 
@@ -4467,7 +4466,7 @@ module ietf-pmip-qos {
     	base qos-attribute-type;
     	description
     		"Per-Mobile-Node Aggregate Maximum Downlink Bit Rate.";
-	}
+	  }
 
  	identity Per-MN-Agg-Max-UL-Bit-Rate-type {
     	base qos-attribute-type;
@@ -4602,6 +4601,7 @@ module ietf-pmip-qos {
  			         the target flows for which Per-Session-Agg-Max-UL/DL-Bit-Rate is
  			         measured.";
  		}
+    description "Per-Session-Agg-Max-Bit-Rate Value";
  	}
 
  	grouping Allocation-Retention-Priority-Value {
@@ -4632,10 +4632,22 @@ module ietf-pmip-qos {
  		}
  		leaf premption-capability {
  			type enumeration {
-				enum enabled { value 0; }
-				enum disabled { value 1; }
-				enum reserved1 { value 2; }
-				enum reserved2 { value 3; }
+				enum enabled {
+          value 0;
+          description "enabled";
+        }
+				enum disabled {
+          value 1;
+          description "disabled";
+        }
+				enum reserved1 {
+          value 2;
+          description "reserved1";
+        }
+				enum reserved2 {
+          value 3;
+          description "reserved2";
+        }
  			}
  			mandatory true;
  			description
@@ -4655,10 +4667,22 @@ module ietf-pmip-qos {
  		}
  		leaf premption-vulnerability {
  			type enumeration {
-				enum enabled { value 0; }
-				enum disabled { value 1; }
-				enum reserved1 { value 2; }
-				enum reserved2 { value 3; }
+				enum enabled {
+          value 0;
+          description "enabled";
+        }
+				enum disabled {
+          value 1;
+          description "disabled";
+        }
+				enum reserved1 {
+          value 2;
+          description "reserved1";
+        }
+				enum reserved2 {
+          value 3;
+          description "reserved2";
+        }
  			}
  			mandatory true;
  			description
@@ -4676,6 +4700,7 @@ module ietf-pmip-qos {
  			         service data flow with a higher priority level.  The values (2)
  			         and (3) are reserved.";
  		}
+    description "Allocation-Retention-Priority Value";
  	}
 
  	typedef Aggregate-Max-DL-Bit-Rate-Value {
@@ -4757,81 +4782,107 @@ module ietf-pmip-qos {
                 when "../attributetype = 'Per-MN-Agg-Max-DL-Bit-Rate-type'";
                 leaf per-mn-agg-max-dl {
                     type qos-pmip:Per-MN-Agg-Max-DL-Bit-Rate-Value;
+                    description "Per-MN-Agg-Max-DL-Bit-Rate Value";
                 }
+                description "Per-MN-Agg-Max-DL-Bit-Rate Case";
             }
             case per-mn-agg-max-ul-case {
                 when "../attributetype = 'Per-MN-Agg-Max-UL-Bit-Rate-type'";
                 leaf per-mn-agg-max-ul {
                     type qos-pmip:Per-MN-Agg-Max-UL-Bit-Rate-Value;
+                    description "Per-MN-Agg-Max-UL-Bit-Rate Value";
                 }
+                description "Per-MN-Agg-Max-UL-Bit-Rate Case";
             }
             case per-session-agg-max-dl-case {
                 when "../attributetype = 'Per-Session-Agg-Max-DL-Bit-Rate-type'";
                 container per-session-agg-max-dl {
                     uses qos-pmip:Per-Session-Agg-Max-Bit-Rate-Value;
+                    description "Per-Session-Agg-Max-Bit-Rate Value";
                 }
+                description "Per-Session-Agg-Max-Bit-Rate Case";
             }
             case per-session-agg-max-ul-case {
                 when "../attributetype = 'Per-Session-Agg-Max-UL-Bit-Rate-type'";
                 container per-session-agg-max-ul {
                     uses qos-pmip:Per-Session-Agg-Max-Bit-Rate-Value;
+                    description "Per-Session-Agg-Max-Bit-Rate Value";
                 }
+                description "Per-Session-Agg-Max-Bit-Rate Case";
             }
             case allocation-retention-priority-case {
                 when "../attributetype = 'Allocation-Retention-Priority-type'";
                 uses qos-pmip:Allocation-Retention-Priority-Value;
+                description "Allocation-Retention-Priority Case";
             }
             case agg-max-dl-case {
                 when "../attributetype = 'Aggregate-Max-DL-Bit-Rate-type'";
                 leaf agg-max-dl {
                     type qos-pmip:Aggregate-Max-DL-Bit-Rate-Value;
+                    description "Aggregate-Max-DL-Bit-Rate Value";
                 }
+                description "Aggregate-Max-DL-Bit-Rate Case";
             }
             case agg-max-ul-case {
                 when "../attributetype = 'Aggregate-Max-UL-Bit-Rate-type'";
                 leaf agg-max-ul {
                     type qos-pmip:Aggregate-Max-UL-Bit-Rate-Value;
+                    description "Aggregate-Max-UL-Bit-Rate Value";
                 }
+                description "Aggregate-Max-UL-Bit-Rate Case";
             }
             case gbr-dl-case {
                 when "../attributetype = 'Guaranteed-DL-Bit-Rate-type'";
                 leaf gbr-dl {
                     type qos-pmip:Guaranteed-DL-Bit-Rate-Value;
+                    description "Guaranteed-DL-Bit-Rate Value";
                 }
+                description "Guaranteed-DL-Bit-Rate Case";
             }
             case gbr-ul-case {
                 when "../attributetype = 'Guaranteed-UL-Bit-Rate-type'";
                 leaf gbr-ul {
                     type qos-pmip:Guaranteed-UL-Bit-Rate-Value;
+                    description "Guaranteed-UL-Bit-Rate Value";
                 }
+                description "Guaranteed-UL-Bit-Rate Case";
             }
             case traffic-selector-case {
                 when "../attributetype = 'QoS-Traffic-Selector-type'";
                 container traffic-selector {
                     uses traffic-selectors:traffic-selector;
+                    description "traffic selector";
                 }
+                description "traffic selector Case";
             }
+            description "Attribute Value";
         }
+        description "PMIP QoS Attribute";
     }
 
   	grouping qosoption {
         leaf srid {
             type sr-id;
             mandatory true;
+            description "Service Request Identifier";
         }
         leaf trafficclass {
             type traffic-class;
             mandatory true;
+            description "Traffic Class";
         }
         leaf operationcode {
             type operational-code;
             mandatory true;
+            description "Operation Code";
         }
         list attributes {
             unique "attributetype";
             uses qosattribute;
             min-elements 1;
+            description "Attributes";
         }
+        description "PMIP QoS Option";
   	}
 }
 <CODE ENDS>]]></artwork>
@@ -5362,7 +5413,7 @@ module ietf-traffic-selector-types {
           <artwork><![CDATA[
 <CODE BEGINS> file "ietf-dmm-threegpp@2016-08-03.yang"
 module ietf-dmm-threegpp {
-    namespace "urn:ietf:params:xml:ns:yang:threegpp";
+    namespace "urn:ietf:params:xml:ns:yang:ietf-dmm-threegpp";
     prefix threegpp;
 
     import ietf-inet-types { prefix inet; revision-date 2013-07-15; }
@@ -5399,38 +5450,45 @@ module ietf-dmm-threegpp {
 
     identity threeGPP-access-type {
       base "fpcbase:fpc-access-type";
+      description "3GPP Access Type";
     }
 
     // Profile Type
     identity threeGPP-mobility {
          base "fpcbase:fpc-mobility-profile-type";
+         description "3GPP Mobility Profile";
     }
 
     // Tunnel Types
     identity threeGPP-tunnel-type {
-        description "Base Tunnel Type";
+        description "3GPP Base Tunnel Type";
     }
 
     identity gtpv1 {
         base "threegpp:threeGPP-tunnel-type";
+        description "GTP version 1 Tunnel";
     }
 
     identity gtpv2 {
         base "threegpp:threeGPP-tunnel-type";
+        description "GTP version 2 Tunnel";
     }
 
     grouping teid-value {
+         description "TEID value holder";
          leaf tunnel-identifier {
-            description "TEID";
             type uint32;
+            description "Tunnel Endpoint IDentifier (TEID)";
         }
     }
 
     grouping threeGPP-tunnel {
+        description "3GPP Tunnel Definition";
         leaf tunnel-type {
             type identityref  {
               base "threegpp:threeGPP-tunnel-type";
             }
+            description "3GPP Tunnel Subtype";
         }
         uses threegpp:teid-value;
     }
@@ -5438,33 +5496,41 @@ module ietf-dmm-threegpp {
     // QoS Profile
     identity threeGPP-qos-profile-parameters {
         base "fpcbase:fpc-qos-type";
+        description "3GPP QoS Profile";
     }
 
     typedef fpc-qos-class-identifier {
         type uint8 {
             range "1..9";
         }
-        description "QCI";
+        description "QoS Class Identifier (QCI)";
     }
 
     grouping threeGPP-QoS {
+        description "3GPP QoS Attributes";
         leaf qci {
             type fpc-qos-class-identifier;
+            description "QCI";
         }
         leaf gbr {
             type uint32;
+            description "Guaranteed Bit Rate";
         }
         leaf mbr {
             type uint32;
+            description "Maximum Bit Rate";
         }
         leaf apn-ambr {
             type uint32;
+            description "Access Point Name Aggregate Max Bit Rate";
         }
         leaf ue-ambr {
             type uint32;
+            description "User Equipment Aggregate Max Bit Rate";
         }
         container arp {
             uses pmipqos:Allocation-Retention-Priority-Value;
+            description "Allocation Retention Priority";
         }
     }
 
@@ -5472,181 +5538,271 @@ module ietf-dmm-threegpp {
       type uint8 {
         range "0..15";
       }
+      description "EUTRAN Bearere Identifier (EBI) Type";
     }
 
    // From 3GPP TS 24.008 version 13.5.0 Release 13
    typedef component-type-enum {
         type enumeration {
-            enum ipv4RemoteAddress { value 16; }
-            enum ipv4LocalAddress  { value 17; }
-            enum ipv6RemoteAddress { value 32; }
-            enum ipv6RemoteAddressPrefix { value 33; }
-            enum ipv6LocalAddressPrefix { value 35; }
-            enum protocolNextHeader { value 48; }
-            enum localPort { value 64; }
-            enum localPortRange { value 65; }
-            enum reomotePort { value 80; }
-            enum remotePortRange { value 81; }
-            enum secParamIndex { value 96; }
-            enum tosTraffClass { value 112; }
-            enum flowLabel { value 128; }
+            enum ipv4RemoteAddress {
+              value 16;
+              description "IPv4 Remote Address";
+            }
+            enum ipv4LocalAddress  {
+              value 17;
+              description "IPv4 Local Address";
+            }
+            enum ipv6RemoteAddress {
+              value 32;
+              description "IPv6 Remote Address";
+            }
+            enum ipv6RemoteAddressPrefix {
+              value 33;
+              description "IPv6 Remote Address Prefix";
+            }
+            enum ipv6LocalAddressPrefix {
+              value 35;
+              description "IPv6 Local Address Prefix";
+            }
+            enum protocolNextHeader {
+              value 48;
+              description "Protocol (IPv4) or NextHeader (IPv6) value";
+            }
+            enum localPort {
+              value 64;
+              description "Local Port";
+            }
+            enum localPortRange {
+              value 65;
+              description "Local Port Range";
+            }
+            enum reomotePort {
+              value 80;
+              description "Remote Port";
+            }
+            enum remotePortRange {
+              value 81;
+              description "Remote Port Range";
+            }
+            enum secParamIndex {
+              value 96;
+              description "Security Parameter Index (SPI)";
+            }
+            enum tosTraffClass {
+              value 112;
+              description "TOS Traffic Class";
+            }
+            enum flowLabel {
+              value 128;
+              description "Flow Label";
+            }
         }
+        description "TFT Component Type";
     }
 
     typedef packet-filter-direction {
         type enumeration {
-          enum preRel7Tft { value 0; }
-          enum uplink { value 1; }
-          enum downlink { value 2; }
-          enum bidirectional { value 3; }
+          enum preRel7Tft {
+            value 0;
+            description "Pre-Release 7 TFT";
+          }
+          enum uplink {
+            value 1;
+            description "uplink";
+          }
+          enum downlink {
+            value 2;
+            description "downlink";
+          }
+          enum bidirectional {
+            value 3;
+            description "bi-direcitonal";
+          }
         }
+        description "Packet Filter Direction";
     }
 
     typedef component-type-id {
         type uint8 {
           range "16 | 17 | 32 | 33 | 35 | 48 | 64 | 65 | 80 | 81 | 96 | 112 | 128";
         }
+        description "Specifies the Component Type";
     }
 
     grouping packet-filter {
       leaf direction {
           type threegpp:packet-filter-direction;
+          description "Filter Direction";
       }
       leaf identifier {
           type uint8 {
             range "1..15";
           }
+          description "Filter Identifier";
       }
       leaf evaluation-precedence {
           type uint8;
+          description "Evaluation Precedence";
       }
       list contents {
         key component-type-identifier;
+        description "Filter Contents";
         leaf component-type-identifier {
             type threegpp:component-type-id;
+            description "Component Type";
         }
         choice value {
           case ipv4-local {
             leaf ipv4-local {
               type inet:ipv4-address;
+              description "IPv4 Local Address";
             }
           }
           case ipv6-prefix-local {
             leaf ipv6-prefix-local {
               type inet:ipv6-prefix;
+              description "IPv6 Local Prefix";
             }
           }
           case ipv4-ipv6-remote {
             leaf ipv4-ipv6-remote {
               type inet:ip-address;
+              description "Ipv4 Ipv6 remote address";
             }
           }
           case ipv6-prefix-remote {
             leaf ipv6-prefix-remote {
               type inet:ipv6-prefix;
+              description "IPv6 Remote Prefix";
             }
           }
           case next-header {
             leaf next-header {
               type uint8;
+              description "Next Header";
             }
           }
           case local-port {
             leaf local-port {
               type inet:port-number;
+              description "Local Port";
             }
           }
           case local-port-range {
             leaf local-port-lo {
               type inet:port-number;
+              description "Local Port Min Value";
             }
             leaf local-port-hi {
               type inet:port-number;
+              description "Local Port Max Value";
             }
           }
           case remote-port {
             leaf remote-port {
               type inet:port-number;
+              description "Remote Port";
             }
           }
           case remote-port-range {
             leaf remote-port-lo {
               type inet:port-number;
+              description "Remote Por Min Value";
             }
             leaf remote-port-hi {
               type inet:port-number;
+              description "Remote Port Max Value";
             }
           }
           case ipsec-index {
             leaf ipsec-index {
               type traffic-selectors:ipsec-spi;
+              description "IPSec Index";
             }
           }
           case traffic-class {
             leaf traffic-class {
               type inet:dscp;
+              description "Traffic Class";
             }
           }
           case traffic-class-range {
               leaf traffic-class-lo {
                 type inet:dscp;
+                description "Traffic Class Min Value";
               }
               leaf traffic-class-hi {
                 type inet:dscp;
+                description "Traffic Class Max Value";
               }
           }
           case flow-label-type {
-            leaf-list flow-label-type {
+            leaf-list flow-label {
               type inet:ipv6-flow-label;
+              description "Flow Label";
             }
           }
+          description "Component Value";
         }
       }
+      description "Packet Filter";
     }
 
     grouping tft {
       list packet-filters {
           key identifier;
           uses threegpp:packet-filter;
+          description "List of Packet Filters";
       }
+      description "Packet Filter List";
     }
 
     typedef imsi-type {
         type uint64;
+        description "International Mobile Subscriber Identity (IMSI) Value Type";
     }
 
     typedef threegpp-instr {
-      description "Instruction Set for 3GPP R11";
       type bits {
         bit assign-ip {
           position 0;
+          description "Assign IP Address/Prefix";
         }
         bit assign-fteid-ip {
           position 1;
+          description "Assign FTEID-IP";
         }
         bit assign-fteid-teid {
           position 2;
+          description "Assign FTEID-TEID";
         }
         bit session {
           position 3;
+          description "Commands apply to the Session Level";
         }
         bit uplink {
           position 4;
+          description "Commands apply to the Uplink";
         }
         bit downlink {
           position 5;
+          description "Commands apply to the Downlink";
         }
         bit assign-dpn {
           position 6;
+          description "Assign DPN";
         }
       }
+      description "Instruction Set for 3GPP R11";
     }
 
     // Descriptors update - goes to Entities, Configure and Configure Bundles
     augment "/fpcagent:tenants/fpcagent:tenant/fpcagent:fpc-policy/fpcagent:descriptors/fpcagent:descriptor-value" {
       case threegpp-tft {
           uses threegpp:tft;
+          description "3GPP TFT";
       }
+      description "3GPP TFT Descriptor";
     }
 
     // Contexts Update - Contexts / UL / mob-profile
@@ -5654,31 +5810,41 @@ module ietf-dmm-threegpp {
       case threegpp-tunnel {
           uses threegpp:threeGPP-tunnel;
           uses threegpp:tft;
+          description "3GPP TFT and Tunnel Information";
       }
+      description "Context UL Tunnel";
     }
     augment "/fpcagent:configure/fpcagent:input/fpcagent:op_body/fpcagent:create_or_update/fpcagent:contexts/fpcagent:ul/fpcagent:mobility-tunnel-parameters/fpcagent:profile-parameters" {
       case threegpp-tunnel {
           uses threegpp:threeGPP-tunnel;
           uses threegpp:tft;
+          description "3GPP TFT and Tunnel Information";
       }
+      description "Create Context UL Tunnel";
     }
     augment "/fpcagent:configure-bundles/fpcagent:input/fpcagent:bundles/fpcagent:op_body/fpcagent:create_or_update/fpcagent:contexts/fpcagent:ul/fpcagent:mobility-tunnel-parameters/fpcagent:profile-parameters" {
       case threegpp-tunnel {
           uses threegpp:threeGPP-tunnel;
           uses threegpp:tft;
+          description "3GPP TFT and Tunnel Information";
       }
+      description "Bundles Create Context UL Tunnel";
     }
     augment "/fpcagent:configure/fpcagent:output/fpcagent:result-type/fpcagent:create-or-update-success/fpcagent:contexts/fpcagent:ul/fpcagent:mobility-tunnel-parameters/fpcagent:profile-parameters" {
       case threegpp-tunnel {
           uses threegpp:threeGPP-tunnel;
           uses threegpp:tft;
+          description "3GPP TFT and Tunnel Information";
       }
+      description "Create Context UL Tunnel Response";
     }
     augment "/fpcagent:configure-bundles/fpcagent:output/fpcagent:bundles/fpcagent:result-type/fpcagent:create-or-update-success/fpcagent:contexts/fpcagent:ul/fpcagent:mobility-tunnel-parameters/fpcagent:profile-parameters" {
       case threegpp-tunnel {
           uses threegpp:threeGPP-tunnel;
           uses threegpp:tft;
+          description "3GPP TFT and Tunnel Information";
       }
+      description "Bundles Create Context UL Tunnel Response";
     }
 
     // Contexts Update - Contexts / DL / mob-profile
@@ -5686,31 +5852,41 @@ module ietf-dmm-threegpp {
       case threegpp-tunnel {
           uses threegpp:threeGPP-tunnel;
           uses threegpp:tft;
+          description "3GPP TFT and Tunnel Information";
       }
+      description "Context DL Tunnel";
     }
     augment "/fpcagent:configure/fpcagent:input/fpcagent:op_body/fpcagent:create_or_update/fpcagent:contexts/fpcagent:dl/fpcagent:mobility-tunnel-parameters/fpcagent:profile-parameters" {
       case threegpp-tunnel {
           uses threegpp:threeGPP-tunnel;
           uses threegpp:tft;
+          description "3GPP TFT and Tunnel Information";
       }
+      description "Bundles Create Context DL Tunnel";
     }
     augment "/fpcagent:configure-bundles/fpcagent:input/fpcagent:bundles/fpcagent:op_body/fpcagent:create_or_update/fpcagent:contexts/fpcagent:dl/fpcagent:mobility-tunnel-parameters/fpcagent:profile-parameters" {
       case threegpp-tunnel {
           uses threegpp:threeGPP-tunnel;
           uses threegpp:tft;
+          description "3GPP TFT and Tunnel Information";
       }
+      description "Bundles Create Context DL Tunnel";
     }
     augment "/fpcagent:configure/fpcagent:output/fpcagent:result-type/fpcagent:create-or-update-success/fpcagent:contexts/fpcagent:dl/fpcagent:mobility-tunnel-parameters/fpcagent:profile-parameters" {
       case threegpp-tunnel {
           uses threegpp:threeGPP-tunnel;
           uses threegpp:tft;
+          description "3GPP TFT and Tunnel Information";
       }
+      description "Create Context DL Tunnel Response";
     }
     augment "/fpcagent:configure-bundles/fpcagent:output/fpcagent:bundles/fpcagent:result-type/fpcagent:create-or-update-success/fpcagent:contexts/fpcagent:dl/fpcagent:mobility-tunnel-parameters/fpcagent:profile-parameters" {
       case threegpp-tunnel {
           uses threegpp:threeGPP-tunnel;
           uses threegpp:tft;
+          description "3GPP TFT and Tunnel Information";
       }
+      description "Bundles Create Context DL Tunnel Response";
     }
 
 
@@ -5719,31 +5895,41 @@ module ietf-dmm-threegpp {
       case threegpp-tunnel {
           uses threegpp:threeGPP-tunnel;
           uses threegpp:tft;
+          description "3GPP TFT and Tunnel Information";
       }
+      description "Context 3GPP TFT and Tunnel Information";
     }
     augment "/fpcagent:configure/fpcagent:input/fpcagent:op_body/fpcagent:create_or_update/fpcagent:contexts/fpcagent:dpns/fpcagent:mobility-tunnel-parameters/fpcagent:profile-parameters" {
       case threegpp-tunnel {
           uses threegpp:threeGPP-tunnel;
           uses threegpp:tft;
+          description "3GPP TFT and Tunnel Information";
       }
+      description "Configure 3GPP TFT and Tunnel Information";
     }
     augment "/fpcagent:configure-bundles/fpcagent:input/fpcagent:bundles/fpcagent:op_body/fpcagent:create_or_update/fpcagent:contexts/fpcagent:dpns/fpcagent:mobility-tunnel-parameters/fpcagent:profile-parameters" {
       case threegpp-tunnel {
           uses threegpp:threeGPP-tunnel;
           uses threegpp:tft;
+          description "3GPP TFT and Tunnel Information";
       }
+      description "Configure Bundles 3GPP TFT and Tunnel Information";
     }
     augment "/fpcagent:configure/fpcagent:output/fpcagent:result-type/fpcagent:create-or-update-success/fpcagent:contexts/fpcagent:dpns/fpcagent:mobility-tunnel-parameters/fpcagent:profile-parameters" {
       case threegpp-tunnel {
           uses threegpp:threeGPP-tunnel;
           uses threegpp:tft;
+          description "3GPP TFT and Tunnel Information";
       }
+      description "Configure 3GPP TFT and Tunnel Information Response";
     }
     augment "/fpcagent:configure-bundles/fpcagent:output/fpcagent:bundles/fpcagent:result-type/fpcagent:create-or-update-success/fpcagent:contexts/fpcagent:dpns/fpcagent:mobility-tunnel-parameters/fpcagent:profile-parameters" {
       case threegpp-tunnel {
           uses threegpp:threeGPP-tunnel;
           uses threegpp:tft;
+          description "3GPP TFT and Tunnel Information";
       }
+      description "Configure Bundles 3GPP TFT and Tunnel Information Response";
     }
 
 
@@ -5751,155 +5937,164 @@ module ietf-dmm-threegpp {
     augment "/fpcagent:tenants/fpcagent:tenant/fpcagent:fpc-mobility/fpcagent:contexts/fpcagent:ul/fpcagent:qos-profile-parameters/fpcagent:value" {
       case threegpp-qos {
           uses threegpp:threeGPP-QoS;
+          description "3GPP QoS Values";
       }
+      description "Context UL 3GPP QoS Values";
     }
     augment "/fpcagent:configure/fpcagent:input/fpcagent:op_body/fpcagent:create_or_update/fpcagent:contexts/fpcagent:ul/fpcagent:qos-profile-parameters/fpcagent:value" {
       case threegpp-qos {
           uses threegpp:threeGPP-QoS;
+          description "3GPP QoS Values";
       }
+      description "Configure Context UL 3GPP QoS Values";
     }
     augment "/fpcagent:configure-bundles/fpcagent:input/fpcagent:bundles/fpcagent:op_body/fpcagent:create_or_update/fpcagent:contexts/fpcagent:ul/fpcagent:qos-profile-parameters/fpcagent:value" {
       case threegpp-qos {
           uses threegpp:threeGPP-QoS;
+          description "3GPP QoS Values";
       }
+      description "Configure Bundles Context UL 3GPP QoS Values";
     }
     augment "/fpcagent:configure/fpcagent:output/fpcagent:result-type/fpcagent:create-or-update-success/fpcagent:contexts/fpcagent:ul/fpcagent:qos-profile-parameters/fpcagent:value" {
       case threegpp-qos {
           uses threegpp:threeGPP-QoS;
+          description "3GPP QoS Values";
       }
+      description "Configure Context UL 3GPP QoS Values Response";
     }
     augment "/fpcagent:configure-bundles/fpcagent:output/fpcagent:bundles/fpcagent:result-type/fpcagent:create-or-update-success/fpcagent:contexts/fpcagent:ul/fpcagent:qos-profile-parameters/fpcagent:value" {
       case threegpp-qos {
           uses threegpp:threeGPP-QoS;
+          description "3GPP QoS Values";
       }
+      description "Configure Bundles Context UL 3GPP QoS Values Response";
     }
 
     // QoS Updates -  Context / DL / QoS Profile
     augment "/fpcagent:tenants/fpcagent:tenant/fpcagent:fpc-mobility/fpcagent:contexts/fpcagent:dl/fpcagent:qos-profile-parameters/fpcagent:value" {
       case threegpp-qos {
           uses threegpp:threeGPP-QoS;
+          description "3GPP QoS Values";
       }
+      description "Context DL 3GPP QoS Values";
     }
     augment "/fpcagent:configure/fpcagent:input/fpcagent:op_body/fpcagent:create_or_update/fpcagent:contexts/fpcagent:dl/fpcagent:qos-profile-parameters/fpcagent:value" {
       case threegpp-qos {
           uses threegpp:threeGPP-QoS;
+          description "3GPP QoS Values";
       }
+      description "Configure Context DL 3GPP QoS Values";
     }
     augment "/fpcagent:configure-bundles/fpcagent:input/fpcagent:bundles/fpcagent:op_body/fpcagent:create_or_update/fpcagent:contexts/fpcagent:dl/fpcagent:qos-profile-parameters/fpcagent:value" {
       case threegpp-qos {
           uses threegpp:threeGPP-QoS;
+          description "3GPP QoS Values";
       }
+      description "Configure Bundles Context DL 3GPP QoS Values";
     }
     augment "/fpcagent:configure/fpcagent:output/fpcagent:result-type/fpcagent:create-or-update-success/fpcagent:contexts/fpcagent:dl/fpcagent:qos-profile-parameters/fpcagent:value" {
       case threegpp-qos {
           uses threegpp:threeGPP-QoS;
+          description "3GPP QoS Values";
       }
+      description "Configure Context DL 3GPP QoS Values Response";
     }
     augment "/fpcagent:configure-bundles/fpcagent:output/fpcagent:bundles/fpcagent:result-type/fpcagent:create-or-update-success/fpcagent:contexts/fpcagent:dl/fpcagent:qos-profile-parameters/fpcagent:value" {
       case threegpp-qos {
           uses threegpp:threeGPP-QoS;
+          description "3GPP QoS Values";
       }
+      description "Configure Bundles Context DL 3GPP QoS Values Response";
     }
 
     grouping threegpp-properties {
       leaf imsi {
         type threegpp:imsi-type;
+        description "IMSI";
       }
       leaf ebi {
         type threegpp:ebi-type;
+        description "EUTRAN Bearere Identifier (EBI)";
       }
       leaf lbi {
         type threegpp:ebi-type;
+        description "Linked Bearer Identifier (LBI)";
       }
+      description "3GPP Mobility Session Properties";
     }
 
     augment "/fpcagent:tenants/fpcagent:tenant/fpcagent:fpc-mobility/fpcagent:contexts" {
       uses threegpp:threegpp-properties;
+      description "3GPP Mobility Session Properties";
     }
     augment "/fpcagent:configure/fpcagent:input/fpcagent:op_body/fpcagent:create_or_update/fpcagent:contexts" {
       uses threegpp:threegpp-properties;
+      description "3GPP Mobility Session Properties";
     }
     augment "/fpcagent:configure-bundles/fpcagent:input/fpcagent:bundles/fpcagent:op_body/fpcagent:create_or_update/fpcagent:contexts" {
        uses threegpp:threegpp-properties;
+       description "3GPP Mobility Session Properties";
     }
     augment "/fpcagent:configure/fpcagent:output/fpcagent:result-type/fpcagent:create-or-update-success/fpcagent:contexts" {
       uses threegpp:threegpp-properties;
+      description "3GPP Mobility Session Properties";
     }
     augment "/fpcagent:configure-bundles/fpcagent:output/fpcagent:bundles/fpcagent:result-type/fpcagent:create-or-update-success/fpcagent:contexts" {
        uses threegpp:threegpp-properties;
+       description "3GPP Mobility Session Properties";
     }
 
     grouping threegpp-commandset {
       leaf instr-3gpp-mob {
         type threegpp:threegpp-instr;
+        description "3GPP Specific Command Set";
       }
+      description "3GPP Instructions";
     }
 
     augment "/fpcagent:configure/fpcagent:input/fpcagent:instructions/fpcagent:instr-type" {
       case instr-3gpp-mob {
         uses threegpp:threegpp-commandset;
+        description "3GPP Instructions";
       }
+      description "Configure 3GPP Instructions";
     }
     augment "/fpcagent:configure/fpcagent:input/fpcagent:op_body/fpcagent:create_or_update/fpcagent:contexts/fpcagent:instructions/fpcagent:instr-type" {
       case instr-3gpp-mob {
         uses threegpp:threegpp-commandset;
+        description "3GPP Instructions";
       }
+      description "Configure 3GPP Context Instructions";
     }
     augment "/fpcagent:configure/fpcagent:output/fpcagent:result-type/fpcagent:create-or-update-success/fpcagent:contexts/fpcagent:instructions/fpcagent:instr-type" {
       case instr-3gpp-mob {
         uses threegpp:threegpp-commandset;
+        description "3GPP Instructions";
       }
+      description "Configure 3GPP Context Instructions Response";
     }
-    augment "/fpcagent:configure/fpcagent:input/fpcagent:op_body/fpcagent:create_or_update/fpcagent:ports/fpcagent:instructions/fpcagent:instr-type" {
-      case instr-3gpp-mob {
-        uses threegpp:threegpp-commandset;
-      }
-    }
-    augment "/fpcagent:configure/fpcagent:output/fpcagent:result-type/fpcagent:create-or-update-success/fpcagent:ports/fpcagent:instructions/fpcagent:instr-type" {
-      case instr-3gpp-mob {
-        uses threegpp:threegpp-commandset;
-      }
-    }
+
 
     augment "/fpcagent:configure-bundles/fpcagent:input/fpcagent:bundles/fpcagent:instructions/fpcagent:instr-type" {
       case instr-3gpp-mob {
         uses threegpp:threegpp-commandset;
+        description "3GPP Instructions";
       }
+      description "Configure Bundles 3GPP Instructions";
     }
     augment "/fpcagent:configure-bundles/fpcagent:input/fpcagent:bundles/fpcagent:op_body/fpcagent:create_or_update/fpcagent:contexts/fpcagent:instructions/fpcagent:instr-type" {
       case instr-3gpp-mob {
         uses threegpp:threegpp-commandset;
+        description "3GPP Instructions";
       }
+      description "Configure Bundles 3GPP Context Instructions";
     }
     augment "/fpcagent:configure-bundles/fpcagent:output/fpcagent:bundles/fpcagent:result-type/fpcagent:create-or-update-success/fpcagent:contexts/fpcagent:instructions/fpcagent:instr-type" {
       case instr-3gpp-mob {
         uses threegpp:threegpp-commandset;
+        description "3GPP Instructions";
       }
-    }
-    augment "/fpcagent:configure-bundles/fpcagent:input/fpcagent:bundles/fpcagent:op_body/fpcagent:create_or_update/fpcagent:ports/fpcagent:instructions/fpcagent:instr-type" {
-      case instr-3gpp-mob {
-        uses threegpp:threegpp-commandset;
-      }
-    }
-    augment "/fpcagent:configure-bundles/fpcagent:output/fpcagent:bundles/fpcagent:result-type/fpcagent:create-or-update-success/fpcagent:ports/fpcagent:instructions/fpcagent:instr-type" {
-      case instr-3gpp-mob {
-        uses threegpp:threegpp-commandset;
-      }
-    }
-
-    // Deletion Augments - We add the TEID to speed up deletion
-    augment "/fpcagent:configure/fpcagent:input/fpcagent:op_body/fpcagent:delete_or_query/fpcagent:targets" {
-      uses threegpp:teid-value;
-    }
-    augment "/fpcagent:configure/fpcagent:output/fpcagent:result-type/fpcagent:delete_or_query-success/fpcagent:targets" {
-      uses threegpp:teid-value;
-    }
-
-    augment "/fpcagent:configure-bundles/fpcagent:input/fpcagent:bundles/fpcagent:op_body/fpcagent:delete_or_query/fpcagent:targets" {
-      uses threegpp:teid-value;
-    }
-    augment "/fpcagent:configure-bundles/fpcagent:output/fpcagent:bundles/fpcagent:result-type/fpcagent:delete_or_query-success/fpcagent:targets" {
-      uses threegpp:teid-value;
+      description "Configure Bundles 3GPP Context Instructions Response";
     }
 }
 <CODE ENDS>]]></artwork>

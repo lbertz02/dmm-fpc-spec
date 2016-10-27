@@ -85,37 +85,36 @@ module ietf-pmip-qos {
 
     typedef operational-code {
     	type enumeration {
-    		enum RESPONSE { value 0; }
-    		enum ALLOCATE { value 1; }
-    		enum DE-ALLOCATE { value 2; }
-    		enum MODIFY { value 3; }
-    		enum QUERY { value 4; }
-    		enum NEGOTIATE { value 5; }
+    		enum RESPONSE {
+          value 0;
+          description "Response to a QoS request";
+        }
+    		enum ALLOCATE {
+          value 1;
+          description "Request to allocate QoS resources";
+        }
+    		enum DE-ALLOCATE {
+          value 2;
+          description "Request to de-Allocate QoS resources";
+        }
+    		enum MODIFY {
+          value 3;
+          description "Request to modify QoS parameters for a previously negotiated
+    	         QoS Service Request";
+        }
+    		enum QUERY {
+          value 4;
+          description "Query to list the previously negotiated QoS Service Requests
+    	         that are still active";
+        }
+    		enum NEGOTIATE {
+          value 5;
+          description "Response to a QoS Service Request with a counter QoS proposal";
+        }
     	}
     	description
     		"1-octet Operational code indicates the type of QoS request.
-
-    	      RESPONSE:   (0)
-    	         Response to a QoS request
-
-    	      ALLOCATE:   (1)
-    	         Request to allocate QoS resources
-
-    	      DE-ALLOCATE:   (2)
-    	         Request to de-Allocate QoS resources
-
-    	      MODIFY:   (3)
-    	         Request to modify QoS parameters for a previously negotiated
-    	         QoS Service Request
-
-    	      QUERY:   (4)
-    	         Query to list the previously negotiated QoS Service Requests
-    	         that are still active
-
-    	      NEGOTIATE:   (5)
-                Response to a QoS Service Request with a counter QoS proposal
-
-              Reserved:   (6) to (255)
+    	      Reserved values:   (6) to (255)
                 Currently not used.  Receiver MUST ignore the option received
                 with any value in this range.";
     }
@@ -125,62 +124,62 @@ module ietf-pmip-qos {
     //The enumeration value for mapping - don't confuse with the identities
     typedef qos-attrubite-type-enum {
     	type enumeration {
-    		enum Reserved { value 0; }
-    		enum Per-MN-Agg-Max-DL-Bit-Rate { value 1; }
-	        enum Per-MN-Agg-Max-UL-Bit-Rate { value 2; }
-	        enum Per-Session-Agg-Max-DL-Bit-Rate { value 3; }
-	        enum Per-Session-Agg-Max-UL-Bit-Rate { value 4; }
-          enum Allocation-Retention-Priority { value 5; }
-	      	enum Aggregate-Max-DL-Bit-Rate { value 6; }
-	        enum Aggregate-Max-UL-Bit-Rate { value 7; }
-	        enum Guaranteed-DL-Bit-Rate { value 8; }
-	        enum Guaranteed-UL-Bit-Rate { value 9; }
-	        enum QoS-Traffic-Selector { value 10; }
-	        enum QoS-Vendor-Specific-Attribute { value 11; }
+    		enum Reserved {
+          value 0;
+          description "This value is reserved and cannot be used";
+        }
+    		enum Per-MN-Agg-Max-DL-Bit-Rate {
+          value 1;
+          description "Per-Mobile-Node Aggregate Maximum Downlink Bit Rate.";
+        }
+        enum Per-MN-Agg-Max-UL-Bit-Rate {
+          value 2;
+          description "Per-Mobile-Node Aggregate Maximum Uplink Bit Rate.";
+        }
+        enum Per-Session-Agg-Max-DL-Bit-Rate {
+          value 3;
+          description "Per-Mobility-Session Aggregate Maximum Downlink Bit Rate.";
+        }
+        enum Per-Session-Agg-Max-UL-Bit-Rate {
+          value 4;
+          description "Per-Mobility-Session Aggregate Maximum Uplink Bit Rate.";
+        }
+        enum Allocation-Retention-Priority {
+          value 5;
+          description "Allocation and Retention Priority.";
+        }
+        enum Aggregate-Max-DL-Bit-Rate {
+          value 6;
+          description "Aggregate Maximum Downlink Bit Rate.";
+        }
+        enum Aggregate-Max-UL-Bit-Rate {
+          value 7;
+          description "Aggregate Maximum Uplink Bit Rate.";
+        }
+        enum Guaranteed-DL-Bit-Rate {
+          value 8;
+          description "Guaranteed Downlink Bit Rate.";
+        }
+        enum Guaranteed-UL-Bit-Rate {
+          value 9;
+          description "Guaranteed Uplink Bit Rate.";
+        }
+        enum QoS-Traffic-Selector {
+          value 10;
+          description "QoS Traffic Selector.";
+        }
+        enum QoS-Vendor-Specific-Attribute {
+          value 11;
+          description "QoS Vendor-Specific Attribute.";
+        }
     	}
  		description
 		"8-bit unsigned integer indicating the type of the QoS
-	      attribute.  This specification reserves the following values.
-	      (0) -  Reserved
-	         This value is reserved and cannot be used
-
-	      (1) -  Per-MN-Agg-Max-DL-Bit-Rate
-	         Per-Mobile-Node Aggregate Maximum Downlink Bit Rate.
-
-	      (2) -  Per-MN-Agg-Max-UL-Bit-Rate
-	         Per-Mobile-Node Aggregate Maximum Uplink Bit Rate.
-
-	      (3) -  Per-Session-Agg-Max-DL-Bit-Rate
-	         Per-Mobility-Session Aggregate Maximum Downlink Bit Rate.
-
-		    (4) -  Per-Session-Agg-Max-UL-Bit-Rate
-              Per-Mobility-Session Aggregate Maximum Uplink Bit Rate.
-
- 	      (5) -  Allocation-Retention-Priority
- 	         Allocation and Retention Priority.
-
- 	      (6) -  Aggregate-Max-DL-Bit-Rate
- 	         Aggregate Maximum Downlink Bit Rate.
-
- 	      (7) -  Aggregate-Max-UL-Bit-Rate
- 	         Aggregate Maximum Uplink Bit Rate.
-
- 	      (8) -  Guaranteed-DL-Bit-Rate
- 	         Guaranteed Downlink Bit Rate.
-
- 	      (9) -  Guaranteed-UL-Bit-Rate
- 	         Guaranteed Uplink Bit Rate.
-
- 	      (10) -  QoS-Traffic-Selector
- 	         QoS Traffic Selector.
-
- 	      (11) -  QoS-Vendor-Specific-Attribute
- 	        QoS Vendor-Specific Attribute.
-
+	      attribute.  This specification reserves the following reserved values.
  	      (12) to (254) -  Reserved
  	         These values are reserved for future allocation.
 
- 	      (255) -  Reserved
+ 	      (255)  Reserved
  	         This value is reserved and cannot be used.";
     }
 
@@ -195,7 +194,7 @@ module ietf-pmip-qos {
     	base qos-attribute-type;
     	description
     		"Per-Mobile-Node Aggregate Maximum Downlink Bit Rate.";
-	}
+	  }
 
  	identity Per-MN-Agg-Max-UL-Bit-Rate-type {
     	base qos-attribute-type;
@@ -330,6 +329,7 @@ module ietf-pmip-qos {
  			         the target flows for which Per-Session-Agg-Max-UL/DL-Bit-Rate is
  			         measured.";
  		}
+    description "Per-Session-Agg-Max-Bit-Rate Value";
  	}
 
  	grouping Allocation-Retention-Priority-Value {
@@ -360,10 +360,22 @@ module ietf-pmip-qos {
  		}
  		leaf premption-capability {
  			type enumeration {
-				enum enabled { value 0; }
-				enum disabled { value 1; }
-				enum reserved1 { value 2; }
-				enum reserved2 { value 3; }
+				enum enabled {
+          value 0;
+          description "enabled";
+        }
+				enum disabled {
+          value 1;
+          description "disabled";
+        }
+				enum reserved1 {
+          value 2;
+          description "reserved1";
+        }
+				enum reserved2 {
+          value 3;
+          description "reserved2";
+        }
  			}
  			mandatory true;
  			description
@@ -383,10 +395,22 @@ module ietf-pmip-qos {
  		}
  		leaf premption-vulnerability {
  			type enumeration {
-				enum enabled { value 0; }
-				enum disabled { value 1; }
-				enum reserved1 { value 2; }
-				enum reserved2 { value 3; }
+				enum enabled {
+          value 0;
+          description "enabled";
+        }
+				enum disabled {
+          value 1;
+          description "disabled";
+        }
+				enum reserved1 {
+          value 2;
+          description "reserved1";
+        }
+				enum reserved2 {
+          value 3;
+          description "reserved2";
+        }
  			}
  			mandatory true;
  			description
@@ -404,6 +428,7 @@ module ietf-pmip-qos {
  			         service data flow with a higher priority level.  The values (2)
  			         and (3) are reserved.";
  		}
+    description "Allocation-Retention-Priority Value";
  	}
 
  	typedef Aggregate-Max-DL-Bit-Rate-Value {
@@ -485,80 +510,106 @@ module ietf-pmip-qos {
                 when "../attributetype = 'Per-MN-Agg-Max-DL-Bit-Rate-type'";
                 leaf per-mn-agg-max-dl {
                     type qos-pmip:Per-MN-Agg-Max-DL-Bit-Rate-Value;
+                    description "Per-MN-Agg-Max-DL-Bit-Rate Value";
                 }
+                description "Per-MN-Agg-Max-DL-Bit-Rate Case";
             }
             case per-mn-agg-max-ul-case {
                 when "../attributetype = 'Per-MN-Agg-Max-UL-Bit-Rate-type'";
                 leaf per-mn-agg-max-ul {
                     type qos-pmip:Per-MN-Agg-Max-UL-Bit-Rate-Value;
+                    description "Per-MN-Agg-Max-UL-Bit-Rate Value";
                 }
+                description "Per-MN-Agg-Max-UL-Bit-Rate Case";
             }
             case per-session-agg-max-dl-case {
                 when "../attributetype = 'Per-Session-Agg-Max-DL-Bit-Rate-type'";
                 container per-session-agg-max-dl {
                     uses qos-pmip:Per-Session-Agg-Max-Bit-Rate-Value;
+                    description "Per-Session-Agg-Max-Bit-Rate Value";
                 }
+                description "Per-Session-Agg-Max-Bit-Rate Case";
             }
             case per-session-agg-max-ul-case {
                 when "../attributetype = 'Per-Session-Agg-Max-UL-Bit-Rate-type'";
                 container per-session-agg-max-ul {
                     uses qos-pmip:Per-Session-Agg-Max-Bit-Rate-Value;
+                    description "Per-Session-Agg-Max-Bit-Rate Value";
                 }
+                description "Per-Session-Agg-Max-Bit-Rate Case";
             }
             case allocation-retention-priority-case {
                 when "../attributetype = 'Allocation-Retention-Priority-type'";
                 uses qos-pmip:Allocation-Retention-Priority-Value;
+                description "Allocation-Retention-Priority Case";
             }
             case agg-max-dl-case {
                 when "../attributetype = 'Aggregate-Max-DL-Bit-Rate-type'";
                 leaf agg-max-dl {
                     type qos-pmip:Aggregate-Max-DL-Bit-Rate-Value;
+                    description "Aggregate-Max-DL-Bit-Rate Value";
                 }
+                description "Aggregate-Max-DL-Bit-Rate Case";
             }
             case agg-max-ul-case {
                 when "../attributetype = 'Aggregate-Max-UL-Bit-Rate-type'";
                 leaf agg-max-ul {
                     type qos-pmip:Aggregate-Max-UL-Bit-Rate-Value;
+                    description "Aggregate-Max-UL-Bit-Rate Value";
                 }
+                description "Aggregate-Max-UL-Bit-Rate Case";
             }
             case gbr-dl-case {
                 when "../attributetype = 'Guaranteed-DL-Bit-Rate-type'";
                 leaf gbr-dl {
                     type qos-pmip:Guaranteed-DL-Bit-Rate-Value;
+                    description "Guaranteed-DL-Bit-Rate Value";
                 }
+                description "Guaranteed-DL-Bit-Rate Case";
             }
             case gbr-ul-case {
                 when "../attributetype = 'Guaranteed-UL-Bit-Rate-type'";
                 leaf gbr-ul {
                     type qos-pmip:Guaranteed-UL-Bit-Rate-Value;
+                    description "Guaranteed-UL-Bit-Rate Value";
                 }
+                description "Guaranteed-UL-Bit-Rate Case";
             }
             case traffic-selector-case {
                 when "../attributetype = 'QoS-Traffic-Selector-type'";
                 container traffic-selector {
                     uses traffic-selectors:traffic-selector;
+                    description "traffic selector";
                 }
+                description "traffic selector Case";
             }
+            description "Attribute Value";
         }
+        description "PMIP QoS Attribute";
     }
 
   	grouping qosoption {
         leaf srid {
             type sr-id;
             mandatory true;
+            description "Service Request Identifier";
         }
         leaf trafficclass {
             type traffic-class;
             mandatory true;
+            description "Traffic Class";
         }
         leaf operationcode {
             type operational-code;
             mandatory true;
+            description "Operation Code";
         }
         list attributes {
             unique "attributetype";
             uses qosattribute;
             min-elements 1;
+            description "Attributes";
         }
+        description "PMIP QoS Option";
   	}
 }
