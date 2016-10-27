@@ -34,16 +34,20 @@ module ietf-dmm-fpc-pmip {
 
     identity ietf-pmip-access-type {
       base "fpcbase:fpc-access-type";
+      description "PMIP Access";
     }
 
     identity fpcp-qos-index-pmip {
         base "fpcbase:fpc-qos-type";
+        description "PMIP QoS";
     }
     identity traffic-selector-mip6 {
         base "fpcbase:fpc-descriptor-type";
+        description "MIP6 Traffic Selector";
     }
     identity ietf-pmip {
         base "fpcbase:fpc-mobility-profile-type";
+        description "PMIP Mobility";
     }
 
     identity pmip-tunnel-type {
@@ -51,18 +55,22 @@ module ietf-dmm-fpc-pmip {
     }
     identity grev1 {
         base "fpc-pmip:pmip-tunnel-type";
+        description "GRE v1";
     }
     identity grev2 {
         base "fpc-pmip:pmip-tunnel-type";
+        description "GRE v2";
     }
     identity ipinip {
         base "fpc-pmip:pmip-tunnel-type";
+        description "IP in IP";
     }
     grouping pmip-mobility {
         leaf type {
             type identityref {
                 base "fpc-pmip:pmip-tunnel-type";
             }
+            description "PMIP Mobility";
         }
         choice value {
             case gre {
@@ -70,36 +78,46 @@ module ietf-dmm-fpc-pmip {
                     type uint32;
                     description "GRE_KEY";
                 }
+                description "GRE Value";
             }
+            description "PMIP Mobility value";
         }
+        description "PMIP Mobility Value";
     }
 
     typedef pmip-instr {
-      description "Instruction Set for PMIP";
       type bits {
         bit assign-ip {
           position 0;
+          description "Assign IP";
         }
         bit assign-dpn {
           position 1;
+          description "Assign DPN";
         }
         bit session {
           position 2;
+          description "Session Level";
         }
         bit uplink {
           position 3;
+          description "Uplink";
         }
         bit downlink {
           position 4;
+          description "Downlink";
         }
       }
+      description "Instruction Set for PMIP";
     }
 
     // Descriptors update - goes to Entities, Configure and Configure Bundles
     augment "/fpcagent:tenants/fpcagent:tenant/fpcagent:fpc-policy/fpcagent:descriptors/fpcagent:descriptor-value" {
       case pmip-selector {
           uses traffic-selectors:traffic-selector;
+          description "PMIP Selector";
       }
+      description "Policy Descriptor";
     }
 
     // Contexts Update - Contexts / UL / mob-profile, Contexts / DL / mob-profile and Contexts / dpns / mobility-tunnel-parameters
@@ -107,149 +125,172 @@ module ietf-dmm-fpc-pmip {
       case pmip-tunnel {
         uses fpc-pmip:pmip-mobility;
         uses traffic-selectors:traffic-selector;
+        description "PMIP Tunnel Information";
       }
+      description "Context UL Mobility";
     }
     augment "/fpcagent:configure/fpcagent:input/fpcagent:op_body/fpcagent:create_or_update/fpcagent:contexts/fpcagent:ul/fpcagent:mobility-tunnel-parameters/fpcagent:profile-parameters" {
       case pmip-tunnel {
         uses fpc-pmip:pmip-mobility;
         uses traffic-selectors:traffic-selector;
+        description "PMIP Tunnel Information";
       }
+      description "CONF Context UL Mobility";
     }
     augment "/fpcagent:configure-bundles/fpcagent:input/fpcagent:bundles/fpcagent:op_body/fpcagent:create_or_update/fpcagent:contexts/fpcagent:ul/fpcagent:mobility-tunnel-parameters/fpcagent:profile-parameters" {
       case pmip-tunnel {
         uses fpc-pmip:pmip-mobility;
         uses traffic-selectors:traffic-selector;
+        description "PMIP Tunnel Information";
       }
+      description "CONF_BUNDLES Context UL Mobility";
     }
 
     augment "/fpcagent:tenants/fpcagent:tenant/fpcagent:fpc-mobility/fpcagent:contexts/fpcagent:dl/fpcagent:mobility-tunnel-parameters/fpcagent:profile-parameters" {
       case pmip-tunnel {
         uses fpc-pmip:pmip-mobility;
         uses traffic-selectors:traffic-selector;
+        description "PMIP Tunnel Information";
       }
+      description "Context DL Mobility";
     }
     augment "/fpcagent:configure/fpcagent:input/fpcagent:op_body/fpcagent:create_or_update/fpcagent:contexts/fpcagent:dl/fpcagent:mobility-tunnel-parameters/fpcagent:profile-parameters" {
       case pmip-tunnel {
         uses fpc-pmip:pmip-mobility;
         uses traffic-selectors:traffic-selector;
+        description "PMIP Tunnel Information";
       }
+      description "CONF Context DL Mobility";
     }
     augment "/fpcagent:configure-bundles/fpcagent:input/fpcagent:bundles/fpcagent:op_body/fpcagent:create_or_update/fpcagent:contexts/fpcagent:dl/fpcagent:mobility-tunnel-parameters/fpcagent:profile-parameters" {
       case pmip-tunnel {
         uses fpc-pmip:pmip-mobility;
         uses traffic-selectors:traffic-selector;
+        description "PMIP Tunnel Information";
       }
+      description "CONF_BUNDLES Context DL Mobility";
     }
 
     augment "/fpcagent:tenants/fpcagent:tenant/fpcagent:fpc-mobility/fpcagent:contexts/fpcagent:dpns/fpcagent:mobility-tunnel-parameters/fpcagent:profile-parameters" {
       case pmip-tunnel {
         uses fpc-pmip:pmip-mobility;
         uses traffic-selectors:traffic-selector;
+        description "PMIP Tunnel Information";
       }
+      description "Context DPN Mobility";
     }
     augment "/fpcagent:configure/fpcagent:input/fpcagent:op_body/fpcagent:create_or_update/fpcagent:contexts/fpcagent:dpns/fpcagent:mobility-tunnel-parameters/fpcagent:profile-parameters" {
       case pmip-tunnel {
         uses fpc-pmip:pmip-mobility;
         uses traffic-selectors:traffic-selector;
+        description "PMIP Tunnel Information";
       }
+      description "CONF Context DPN Mobility";
     }
     augment "/fpcagent:configure-bundles/fpcagent:input/fpcagent:bundles/fpcagent:op_body/fpcagent:create_or_update/fpcagent:contexts/fpcagent:dpns/fpcagent:mobility-tunnel-parameters/fpcagent:profile-parameters" {
       case pmip-tunnel {
         uses fpc-pmip:pmip-mobility;
         uses traffic-selectors:traffic-selector;
+        description "PMIP Tunnel Information";
       }
+      description "CONF_BUNDLES Context DPN Mobility";
     }
 
     // QoS Updates - Context / UL / qosprofile, Context / DL / QoS Profile
     augment "/fpcagent:tenants/fpcagent:tenant/fpcagent:fpc-mobility/fpcagent:contexts/fpcagent:ul/fpcagent:qos-profile-parameters/fpcagent:value" {
       case qos-pmip {
           uses qos-pmip:qosattribute;
+          description "PMIP QoS Information";
       }
+      description "Context UL QoS";
     }
     augment "/fpcagent:configure/fpcagent:input/fpcagent:op_body/fpcagent:create_or_update/fpcagent:contexts/fpcagent:ul/fpcagent:qos-profile-parameters/fpcagent:value" {
       case qos-pmip {
           uses qos-pmip:qosattribute;
+          description "PMIP QoS Information";
       }
+      description "CONF Context UL QoS";
     }
     augment "/fpcagent:configure-bundles/fpcagent:input/fpcagent:bundles/fpcagent:op_body/fpcagent:create_or_update/fpcagent:contexts/fpcagent:ul/fpcagent:qos-profile-parameters/fpcagent:value" {
       case qos-pmip {
           uses qos-pmip:qosattribute;
+          description "PMIP QoS Information";
       }
+      description "CONF_BUNDLES Context UL QoS";
     }
 
     augment "/fpcagent:tenants/fpcagent:tenant/fpcagent:fpc-mobility/fpcagent:contexts/fpcagent:dl/fpcagent:qos-profile-parameters/fpcagent:value" {
       case qos-pmip {
           uses qos-pmip:qosattribute;
+          description "PMIP QoS Information";
       }
+      description "Context DL QoS";
     }
     augment "/fpcagent:configure/fpcagent:input/fpcagent:op_body/fpcagent:create_or_update/fpcagent:contexts/fpcagent:dl/fpcagent:qos-profile-parameters/fpcagent:value" {
       case qos-pmip {
           uses qos-pmip:qosattribute;
+          description "PMIP QoS Information";
       }
+      description "CONF Context DL QoS";
     }
     augment "/fpcagent:configure-bundles/fpcagent:input/fpcagent:bundles/fpcagent:op_body/fpcagent:create_or_update/fpcagent:contexts/fpcagent:dl/fpcagent:qos-profile-parameters/fpcagent:value" {
       case qos-pmip {
           uses qos-pmip:qosattribute;
+          description "PMIP QoS Information";
       }
+      description "CONF_BUNDLES Context DL QoS";
     }
 
     grouping pmip-commandset {
       leaf instr-pmip {
         type fpc-pmip:pmip-instr;
+        description "PMIP Instructions";
       }
+      description "PMIP Commandset";
     }
 
     // Instructions Update - OP BODY, Context, Port
     augment "/fpcagent:configure/fpcagent:input/fpcagent:instructions/fpcagent:instr-type" {
       case pmip-instr {
         uses fpc-pmip:pmip-commandset;
+        description "PMIP Commandset";
       }
+      description "CONF Instructions";
     }
     augment "/fpcagent:configure/fpcagent:input/fpcagent:op_body/fpcagent:create_or_update/fpcagent:contexts/fpcagent:instructions/fpcagent:instr-type" {
       case pmip-instr {
         uses fpc-pmip:pmip-commandset;
+        description "PMIP Commandset";
       }
+      description "CONF Context Instructions";
     }
     augment "/fpcagent:configure/fpcagent:output/fpcagent:result-type/fpcagent:create-or-update-success/fpcagent:contexts/fpcagent:instructions/fpcagent:instr-type" {
       case pmip-instr {
         uses fpc-pmip:pmip-commandset;
+        description "PMIP Commandset";
       }
-    }
-    augment "/fpcagent:configure/fpcagent:input/fpcagent:op_body/fpcagent:create_or_update/fpcagent:ports/fpcagent:instructions/fpcagent:instr-type" {
-      case pmip-instr {
-        uses fpc-pmip:pmip-commandset;
-      }
-    }
-    augment "/fpcagent:configure/fpcagent:output/fpcagent:result-type/fpcagent:create-or-update-success/fpcagent:ports/fpcagent:instructions/fpcagent:instr-type" {
-      case pmip-instr {
-        uses fpc-pmip:pmip-commandset;
-      }
+      description "CONF Result Context Instructions";
     }
 
     augment "/fpcagent:configure-bundles/fpcagent:input/fpcagent:bundles/fpcagent:instructions/fpcagent:instr-type" {
       case pmip-instr {
         uses fpc-pmip:pmip-commandset;
+        description "PMIP Commandset";
       }
+      description "CONF_BUNDLES Instructions";
     }
     augment "/fpcagent:configure-bundles/fpcagent:input/fpcagent:bundles/fpcagent:op_body/fpcagent:create_or_update/fpcagent:contexts/fpcagent:instructions/fpcagent:instr-type" {
       case pmip-instr {
         uses fpc-pmip:pmip-commandset;
+        description "PMIP Commandset";
       }
+      description "CONF_BUNDLES Context Instructions";
     }
     augment "/fpcagent:configure-bundles/fpcagent:output/fpcagent:bundles/fpcagent:result-type/fpcagent:create-or-update-success/fpcagent:contexts/fpcagent:instructions/fpcagent:instr-type" {
       case pmip-instr {
         uses fpc-pmip:pmip-commandset;
+        description "PMIP Commandset";
       }
-    }
-
-    augment "/fpcagent:configure-bundles/fpcagent:input/fpcagent:bundles/fpcagent:op_body/fpcagent:create_or_update/fpcagent:ports/fpcagent:instructions/fpcagent:instr-type" {
-      case pmip-instr {
-        uses fpc-pmip:pmip-commandset;
-      }
-    }
-    augment "/fpcagent:configure-bundles/fpcagent:output/fpcagent:bundles/fpcagent:result-type/fpcagent:create-or-update-success/fpcagent:ports/fpcagent:instructions/fpcagent:instr-type" {
-      case pmip-instr {
-        uses fpc-pmip:pmip-commandset;
-      }
+      description "CONF_BUNDLES Result Context Instructions";
     }
 }
