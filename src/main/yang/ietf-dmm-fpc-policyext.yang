@@ -1,5 +1,5 @@
 module ietf-dmm-fpc-policyext {
-    namespace "urn:ietf:params:xml:ns:yang:fpcpolicyext";
+    namespace "urn:ietf:params:xml:ns:yang:ietf-dmm-fpc-policyext";
     prefix fpcpolicyext;
 
     import ietf-dmm-fpcbase { prefix fpcbase; revision-date 2016-08-03; }
@@ -36,29 +36,36 @@ module ietf-dmm-fpc-policyext {
         base "fpcbase:fpc-descriptor-type";
         description "Base Identifier for Service Functions.";
     }
-
     identity napt-service {
         base "service-function";
+        description "NAPT Service";
     }
     grouping simple-nat {
       leaf outbound-nat-address {
         type inet:ip-address;
+        description "Outbound NAT Address";
       }
+      description "Simple NAT value";
     }
 
     identity nat-service {
         base "service-function";
+        description "NAT Service";
     }
     grouping simple-napt {
       leaf source-port {
         type inet:port-number;
+        description "Source Port";
       }
       leaf outbound-napt-address {
         type inet:ip-address;
+        description "Outbound NAPT Address";
       }
       leaf destination-port {
         type inet:port-number;
+        description "Destination Port";
       }
+      description "Simple NAPT Configuration";
     }
 
     identity copy-forward {
@@ -71,35 +78,41 @@ module ietf-dmm-fpc-policyext {
           case port-ref {
             leaf port-ref {
               type fpcbase:fpc-port-id;
+              description "Port";
             }
+            description "Port Forward Case";
           }
           case context-ref {
             leaf context-ref {
               type fpcbase:fpc-context-id;
+              description "Context";
             }
+            description "Context Forward Case";
           }
+          description "Copy Forward Value";
         }
+        description "destination";
       }
+      description "Copy Then Forward to Port/Context Action";
     }
 
     augment "/fpcagent:tenants/fpcagent:tenant/fpcagent:fpc-policy/fpcagent:actions/fpcagent:action-value" {
       case simple-nat {
           uses fpcpolicyext:simple-nat;
+          description "Simple NAT value";
       }
       case simple-napt {
           uses fpcpolicyext:simple-napt;
+          description "Simple NAPT Value";
       }
       case copy-forward {
           uses fpcpolicyext:copy-forward;
+          description "Copy Forward Value";
       }
+      description "Policy Actions Augmentations";
     }
 
     grouping prefix-traffic-descriptor {
-        description
-        "Traffic descriptor group collects parameters to
-         identify target traffic flow.  It represents
-         source/destination as IP prefixes";
-
         leaf destination-ip {
             type inet:ip-prefix;
             description "Rule of destination IP";
@@ -108,11 +121,17 @@ module ietf-dmm-fpc-policyext {
             type inet:ip-prefix;
             description "Rule of source IP";
         }
+        description
+        "Traffic descriptor group collects parameters to
+         identify target traffic flow.  It represents
+         source/destination as IP prefixes";
     }
 
     augment "/fpcagent:tenants/fpcagent:tenant/fpcagent:fpc-policy/fpcagent:descriptors/fpcagent:descriptor-value" {
       case prefix-descriptor {
           uses fpcpolicyext:prefix-traffic-descriptor;
+          description "traffic descriptor value";
       }
+      description "Descriptor Augments";
     }
 }
