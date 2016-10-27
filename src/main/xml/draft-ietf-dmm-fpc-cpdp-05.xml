@@ -2940,7 +2940,7 @@ Agent deletes the tunnel and route on the DPN and responds to the Client (4).</t
   OpenDaylight plug-ins developed in Java by Sprint.   Version 03 was known as fpcagent and version 04's
   implementation is simply referred to as 'fpc'.</t>
  <t>fpcagent's intent was to provide a proof of concept for FPC Version 03 Model 1 in January 2016 and research various
-  optimizations, errors, corrections and optimizations that the Agent could make when supporting multiple
+  errors, corrections and optimizations that the Agent could make when supporting multiple
   DPNs.</t>
  <t>As the code developed to support OpenFlow and a proprietary DPN from a 3rd party, several of the
   advantages of a multi-DPN Agent became obvious including the use of machine learning to reduce the
@@ -2954,18 +2954,14 @@ Agent deletes the tunnel and route on the DPN and responds to the Client (4).</t
 <t>The learnings of fpcagent has influenced the second project, fpc. Fpc is also an OpenDaylight project but
   is intended for open source release, if circumstances permit.  It is also scoped to be a fully compliant
   FPC Agent that supports multiple DPNs including those that communicate via OpenFlow. The following features
-  present in this draft and developed by the FPC co-authors have already lead to an order of magnitude improvement.
+  present in this draft and others developed by the FPC development team have already lead to an order of
+  magnitude improvement.
   <list hangIndent="4" style="hanging">
   <t>Migration of non-realtime provisioning of entities such as topology and policy allowed the implementation
     to focus only on the rpc.</t>
-  <t>Using only 5 messages and 2 notifications has also reduced implementation time.  As of this writing the
-    project currently supports CONFIGURE and CONFIGURE_BUNDLES based upon the effort of
-    3 part time engineers.</t>
-  <t>Command Sets, an optional feature in this specification, have eliminated 80% of the time spent determining what needs to be done with a Context
-    during a Create or Update operation.</t>
-  <t>The addition of the DPN List in a Context Delete operation permits the Agent to avoid lookups of Context
-    data in the Cache entirely.  For 3GPP support, extra attributes are required in the Delete to avoid any
-    cache lookup.</t>
+  <t>Using only 5 messages and 2 notifications has also reduced implementation time.</t>
+  <t>Command Sets, an optional feature in this specification, have eliminated 80% of the time spent determining
+    what needs to be done with a Context during a Create or Update operation.</t>
   <t>Op Reference is an optional feature modeled after video delivery. It has reduced unnecessary cache lookups.
     It also has the additional benefit of allowing an Agent to become cacheless and effectively act
     as a FPC protocol adapter remotely with multi-DPN support or colocated on the DPN in a single-DPN support model.</t>
@@ -2976,7 +2972,7 @@ Agent deletes the tunnel and route on the DPN and responds to the Client (4).</t
   </list>
  </t>
   <t>Current performance results without code optimizations or tuning allow 2-5K FPC Contexts processed per second
-  on a Mac laptop sourced in 2013.  This results in 2x the number of transactions on the southbound interface to a
+  on a 2013 Mac laptop.  This results in 2x the number of transactions on the southbound interface to a
   proprietary DPN API on the same machine.</t>
   <t>fpc currently supports the following:
   <list hangIndent="24" style="hanging">
@@ -3036,8 +3032,6 @@ activation system:
     </figure>
   </t>
 
-<t>As of this writing (Sept 2016) the implementation is considered pre-alpha.  It is scheduled to
-  be conformant to all FPC version 04 aspects within 60 days.</t>
 <t>For further information please contact Lyle Bertz who is also a co-author of this document.</t>
 
 <t>NOTE: Tenant support requires binding a Client ID to a Tenant ID (it is a one to many relation) but that
