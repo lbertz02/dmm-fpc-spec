@@ -7,9 +7,24 @@ module ietf-dmm-threegpp {
     import ietf-traffic-selector-types { prefix traffic-selectors; revision-date 2016-01-14; }
     import ietf-pmip-qos { prefix pmipqos; revision-date 2016-02-10; }
 
+    organization "IETF Distributed Mobility Management (DMM)
+      Working Group";
 
-    organization "IETF DMM Working Group";
-    contact "Satoru Matsushima <satoru.matsushima@g.softbank.co.jp>";
+    contact
+       "WG Web:   <http://tools.ietf.org/wg/netmod/>
+        WG List:  <mailto:netmod@ietf.org>
+
+        WG Chair: Dapeng Liu
+                  <mailto:maxpassion@gmail.com>
+
+        WG Chair: Jouni Korhonen
+                  <mailto:jouni.nospam@gmail.com>
+
+        Editor:   Satoru Matsushim
+                  <mailto:satoru.matsushima@g.softbank.co.jp>
+
+        Editor:   Lyle Bertz
+                  <mailto:lyleb551144@gmail.com>";
 
     description
     "This module contains YANG definition for 3GPP Related Mobility

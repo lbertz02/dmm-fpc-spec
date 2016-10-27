@@ -12,21 +12,24 @@ module ietf-pmip-qos {
     }
     import ietf-traffic-selector-types { prefix traffic-selectors; }
 
-    organization
-      "IETF DMM (Dynamic Mobility Management) Working Group";
+    organization "IETF Distributed Mobility Management (DMM)
+      Working Group";
 
     contact
-      "WG Web:   <https://datatracker.ietf.org/wg/dmm/>
-     WG List:  <mailto:dmm@ietf.org>
+       "WG Web:   <http://tools.ietf.org/wg/netmod/>
+        WG List:  <mailto:netmod@ietf.org>
 
-     WG Chair: Dapeng Liu
-               <mailto:maxpassion@gmail.com>
+        WG Chair: Dapeng Liu
+                  <mailto:maxpassion@gmail.com>
 
-     WG Chair: Jouni Korhonen
-               <mailto:jouni.nospam@gmail.com>
+        WG Chair: Jouni Korhonen
+                  <mailto:jouni.nospam@gmail.com>
 
-     Editor:
-               <mailto:>";
+        Editor:   Satoru Matsushim
+                  <mailto:satoru.matsushima@g.softbank.co.jp>
+
+        Editor:   Lyle Bertz
+                  <mailto:lyleb551144@gmail.com>";
 
     description
       "This module contains a collection of YANG definitions for
