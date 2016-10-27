@@ -1256,6 +1256,13 @@ DPN         |                 DPN        |
 
         </list></t>
 
+      <t>Multi-DPN Agents will only use the DPNs list of a Context for processing
+      as described in this section.  A single-DPN Agent MAY use both the Single
+      Agent DPN model <xref target="single-dpn-context"/> and the multi-DPN Agent
+      Context described here. However, Agent feature support MUST be discoverable
+      by the FPC Client in order to determine which option(s) an Agent supports.
+      </t>
+
         </section>
 
         </section>
