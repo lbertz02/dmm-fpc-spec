@@ -186,7 +186,7 @@ module ietf-traffic-selector-types {
   	  }
   	}
 
-  	grouping ipv4-binary-traffic-selector {
+  grouping ipv4-binary-traffic-selector {
 	  container source-address-range-v4 {
   	      presence "Enables setting source IPv4 address range";
   	      description
@@ -308,7 +308,8 @@ module ietf-traffic-selector-types {
   			  of start-protocol and end-protocol.";
   		}
 	  }
-  	}
+    description "ipv4 binary traffic selector";
+  }
 
 	grouping ipv6-binary-traffic-selector {
 	 container source-address-range-v6 {
@@ -471,6 +472,7 @@ module ietf-traffic-selector-types {
   			  inclusive of start-next-header and end-next-header.";
   		}
   	 }
+     description "ipv6 binary traffic selector";
 	}
 
 	grouping traffic-selector {
@@ -494,15 +496,18 @@ module ietf-traffic-selector-types {
 			   packets for a specific flow binding.";
 		reference
 			"RFC 6089: Flow Bindings in Mobile IPv6 and Network Mobility (NEMO) Basic Support";
-	}
+  }
 
 	grouping ts-list {
 		list selectors {
 			key index;
 			leaf index {
 				type uint64;
+        description "index";
 			}
 			uses traffic-selector;
+      description "traffic selectors";
 		}
+    description "traffic selector list";
 	}
 }
