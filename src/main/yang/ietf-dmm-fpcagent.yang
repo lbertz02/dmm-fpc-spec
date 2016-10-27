@@ -1,5 +1,5 @@
 module ietf-dmm-fpcagent {
-    namespace "urn:ietf:params:xml:ns:yang:fpcagent";
+    namespace "urn:ietf:params:xml:ns:yang:ietf-dmm-fpcagent";
     prefix fpcagent;
 
     import ietf-dmm-fpcbase { prefix fpcbase; revision-date 2016-08-03; }
@@ -55,56 +55,64 @@ module ietf-dmm-fpcagent {
 
     typedef agent-identifier {
         type fpcbase:fpc-identity;
+        description "Agent Identifier";
     }
 
     typedef client-identifier {
         type fpcbase:fpc-identity;
+        description "Client Identifier";
     }
 
     grouping basename-info {
           leaf basename {
             if-feature fpcagent:fpc-basename-registry;
-            description "Rules Basename";
             type fpcbase:fpc-identity;
+            description "Rules Basename";
           }
           leaf base-state {
             if-feature fpcagent:fpc-basename-registry;
             type string;
+            description "Current State";
           }
           leaf base-checkpoint {
             if-feature fpcagent:fpc-basename-registry;
             type string;
+            description "Checkpoint";
           }
+          description "Basename Information";
     }
 
     // Top Level Structures
     container tenants {
-        description "";
-
         list tenant {
-            description "";
             key "tenant-id";
             leaf tenant-id {
                 type fpcbase:fpc-identity;
+                description "Tenant ID";
             }
 
             container fpc-policy {
               list policy-groups {
                   key "policy-group-id";
                   uses fpcbase:fpc-policy-group;
+                  description "Policy Groups";
               }
               list policies {
                   key "policy-id";
                   uses fpcbase:fpc-policy;
+                  description "Policies";
               }
               list descriptors {
                 key descriptor-id;
                 uses fpcbase:fpc-descriptor;
+                description "Descriptors";
               }
               list actions {
                   key action-id;
                   uses fpcbase:fpc-action;
+                  description "Actions";
               }
+              description "Policy";
             }
 
             container fpc-mobility {
@@ -112,14 +120,18 @@ module ietf-dmm-fpcagent {
               list contexts {
                   key context-id;
                   uses fpcbase:fpc-context;
+                  description "Contexts";
               }
               list ports {
                   key port-id;
                   uses fpcbase:fpc-port;
+                  description "Ports";
               }
               list monitors {
                   uses fpcbase:monitor-config;
+                  description "Monitors";
               }
+              description "Mobility";
             }
             container fpc-topology {
               // Basic Agent Topology Structures
@@ -127,22 +139,26 @@ module ietf-dmm-fpcagent {
                 key domain-id;
                 uses fpcbase:fpc-domain;
                 uses fpcagent:basename-info;
+                description "Domains";
               }
 
               list dpn-group-peers {
                   if-feature fpcbase:fpc-basic-agent;
                   key "remote-dpn-group-id";
                   uses fpcbase:fpc-dpn-peer-group;
+                  description "DPN Peer Groups";
               }
               leaf dpn-id {
                 if-feature fpcbase:fpc-basic-agent;
                 type fpcbase:fpc-dpn-id;
+                description "DPN ID";
               }
               leaf-list control-protocols {
                 if-feature fpcbase:fpc-basic-agent;
                 type identityref {
                   base "fpcbase:fpc-dpn-control-protocol";
                 }
+                description "Control Protocols";
               }
 
               list dpn-groups {
@@ -153,22 +169,28 @@ module ietf-dmm-fpcagent {
                     key domain-id;
                     uses fpcbase:fpc-domain;
                     uses fpcagent:basename-info;
+                    description "Domains";
                   }
+                  description "DPN Groups";
               }
               list dpns {
                   if-feature fpcbase:fpc-multi-dpn;
                   key dpn-id;
                   uses fpcbase:fpc-dpn;
+                  description "DPNs";
               }
+              description "Topology";
             }
-
+          description "Tenant";
         }
+        description "Tenant List";
     }
 
     container fpc-agent-info {
       // General Agent Structures
       leaf-list supported-features {
         type string;
+        description "Agent Features";
       }
 
       // Common Agent Info
@@ -178,10 +200,13 @@ module ietf-dmm-fpcagent {
           type identityref {
             base "fpcbase:event-type";
           }
+          description "Event Types";
         }
         leaf event-id {
           type fpcbase:event-type-id;
+          description "Event ID";
         }
+        description "Supported Events";
       }
 
       list supported-error-types {
@@ -190,11 +215,15 @@ module ietf-dmm-fpcagent {
           type identityref {
             base "fpcagent:error-type";
           }
+          description "Error Type";
         }
         leaf error-type-id {
           type fpcagent:error-type-id;
+          description "Error Type ID";
         }
+        description "Supported Error Types";
       }
+      description "General Agent Information";
     }
 
 
@@ -202,26 +231,32 @@ module ietf-dmm-fpcagent {
     grouping fpc-dpn-group {
         leaf dpn-group-id {
             type fpcbase:fpc-dpn-group-id;
+            description "DPN Group ID";
         }
         leaf data-plane-role {
             type identityref {
                 base "fpcbase:fpc-forwaridingplane-role";
             }
+            description "Dataplane Role";
         }
         leaf access-type {
             type identityref {
                 base "fpcbase:fpc-access-type";
             }
+            description "Access Type";
         }
         leaf mobility-profile {
             type identityref {
                 base "fpcbase:fpc-mobility-profile-type";
             }
+            description "Mobility Profile";
         }
         list dpn-group-peers {
             key "remote-dpn-group-id";
             uses fpcbase:fpc-dpn-peer-group;
+            description "Peer DPN Groups";
         }
+        description "FPC DPN Group";
     }
 
 
@@ -230,89 +265,147 @@ module ietf-dmm-fpcagent {
     //Input Structures
     typedef admin-status {
         type enumeration {
-            enum enabled { value 0; }
-            enum disabled { value 1; }
-            enum virtual { value 2; }
+            enum enabled {
+              value 0;
+              description "enabled";
+            }
+            enum disabled {
+              value 1;
+              description "disabled";
+            }
+            enum virtual {
+              value 2;
+              description "virtual";
+            }
         }
+        description "Adminstrative Status";
     }
 
     typedef session-status {
         type enumeration {
-            enum complete { value 0; }
-            enum incomplete { value 1; }
-            enum outdated { value 2; }
+            enum complete {
+              value 0;
+              description "complete";
+            }
+            enum incomplete {
+              value 1;
+              description "incomplete";
+            }
+            enum outdated {
+              value 2;
+              description "outdated";
+            }
         }
+        description "Session Status";
     }
 
     typedef op-delay {
         type uint32;
+        description "Operation Delay (ms)";
     }
 
     typedef op-identifier {
         type uint64;
+        description "Operation Identifier";
     }
 
     typedef ref-scope {
-      description "Search scope for references in the operation.
-        op - All references are contained in the operation body (intra-op)
-        bundle - All references in exist in bundle (inter-operation/intra-bundle).
-          NOTE - If this value comes in CONFIG call it is equivalen to 'op'.
-        storage - One or more references exist outside of the operation and bundle.
-          A lookup to a cache / storage is required.
-        unknown - the location of the references are unknown.  This is treated as
-          a 'storage' type.";
       type enumeration {
-        enum none { value 0; }
-        enum op { value 1; }
-        enum bundle { value 2; }
-        enum storage { value 3; }
-        enum unknown { value 4; }
+        enum none {
+          value 0;
+          description "no references";
+        }
+        enum op {
+          value 1;
+          description "op - All references are contained in the operation body (intra-op)";
+        }
+        enum bundle {
+          value 2;
+          description "bundle - All references in exist in bundle (inter-operation/intra-bundle).
+          NOTE - If this value comes in CONFIG call it is equivalen to 'op'.";
+        }
+        enum storage {
+          value 3;
+          description "storage - One or more references exist outside of the operation and bundle.
+          A lookup to a cache / storage is required.";
+        }
+        enum unknown {
+          value 4;
+          description " unknown - the location of the references are unknown.  This is treated as
+          a 'storage' type.";
+        }
       }
+      description "Search scope for references in the operation.";
     }
 
     grouping instructions {
       container instructions {
         if-feature instruction-bitset;
         choice instr-type {
+          description "Instruction Value Choice";
         }
+        description "Instructions";
       }
+      description "Instructions Value";
     }
 
     grouping op-header {
       leaf client-id {
         type fpcagent:client-identifier;
+        description "Client ID";
       }
       leaf delay {
         type op-delay;
+        description "Delay";
       }
       leaf session-state {
         type session-status;
+        description "Session State";
       }
       leaf admin-state {
         type admin-status;
+        description "Admin State";
       }
       leaf op-type {
         type enumeration {
-          enum create { value 0; }
-          enum update { value 1; }
-          enum query { value 2; }
-          enum delete { value 3; }
+          enum create {
+            value 0;
+            description "create";
+          }
+          enum update {
+            value 1;
+            description "update";
+          }
+          enum query {
+            value 2;
+            description "query";
+          }
+          enum delete {
+            value 3;
+            description "delete";
+          }
         }
+        description "Type";
       }
       leaf op-ref-scope {
           if-feature operation-ref-scope;
           type fpcagent:ref-scope;
+          description "Reference Scope";
       }
       uses fpcagent:instructions;
+      description "Operation Header";
     }
 
     grouping clone-ref {
       leaf entity {
         type fpcbase:fpc-identity;
+        description "Clone ID";
       }
       leaf source {
         type fpcbase:fpc-identity;
+        description "Source";
       }
+      description "Clone Reference";
     }
 
     identity command-set {
@@ -322,27 +415,27 @@ module ietf-dmm-fpcagent {
     grouping context-operation {
       uses fpcbase:fpc-context;
       uses fpcagent:instructions;
-    }
-
-    grouping port-operation {
-      uses fpcbase:fpc-port;
-      uses fpcagent:instructions;
+      description "Context Operation";
     }
 
     // Output Structure
     grouping payload {
       list ports {
-        uses fpcagent:port-operation;
+        uses fpcbase:fpc-port;
+        description "Ports";
       }
       list contexts {
         uses fpcagent:context-operation;
+        description "Contexts";
       }
+      description "Payload";
     }
 
     grouping op-input {
       uses fpcagent:op-header;
       leaf op-id {
         type op-identifier;
+        description "Operation ID";
       }
       choice op_body {
         case create_or_update {
@@ -350,21 +443,36 @@ module ietf-dmm-fpcagent {
             if-feature fpc-cloning;
             key entity;
             uses fpcagent:clone-ref;
+            description "Clones";
           }
           uses fpcagent:payload;
+          description "Create/Update input";
         }
         case delete_or_query {
           uses fpcbase:targets-value;
+          description "Delete/Query input";
         }
+        description "Opeartion Input value";
       }
+      description "Operation Input";
     }
 
     typedef result {
       type enumeration {
-        enum ok { value 0; }
-        enum err { value 1; }
-        enum ok-notify-follows { value 2; }
+        enum ok {
+          value 0;
+          description "OK";
+        }
+        enum err {
+          value 1;
+          description "Error";
+        }
+        enum ok-notify-follows {
+          value 2;
+          description "OK with NOTIFY following";
+        }
       }
+      description "Result Status";
     }
 
     identity error-type {
@@ -375,57 +483,77 @@ module ietf-dmm-fpcagent {
     }
 
     typedef error-type-id {
-      description "Integer form of the Error Type";
       type uint32;
+      description "Integer form of the Error Type";
     }
 
     grouping op-status-value {
       leaf op-status {
         type enumeration {
-          enum ok { value 0; }
-          enum err { value 1; }
+          enum ok {
+            value 0;
+            description "OK";
+          }
+          enum err {
+            value 1;
+            description "Error";
+          }
         }
+        description "Operation Status";
       }
+      description "Operation Status Value";
     }
 
     grouping error-info {
           leaf error-type-id {
             type fpcagent:error-type-id;
+            description "Error ID";
           }
           leaf error-info {
             type string {
               length "1..1024";
             }
+            description "Error Detail";
           }
+          description "Error Information";
     }
 
     grouping result-body {
       leaf op-id {
         type op-identifier;
+        description "Operation Identifier";
       }
       choice result-type {
         case err {
           uses fpcagent:error-info;
+          description "Error Information";
         }
         case create-or-update-success {
           uses fpcagent:payload;
+          description "Create/Update Success";
         }
         case delete_or_query-success {
           uses fpcbase:targets-value;
+          description "Delete/Query Success";
         }
         case empty-case {
+          description "Empty Case";
         }
+        description "Result Value";
       }
+      description "Result Body";
     }
 
     // Common RPCs
     rpc configure {
+      description "CONF message";
       input {
         uses fpcagent:op-input;
       }
       output {
         leaf result {
           type result;
+          description "Result";
         }
         uses fpcagent:result-body;
       }
@@ -433,60 +561,44 @@ module ietf-dmm-fpcagent {
 
     rpc configure-bundles {
       if-feature fpcagent:fpc-bundles;
+      description "CONF_BUNDLES message";
       input {
         leaf highest-op-ref-scope {
             if-feature operation-ref-scope;
             type fpcagent:ref-scope;
+            description "Highest Op-Ref used in the input";
         }
         list bundles {
           key op-id;
           uses fpcagent:op-input;
+          description "List of operations";
         }
       }
       output {
         list bundles {
           key op-id;
           uses fpcagent:result-body;
+          description "Operation Identifier";
         }
-      }
-    }
-
-    rpc bind-dpn {
-      if-feature fpcagent:fpc-client-binding;
-      input {
-        leaf node-id {
-          type inet:uri;
-        }
-        uses fpcbase:fpc-dpn;
-      }
-      output {
-        uses fpcagent:result-body;
-      }
-    }
-    rpc unbind-dpn {
-      if-feature fpcagent:fpc-client-binding;
-      input {
-        leaf dpn-id {
-          type fpcbase:fpc-dpn-id;
-        }
-      }
-      output {
-        uses fpcagent:result-body;
       }
     }
 
     // Notification Messages & Structures
     typedef notification-id {
       type uint32;
+      description "Notification Identifier";
     }
 
     grouping notification-header {
       leaf notification-id {
           type fpcagent:notification-id;
+          description "Notification ID";
       }
       leaf timestamp {
           type uint32;
+          description "timestamp";
       }
+      description "Notification Header";
     }
 
     notification config-result-notification {
@@ -495,42 +607,51 @@ module ietf-dmm-fpcagent {
         case config-result {
           uses fpcagent:op-status-value;
           uses fpcagent:result-body;
+          description "CONF Result";
         }
         case config-bundle-result {
           list bundles {
             uses fpcagent:op-status-value;
             uses fpcagent:result-body;
+            description "Operation Results";
           }
+          description "CONF_BUNDLES Result";
         }
+        description "Config Result value";
       }
+      description "CONF/CONF_BUNDLES Async Result";
     }
 
     rpc event_register {
-        description "Used to register monitoring of parameters/events";
+      description "Used to register monitoring of parameters/events";
         input {
           uses fpcbase:monitor-config;
         }
         output {
           leaf monitor-result {
             type fpcagent:result;
+            description "Result";
           }
           uses fpcagent:error-info;
         }
     }
 
     rpc event_deregister {
-        description "Used to de-register monitoring of parameters/events";
+      description "Used to de-register monitoring of parameters/events";
         input {
           list monitors {
             uses fpcbase:monitor-id;
+            description "Monitor ID";
           }
         }
         output {
           leaf monitor-result {
             type fpcagent:result;
+            description "Result";
           }
           uses fpcagent:error-info;
         }
+
     }
 
     rpc probe {
@@ -541,6 +662,7 @@ module ietf-dmm-fpcagent {
         output {
           leaf monitor-result {
             type fpcagent:result;
+            description "Result";
           }
           uses fpcagent:error-info;
         }
@@ -553,35 +675,47 @@ module ietf-dmm-fpcagent {
               if-feature fpcagent:fpc-auto-binding;
               leaf node-id {
                 type inet:uri;
+                description "Topology URI";
               }
               leaf-list access-types {
                 type identityref {
                   base "fpcbase:fpc-access-type";
                 }
+                description "Access Types";
               }
               leaf-list mobility-profiles {
                 type identityref {
                   base "fpcbase:fpc-mobility-profile-type";
                 }
+                description "Mobility Profiles";
               }
               leaf-list forwarding-plane-roles {
                 type identityref {
                   base "fpcbase:fpc-forwaridingplane-role";
                 }
+                description "Forwarding Plane Role";
               }
+              description "DPN Candidate Availability";
             }
             case monitor-notification {
               choice monitor-notification-value {
                 case simple-monitor {
                   uses fpcbase:report;
+                  description "Report";
                 }
                 case bulk-monitors {
                   list reports {
                     uses fpcbase:report;
+                    description "Reports";
                   }
+                  description "Bulk Monitor Response";
                 }
+                description "Monitor Notification value";
               }
+              description "Monitor Notification";
             }
+            description "Notify Value";
         }
+        description "Notify Message";
     }
 }
