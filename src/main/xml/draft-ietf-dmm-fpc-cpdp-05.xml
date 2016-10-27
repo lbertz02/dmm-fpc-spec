@@ -1577,6 +1577,10 @@ DPN         |                 DPN        |
       if the Client wishes to avoid requiring the Agent cache lookups.</t>
     <t>When deleting an attribute, a leaf reference should be provided.  This is a path to the attributes.</t>
   </section>
+    <section anchor="policprov" title="Policy RPC Support">
+    <t>This optional feature permits policy elements, (Policy-Group, Policy, Action and Descriptor), values
+      to be in CONF or CONF_BUNDLES requests.  It enables RPC based policy provisioning.</t>
+    </section>
     <section anchor="cloning" title="Cloning">
       <t>Cloning is an optional feature that allows a Client to copy one structure to another
         in an operation. Cloning is always done first within the operation (see Operation
@@ -2596,6 +2600,22 @@ Agent deletes the tunnel and route on the DPN and responds to the Client (4).</t
       <c>FPC-Identity (<xref target="naming"/>) *[DPN_ID]</c>
       <c>Q,D</c>
 
+      <c>POLICY_GROUPS</c>
+      <c>*[ POLICY-GROUP ]</c>
+      <c>C,U [NOTE 1]</c>
+
+      <c>POLICIES</c>
+      <c>*[ POLICY ]</c>
+      <c>C,U [NOTE 1]</c>
+
+      <c>DESCRIPTORS</c>
+      <c>*[ DESCRIPTOR ]</c>
+      <c>C,U [NOTE 1]</c>
+
+      <c>ACTIONS</c>
+      <c>*[ ACTION ]</c>
+      <c>C,U [NOTE 1]</c>
+
       <postamble>
         NOTE 1 - Only present if the corresponding feature is supported by the Agent.
       </postamble>
@@ -3348,6 +3368,10 @@ module ietf-dmm-fpc {
       description "Provides the scope of refeneces in an operation.  Used to optmize
         the Agent processing.";
     }
+    feature policy-rpc-provisioning {
+      description "Enables the ability to send policy elements (Policy Groups, Policies,
+        Descriptors and Actions) to be sent in CONF or CONF_BUNDLES operations.";
+    }
 
     typedef agent-identifier {
         type fpc:fpc-identity;
@@ -3723,6 +3747,30 @@ module ietf-dmm-fpc {
       list contexts {
         uses fpc:context-operation;
         description "Contexts";
+      }
+      list policy-groups {
+        if-feature fpc:policy-rpc-provisioning;
+        key "policy-group-id";
+        uses fpc:fpc-policy-group;
+        description "Policy Groups";
+      }
+      list policies {
+        if-feature fpc:policy-rpc-provisioning;
+        key "policy-id";
+        uses fpc:fpc-policy;
+        description "Policies";
+      }
+      list descriptors {
+        if-feature fpc:policy-rpc-provisioning;
+        key descriptor-id;
+        uses fpc:fpc-descriptor;
+        description "Descriptors";
+      }
+      list actions {
+        if-feature fpc:policy-rpc-provisioning;
+        key action-id;
+        uses fpc:fpc-action;
+        description "Actions";
       }
       description "Payload";
     }

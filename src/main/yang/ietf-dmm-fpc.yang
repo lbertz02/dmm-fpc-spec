@@ -69,6 +69,10 @@ module ietf-dmm-fpc {
       description "Provides the scope of refeneces in an operation.  Used to optmize
         the Agent processing.";
     }
+    feature policy-rpc-provisioning {
+      description "Enables the ability to send policy elements (Policy Groups, Policies,
+        Descriptors and Actions) to be sent in CONF or CONF_BUNDLES operations.";
+    }
 
     typedef agent-identifier {
         type fpc:fpc-identity;
@@ -444,6 +448,30 @@ module ietf-dmm-fpc {
       list contexts {
         uses fpc:context-operation;
         description "Contexts";
+      }
+      list policy-groups {
+        if-feature fpc:policy-rpc-provisioning;
+        key "policy-group-id";
+        uses fpc:fpc-policy-group;
+        description "Policy Groups";
+      }
+      list policies {
+        if-feature fpc:policy-rpc-provisioning;
+        key "policy-id";
+        uses fpc:fpc-policy;
+        description "Policies";
+      }
+      list descriptors {
+        if-feature fpc:policy-rpc-provisioning;
+        key descriptor-id;
+        uses fpc:fpc-descriptor;
+        description "Descriptors";
+      }
+      list actions {
+        if-feature fpc:policy-rpc-provisioning;
+        key action-id;
+        uses fpc:fpc-action;
+        description "Actions";
       }
       description "Payload";
     }
