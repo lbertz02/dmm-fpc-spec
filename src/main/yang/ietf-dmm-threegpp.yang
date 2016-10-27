@@ -3,8 +3,7 @@ module ietf-dmm-threegpp {
     prefix threegpp;
 
     import ietf-inet-types { prefix inet; revision-date 2013-07-15; }
-    import ietf-dmm-fpcagent { prefix fpcagent; }
-    import ietf-dmm-fpcbase { prefix fpcbase; revision-date 2016-08-03; }
+    import ietf-dmm-fpc { prefix fpc; revision-date 2016-08-03; }
     import ietf-traffic-selector-types { prefix traffic-selectors; revision-date 2016-01-14; }
     import ietf-pmip-qos { prefix pmipqos; revision-date 2016-02-10; }
 
@@ -35,13 +34,13 @@ module ietf-dmm-threegpp {
     }
 
     identity threeGPP-access-type {
-      base "fpcbase:fpc-access-type";
+      base "fpc:fpc-access-type";
       description "3GPP Access Type";
     }
 
     // Profile Type
     identity threeGPP-mobility {
-         base "fpcbase:fpc-mobility-profile-type";
+         base "fpc:fpc-mobility-profile-type";
          description "3GPP Mobility Profile";
     }
 
@@ -81,7 +80,7 @@ module ietf-dmm-threegpp {
 
     // QoS Profile
     identity threeGPP-qos-profile-parameters {
-        base "fpcbase:fpc-qos-type";
+        base "fpc:fpc-qos-type";
         description "3GPP QoS Profile";
     }
 
@@ -383,7 +382,7 @@ module ietf-dmm-threegpp {
     }
 
     // Descriptors update - goes to Entities, Configure and Configure Bundles
-    augment "/fpcagent:tenants/fpcagent:tenant/fpcagent:fpc-policy/fpcagent:descriptors/fpcagent:descriptor-value" {
+    augment "/fpc:tenants/fpc:tenant/fpc:fpc-policy/fpc:descriptors/fpc:descriptor-value" {
       case threegpp-tft {
           uses threegpp:tft;
           description "3GPP TFT";
@@ -392,7 +391,7 @@ module ietf-dmm-threegpp {
     }
 
     // Contexts Update - Contexts / UL / mob-profile
-    augment "/fpcagent:tenants/fpcagent:tenant/fpcagent:fpc-mobility/fpcagent:contexts/fpcagent:ul/fpcagent:mobility-tunnel-parameters/fpcagent:profile-parameters" {
+    augment "/fpc:tenants/fpc:tenant/fpc:fpc-mobility/fpc:contexts/fpc:ul/fpc:mobility-tunnel-parameters/fpc:profile-parameters" {
       case threegpp-tunnel {
           uses threegpp:threeGPP-tunnel;
           uses threegpp:tft;
@@ -400,7 +399,7 @@ module ietf-dmm-threegpp {
       }
       description "Context UL Tunnel";
     }
-    augment "/fpcagent:configure/fpcagent:input/fpcagent:op_body/fpcagent:create_or_update/fpcagent:contexts/fpcagent:ul/fpcagent:mobility-tunnel-parameters/fpcagent:profile-parameters" {
+    augment "/fpc:configure/fpc:input/fpc:op_body/fpc:create_or_update/fpc:contexts/fpc:ul/fpc:mobility-tunnel-parameters/fpc:profile-parameters" {
       case threegpp-tunnel {
           uses threegpp:threeGPP-tunnel;
           uses threegpp:tft;
@@ -408,7 +407,7 @@ module ietf-dmm-threegpp {
       }
       description "Create Context UL Tunnel";
     }
-    augment "/fpcagent:configure-bundles/fpcagent:input/fpcagent:bundles/fpcagent:op_body/fpcagent:create_or_update/fpcagent:contexts/fpcagent:ul/fpcagent:mobility-tunnel-parameters/fpcagent:profile-parameters" {
+    augment "/fpc:configure-bundles/fpc:input/fpc:bundles/fpc:op_body/fpc:create_or_update/fpc:contexts/fpc:ul/fpc:mobility-tunnel-parameters/fpc:profile-parameters" {
       case threegpp-tunnel {
           uses threegpp:threeGPP-tunnel;
           uses threegpp:tft;
@@ -416,7 +415,7 @@ module ietf-dmm-threegpp {
       }
       description "Bundles Create Context UL Tunnel";
     }
-    augment "/fpcagent:configure/fpcagent:output/fpcagent:result-type/fpcagent:create-or-update-success/fpcagent:contexts/fpcagent:ul/fpcagent:mobility-tunnel-parameters/fpcagent:profile-parameters" {
+    augment "/fpc:configure/fpc:output/fpc:result-type/fpc:create-or-update-success/fpc:contexts/fpc:ul/fpc:mobility-tunnel-parameters/fpc:profile-parameters" {
       case threegpp-tunnel {
           uses threegpp:threeGPP-tunnel;
           uses threegpp:tft;
@@ -424,7 +423,7 @@ module ietf-dmm-threegpp {
       }
       description "Create Context UL Tunnel Response";
     }
-    augment "/fpcagent:configure-bundles/fpcagent:output/fpcagent:bundles/fpcagent:result-type/fpcagent:create-or-update-success/fpcagent:contexts/fpcagent:ul/fpcagent:mobility-tunnel-parameters/fpcagent:profile-parameters" {
+    augment "/fpc:configure-bundles/fpc:output/fpc:bundles/fpc:result-type/fpc:create-or-update-success/fpc:contexts/fpc:ul/fpc:mobility-tunnel-parameters/fpc:profile-parameters" {
       case threegpp-tunnel {
           uses threegpp:threeGPP-tunnel;
           uses threegpp:tft;
@@ -434,7 +433,7 @@ module ietf-dmm-threegpp {
     }
 
     // Contexts Update - Contexts / DL / mob-profile
-    augment "/fpcagent:tenants/fpcagent:tenant/fpcagent:fpc-mobility/fpcagent:contexts/fpcagent:dl/fpcagent:mobility-tunnel-parameters/fpcagent:profile-parameters" {
+    augment "/fpc:tenants/fpc:tenant/fpc:fpc-mobility/fpc:contexts/fpc:dl/fpc:mobility-tunnel-parameters/fpc:profile-parameters" {
       case threegpp-tunnel {
           uses threegpp:threeGPP-tunnel;
           uses threegpp:tft;
@@ -442,7 +441,7 @@ module ietf-dmm-threegpp {
       }
       description "Context DL Tunnel";
     }
-    augment "/fpcagent:configure/fpcagent:input/fpcagent:op_body/fpcagent:create_or_update/fpcagent:contexts/fpcagent:dl/fpcagent:mobility-tunnel-parameters/fpcagent:profile-parameters" {
+    augment "/fpc:configure/fpc:input/fpc:op_body/fpc:create_or_update/fpc:contexts/fpc:dl/fpc:mobility-tunnel-parameters/fpc:profile-parameters" {
       case threegpp-tunnel {
           uses threegpp:threeGPP-tunnel;
           uses threegpp:tft;
@@ -450,7 +449,7 @@ module ietf-dmm-threegpp {
       }
       description "Bundles Create Context DL Tunnel";
     }
-    augment "/fpcagent:configure-bundles/fpcagent:input/fpcagent:bundles/fpcagent:op_body/fpcagent:create_or_update/fpcagent:contexts/fpcagent:dl/fpcagent:mobility-tunnel-parameters/fpcagent:profile-parameters" {
+    augment "/fpc:configure-bundles/fpc:input/fpc:bundles/fpc:op_body/fpc:create_or_update/fpc:contexts/fpc:dl/fpc:mobility-tunnel-parameters/fpc:profile-parameters" {
       case threegpp-tunnel {
           uses threegpp:threeGPP-tunnel;
           uses threegpp:tft;
@@ -458,7 +457,7 @@ module ietf-dmm-threegpp {
       }
       description "Bundles Create Context DL Tunnel";
     }
-    augment "/fpcagent:configure/fpcagent:output/fpcagent:result-type/fpcagent:create-or-update-success/fpcagent:contexts/fpcagent:dl/fpcagent:mobility-tunnel-parameters/fpcagent:profile-parameters" {
+    augment "/fpc:configure/fpc:output/fpc:result-type/fpc:create-or-update-success/fpc:contexts/fpc:dl/fpc:mobility-tunnel-parameters/fpc:profile-parameters" {
       case threegpp-tunnel {
           uses threegpp:threeGPP-tunnel;
           uses threegpp:tft;
@@ -466,7 +465,7 @@ module ietf-dmm-threegpp {
       }
       description "Create Context DL Tunnel Response";
     }
-    augment "/fpcagent:configure-bundles/fpcagent:output/fpcagent:bundles/fpcagent:result-type/fpcagent:create-or-update-success/fpcagent:contexts/fpcagent:dl/fpcagent:mobility-tunnel-parameters/fpcagent:profile-parameters" {
+    augment "/fpc:configure-bundles/fpc:output/fpc:bundles/fpc:result-type/fpc:create-or-update-success/fpc:contexts/fpc:dl/fpc:mobility-tunnel-parameters/fpc:profile-parameters" {
       case threegpp-tunnel {
           uses threegpp:threeGPP-tunnel;
           uses threegpp:tft;
@@ -477,7 +476,7 @@ module ietf-dmm-threegpp {
 
 
     // Contexts Update -  Contexts / dpns / mobility-tunnel-parameters
-    augment "/fpcagent:tenants/fpcagent:tenant/fpcagent:fpc-mobility/fpcagent:contexts/fpcagent:dpns/fpcagent:mobility-tunnel-parameters/fpcagent:profile-parameters" {
+    augment "/fpc:tenants/fpc:tenant/fpc:fpc-mobility/fpc:contexts/fpc:dpns/fpc:mobility-tunnel-parameters/fpc:profile-parameters" {
       case threegpp-tunnel {
           uses threegpp:threeGPP-tunnel;
           uses threegpp:tft;
@@ -485,7 +484,7 @@ module ietf-dmm-threegpp {
       }
       description "Context 3GPP TFT and Tunnel Information";
     }
-    augment "/fpcagent:configure/fpcagent:input/fpcagent:op_body/fpcagent:create_or_update/fpcagent:contexts/fpcagent:dpns/fpcagent:mobility-tunnel-parameters/fpcagent:profile-parameters" {
+    augment "/fpc:configure/fpc:input/fpc:op_body/fpc:create_or_update/fpc:contexts/fpc:dpns/fpc:mobility-tunnel-parameters/fpc:profile-parameters" {
       case threegpp-tunnel {
           uses threegpp:threeGPP-tunnel;
           uses threegpp:tft;
@@ -493,7 +492,7 @@ module ietf-dmm-threegpp {
       }
       description "Configure 3GPP TFT and Tunnel Information";
     }
-    augment "/fpcagent:configure-bundles/fpcagent:input/fpcagent:bundles/fpcagent:op_body/fpcagent:create_or_update/fpcagent:contexts/fpcagent:dpns/fpcagent:mobility-tunnel-parameters/fpcagent:profile-parameters" {
+    augment "/fpc:configure-bundles/fpc:input/fpc:bundles/fpc:op_body/fpc:create_or_update/fpc:contexts/fpc:dpns/fpc:mobility-tunnel-parameters/fpc:profile-parameters" {
       case threegpp-tunnel {
           uses threegpp:threeGPP-tunnel;
           uses threegpp:tft;
@@ -501,7 +500,7 @@ module ietf-dmm-threegpp {
       }
       description "Configure Bundles 3GPP TFT and Tunnel Information";
     }
-    augment "/fpcagent:configure/fpcagent:output/fpcagent:result-type/fpcagent:create-or-update-success/fpcagent:contexts/fpcagent:dpns/fpcagent:mobility-tunnel-parameters/fpcagent:profile-parameters" {
+    augment "/fpc:configure/fpc:output/fpc:result-type/fpc:create-or-update-success/fpc:contexts/fpc:dpns/fpc:mobility-tunnel-parameters/fpc:profile-parameters" {
       case threegpp-tunnel {
           uses threegpp:threeGPP-tunnel;
           uses threegpp:tft;
@@ -509,7 +508,7 @@ module ietf-dmm-threegpp {
       }
       description "Configure 3GPP TFT and Tunnel Information Response";
     }
-    augment "/fpcagent:configure-bundles/fpcagent:output/fpcagent:bundles/fpcagent:result-type/fpcagent:create-or-update-success/fpcagent:contexts/fpcagent:dpns/fpcagent:mobility-tunnel-parameters/fpcagent:profile-parameters" {
+    augment "/fpc:configure-bundles/fpc:output/fpc:bundles/fpc:result-type/fpc:create-or-update-success/fpc:contexts/fpc:dpns/fpc:mobility-tunnel-parameters/fpc:profile-parameters" {
       case threegpp-tunnel {
           uses threegpp:threeGPP-tunnel;
           uses threegpp:tft;
@@ -520,35 +519,35 @@ module ietf-dmm-threegpp {
 
 
     // QoS Updates - Context / UL / qosprofile
-    augment "/fpcagent:tenants/fpcagent:tenant/fpcagent:fpc-mobility/fpcagent:contexts/fpcagent:ul/fpcagent:qos-profile-parameters/fpcagent:value" {
+    augment "/fpc:tenants/fpc:tenant/fpc:fpc-mobility/fpc:contexts/fpc:ul/fpc:qos-profile-parameters/fpc:value" {
       case threegpp-qos {
           uses threegpp:threeGPP-QoS;
           description "3GPP QoS Values";
       }
       description "Context UL 3GPP QoS Values";
     }
-    augment "/fpcagent:configure/fpcagent:input/fpcagent:op_body/fpcagent:create_or_update/fpcagent:contexts/fpcagent:ul/fpcagent:qos-profile-parameters/fpcagent:value" {
+    augment "/fpc:configure/fpc:input/fpc:op_body/fpc:create_or_update/fpc:contexts/fpc:ul/fpc:qos-profile-parameters/fpc:value" {
       case threegpp-qos {
           uses threegpp:threeGPP-QoS;
           description "3GPP QoS Values";
       }
       description "Configure Context UL 3GPP QoS Values";
     }
-    augment "/fpcagent:configure-bundles/fpcagent:input/fpcagent:bundles/fpcagent:op_body/fpcagent:create_or_update/fpcagent:contexts/fpcagent:ul/fpcagent:qos-profile-parameters/fpcagent:value" {
+    augment "/fpc:configure-bundles/fpc:input/fpc:bundles/fpc:op_body/fpc:create_or_update/fpc:contexts/fpc:ul/fpc:qos-profile-parameters/fpc:value" {
       case threegpp-qos {
           uses threegpp:threeGPP-QoS;
           description "3GPP QoS Values";
       }
       description "Configure Bundles Context UL 3GPP QoS Values";
     }
-    augment "/fpcagent:configure/fpcagent:output/fpcagent:result-type/fpcagent:create-or-update-success/fpcagent:contexts/fpcagent:ul/fpcagent:qos-profile-parameters/fpcagent:value" {
+    augment "/fpc:configure/fpc:output/fpc:result-type/fpc:create-or-update-success/fpc:contexts/fpc:ul/fpc:qos-profile-parameters/fpc:value" {
       case threegpp-qos {
           uses threegpp:threeGPP-QoS;
           description "3GPP QoS Values";
       }
       description "Configure Context UL 3GPP QoS Values Response";
     }
-    augment "/fpcagent:configure-bundles/fpcagent:output/fpcagent:bundles/fpcagent:result-type/fpcagent:create-or-update-success/fpcagent:contexts/fpcagent:ul/fpcagent:qos-profile-parameters/fpcagent:value" {
+    augment "/fpc:configure-bundles/fpc:output/fpc:bundles/fpc:result-type/fpc:create-or-update-success/fpc:contexts/fpc:ul/fpc:qos-profile-parameters/fpc:value" {
       case threegpp-qos {
           uses threegpp:threeGPP-QoS;
           description "3GPP QoS Values";
@@ -557,35 +556,35 @@ module ietf-dmm-threegpp {
     }
 
     // QoS Updates -  Context / DL / QoS Profile
-    augment "/fpcagent:tenants/fpcagent:tenant/fpcagent:fpc-mobility/fpcagent:contexts/fpcagent:dl/fpcagent:qos-profile-parameters/fpcagent:value" {
+    augment "/fpc:tenants/fpc:tenant/fpc:fpc-mobility/fpc:contexts/fpc:dl/fpc:qos-profile-parameters/fpc:value" {
       case threegpp-qos {
           uses threegpp:threeGPP-QoS;
           description "3GPP QoS Values";
       }
       description "Context DL 3GPP QoS Values";
     }
-    augment "/fpcagent:configure/fpcagent:input/fpcagent:op_body/fpcagent:create_or_update/fpcagent:contexts/fpcagent:dl/fpcagent:qos-profile-parameters/fpcagent:value" {
+    augment "/fpc:configure/fpc:input/fpc:op_body/fpc:create_or_update/fpc:contexts/fpc:dl/fpc:qos-profile-parameters/fpc:value" {
       case threegpp-qos {
           uses threegpp:threeGPP-QoS;
           description "3GPP QoS Values";
       }
       description "Configure Context DL 3GPP QoS Values";
     }
-    augment "/fpcagent:configure-bundles/fpcagent:input/fpcagent:bundles/fpcagent:op_body/fpcagent:create_or_update/fpcagent:contexts/fpcagent:dl/fpcagent:qos-profile-parameters/fpcagent:value" {
+    augment "/fpc:configure-bundles/fpc:input/fpc:bundles/fpc:op_body/fpc:create_or_update/fpc:contexts/fpc:dl/fpc:qos-profile-parameters/fpc:value" {
       case threegpp-qos {
           uses threegpp:threeGPP-QoS;
           description "3GPP QoS Values";
       }
       description "Configure Bundles Context DL 3GPP QoS Values";
     }
-    augment "/fpcagent:configure/fpcagent:output/fpcagent:result-type/fpcagent:create-or-update-success/fpcagent:contexts/fpcagent:dl/fpcagent:qos-profile-parameters/fpcagent:value" {
+    augment "/fpc:configure/fpc:output/fpc:result-type/fpc:create-or-update-success/fpc:contexts/fpc:dl/fpc:qos-profile-parameters/fpc:value" {
       case threegpp-qos {
           uses threegpp:threeGPP-QoS;
           description "3GPP QoS Values";
       }
       description "Configure Context DL 3GPP QoS Values Response";
     }
-    augment "/fpcagent:configure-bundles/fpcagent:output/fpcagent:bundles/fpcagent:result-type/fpcagent:create-or-update-success/fpcagent:contexts/fpcagent:dl/fpcagent:qos-profile-parameters/fpcagent:value" {
+    augment "/fpc:configure-bundles/fpc:output/fpc:bundles/fpc:result-type/fpc:create-or-update-success/fpc:contexts/fpc:dl/fpc:qos-profile-parameters/fpc:value" {
       case threegpp-qos {
           uses threegpp:threeGPP-QoS;
           description "3GPP QoS Values";
@@ -609,23 +608,23 @@ module ietf-dmm-threegpp {
       description "3GPP Mobility Session Properties";
     }
 
-    augment "/fpcagent:tenants/fpcagent:tenant/fpcagent:fpc-mobility/fpcagent:contexts" {
+    augment "/fpc:tenants/fpc:tenant/fpc:fpc-mobility/fpc:contexts" {
       uses threegpp:threegpp-properties;
       description "3GPP Mobility Session Properties";
     }
-    augment "/fpcagent:configure/fpcagent:input/fpcagent:op_body/fpcagent:create_or_update/fpcagent:contexts" {
+    augment "/fpc:configure/fpc:input/fpc:op_body/fpc:create_or_update/fpc:contexts" {
       uses threegpp:threegpp-properties;
       description "3GPP Mobility Session Properties";
     }
-    augment "/fpcagent:configure-bundles/fpcagent:input/fpcagent:bundles/fpcagent:op_body/fpcagent:create_or_update/fpcagent:contexts" {
+    augment "/fpc:configure-bundles/fpc:input/fpc:bundles/fpc:op_body/fpc:create_or_update/fpc:contexts" {
        uses threegpp:threegpp-properties;
        description "3GPP Mobility Session Properties";
     }
-    augment "/fpcagent:configure/fpcagent:output/fpcagent:result-type/fpcagent:create-or-update-success/fpcagent:contexts" {
+    augment "/fpc:configure/fpc:output/fpc:result-type/fpc:create-or-update-success/fpc:contexts" {
       uses threegpp:threegpp-properties;
       description "3GPP Mobility Session Properties";
     }
-    augment "/fpcagent:configure-bundles/fpcagent:output/fpcagent:bundles/fpcagent:result-type/fpcagent:create-or-update-success/fpcagent:contexts" {
+    augment "/fpc:configure-bundles/fpc:output/fpc:bundles/fpc:result-type/fpc:create-or-update-success/fpc:contexts" {
        uses threegpp:threegpp-properties;
        description "3GPP Mobility Session Properties";
     }
@@ -638,21 +637,21 @@ module ietf-dmm-threegpp {
       description "3GPP Instructions";
     }
 
-    augment "/fpcagent:configure/fpcagent:input/fpcagent:instructions/fpcagent:instr-type" {
+    augment "/fpc:configure/fpc:input/fpc:instructions/fpc:instr-type" {
       case instr-3gpp-mob {
         uses threegpp:threegpp-commandset;
         description "3GPP Instructions";
       }
       description "Configure 3GPP Instructions";
     }
-    augment "/fpcagent:configure/fpcagent:input/fpcagent:op_body/fpcagent:create_or_update/fpcagent:contexts/fpcagent:instructions/fpcagent:instr-type" {
+    augment "/fpc:configure/fpc:input/fpc:op_body/fpc:create_or_update/fpc:contexts/fpc:instructions/fpc:instr-type" {
       case instr-3gpp-mob {
         uses threegpp:threegpp-commandset;
         description "3GPP Instructions";
       }
       description "Configure 3GPP Context Instructions";
     }
-    augment "/fpcagent:configure/fpcagent:output/fpcagent:result-type/fpcagent:create-or-update-success/fpcagent:contexts/fpcagent:instructions/fpcagent:instr-type" {
+    augment "/fpc:configure/fpc:output/fpc:result-type/fpc:create-or-update-success/fpc:contexts/fpc:instructions/fpc:instr-type" {
       case instr-3gpp-mob {
         uses threegpp:threegpp-commandset;
         description "3GPP Instructions";
@@ -661,21 +660,21 @@ module ietf-dmm-threegpp {
     }
 
 
-    augment "/fpcagent:configure-bundles/fpcagent:input/fpcagent:bundles/fpcagent:instructions/fpcagent:instr-type" {
+    augment "/fpc:configure-bundles/fpc:input/fpc:bundles/fpc:instructions/fpc:instr-type" {
       case instr-3gpp-mob {
         uses threegpp:threegpp-commandset;
         description "3GPP Instructions";
       }
       description "Configure Bundles 3GPP Instructions";
     }
-    augment "/fpcagent:configure-bundles/fpcagent:input/fpcagent:bundles/fpcagent:op_body/fpcagent:create_or_update/fpcagent:contexts/fpcagent:instructions/fpcagent:instr-type" {
+    augment "/fpc:configure-bundles/fpc:input/fpc:bundles/fpc:op_body/fpc:create_or_update/fpc:contexts/fpc:instructions/fpc:instr-type" {
       case instr-3gpp-mob {
         uses threegpp:threegpp-commandset;
         description "3GPP Instructions";
       }
       description "Configure Bundles 3GPP Context Instructions";
     }
-    augment "/fpcagent:configure-bundles/fpcagent:output/fpcagent:bundles/fpcagent:result-type/fpcagent:create-or-update-success/fpcagent:contexts/fpcagent:instructions/fpcagent:instr-type" {
+    augment "/fpc:configure-bundles/fpc:output/fpc:bundles/fpc:result-type/fpc:create-or-update-success/fpc:contexts/fpc:instructions/fpc:instr-type" {
       case instr-3gpp-mob {
         uses threegpp:threegpp-commandset;
         description "3GPP Instructions";

@@ -1,6 +1,7 @@
-module ietf-dmm-fpcbase {
-    namespace "urn:ietf:params:xml:ns:yang:ietf-dmm-fpcbase";
-    prefix fpcbase;
+submodule ietf-dmm-fpc-base {
+    belongs-to ietf-dmm-fpc {
+       prefix fpc;
+    }
 
     import ietf-inet-types { prefix inet; revision-date 2013-07-15; }
 
@@ -64,7 +65,7 @@ module ietf-dmm-fpcbase {
             description "Target Id";
           }
           leaf dpn-id {
-                type fpcbase:fpc-dpn-id;
+                type fpc:fpc-dpn-id;
                 description "DPN Id";
           }
           description "List of Targets";
@@ -74,7 +75,7 @@ module ietf-dmm-fpcbase {
 
     // Descriptor Structure
     typedef fpc-descriptor-id-type {
-        type fpcbase:fpc-identity;
+        type fpc:fpc-identity;
         description "Descriptor-ID";
     }
     identity fpc-descriptor-type {
@@ -82,13 +83,13 @@ module ietf-dmm-fpcbase {
     }
     grouping fpc-descriptor-id {
       leaf descriptor-id {
-        type fpcbase:fpc-identity;
+        type fpc:fpc-identity;
         description "Descriptor Id";
       }
       description "FPC Descriptor ID value";
     }
     grouping fpc-descriptor {
-        uses fpcbase:fpc-descriptor-id;
+        uses fpc:fpc-descriptor-id;
         leaf descriptor-type {
           type identityref {
             base "fpc-descriptor-type";
@@ -110,7 +111,7 @@ module ietf-dmm-fpcbase {
 
     // Action Structure
     typedef fpc-action-id-type {
-        type fpcbase:fpc-identity;
+        type fpc:fpc-identity;
         description "Action-ID";
     }
     identity fpc-action-type {
@@ -118,13 +119,13 @@ module ietf-dmm-fpcbase {
     }
     grouping fpc-action-id {
       leaf action-id {
-        type fpcbase:fpc-action-id-type;
+        type fpc:fpc-action-id-type;
         description "Action Identifier";
       }
       description "FPC Action ID";
     }
     grouping fpc-action {
-        uses fpcbase:fpc-action-id;
+        uses fpc:fpc-action-id;
         leaf action-type {
           type identityref {
             base "fpc-action-type";
@@ -148,9 +149,9 @@ module ietf-dmm-fpcbase {
     grouping fpc-rule {
         list descriptors {
           key descriptor-id;
-          uses fpcbase:fpc-descriptor-id;
+          uses fpc:fpc-descriptor-id;
           leaf direction {
-            type fpcbase:fpc-direction;
+            type fpc:fpc-direction;
             description "Direction";
           }
           description "Descriptors";
@@ -161,7 +162,7 @@ module ietf-dmm-fpcbase {
               type uint32;
               description "Action Execution Order";
           }
-          uses fpcbase:fpc-action-id;
+          uses fpc:fpc-action-id;
           description "Actions";
         }
         description
@@ -171,12 +172,12 @@ module ietf-dmm-fpcbase {
 
     // Policy Structures
     typedef fpc-policy-id {
-        type fpcbase:fpc-identity;
+        type fpc:fpc-identity;
         description "Policy Identifier";
     }
     grouping fpc-policy {
         leaf policy-id {
-            type fpcbase:fpc-policy-id;
+            type fpc:fpc-policy-id;
             description "Policy Id";
         }
         list rules {
@@ -185,7 +186,7 @@ module ietf-dmm-fpcbase {
               type uint32;
               description "Rule Order";
             }
-            uses fpcbase:fpc-rule;
+            uses fpc:fpc-rule;
             description "Rules";
         }
         description "FPC Policy";
@@ -193,16 +194,16 @@ module ietf-dmm-fpcbase {
 
     // Policy Group
     typedef fpc-policy-group-id {
-        type fpcbase:fpc-identity;
+        type fpc:fpc-identity;
         description "Policy Group Identifier";
     }
     grouping fpc-policy-group {
       leaf policy-group-id {
-        type fpcbase:fpc-policy-group-id;
+        type fpc:fpc-policy-group-id;
         description "Policy Group ID";
       }
       leaf-list policies {
-        type fpcbase:fpc-policy-id;
+        type fpc:fpc-policy-id;
         description "Policies";
       }
       description "FPC Policy Group";
@@ -211,16 +212,16 @@ module ietf-dmm-fpcbase {
     // Mobility Structures
     // Port Group
     typedef fpc-port-id {
-        type fpcbase:fpc-identity;
+        type fpc:fpc-identity;
         description "FPC Port Identifier";
     }
     grouping fpc-port {
         leaf port-id {
-            type fpcbase:fpc-port-id;
+            type fpc:fpc-port-id;
             description "Port ID";
         }
         leaf-list policy-groups {
-            type fpcbase:fpc-policy-group-id;
+            type fpc:fpc-policy-group-id;
             description "Policy Groups";
         }
         description "FPC Port";
@@ -228,7 +229,7 @@ module ietf-dmm-fpcbase {
 
     // Context Group
     typedef fpc-context-id {
-        type fpcbase:fpc-identity;
+        type fpc:fpc-identity;
         description "FPC Context Identifier";
     }
     grouping fpc-context-profile {
@@ -245,18 +246,18 @@ module ietf-dmm-fpcbase {
             description "MTU size";
         }
         container mobility-tunnel-parameters {
-            uses fpcbase:mobility-info;
+            uses fpc:mobility-info;
             description
             "Specifies profile specific uplink tunnel parameters to the DPN
             which the agent exists. The profiles includes GTP/TEID for 3gpp profile,
             GRE/Key for ietf-pmip profile, or new profile if anyone will define it.";
         }
         container nexthop {
-            uses fpcbase:fpc-nexthop;
+            uses fpc:fpc-nexthop;
             description "Next Hop";
         }
         container qos-profile-parameters {
-            uses fpcbase:fpc-qos-profile;
+            uses fpc:fpc-qos-profile;
             description "QoS Parameters";
         }
         container dpn-parameters {
@@ -264,7 +265,7 @@ module ietf-dmm-fpcbase {
         }
         list vendor-parameters {
             key "vendor-id vendor-type";
-            uses fpcbase:vendor-attributes;
+            uses fpc:vendor-attributes;
             description "Vendor Parameters";
         }
         description "A profile that applies to a specific direction";
@@ -287,15 +288,15 @@ module ietf-dmm-fpcbase {
 
     grouping fpc-context {
         leaf context-id {
-            type fpcbase:fpc-context-id;
+            type fpc:fpc-context-id;
             description "Context ID";
         }
         leaf-list ports {
-            type fpcbase:fpc-port-id;
+            type fpc:fpc-port-id;
             description "Ports";
         }
         leaf dpn-group {
-          type fpcbase:fpc-dpn-group-id;
+          type fpc:fpc-dpn-group-id;
           description "DPN Group";
         }
         leaf-list delegating-ip-prefixes {
@@ -303,32 +304,32 @@ module ietf-dmm-fpcbase {
             description "Delegating Prefix(es)";
         }
         container ul {
-            if-feature fpcbase:fpc-basic-agent;
-            uses fpcbase:fpc-context-profile;
+            if-feature fpc:fpc-basic-agent;
+            uses fpc:fpc-context-profile;
             description "Uplink";
         }
         container dl {
-            if-feature fpcbase:fpc-basic-agent;
-            uses fpcbase:fpc-context-profile;
+            if-feature fpc:fpc-basic-agent;
+            uses fpc:fpc-context-profile;
             description "Downlink";
         }
         list dpns {
-            if-feature fpcbase:fpc-multi-dpn;
+            if-feature fpc:fpc-multi-dpn;
             key "dpn-id direction";
             leaf dpn-id {
-                type fpcbase:fpc-dpn-id;
+                type fpc:fpc-dpn-id;
                 description "DPN";
             }
             leaf direction {
-                type fpcbase:fpc-direction;
+                type fpc:fpc-direction;
                 mandatory true;
                 description "Direction";
             }
-            uses fpcbase:fpc-context-profile;
+            uses fpc:fpc-context-profile;
             description "DPNs";
         }
         leaf parent-context {
-            type fpcbase:fpc-context-id;
+            type fpc:fpc-context-id;
             description "Parent Context";
         }
         description "FCP Context";
@@ -361,17 +362,17 @@ module ietf-dmm-fpcbase {
         description "Next Hop Type";
     }
     identity fpc-nexthop-ip {
-        base "fpcbase:fpc-nexthop-type";
+        base "fpc:fpc-nexthop-type";
         description "Nexthop IP";
     }
     identity fpc-nexthop-servicepath {
-        base "fpcbase:fpc-nexthop-type";
+        base "fpc:fpc-nexthop-type";
         description "Nexthop Service Path";
     }
     grouping fpc-nexthop {
         leaf nexthop-type {
             type identityref {
-              base "fpcbase:fpc-nexthop-type";
+              base "fpc:fpc-nexthop-type";
             }
             description "Nexthop Type";
         }
@@ -385,7 +386,7 @@ module ietf-dmm-fpcbase {
             }
             case servicepath {
                 leaf servicepath {
-                    type fpcbase:fpcp-service-path-id;
+                    type fpc:fpcp-service-path-id;
                     description "Service Path Value";
                 }
                 description "Service Path Case";
@@ -402,7 +403,7 @@ module ietf-dmm-fpcbase {
     grouping fpc-qos-profile {
         leaf qos-type {
             type identityref {
-                base fpcbase:fpc-qos-type;
+                base fpc:fpc-qos-type;
             }
             description "the profile type";
         }
@@ -418,12 +419,12 @@ module ietf-dmm-fpcbase {
     }
     grouping vendor-attributes {
         leaf vendor-id {
-            type fpcbase:fpc-identity;
+            type fpc:fpc-identity;
             description "Vendor ID";
         }
         leaf vendor-type {
             type identityref {
-                base "fpcbase:vendor-specific-type";
+                base "fpc:vendor-specific-type";
             }
             description "Attribute Type";
         }
@@ -442,12 +443,12 @@ module ietf-dmm-fpcbase {
 
     // Topology
     typedef fpc-domain-id {
-        type fpcbase:fpc-identity;
+        type fpc:fpc-identity;
         description "Domain Identifier";
     }
     grouping fpc-domain {
       leaf domain-id {
-        type fpcbase:fpc-domain-id;
+        type fpc:fpc-domain-id;
         description "Domain ID";
       }
       leaf domain-name {
@@ -462,7 +463,7 @@ module ietf-dmm-fpcbase {
     }
 
     typedef fpc-dpn-id {
-        type fpcbase:fpc-identity;
+        type fpc:fpc-identity;
         description "DPN Identifier";
     }
     identity fpc-dpn-control-protocol {
@@ -470,7 +471,7 @@ module ietf-dmm-fpcbase {
     }
     grouping fpc-dpn {
         leaf dpn-id {
-          type fpcbase:fpc-dpn-id;
+          type fpc:fpc-dpn-id;
           description "DPN ID";
         }
         leaf dpn-name {
@@ -478,7 +479,7 @@ module ietf-dmm-fpcbase {
           description "DPN Name";
         }
         leaf-list dpn-groups {
-          type fpcbase:fpc-dpn-group-id;
+          type fpc:fpc-dpn-group-id;
           description "DPN Groups";
         }
         leaf node-reference {
@@ -489,7 +490,7 @@ module ietf-dmm-fpcbase {
     }
 
     typedef fpc-dpn-group-id {
-        type fpcbase:fpc-identity;
+        type fpc:fpc-identity;
         description "DPN Group Identifier";
     }
     identity fpc-forwaridingplane-role {
@@ -504,18 +505,18 @@ module ietf-dmm-fpcbase {
 
     grouping fpc-dpn-peer-group {
         leaf remote-dpn-group-id {
-            type fpcbase:fpc-dpn-group-id;
+            type fpc:fpc-dpn-group-id;
             description "Remote DPN Group ID";
         }
         leaf remote-mobility-profile {
             type identityref {
-                base "fpcbase:fpc-mobility-profile-type";
+                base "fpc:fpc-mobility-profile-type";
             }
             description "Mobility Profile";
         }
         leaf remote-data-plane-role {
             type identityref {
-                base "fpcbase:fpc-forwaridingplane-role";
+                base "fpc:fpc-forwaridingplane-role";
             }
             description "Forwarding Plane Role";
         }
@@ -545,7 +546,7 @@ module ietf-dmm-fpcbase {
 
     grouping monitor-id {
       leaf monitor-id {
-        type fpcbase:fpc-identity;
+        type fpc:fpc-identity;
         description "Monitor Identifier";
       }
       description "Monitor ID";
@@ -555,19 +556,19 @@ module ietf-dmm-fpcbase {
       description "Type of Report";
     }
     identity periodic-report {
-      base "fpcbase:report-type";
+      base "fpc:report-type";
       description "Periodic Report";
     }
     identity threshold-report {
-      base "fpcbase:report-type";
+      base "fpc:report-type";
       description "Threshold Report";
     }
     identity scheduled-report {
-      base "fpcbase:report-type";
+      base "fpc:report-type";
       description "Scheduled Report";
     }
     identity events-report {
-      base "fpcbase:report-type";
+      base "fpc:report-type";
       description "Events Report";
     }
 
@@ -601,7 +602,7 @@ module ietf-dmm-fpcbase {
         case events-config-ident {
             leaf-list event-identities {
               type identityref {
-                base "fpcbase:event-type";
+                base "fpc:event-type";
               }
               description "Event Identities";
             }
@@ -620,17 +621,17 @@ module ietf-dmm-fpcbase {
     }
 
     grouping monitor-config {
-      uses fpcbase:monitor-id;
-      uses fpcbase:target-value;
-      uses fpcbase:report-config;
+      uses fpc:monitor-id;
+      uses fpc:target-value;
+      uses fpc:report-config;
       description "Monitor Configuration";
     }
 
     grouping report {
-      uses fpcbase:monitor-config;
+      uses fpc:monitor-config;
       choice report-value {
         leaf trigger {
-          type fpcbase:event-type-id;
+          type fpc:event-type-id;
           description "Trigger Identifier";
         }
         case simple-empty {

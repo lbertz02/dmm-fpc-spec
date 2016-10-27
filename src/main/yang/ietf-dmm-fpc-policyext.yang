@@ -2,8 +2,7 @@ module ietf-dmm-fpc-policyext {
     namespace "urn:ietf:params:xml:ns:yang:ietf-dmm-fpc-policyext";
     prefix fpcpolicyext;
 
-    import ietf-dmm-fpcbase { prefix fpcbase; revision-date 2016-08-03; }
-    import ietf-dmm-fpcagent { prefix fpcagent; revision-date 2016-08-03; }
+    import ietf-dmm-fpc { prefix fpc; revision-date 2016-08-03; }
     import ietf-inet-types { prefix inet; revision-date 2013-07-15; }
 
     organization "IETF DMM Working Group";
@@ -33,7 +32,7 @@ module ietf-dmm-fpc-policyext {
     }
 
     identity service-function {
-        base "fpcbase:fpc-descriptor-type";
+        base "fpc:fpc-descriptor-type";
         description "Base Identifier for Service Functions.";
     }
     identity napt-service {
@@ -69,7 +68,7 @@ module ietf-dmm-fpc-policyext {
     }
 
     identity copy-forward {
-      base "fpcbase:fpc-descriptor-type";
+      base "fpc:fpc-descriptor-type";
       description "Copies a packet then forwards to a specific destination";
     }
     grouping copy-forward {
@@ -77,14 +76,14 @@ module ietf-dmm-fpc-policyext {
         choice value {
           case port-ref {
             leaf port-ref {
-              type fpcbase:fpc-port-id;
+              type fpc:fpc-port-id;
               description "Port";
             }
             description "Port Forward Case";
           }
           case context-ref {
             leaf context-ref {
-              type fpcbase:fpc-context-id;
+              type fpc:fpc-context-id;
               description "Context";
             }
             description "Context Forward Case";
@@ -96,7 +95,7 @@ module ietf-dmm-fpc-policyext {
       description "Copy Then Forward to Port/Context Action";
     }
 
-    augment "/fpcagent:tenants/fpcagent:tenant/fpcagent:fpc-policy/fpcagent:actions/fpcagent:action-value" {
+    augment "/fpc:tenants/fpc:tenant/fpc:fpc-policy/fpc:actions/fpc:action-value" {
       case simple-nat {
           uses fpcpolicyext:simple-nat;
           description "Simple NAT value";
@@ -127,7 +126,7 @@ module ietf-dmm-fpc-policyext {
          source/destination as IP prefixes";
     }
 
-    augment "/fpcagent:tenants/fpcagent:tenant/fpcagent:fpc-policy/fpcagent:descriptors/fpcagent:descriptor-value" {
+    augment "/fpc:tenants/fpc:tenant/fpc:fpc-policy/fpc:descriptors/fpc:descriptor-value" {
       case prefix-descriptor {
           uses fpcpolicyext:prefix-traffic-descriptor;
           description "traffic descriptor value";
