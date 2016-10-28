@@ -3312,7 +3312,7 @@ module ietf-dmm-fpc {
         WG Chair: Jouni Korhonen
                   <mailto:jouni.nospam@gmail.com>
 
-        Editor:   Satoru Matsushim
+        Editor:   Satoru Matsushima
                   <mailto:satoru.matsushima@g.softbank.co.jp>
 
         Editor:   Lyle Bertz
@@ -4088,7 +4088,7 @@ submodule ietf-dmm-fpc-base {
         WG Chair: Jouni Korhonen
                   <mailto:jouni.nospam@gmail.com>
 
-        Editor:   Satoru Matsushim
+        Editor:   Satoru Matsushima
                   <mailto:satoru.matsushima@g.softbank.co.jp>
 
         Editor:   Lyle Bertz
@@ -4776,7 +4776,7 @@ module ietf-pmip-qos {
         WG Chair: Jouni Korhonen
                   <mailto:jouni.nospam@gmail.com>
 
-        Editor:   Satoru Matsushim
+        Editor:   Satoru Matsushima
                   <mailto:satoru.matsushima@g.softbank.co.jp>
 
         Editor:   Lyle Bertz
@@ -5402,7 +5402,7 @@ module ietf-traffic-selector-types {
         WG Chair: Jouni Korhonen
                   <mailto:jouni.nospam@gmail.com>
 
-        Editor:   Satoru Matsushim
+        Editor:   Satoru Matsushima
                   <mailto:satoru.matsushima@g.softbank.co.jp>
 
         Editor:   Lyle Bertz
@@ -5924,7 +5924,7 @@ module ietf-dmm-threegpp {
         WG Chair: Jouni Korhonen
                   <mailto:jouni.nospam@gmail.com>
 
-        Editor:   Satoru Matsushim
+        Editor:   Satoru Matsushima
                   <mailto:satoru.matsushima@g.softbank.co.jp>
 
         Editor:   Lyle Bertz
@@ -6632,7 +6632,7 @@ module ietf-dmm-fpc-pmip {
         WG Chair: Jouni Korhonen
                   <mailto:jouni.nospam@gmail.com>
 
-        Editor:   Satoru Matsushim
+        Editor:   Satoru Matsushima
                   <mailto:satoru.matsushima@g.softbank.co.jp>
 
         Editor:   Lyle Bertz
@@ -6952,7 +6952,7 @@ module ietf-dmm-fpc-policyext {
         WG Chair: Jouni Korhonen
                   <mailto:jouni.nospam@gmail.com>
 
-        Editor:   Satoru Matsushim
+        Editor:   Satoru Matsushima
                   <mailto:satoru.matsushima@g.softbank.co.jp>
 
         Editor:   Lyle Bertz
