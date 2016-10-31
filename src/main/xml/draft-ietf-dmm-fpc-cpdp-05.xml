@@ -1437,9 +1437,10 @@ DPN         |                 DPN        |
 
             <t>When an Client creates Context, the Client would be able
             to indicate just DPN-group(s) instead of all endpoint
-            addresses and MTU-size of a tunnel for example. This is
-            because that the Agent can derive data for those detail from
-            pre-configured DPN-group information in the Topology.</t>
+            addresses of the DPN(s) and MTU-size of the tunnels for
+            example. This is because that the Agent can derive data for
+            those details from pre-configured DPN-group information in
+            the Topology.</t>
 
             <t>The Agent turns those derived data into runtime
             attributes of UL and DL objects which are in the DPNs list
