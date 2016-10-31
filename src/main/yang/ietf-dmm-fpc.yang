@@ -163,12 +163,6 @@ module ietf-dmm-fpc {
                 description "Domains";
               }
 
-              list dpn-group-peers {
-                  if-feature fpc:fpc-basic-agent;
-                  key "remote-dpn-group-id";
-                  uses fpc:fpc-dpn-peer-group;
-                  description "DPN Peer Groups";
-              }
               leaf dpn-id {
                 if-feature fpc:fpc-basic-agent;
                 type fpc:fpc-dpn-id;
