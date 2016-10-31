@@ -1424,6 +1424,61 @@ DPN         |                 DPN        |
 
             -->
         </section>
+        <section anchor="attr_application" title="Attribute Application">
+            <t>Attributes in FPC Topology and Policy are pre-configured
+            in a FPC Agent prior to Contexts and Ports. Those
+            pre-configured attributes SHOULD NOT be instantiated on
+            DPN(s) until the Contexts and Ports indicate them.</t>
+            
+            <t>This is intentional as it provides FPC Clients ability to
+            reuse attributes that helps to minimize over the wire
+            exchanges and reduce system errors by exchanging less
+            information.</t>
+
+            <t>When an Client creates Context, the Client would be able
+            to indicate just DPN-group(s) instead of all endpoint
+            addresses of the DPN(s) and MTU-size of the tunnels for
+            example. This is because that the Agent can derive data for
+            those details from pre-configured DPN-group information in
+            the Topology.</t>
+
+            <t>The Agent turns those derived data into runtime
+            attributes of UL and DL objects which are in the DPNs list
+            of the Context (multiple-DPNs Agent case) or direct under
+            the Context (single-DPN Agent case). The Agent consequently
+            instantiates forwarding policies on DPN(s) based on that
+            attributes.</t>
+            
+            <t>When the attribute is a direct value of the Context, e.g.
+            IMSI defined in the 3GPP extension, only missing values can
+            be provided by the Parent Context.</t>
+
+            <t>It is noted that the Agent SHOULD update the Context's
+            attributes which are instantiated on DPN(s) when the applied
+            attributes of Topology and Policy are changed.</t>
+        </section>
+
+        <section anchor="policy_mobililty" title="Policy and Runtime Data">
+            <t>Contexts and Ports that are supporting runtime, realtime
+            mobility sessions which are produced in the mobility control
+            plane. These could be installed using any number of
+            protocols, but in case of they need to be delivered in
+            realtime that <xref
+            target="I-D.ietf-netconf-restconf">Restconf</xref> and/or
+            <xref target="RFC6241">Netconf</xref> will not fullfill,
+            an appropriate FPC envelope protocol MUST be required.</t>
+
+            <t>When data is delivered as part of the FPC envelop protocol
+            it should be part of a Context.  If it is a binding to a generic
+            policy that could be used by multiple Contexts a Port is used. 
+            Given the support for pre-configuration of policies and
+            references by identifiers, e.g a Rule ID, most policies do not
+            require realtime delivery.</t>
+            
+            <t>In case of modifying an existing Context attribute, the
+            Agent MUST overwrite that attribute with the value of which
+            the Client brings to the Agent.</t>
+        </section>
 
 
 </section>
@@ -3426,12 +3481,6 @@ module ietf-dmm-fpc {
                 description "Domains";
               }
 
-              list dpn-group-peers {
-                  if-feature fpc:fpc-basic-agent;
-                  key "remote-dpn-group-id";
-                  uses fpc:fpc-dpn-peer-group;
-                  description "DPN Peer Groups";
-              }
               leaf dpn-id {
                 if-feature fpc:fpc-basic-agent;
                 type fpc:fpc-dpn-id;
