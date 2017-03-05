@@ -267,18 +267,20 @@
 
     </section>
 
-    <section title="Conventions">
-      <t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
-      "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
-      document are to be interpreted as described in <xref
-      target="RFC2119"></xref>.</t>
+<!--    <section title="Conventions">
 
 
    </section>
+-->
 
     <!-- <section anchor="pcmodel" title="Reference Architecture and Information Model"> -->
 
     <section anchor="terminology" title="Terminology">
+      <t> The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
+          "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
+          document are to be interpreted as described in <xref
+          target="RFC2119"></xref>.</t>
+
         <t><list hangIndent="24" style="hanging">
             <t hangText="DPN:">A data-plane node (DPN) is capable of
             deploying data-plane features. DPNs may be switches or routers
