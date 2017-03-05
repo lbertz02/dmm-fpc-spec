@@ -317,7 +317,38 @@
 
     <section anchor="refarch" title="FPC Architecture ">
 
-        <t> In accordance with the requirements of flexible data-plane
+        <t> To fulfill the requirements described in <xref target="RFC7333"/>,
+            FPC enables mobility control-planes and applications to configure
+            DPNs with various roles of the mobility management as described
+            in <xref target="I-D.ietf-dmm-deployment-models"/>. </t>
+
+        <t> FPC defines building blocks of FPC Agent and FPC Client, as well as
+            data models for the necessary data-plane abstractions.  The
+            attributes defining those data models serve as protocol elements
+            for the interface between the FPC agent and the FPC client.</t>
+
+        <t> Mobility control-planes and applications integrate the FPC
+            Client function.  The FPC Client connects to FPC Agent functions.
+            The Client and the Agent communicate based on information models
+            for the data-plane abstractions described in
+            <xref target="model1"/>.  The data models allow the control-plane
+            and the applications to support forwarding policies on the Agent
+            for their mobility sessions. </t>
+
+        <t> The FPC Agent carries out the required configuration and management
+            of the DPN(s). The Agent determines DPN configurations according to
+            the forwarding policies requested by the FPC client.  Along with the
+            models, the control-plane and the applications put Policies to the 
+            Agent prior to create their mobility sessions. </t>
+
+        <t> Once the Topology of DPN(s) and a domains are defined for a data
+            plane on an Agent, the data-plane nodes (DPNs) are available for
+            further configuration. The FPC Agent connects them to manage their
+            configurations.</t>
+            
+            
+
+<!--    <t> In accordance with the requirements of flexible data-plane
         functions deployment described in <xref
         target="RFC7333"></xref>, FPC provides a means for mobility
         control-plane and applications to handle DPNs that must be
@@ -339,19 +370,17 @@
         These configurations are rendered from the forwarding policies
         by the Agent. FPC Agent may be implemented in a network
         controller that handles multiple DPNs or it also may
-        be integrated into a DPN.</t>
+        be integrated into a DPN.</t>  -->
 
-        <t>The FPC architecture supports multi-tenancy where the FPC
-        enabled data-plane supports multiple tenants of mobile operator
-        networks and/or applications. DPNs on the data-plane run in
-        multiple data-plane roles which are defined per session, domain and
-        tenant.</t>
+        <t> This architecture is illustrated in <xref target="fig_refarch"/>.
+            An FPC Agent may be implemented in a network controller that handles
+            multiple DPNs. Or, there is a simple case where another FPC Agent
+            may itself be integrated into a DPN.</t>
 
-        <t>This architecture is illustrated in <xref target="fig_refarch"/>.
-        This document does not adopt a specific protocol for the FPC envelope
-        protocol and it is out of scope. However it must be capable of
-        supporting FPC protocol messages and transactions described in <xref
-        target="protocol"/>. </t>
+        <t> This document does not adopt a specific protocol for the FPC interface
+            protocol and it is out of scope. However it must be capable of
+            supporting FPC protocol messages and transactions described in <xref
+            target="protocol"/>. </t>
 
 
         <t>
@@ -366,7 +395,7 @@
                     ||      FPC Client       ||
                     |+----------^------------+|
                     +-----------|-------------+
-        FPC envelope protocol   |
+        FPC interface protocol  |
                 +---------------+-----------------+
                 |                                 |
   Network       |                                 |
@@ -382,7 +411,7 @@
     |+------^-----+----^-----+|
     +-------|----------|------+
             |          |
-  Other     |          | FPC envelope
+  Other     |          | FPC interface
   Southband |          | Protocol
   Protocols |          |
             |          +-----------------+
@@ -401,14 +430,23 @@ DPN         |                 DPN        |
           </figure>
         </t>
 
-        <t>Note that the FPC envelope protocol is only required to handle
-        runtime data in the Mobility model. The rest of the FPC models,
-        namely Topology and Policy, are pre-configured, therefore real-time
-        data handling capabilities are not required for them. Operators
-        that are tenants in the FPC data-plane can configure
-        Topology and Policy on the Agent through other means, such as <xref
-        target="I-D.ietf-netconf-restconf">Restconf</xref> or <xref
-        target="RFC6241">Netconf</xref>. </t>
+        <t> The FPC architecture supports multi-tenancy; an FPC enabled
+            data-plane supports tenants of multiple mobile operator networks
+            and/or applications. It means that the FPC Client of each tenant
+            connects to the FPC Agent and it MUST partition namespace and data
+            for their data-planes. DPNs on the data-plane may fulfill multiple
+            data-plane roles which are defined per session, domain and
+            tenant.</t>
+
+        <t> Note that all FPC model SHOULD be configurable. The FPC interface 
+            protocol in <xref target="fig_refarch"/> is only required to handle
+            runtime data in the Mobility model. The rest of the FPC models,
+            namely Topology and Policy, may be pre-configured, and in that case
+            real-time protocol exchanges would not be required for them.
+            Operators that are tenants in the FPC data-plane could configure
+            Topology and Policy on the Agent through other means, such as <xref
+            target="I-D.ietf-netconf-restconf">Restconf</xref> or <xref
+            target="RFC6241">Netconf</xref>. </t>
 
     </section>
 
