@@ -304,7 +304,8 @@
             application in a tenant may utilize a single or multiple
             domains.</t>
 
-            <t hangText="Port:">A set of forwarding policies.</t>
+            <t hangText="Virtual Port (Vport):"> 
+                A set of forwarding policies.</t>
 
             <t hangText="Context:">An abstracted endpoint of a mobility
             session associated with runtime attributes. Ports may
