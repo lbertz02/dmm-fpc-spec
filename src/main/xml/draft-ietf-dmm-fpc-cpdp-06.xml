@@ -341,7 +341,7 @@
             models, the control-plane and the applications put Policies to the 
             Agent prior to create their mobility sessions. </t>
 
-        <t> Once the Topology of DPN(s) and a domains are defined for a data
+        <t> Once the Topology of DPN(s) and a domain are defined for a data
             plane on an Agent, the data-plane nodes (DPNs) are available for
             further configuration. The FPC Agent connects them to manage their
             configurations.</t>
