@@ -325,7 +325,7 @@
         <t> FPC defines building blocks of FPC Agent and FPC Client, as well as
             data models for the necessary data-plane abstractions.  The
             attributes defining those data models serve as protocol elements
-            for the interface between the FPC agent and the FPC client.</t>
+            for the interface between the FPC Agent and the FPC Client.</t>
 
         <t> Mobility control-planes and applications integrate the FPC
             Client function.  The FPC Client connects to FPC Agent functions.
@@ -337,14 +337,17 @@
 
         <t> The FPC Agent carries out the required configuration and management
             of the DPN(s). The Agent determines DPN configurations according to
-            the forwarding policies requested by the FPC client.  Along with the
-            models, the control-plane and the applications put Policies to the 
-            Agent prior to create their mobility sessions. </t>
+            the forwarding policies requested by the FPC Client.  The DPN
+            configurations could be specific to each DPN implementation so that
+            how FPC Agent determines implementation specific configuration for
+            DPN is outside of the scope of this document. Along with the models,
+            the control-plane and the applications put Policies to the Agent
+            prior to create their mobility sessions. </t>
 
-        <t> Once the Topology of DPN(s) and a domain are defined for a data
+        <t> Once the Topology of DPN(s) and domains are defined for a data
             plane on an Agent, the data-plane nodes (DPNs) are available for
-            further configuration. The FPC Agent connects them to manage their
-            configurations.</t>
+            further configuration. The FPC Agent connects those DPNs to manage
+            their configurations.</t>
             
             
 
@@ -374,7 +377,7 @@
 
         <t> This architecture is illustrated in <xref target="fig_refarch"/>.
             An FPC Agent may be implemented in a network controller that handles
-            multiple DPNs. Or, there is a simple case where another FPC Agent
+            multiple DPNs, or there is a simple case where another FPC Agent
             may itself be integrated into a DPN.</t>
 
         <t> This document does not adopt a specific protocol for the FPC interface
@@ -438,7 +441,7 @@ DPN         |                 DPN        |
             data-plane roles which are defined per session, domain and
             tenant.</t>
 
-        <t> Note that all FPC model SHOULD be configurable. The FPC interface 
+        <t> Note that all FPC models SHOULD be configurable. The FPC interface 
             protocol in <xref target="fig_refarch"/> is only required to handle
             runtime data in the Mobility model. The rest of the FPC models,
             namely Topology and Policy, may be pre-configured, and in that case
