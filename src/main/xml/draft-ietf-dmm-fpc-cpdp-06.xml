@@ -672,7 +672,7 @@ DPN         |                 DPN        |
         <section anchor="domains" title="Domains">
 
         <t> A domain is defined by an operator to refer to a particular
-        network, considered as a system of cooperating DPN-grous. 
+        network, considered as a system of cooperating DPN-groups. 
         Domains may represent services or applications that are resident
         within an operator's network.</t>
 
@@ -888,7 +888,8 @@ DPN         |                 DPN        |
                apply.</t>
 
                <t hangText="Order:">Specifies ordering if the Rule has
-               multiple Descriptors and Action sets.</t>
+               multiple Descriptors and Action sets. Order values MUST be unique
+               within the Rules list.</t>
 
                <t hangText="Descriptors:">The list of Descriptors.</t>
 
@@ -903,7 +904,8 @@ DPN         |                 DPN        |
                <t hangText="Action-id:">Indicates each Action in the rule.</t>
 
                <t hangText="Action-Order:">Specifies Action ordering if the Rule has
-               multiple actions. </t>
+               multiple actions. Action-Order values MUST be unique within the
+               Actions list.</t>
 
            </list></t>
         </section>        <!-- end section title="Policies"  -->
@@ -1062,7 +1064,7 @@ DPN         |                 DPN        |
                 The DPN-group assigned to the Context.</t>
 
             <t hangText="Delegated-ip-prefixes:"> List of IP prefixes to
-                be delegated to the mobile node of the context. </t>
+                be delegated to the mobile node of the Context. </t>
 
             <t hangText="Parent-context:"> Indicates a parent context from
                 which this context inherits. </t>
@@ -1072,7 +1074,7 @@ DPN         |                 DPN        |
         <section anchor="single-dpn-context" title="Single DPN Agent Case">
 
             <t> In the case where a FPC Agent supports only one DPN, the Agent
-                MUST maintain context data just for the DPN. The Agent does not
+                MUST maintain Context data just for the DPN. The Agent does not
                 need to maintain a Topology model. The Context in
                 single DPN case consists of following parameters for both
                 direction of uplink and downlink.</t>
@@ -1272,7 +1274,7 @@ DPN         |                 DPN        |
             <t><list hangIndent="4" style="hanging">
 
                 <t hangText="DPN-id:"> 
-                    Indicates DPN of which the runtime context data installed.
+                    Indicates DPN of which the runtime Context data installed.
                     </t>
 
                 <t hangText="Direction:"> 
@@ -1463,7 +1465,7 @@ DPN         |                 DPN        |
 
         <t> When a Policy needs to be applied to Contexts in all
             tenants on an Agent, the Agent SHOULD define that policy to be
-            visible from all the tenants. In this case, the Agent assign an
+            visible from all the tenants. In this case, the Agent assigns an
             unique identifier in the agent namespace.</t>
 
         <t> The format of identifiers can utilize any format with
@@ -1499,7 +1501,7 @@ DPN         |                 DPN        |
         <t> Attributes in FPC Topology and Policy SHOULD be pre-configured
             in a FPC Agent prior to Contexts and Vports. The FPC Agent
             requires those pre-configured attributes to be able to derive
-            Context's detail runtime attributes.</t>
+            Context's detailed runtime attributes.</t>
             
         <t> When a FPC Client creates a Context, the FPC Client is then be
             able to indicate specific DPN-group(s) instead of all endpoint
@@ -1510,8 +1512,8 @@ DPN         |                 DPN        |
             
         <t> Similarly when a Vport is created to the Context, the FPC Agent
             can derive detail forwarding policies from the pre-configured
-            Policy information in the FPC Policy. The FPC Client thereby no
-            need to indicate those specific policies to each of all the
+            Policy information in the FPC Policy. The FPC Client thereby has
+            no need to indicate those specific policies to each of all the
             Contexts which share the same set of Policy-groups.</t>
 
         <t> This is intentional as it provides FPC Clients the ability to
@@ -1536,9 +1538,9 @@ DPN         |                 DPN        |
         <t> In case of FPC Client modifying an existing runtime attribute
             of a Context which the FPC Agent derived, the FPC Agent MUST
             overwrite that attribute with the value of which the Client
-            brings to the Agent. However it is risked that the attributes
-            could be outside of allowable range of DPNs which the FPC Agent
-            managed.</t>
+            brings to the Agent. However risks exist, for example, the
+            attributes could be outside of allowable range of DPNs which
+            the FPC Agent managed.</t>
 
 
 <!--    <section anchor="policy_mobility" title="Policy and Runtime Data">
