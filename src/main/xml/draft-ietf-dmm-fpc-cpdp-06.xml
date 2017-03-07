@@ -204,7 +204,7 @@
         <t>This document describes Forwarding Policy Configuration (FPC), a
         system for managing the separation of data-plane and control-plane. FPC
         enables flexible mobility management using FPC agent and FPC client
-        functions. An FPC agent export an abstract interface to the data-plane.
+        functions. An FPC agent exports an abstract interface to the data-plane.
         To configure data-plane nodes and functions, the FPC client uses the
         interface to the data-plane offered by the FPC agent.</t>
 
@@ -220,7 +220,7 @@
         <t>
         <list style="hanging">
             <t hangText="Topology:"> DPNs are grouped and abstracted according
-            to well-known concept of mobility management such as access
+            to well-known concepts of mobility management such as access
             networks, anchors and domains. A FPC agent provides an interface to
             the abstract DPN-groups that enables definition of a topology for
             the forwarding plane. For example, access nodes may be assigned to a
@@ -229,7 +229,7 @@
             <t hangText="Policy:">
             A Policy embodies the mechanisms for processing specific traffic flows
             or packets. This is needed for QoS, for packet processing to rewrite
-            headers, etc. A policy consists of one or more rules. Each rule is
+            headers, etc. A Policy consists of one or more rules. Each rule is
             composed of Descriptors and Actions. Descriptors
             in a rule identify traffic flows, and Actions apply
             treatments to packets that match the Descriptors in the
@@ -247,7 +247,7 @@
             abstract those policy sets. A Context can belong to multiple
             Vports which serve various kinds of purpose and policy. Monitors
             provide a mechanism to produce reports when events regarding
-            Vports, Sessions, DPNs or the Agent occurs.</t>
+            Vports, Sessions, DPNs or the Agent occur.</t>
 
         </list>
         </t>
