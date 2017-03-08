@@ -218,69 +218,67 @@
   <middle>
     <section title="Introduction">
 
-        <t>This document describes Forwarding Policy Configuration
-        (FPC), the solution of data-plane separation from control-plane
-        which enables flexible mobility management systems using agent
-        and client functions. To configure data-plane nodes and
-        functions, the data-plane is abstracted in the agent which
-        provides an interface to the client.</t>
+        <t>This document describes Forwarding Policy Configuration (FPC), a
+        system for managing the separation of data-plane and control-plane. FPC
+        enables flexible mobility management using FPC agent and FPC client
+        functions. An FPC agent exports an abstract interface to the data-plane.
+        To configure data-plane nodes and functions, the FPC client uses the
+        interface to the data-plane offered by the FPC agent.</t>
 
-        <t>Control planes of mobility management systems, and/or any
-        applications which require data-plane control, can utilize the
-        FPC Client in flexible granularities of operation. The
-        configuration operations are capable of configuring not only
-        single Data-Plane Node (DPN) directly, but also multiple DPNs
-        from abstracted data-plane models on the FPC agent.</t>
+        <t>Control planes of mobility management systems, or other applications
+        which require data-plane control, can utilize the FPC client at various
+        granularities of operation. The operations are capable of configuring a
+        single Data-Plane Node (DPN) directly, as well as multiple DPNs as
+        determined by abstracted data-plane models on the FPC agent.</t>
 
-        <t>FPC agent provides the data-plane abstraction models in the
-        following three areas: </t>
+        <t>A FPC agent provides data-plane abstraction in the following three
+        areas: </t>
 
         <t>
         <list style="hanging">
-            <t hangText="Topology:">
-            DPNs are grouped and abstracted in terms of roles of
-            mobility management such as access, anchors and domains.
-            FPC Agent abstracts DPN-groups and consists of forwarding
-            plane topology, such as access nodes assigned to a
+            <t hangText="Topology:"> DPNs are grouped and abstracted according
+            to well-known concepts of mobility management such as access
+            networks, anchors and domains. A FPC agent provides an interface to
+            the abstract DPN-groups that enables definition of a topology for
+            the forwarding plane. For example, access nodes may be assigned to a
             DPN-group which peers to a DPN-group of anchor nodes. </t>
 
             <t hangText="Policy:">
-            Policy abstracts policies which handle specific traffic flows
-            or packets such as QoS, packet processing to rewrite
-            headers, etc. A policy consists of one or multiple rules
-            which are composed of Descriptors and Actions. Descriptors
-            in a rule identify traffic flows and Actions apply
-            treatments to packets matched to the Descriptors in the
-            rule. An arbitrary set of policies is abstracted as a
-            Policy-group which is applied to Ports.</t>
+            A Policy embodies the mechanisms for processing specific traffic flows
+            or packets. This is needed for QoS, for packet processing to rewrite
+            headers, etc. A Policy consists of one or more rules. Each rule is
+            composed of Descriptors and Actions. Descriptors
+            in a rule identify traffic flows, and Actions apply
+            treatments to packets that match the Descriptors in the
+            rule. An arbitrary set of policies can be abstracted as a
+            Policy-group to be applied to a particular collection of flows, which
+            is called the Virtual Port (Vport).</t>
 
-            <t hangText="Mobility:">An endpoint of a mobility session
-            is abstracted as a Context with its associated runtime
+            <t hangText="Mobility:">A mobility session which is active on a mobile node
+            is abstracted as a Context with associated runtime
             concrete attributes, such as tunnel endpoints, tunnel
             identifiers, delegated prefix(es), routing information,
             etc. Contexts are attached to DPN-groups along with
             consequence of the control plane. One or multiple Contexts
-            which have same sets of policies are assigned Ports which
+            which have same sets of policies are assigned Vports which
             abstract those policy sets. A Context can belong to multiple
-            Ports which serve different kinds of purpose and policy. Monitors
+            Vports which serve various kinds of purpose and policy. Monitors
             provide a mechanism to produce reports when events regarding
-            Ports, Sessions, DPNs or the Agent occurs.</t>
+            Vports, Sessions, DPNs or the Agent occur.</t>
 
         </list>
         </t>
 
-        <t>The Agent collects applicable sets of forwarding policies
-        for the mobility sessions from the data model, and then renders
-        those policies into specific configurations for each DPN to
-        which the sessions attached. Specific protocols and
-        configurations to configure DPN from FPC Agent are out of scope
-        of this document.</t>
+        <t>The Agent assembles applicable sets of forwarding policies for the
+        mobility sessions from the data model, and then renders those policies
+        into specific configurations for each DPN to which the sessions
+        attached. The specific protocols and configurations to configure DPN
+        from FPC Agent are outside the scope of this document.</t>
 
-        <t> The data-plane abstraction model is extensible in order to
-        support many different types of mobility management systems and
-        data-plane functions. The architecture and protocol design of
-        FPC intends not to tie to specific types of access technologies
-        and mobility protocols. </t>
+        <t> The data-plane abstractions may be extended to support many
+        different mobility management systems and data-plane functions. The
+        architecture and protocol design of FPC is not tied to specific types of
+        access technologies and mobility protocols. </t>
 
     </section>
 
