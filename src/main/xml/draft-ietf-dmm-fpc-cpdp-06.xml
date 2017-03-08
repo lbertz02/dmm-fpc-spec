@@ -202,13 +202,15 @@
 
     <abstract>
       <t>
-        This document describes the solution of data-plane separation
-        from control-plane which enables a flexible mobility management
-        system using agent and client functions. To configure
-        data-plane nodes and functions, the data-plane is abstracted by
-        an agent interface to the client. The data-plane abstraction
-        model is extensible in order to support many different type
-        of mobility management systems and data-plane functions.
+        This document describes a way, called Forwarding Policy Configuration
+        (FPC) to manage the separation of data-plane and control-plane. FPC
+        defines a flexible mobility management system using FPC agent and FPC
+        client functions. An FPC agent provides an abstract interface to the
+        data-plane. The FPC client configures data-plane nodes by using the
+        functions and abstractions provided by the FPC agent for that data-plane
+        nodes. The data-plane abstractions presented in this document is
+        extensible, in order to support many different types of mobility
+        management systems and data-plane functions.
       </t>
     </abstract>
   </front>
