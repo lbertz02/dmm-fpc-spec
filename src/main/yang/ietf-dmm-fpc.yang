@@ -42,6 +42,11 @@ module ietf-dmm-fpc {
      in Section 4.e of the Trust Legal Provisions and are provided
      without warranty as described in the Simplified BSD License.";
 
+    revision 2017-03-08 {
+        description "Version 06 updates.";
+        reference "draft-ietf-dmm-fpc-cpdp-06";
+    }
+
     revision 2016-08-03 {
         description "Initial Revision.";
         reference "draft-ietf-dmm-fpc-cpdp-05";
@@ -143,9 +148,9 @@ module ietf-dmm-fpc {
                   uses fpc:fpc-context;
                   description "Contexts";
               }
-              list ports {
-                  key port-id;
-                  uses fpc:fpc-port;
+              list vports {
+                  key vport-id;
+                  uses fpc:fpc-vport;
                   description "Ports";
               }
               list monitors {
@@ -436,7 +441,7 @@ module ietf-dmm-fpc {
     // Output Structure
     grouping payload {
       list ports {
-        uses fpc:fpc-port;
+        uses fpc:fpc-vport;
         description "Ports";
       }
       list contexts {

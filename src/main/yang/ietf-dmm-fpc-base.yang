@@ -41,6 +41,11 @@ submodule ietf-dmm-fpc-base {
      in Section 4.e of the Trust Legal Provisions and are provided
      without warranty as described in the Simplified BSD License.";
 
+    revision 2017-03-08 {
+        description "Version 06 updates.";
+        reference "draft-ietf-dmm-fpc-cpdp-06";
+    }
+
     revision 2016-08-03 {
         description "Initial Revision.";
         reference "draft-ietf-dmm-fpc-cpdp-05";
@@ -173,7 +178,7 @@ submodule ietf-dmm-fpc-base {
         }
         list actions {
           key action-id;
-          leaf order {
+          leaf action-order {
               type uint32;
               description "Action Execution Order";
           }
@@ -226,13 +231,13 @@ submodule ietf-dmm-fpc-base {
 
     // Mobility Structures
     // Port Group
-    typedef fpc-port-id {
+    typedef fpc-vport-id {
         type fpc:fpc-identity;
         description "FPC Port Identifier";
     }
-    grouping fpc-port {
-        leaf port-id {
-            type fpc:fpc-port-id;
+    grouping fpc-vport {
+        leaf vport-id {
+            type fpc:fpc-vport-id;
             description "Port ID";
         }
         leaf-list policy-groups {
@@ -306,17 +311,17 @@ submodule ietf-dmm-fpc-base {
             type fpc:fpc-context-id;
             description "Context ID";
         }
-        leaf-list ports {
-            type fpc:fpc-port-id;
-            description "Ports";
+        leaf-list vports {
+            type fpc:fpc-vport-id;
+            description "Vports";
         }
         leaf dpn-group {
           type fpc:fpc-dpn-group-id;
           description "DPN Group";
         }
-        leaf-list delegating-ip-prefixes {
+        leaf-list delegated-ip-prefixes {
             type inet:ip-prefix;
-            description "Delegating Prefix(es)";
+            description "Delegated Prefix(es)";
         }
         container ul {
             if-feature fpc:fpc-basic-agent;
@@ -473,6 +478,10 @@ submodule ietf-dmm-fpc-base {
       leaf domain-type {
         type string;
         description "Domain Type";
+      }
+      leaf domain-reference {
+        type instance-identifier;
+        description "Indicates a set of resources for the domain";
       }
       description "FPC Domain";
     }

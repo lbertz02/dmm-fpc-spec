@@ -1429,7 +1429,7 @@ DPN         |                 DPN        |
             in a FPC Agent prior to Contexts and Ports. Those
             pre-configured attributes SHOULD NOT be instantiated on
             DPN(s) until the Contexts and Ports indicate them.</t>
-            
+
             <t>This is intentional as it provides FPC Clients ability to
             reuse attributes that helps to minimize over the wire
             exchanges and reduce system errors by exchanging less
@@ -1448,7 +1448,7 @@ DPN         |                 DPN        |
             the Context (single-DPN Agent case). The Agent consequently
             instantiates forwarding policies on DPN(s) based on that
             attributes.</t>
-            
+
             <t>When the attribute is a direct value of the Context, e.g.
             IMSI defined in the 3GPP extension, only missing values can
             be provided by the Parent Context.</t>
@@ -1470,11 +1470,11 @@ DPN         |                 DPN        |
 
             <t>When data is delivered as part of the FPC envelop protocol
             it should be part of a Context.  If it is a binding to a generic
-            policy that could be used by multiple Contexts a Port is used. 
+            policy that could be used by multiple Contexts a Port is used.
             Given the support for pre-configuration of policies and
             references by identifiers, e.g a Rule ID, most policies do not
             require realtime delivery.</t>
-            
+
             <t>In case of modifying an existing Context attribute, the
             Agent MUST overwrite that attribute with the value of which
             the Client brings to the Agent.</t>
@@ -3243,7 +3243,6 @@ may be derived from co-located functions, which utilize the FPC Client and FPC A
   <back>
     <references title="Normative References">
     &rfc2119;
-    &RFC7333;
     &RFC6088;
     &RFC6089;
     &RFC6991;
@@ -3258,6 +3257,7 @@ may be derived from co-located functions, which utilize the FPC Client and FPC A
     &RFC7222;
     &RFC6241;
     &RFC6242;
+    &RFC7333;
     &RFC3688;
 
 </references>

@@ -3,7 +3,7 @@ module ietf-dmm-threegpp {
     prefix threegpp;
 
     import ietf-inet-types { prefix inet; revision-date 2013-07-15; }
-    import ietf-dmm-fpc { prefix fpc; revision-date 2016-08-03; }
+    import ietf-dmm-fpc { prefix fpc; revision-date 2017-03-08; }
     import ietf-traffic-selector-types { prefix traffic-selectors; revision-date 2016-01-14; }
     import ietf-pmip-qos { prefix pmipqos; revision-date 2016-02-10; }
 
@@ -42,6 +42,11 @@ module ietf-dmm-threegpp {
      document must include Simplified BSD License text as described
      in Section 4.e of the Trust Legal Provisions and are provided
      without warranty as described in the Simplified BSD License.";
+
+    revision 2017-03-08 {
+        description "Version 06 updates.";
+        reference "draft-ietf-dmm-fpc-cpdp-06";
+    }
 
     revision 2016-08-03 {
         description "Initial";
@@ -405,44 +410,49 @@ module ietf-dmm-threegpp {
       description "3GPP TFT Descriptor";
     }
 
+    grouping threegpp-tunnel-info {
+      uses threegpp:threeGPP-tunnel;
+      choice tft-or-ref {
+        case defined-tft {
+          uses threegpp:tft;
+        }
+        case predefined-tft {
+          leaf tft-reference {
+            type fpc:fpc-identity;
+          }
+        }
+      }
+      description "3GPP TFT and Tunnel Information";
+    }
+
     // Contexts Update - Contexts / UL / mob-profile
     augment "/fpc:tenants/fpc:tenant/fpc:fpc-mobility/fpc:contexts/fpc:ul/fpc:mobility-tunnel-parameters/fpc:profile-parameters" {
       case threegpp-tunnel {
-          uses threegpp:threeGPP-tunnel;
-          uses threegpp:tft;
-          description "3GPP TFT and Tunnel Information";
+          uses threegpp:threegpp-tunnel-info;
       }
       description "Context UL Tunnel";
     }
     augment "/fpc:configure/fpc:input/fpc:op_body/fpc:create_or_update/fpc:contexts/fpc:ul/fpc:mobility-tunnel-parameters/fpc:profile-parameters" {
       case threegpp-tunnel {
-          uses threegpp:threeGPP-tunnel;
-          uses threegpp:tft;
-          description "3GPP TFT and Tunnel Information";
+          uses threegpp:threegpp-tunnel-info;
       }
       description "Create Context UL Tunnel";
     }
     augment "/fpc:configure-bundles/fpc:input/fpc:bundles/fpc:op_body/fpc:create_or_update/fpc:contexts/fpc:ul/fpc:mobility-tunnel-parameters/fpc:profile-parameters" {
       case threegpp-tunnel {
-          uses threegpp:threeGPP-tunnel;
-          uses threegpp:tft;
-          description "3GPP TFT and Tunnel Information";
+          uses threegpp:threegpp-tunnel-info;
       }
       description "Bundles Create Context UL Tunnel";
     }
     augment "/fpc:configure/fpc:output/fpc:result-type/fpc:create-or-update-success/fpc:contexts/fpc:ul/fpc:mobility-tunnel-parameters/fpc:profile-parameters" {
       case threegpp-tunnel {
-          uses threegpp:threeGPP-tunnel;
-          uses threegpp:tft;
-          description "3GPP TFT and Tunnel Information";
+          uses threegpp:threegpp-tunnel-info;
       }
       description "Create Context UL Tunnel Response";
     }
     augment "/fpc:configure-bundles/fpc:output/fpc:bundles/fpc:result-type/fpc:create-or-update-success/fpc:contexts/fpc:ul/fpc:mobility-tunnel-parameters/fpc:profile-parameters" {
       case threegpp-tunnel {
-          uses threegpp:threeGPP-tunnel;
-          uses threegpp:tft;
-          description "3GPP TFT and Tunnel Information";
+          uses threegpp:threegpp-tunnel-info;
       }
       description "Bundles Create Context UL Tunnel Response";
     }
@@ -450,41 +460,31 @@ module ietf-dmm-threegpp {
     // Contexts Update - Contexts / DL / mob-profile
     augment "/fpc:tenants/fpc:tenant/fpc:fpc-mobility/fpc:contexts/fpc:dl/fpc:mobility-tunnel-parameters/fpc:profile-parameters" {
       case threegpp-tunnel {
-          uses threegpp:threeGPP-tunnel;
-          uses threegpp:tft;
-          description "3GPP TFT and Tunnel Information";
+          uses threegpp:threegpp-tunnel-info;
       }
       description "Context DL Tunnel";
     }
     augment "/fpc:configure/fpc:input/fpc:op_body/fpc:create_or_update/fpc:contexts/fpc:dl/fpc:mobility-tunnel-parameters/fpc:profile-parameters" {
       case threegpp-tunnel {
-          uses threegpp:threeGPP-tunnel;
-          uses threegpp:tft;
-          description "3GPP TFT and Tunnel Information";
+          uses threegpp:threegpp-tunnel-info;
       }
       description "Bundles Create Context DL Tunnel";
     }
     augment "/fpc:configure-bundles/fpc:input/fpc:bundles/fpc:op_body/fpc:create_or_update/fpc:contexts/fpc:dl/fpc:mobility-tunnel-parameters/fpc:profile-parameters" {
       case threegpp-tunnel {
-          uses threegpp:threeGPP-tunnel;
-          uses threegpp:tft;
-          description "3GPP TFT and Tunnel Information";
+          uses threegpp:threegpp-tunnel-info;
       }
       description "Bundles Create Context DL Tunnel";
     }
     augment "/fpc:configure/fpc:output/fpc:result-type/fpc:create-or-update-success/fpc:contexts/fpc:dl/fpc:mobility-tunnel-parameters/fpc:profile-parameters" {
       case threegpp-tunnel {
-          uses threegpp:threeGPP-tunnel;
-          uses threegpp:tft;
-          description "3GPP TFT and Tunnel Information";
+          uses threegpp:threegpp-tunnel-info;
       }
       description "Create Context DL Tunnel Response";
     }
     augment "/fpc:configure-bundles/fpc:output/fpc:bundles/fpc:result-type/fpc:create-or-update-success/fpc:contexts/fpc:dl/fpc:mobility-tunnel-parameters/fpc:profile-parameters" {
       case threegpp-tunnel {
-          uses threegpp:threeGPP-tunnel;
-          uses threegpp:tft;
-          description "3GPP TFT and Tunnel Information";
+          uses threegpp:threegpp-tunnel-info;
       }
       description "Bundles Create Context DL Tunnel Response";
     }
@@ -493,41 +493,31 @@ module ietf-dmm-threegpp {
     // Contexts Update -  Contexts / dpns / mobility-tunnel-parameters
     augment "/fpc:tenants/fpc:tenant/fpc:fpc-mobility/fpc:contexts/fpc:dpns/fpc:mobility-tunnel-parameters/fpc:profile-parameters" {
       case threegpp-tunnel {
-          uses threegpp:threeGPP-tunnel;
-          uses threegpp:tft;
-          description "3GPP TFT and Tunnel Information";
+          uses threegpp:threegpp-tunnel-info;
       }
       description "Context 3GPP TFT and Tunnel Information";
     }
     augment "/fpc:configure/fpc:input/fpc:op_body/fpc:create_or_update/fpc:contexts/fpc:dpns/fpc:mobility-tunnel-parameters/fpc:profile-parameters" {
       case threegpp-tunnel {
-          uses threegpp:threeGPP-tunnel;
-          uses threegpp:tft;
-          description "3GPP TFT and Tunnel Information";
+          uses threegpp:threegpp-tunnel-info;
       }
       description "Configure 3GPP TFT and Tunnel Information";
     }
     augment "/fpc:configure-bundles/fpc:input/fpc:bundles/fpc:op_body/fpc:create_or_update/fpc:contexts/fpc:dpns/fpc:mobility-tunnel-parameters/fpc:profile-parameters" {
       case threegpp-tunnel {
-          uses threegpp:threeGPP-tunnel;
-          uses threegpp:tft;
-          description "3GPP TFT and Tunnel Information";
+          uses threegpp:threegpp-tunnel-info;
       }
       description "Configure Bundles 3GPP TFT and Tunnel Information";
     }
     augment "/fpc:configure/fpc:output/fpc:result-type/fpc:create-or-update-success/fpc:contexts/fpc:dpns/fpc:mobility-tunnel-parameters/fpc:profile-parameters" {
       case threegpp-tunnel {
-          uses threegpp:threeGPP-tunnel;
-          uses threegpp:tft;
-          description "3GPP TFT and Tunnel Information";
+          uses threegpp:threegpp-tunnel-info;
       }
       description "Configure 3GPP TFT and Tunnel Information Response";
     }
     augment "/fpc:configure-bundles/fpc:output/fpc:bundles/fpc:result-type/fpc:create-or-update-success/fpc:contexts/fpc:dpns/fpc:mobility-tunnel-parameters/fpc:profile-parameters" {
       case threegpp-tunnel {
-          uses threegpp:threeGPP-tunnel;
-          uses threegpp:tft;
-          description "3GPP TFT and Tunnel Information";
+          uses threegpp:threegpp-tunnel-info;
       }
       description "Configure Bundles 3GPP TFT and Tunnel Information Response";
     }
