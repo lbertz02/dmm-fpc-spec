@@ -327,7 +327,7 @@
             application in a tenant may utilize a single or multiple
             domains.</t>
 
-            <t hangText="Virtual Port (Vport):"> 
+            <t hangText="Virtual Port (Vport):">
                 A set of forwarding policies.</t>
 
             <t hangText="Context:">An abstracted endpoint of a mobility
@@ -372,8 +372,8 @@
             plane on an Agent, the data-plane nodes (DPNs) are available for
             further configuration. The FPC Agent connects those DPNs to manage
             their configurations.</t>
-            
-            
+
+
 
 <!--    <t> In accordance with the requirements of flexible data-plane
         functions deployment described in <xref
@@ -465,7 +465,7 @@ DPN         |                 DPN        |
             data-plane roles which are defined per session, domain and
             tenant.</t>
 
-        <t> Note that all FPC models SHOULD be configurable. The FPC interface 
+        <t> Note that all FPC models SHOULD be configurable. The FPC interface
             protocol in <xref target="fig_refarch"/> is only required to handle
             runtime data in the Mobility model. The rest of the FPC models,
             namely Topology and Policy, may be pre-configured, and in that case
@@ -531,7 +531,7 @@ DPN         |                 DPN        |
     <t> Utilizing a FPC Agent, a mobile operator can create virtual DPNs
         in an overlay network. Those such virtual DPNs are treated the same
         as physical forwarding DPNs in this document.</t>
-        
+
 <!--
     <t> A mobile operator who utilizes a FPC enabled data-plane
         network can virtually create their DPNs along with their data-plane
@@ -580,7 +580,7 @@ DPN         |                 DPN        |
 
                <t hangText="DPN-name:"> The name of the DPN.</t>
 
-               <t hangText="DPN-groups:"> The list of DPN-group 
+               <t hangText="DPN-groups:"> The list of DPN-group
                    to which the DPN belongs.</t>
 
                <t hangText="Node-reference:"> Indicates a physical node, or
@@ -595,7 +595,7 @@ DPN         |                 DPN        |
            </list></t>
 
         </section>        <!-- end section title="DPNs"  -->
-        
+
 
         <section anchor="dpn-groups" title="DPN-groups">
 
@@ -604,7 +604,7 @@ DPN         |                 DPN        |
                 topology consisting of a DPN-group of access nodes
                 connecting to an anchor node's DPN-group. </t>
 
-            <t> A DPN-group has attributes such as its data-plane role, 
+            <t> A DPN-group has attributes such as its data-plane role,
                 supported access technologies, mobility profiles, connected
                 peer groups and domain. A DPN may be assigned to multiple
                 DPN-groups in different data-plane roles or different
@@ -701,7 +701,7 @@ DPN         |                 DPN        |
                <t hangText="Remote-DPN-group-id:">The ID of the peering DPN-Group.
                </t>
 
-               <t hangText="Remote-mobility-profile:">The 
+               <t hangText="Remote-mobility-profile:">The
                mobility-profile for the peering DPN-group. Currently defined
                profiles are ietf-pmip, or 3gpp. New profiles may be defined
                as extensions of this specification.
@@ -731,7 +731,7 @@ DPN         |                 DPN        |
         <section anchor="domains" title="Domains">
 
         <t> A domain is defined by an operator to refer to a particular
-        network, considered as a system of cooperating DPN-groups. 
+        network, considered as a system of cooperating DPN-groups.
         Domains may represent services or applications that are resident
         within an operator's network.</t>
 
@@ -781,8 +781,8 @@ DPN         |                 DPN        |
     <section anchor="policy" title="FPC-Policy">
 
     <t> The FPC-Policy consists of Descriptors, Actions, Policies and
-        Policy-groups. These can be viewed as configuration data, in contrast 
-        to Contexts and Vports, which are structures that are instantiated on 
+        Policy-groups. These can be viewed as configuration data, in contrast
+        to Contexts and Vports, which are structures that are instantiated on
         the Agent.  The Descriptors and Actions in a Policy referenced by a
         Vport are active when the Vport is in a active Context, i.e. they can
         be applied to traffic on a DPN. </t>
@@ -790,12 +790,12 @@ DPN         |                 DPN        |
 
         <section anchor="descriptors" title="Descriptors">
 
-        <t> Descriptors defines classifiers of specific traffic flow, such 
-            as those based on source and destination addresses, protocols, 
+        <t> Descriptors defines classifiers of specific traffic flow, such
+            as those based on source and destination addresses, protocols,
             port numbers of TCP/UDP/SCTP/DCCP, or any way of classifying
             packets. Descriptors are defined by specific profiles that
             may be produced by 3gpp, ietf or other SDOs. Many specifications
-            also use the terms Filter, Traffic Descriptor or Traffic Selector 
+            also use the terms Filter, Traffic Descriptor or Traffic Selector
             <xref target="RFC6088"/>. A packet that meets the criteria of a
             Descriptor is said to satisfy, pass or be consumed by the
             Descriptor. Descriptors are assigned an identifier and
@@ -828,8 +828,8 @@ DPN         |                 DPN        |
                target="naming"></xref>. </t>
 
                <t hangText="Descriptor-type:">The descriptor type,
-               which determines the classification of a specific traffic flow, 
-               such as source and destination addresses, protocols, port numbers 
+               which determines the classification of a specific traffic flow,
+               such as source and destination addresses, protocols, port numbers
                of TCP/UDP/SCTP/DCCP, or any other way of selecting packets. </t>
 
                <t hangText="Descriptor-value:">The value of
@@ -843,7 +843,7 @@ DPN         |                 DPN        |
 
             <t> A Policy defines a list of Actions that are to be applied to
                 traffic meeting the criteria defined by the Descriptors.
-                Actions include traffic management such as 
+                Actions include traffic management such as
                 shaping, policing based on given bandwidth, and connectivity
                 actions such as pass, drop, forward to given nexthop.
                 Actions may be defined as part of specific profiles which are
@@ -1011,7 +1011,7 @@ DPN         |                 DPN        |
 
     <section anchor="portscontext" title="FPC for Mobility Management">
 
-    <t> FPC for Mobility Management (FPC Mobility) requires the creation 
+    <t> FPC for Mobility Management (FPC Mobility) requires the creation
         of a Vport and a Context. A mobility session is abstracted as a
         Context with its associated runtime concrete attributes, such as
         tunnel endpoints, tunnel identifiers, delegated prefix(es) and
@@ -1068,7 +1068,7 @@ DPN         |                 DPN        |
             information, etc. A mobility control-plane, or other
             applications, can create, modify and delete contexts on an FPC
             Agent by using the FPC Client.</t>
-            
+
         <t> FPC Agent SHOULD determine runtime attributes of a Context from
             the Vport's policies and the attached DPN's attributes. A
             mobility control-plane, or other applications, MAY set some of
@@ -1241,7 +1241,7 @@ DPN         |                 DPN        |
 
             <t><list hangIndent="4" style="hanging">
 
-                <t hangText="DL-Tunnel-local-address:"> 
+                <t hangText="DL-Tunnel-local-address:">
                     Specifies downlink endpoint address of the DPN. </t>
 
                 <t hangText="DL-Tunnel-remote-address:">
@@ -1332,15 +1332,15 @@ DPN         |                 DPN        |
 
             <t><list hangIndent="4" style="hanging">
 
-                <t hangText="DPN-id:"> 
+                <t hangText="DPN-id:">
                     Indicates DPN of which the runtime Context data installed.
                     </t>
 
-                <t hangText="Direction:"> 
+                <t hangText="Direction:">
                     Specifies which side of connection at the DPN
                     indicated, "uplink", "downlink" or "both". </t>
 
-                <t hangText="Tunnel-local-address:"> 
+                <t hangText="Tunnel-local-address:">
                     Specifies endpoint address of the DPN at the uplink or
                     downlink. </t>
 
@@ -1368,7 +1368,7 @@ DPN         |                 DPN        |
                     target="I-D.ietf-spring-segment-routing-mpls"></xref>,
                     etc. </t>
 
-                <t hangText="QoS-profile-specific-parameters:"> 
+                <t hangText="QoS-profile-specific-parameters:">
                     Specifies profile specific QoS parameters for uplink or
                     downlink to the DPN, such as QCI/TFT for 3gpp profile,
                     <xref target="RFC6089"></xref>/<xref
@@ -1376,12 +1376,12 @@ DPN         |                 DPN        |
                     of new profiles defined by extensions of this
                     specification. </t>
 
-                <t hangText="DPN-specific-parameters:"> 
+                <t hangText="DPN-specific-parameters:">
                     Specifies optional node specific parameters needed by
                     uplink or downlink to the DPN such like if-index,
                     tunnel-if-number that must be unique in the DPN. </t>
 
-                <t hangText="Vendor-specific-parameters:"> 
+                <t hangText="Vendor-specific-parameters:">
                     Specifies a vendor specific parameter space for the
                     DPN. </t>
 
@@ -1534,7 +1534,7 @@ DPN         |                 DPN        |
             Fully Qualified Domain Names (FQDNs), Fully Qualified Path
             Names (FQPNs) and Uniform Resource Identifiers (URIs).</t>
 
-        <t> The FPC model does not limit the types of format that          
+        <t> The FPC model does not limit the types of format that
             dictate the choice of FPC protocol. However the choice of
             identifiers which are used in Mobility model need to be
             considered to handle runtime parameters in real-time. The
@@ -1554,21 +1554,21 @@ DPN         |                 DPN        |
 
         -->
     </section>        <!-- end section title="Namespace and Format"  -->
-    
+
     <section anchor="attr_application" title="Attribute Application">
-    
+
         <t> Attributes in FPC Topology and Policy SHOULD be pre-configured
             in a FPC Agent prior to Contexts and Vports. The FPC Agent
             requires those pre-configured attributes to be able to derive
             Context's detailed runtime attributes.</t>
-            
+
         <t> When a FPC Client creates a Context, the FPC Client is then be
             able to indicate specific DPN-group(s) instead of all endpoint
             addresses of the DPN(s) and MTU-size of the tunnels for
             example. This is because that the FPC Agent can derive data for
             those details from the pre-configured DPN-group information in
             the FPC Topology.</t>
-            
+
         <t> Similarly when a Vport is created to the Context, the FPC Agent
             can derive detail forwarding policies from the pre-configured
             Policy information in the FPC Policy. The FPC Client thereby has
@@ -1579,8 +1579,8 @@ DPN         |                 DPN        |
             reuse pre-configured FPC Topology and FPC Policy attributes. It
             helps to minimize over the wire exchanges and reduce system
             errors by exchanging less information.</t>
-            
-        <t> The Agent turns those derived data into runtime attributes of 
+
+        <t> The Agent turns those derived data into runtime attributes of
             UL and DL objects which are in the DPNs list of the Context
             (multiple-DPNs Agent case) or directly under the Context
             (single-DPN Agent case). The Agent consequently instantiates
@@ -1604,7 +1604,7 @@ DPN         |                 DPN        |
 
 <!--    <section anchor="policy_mobility" title="Policy and Runtime Data">
 
-        <t> Contexts and Vports support runtime, realtime mobility sessions 
+        <t> Contexts and Vports support runtime, realtime mobility sessions
             which are produced in the mobility control plane. When those
             data are delivered in certain response time to meet the call
             model requirement of applications, appropriate FPC interface
@@ -1616,7 +1616,7 @@ DPN         |                 DPN        |
             is used. Given the support for pre-configuration of policies
             and references by identifiers (for example, a Rule ID), most
             policies do not require realtime delivery.</t> -->
-        
+
     </section>        <!-- end section title="Attribute Application"  -->
 
 </section>        <!-- end section title="Information Model"  -->
@@ -1637,10 +1637,10 @@ DPN         |                 DPN        |
     <c>CONF_BUNDLES</c>
     <c>1*[HEADER ADMIN_STATE SESSION_STATE TRANS_STRATEGY OP_TYPE BODY]</c>
     <c> Configure-bundles takes multiple operations that are to be executed as a
-    group with partial failures allowed. They are executed according to the 
+    group with partial failures allowed. They are executed according to the
     OP_ID value in the OP_BODY in ascending order. If a CONFIGURE_BUNDLES
-    fails, any entities provisioned in the CURRENT operation are removed, 
-    however, any successful operations completed prior to 
+    fails, any entities provisioned in the CURRENT operation are removed,
+    however, any successful operations completed prior to
     the current operation are preserved in order to reduce system load.</c>
 
     <c> REG_MONITOR</c>
@@ -2135,7 +2135,7 @@ DPN         |                 DPN        |
       list of the same Context. Message 1 shows the DPNS list with all entries.
       Each entry identifies the DPN and direction (one of 'uplink', 'downlink'
       or 'both').  Generally, the 'both' direction is not used for normal
-      mobility session processing.  It is commonly used for the instantiation 
+      mobility session processing.  It is commonly used for the instantiation
       of Policies on a specific DPN (see <xref target="preprov"/>).</t>
 
   <t> The Agent responds with an OK_NOTIFY_FOLLOWS while it simultaneoulsy
@@ -3257,7 +3257,7 @@ DPN         |                 DPN        |
       Policy entities placed on the DPN.  This work has driven new efforts in
       the DIME WG, namely Diameter Policy Groups
       <xref target="I-D.bertz-dime-policygroups"/>.</t>
-  <t> A throughput performance of tens per second using various NetConf based 
+  <t> A throughput performance of tens per second using various NetConf based
       solutions in OpenDaylight made fpcagent undesirable for call processing.
       The RPC implementation improved throughput by an order of magnitude but
       was not useful based upon FPC's Version 03 design using two information
@@ -3622,7 +3622,7 @@ as defined in this document.</t>
       defined in this document.</t>
         <figure>
           <artwork><![CDATA[
-<CODE BEGINS> file "ietf-dmm-fpc@2016-08-03.yang"
+<CODE BEGINS> file "ietf-dmm-fpc@2017-03-08.yang"
 module ietf-dmm-fpc {
     namespace "urn:ietf:params:xml:ns:yang:ietf-dmm-fpc";
     prefix fpc;
@@ -3666,6 +3666,11 @@ module ietf-dmm-fpc {
      document must include Simplified BSD License text as described
      in Section 4.e of the Trust Legal Provisions and are provided
      without warranty as described in the Simplified BSD License.";
+
+    revision 2017-03-08 {
+        description "Version 06 updates.";
+        reference "draft-ietf-dmm-fpc-cpdp-06";
+    }
 
     revision 2016-08-03 {
         description "Initial Revision.";
@@ -3768,9 +3773,9 @@ module ietf-dmm-fpc {
                   uses fpc:fpc-context;
                   description "Contexts";
               }
-              list ports {
-                  key port-id;
-                  uses fpc:fpc-port;
+              list vports {
+                  key vport-id;
+                  uses fpc:fpc-vport;
                   description "Ports";
               }
               list monitors {
@@ -4061,7 +4066,7 @@ module ietf-dmm-fpc {
     // Output Structure
     grouping payload {
       list ports {
-        uses fpc:fpc-port;
+        uses fpc:fpc-vport;
         description "Ports";
       }
       list contexts {
@@ -4393,7 +4398,7 @@ module ietf-dmm-fpc {
     <t>This module references <xref target="RFC6991"/>.</t>
         <figure>
           <artwork><![CDATA[
-<CODE BEGINS> file "ietf-dmm-fpc-base@2016-08-03.yang"
+<CODE BEGINS> file "ietf-dmm-fpc-base@2017-03-08.yang"
 submodule ietf-dmm-fpc-base {
     belongs-to ietf-dmm-fpc {
        prefix fpc;
@@ -4436,6 +4441,11 @@ submodule ietf-dmm-fpc-base {
      document must include Simplified BSD License text as described
      in Section 4.e of the Trust Legal Provisions and are provided
      without warranty as described in the Simplified BSD License.";
+
+    revision 2017-03-08 {
+        description "Version 06 updates.";
+        reference "draft-ietf-dmm-fpc-cpdp-06";
+    }
 
     revision 2016-08-03 {
         description "Initial Revision.";
@@ -4569,7 +4579,7 @@ submodule ietf-dmm-fpc-base {
         }
         list actions {
           key action-id;
-          leaf order {
+          leaf action-order {
               type uint32;
               description "Action Execution Order";
           }
@@ -4622,13 +4632,13 @@ submodule ietf-dmm-fpc-base {
 
     // Mobility Structures
     // Port Group
-    typedef fpc-port-id {
+    typedef fpc-vport-id {
         type fpc:fpc-identity;
         description "FPC Port Identifier";
     }
-    grouping fpc-port {
-        leaf port-id {
-            type fpc:fpc-port-id;
+    grouping fpc-vport {
+        leaf vport-id {
+            type fpc:fpc-vport-id;
             description "Port ID";
         }
         leaf-list policy-groups {
@@ -4702,17 +4712,17 @@ submodule ietf-dmm-fpc-base {
             type fpc:fpc-context-id;
             description "Context ID";
         }
-        leaf-list ports {
-            type fpc:fpc-port-id;
-            description "Ports";
+        leaf-list vports {
+            type fpc:fpc-vport-id;
+            description "Vports";
         }
         leaf dpn-group {
           type fpc:fpc-dpn-group-id;
           description "DPN Group";
         }
-        leaf-list delegating-ip-prefixes {
+        leaf-list delegated-ip-prefixes {
             type inet:ip-prefix;
-            description "Delegating Prefix(es)";
+            description "Delegated Prefix(es)";
         }
         container ul {
             if-feature fpc:fpc-basic-agent;
@@ -4869,6 +4879,10 @@ submodule ietf-dmm-fpc-base {
       leaf domain-type {
         type string;
         description "Domain Type";
+      }
+      leaf domain-reference {
+        type instance-identifier;
+        description "Indicates a set of resources for the domain";
       }
       description "FPC Domain";
     }
@@ -6227,13 +6241,13 @@ module ietf-traffic-selector-types {
       ietf-traffic-selector and pmip-qos modules defined in this document.</t>
       <figure>
           <artwork><![CDATA[
-<CODE BEGINS> file "ietf-dmm-threegpp@2016-08-03.yang"
+<CODE BEGINS> file "ietf-dmm-threegpp@2017-03-08.yang"
 module ietf-dmm-threegpp {
     namespace "urn:ietf:params:xml:ns:yang:ietf-dmm-threegpp";
     prefix threegpp;
 
     import ietf-inet-types { prefix inet; revision-date 2013-07-15; }
-    import ietf-dmm-fpc { prefix fpc; revision-date 2016-08-03; }
+    import ietf-dmm-fpc { prefix fpc; revision-date 2017-03-08; }
     import ietf-traffic-selector-types { prefix traffic-selectors; revision-date 2016-01-14; }
     import ietf-pmip-qos { prefix pmipqos; revision-date 2016-02-10; }
 
@@ -6272,6 +6286,11 @@ module ietf-dmm-threegpp {
      document must include Simplified BSD License text as described
      in Section 4.e of the Trust Legal Provisions and are provided
      without warranty as described in the Simplified BSD License.";
+
+    revision 2017-03-08 {
+        description "Version 06 updates.";
+        reference "draft-ietf-dmm-fpc-cpdp-06";
+    }
 
     revision 2016-08-03 {
         description "Initial";
@@ -6635,44 +6654,49 @@ module ietf-dmm-threegpp {
       description "3GPP TFT Descriptor";
     }
 
+    grouping threegpp-tunnel-info {
+      uses threegpp:threeGPP-tunnel;
+      choice tft-or-ref {
+        case defined-tft {
+          uses threegpp:tft;
+        }
+        case predefined-tft {
+          leaf tft-reference {
+            type fpc:fpc-identity;
+          }
+        }
+      }
+      description "3GPP TFT and Tunnel Information";
+    }
+
     // Contexts Update - Contexts / UL / mob-profile
     augment "/fpc:tenants/fpc:tenant/fpc:fpc-mobility/fpc:contexts/fpc:ul/fpc:mobility-tunnel-parameters/fpc:profile-parameters" {
       case threegpp-tunnel {
-          uses threegpp:threeGPP-tunnel;
-          uses threegpp:tft;
-          description "3GPP TFT and Tunnel Information";
+          uses threegpp:threegpp-tunnel-info;
       }
       description "Context UL Tunnel";
     }
     augment "/fpc:configure/fpc:input/fpc:op_body/fpc:create_or_update/fpc:contexts/fpc:ul/fpc:mobility-tunnel-parameters/fpc:profile-parameters" {
       case threegpp-tunnel {
-          uses threegpp:threeGPP-tunnel;
-          uses threegpp:tft;
-          description "3GPP TFT and Tunnel Information";
+          uses threegpp:threegpp-tunnel-info;
       }
       description "Create Context UL Tunnel";
     }
     augment "/fpc:configure-bundles/fpc:input/fpc:bundles/fpc:op_body/fpc:create_or_update/fpc:contexts/fpc:ul/fpc:mobility-tunnel-parameters/fpc:profile-parameters" {
       case threegpp-tunnel {
-          uses threegpp:threeGPP-tunnel;
-          uses threegpp:tft;
-          description "3GPP TFT and Tunnel Information";
+          uses threegpp:threegpp-tunnel-info;
       }
       description "Bundles Create Context UL Tunnel";
     }
     augment "/fpc:configure/fpc:output/fpc:result-type/fpc:create-or-update-success/fpc:contexts/fpc:ul/fpc:mobility-tunnel-parameters/fpc:profile-parameters" {
       case threegpp-tunnel {
-          uses threegpp:threeGPP-tunnel;
-          uses threegpp:tft;
-          description "3GPP TFT and Tunnel Information";
+          uses threegpp:threegpp-tunnel-info;
       }
       description "Create Context UL Tunnel Response";
     }
     augment "/fpc:configure-bundles/fpc:output/fpc:bundles/fpc:result-type/fpc:create-or-update-success/fpc:contexts/fpc:ul/fpc:mobility-tunnel-parameters/fpc:profile-parameters" {
       case threegpp-tunnel {
-          uses threegpp:threeGPP-tunnel;
-          uses threegpp:tft;
-          description "3GPP TFT and Tunnel Information";
+          uses threegpp:threegpp-tunnel-info;
       }
       description "Bundles Create Context UL Tunnel Response";
     }
@@ -6680,41 +6704,31 @@ module ietf-dmm-threegpp {
     // Contexts Update - Contexts / DL / mob-profile
     augment "/fpc:tenants/fpc:tenant/fpc:fpc-mobility/fpc:contexts/fpc:dl/fpc:mobility-tunnel-parameters/fpc:profile-parameters" {
       case threegpp-tunnel {
-          uses threegpp:threeGPP-tunnel;
-          uses threegpp:tft;
-          description "3GPP TFT and Tunnel Information";
+          uses threegpp:threegpp-tunnel-info;
       }
       description "Context DL Tunnel";
     }
     augment "/fpc:configure/fpc:input/fpc:op_body/fpc:create_or_update/fpc:contexts/fpc:dl/fpc:mobility-tunnel-parameters/fpc:profile-parameters" {
       case threegpp-tunnel {
-          uses threegpp:threeGPP-tunnel;
-          uses threegpp:tft;
-          description "3GPP TFT and Tunnel Information";
+          uses threegpp:threegpp-tunnel-info;
       }
       description "Bundles Create Context DL Tunnel";
     }
     augment "/fpc:configure-bundles/fpc:input/fpc:bundles/fpc:op_body/fpc:create_or_update/fpc:contexts/fpc:dl/fpc:mobility-tunnel-parameters/fpc:profile-parameters" {
       case threegpp-tunnel {
-          uses threegpp:threeGPP-tunnel;
-          uses threegpp:tft;
-          description "3GPP TFT and Tunnel Information";
+          uses threegpp:threegpp-tunnel-info;
       }
       description "Bundles Create Context DL Tunnel";
     }
     augment "/fpc:configure/fpc:output/fpc:result-type/fpc:create-or-update-success/fpc:contexts/fpc:dl/fpc:mobility-tunnel-parameters/fpc:profile-parameters" {
       case threegpp-tunnel {
-          uses threegpp:threeGPP-tunnel;
-          uses threegpp:tft;
-          description "3GPP TFT and Tunnel Information";
+          uses threegpp:threegpp-tunnel-info;
       }
       description "Create Context DL Tunnel Response";
     }
     augment "/fpc:configure-bundles/fpc:output/fpc:bundles/fpc:result-type/fpc:create-or-update-success/fpc:contexts/fpc:dl/fpc:mobility-tunnel-parameters/fpc:profile-parameters" {
       case threegpp-tunnel {
-          uses threegpp:threeGPP-tunnel;
-          uses threegpp:tft;
-          description "3GPP TFT and Tunnel Information";
+          uses threegpp:threegpp-tunnel-info;
       }
       description "Bundles Create Context DL Tunnel Response";
     }
@@ -6723,41 +6737,31 @@ module ietf-dmm-threegpp {
     // Contexts Update -  Contexts / dpns / mobility-tunnel-parameters
     augment "/fpc:tenants/fpc:tenant/fpc:fpc-mobility/fpc:contexts/fpc:dpns/fpc:mobility-tunnel-parameters/fpc:profile-parameters" {
       case threegpp-tunnel {
-          uses threegpp:threeGPP-tunnel;
-          uses threegpp:tft;
-          description "3GPP TFT and Tunnel Information";
+          uses threegpp:threegpp-tunnel-info;
       }
       description "Context 3GPP TFT and Tunnel Information";
     }
     augment "/fpc:configure/fpc:input/fpc:op_body/fpc:create_or_update/fpc:contexts/fpc:dpns/fpc:mobility-tunnel-parameters/fpc:profile-parameters" {
       case threegpp-tunnel {
-          uses threegpp:threeGPP-tunnel;
-          uses threegpp:tft;
-          description "3GPP TFT and Tunnel Information";
+          uses threegpp:threegpp-tunnel-info;
       }
       description "Configure 3GPP TFT and Tunnel Information";
     }
     augment "/fpc:configure-bundles/fpc:input/fpc:bundles/fpc:op_body/fpc:create_or_update/fpc:contexts/fpc:dpns/fpc:mobility-tunnel-parameters/fpc:profile-parameters" {
       case threegpp-tunnel {
-          uses threegpp:threeGPP-tunnel;
-          uses threegpp:tft;
-          description "3GPP TFT and Tunnel Information";
+          uses threegpp:threegpp-tunnel-info;
       }
       description "Configure Bundles 3GPP TFT and Tunnel Information";
     }
     augment "/fpc:configure/fpc:output/fpc:result-type/fpc:create-or-update-success/fpc:contexts/fpc:dpns/fpc:mobility-tunnel-parameters/fpc:profile-parameters" {
       case threegpp-tunnel {
-          uses threegpp:threeGPP-tunnel;
-          uses threegpp:tft;
-          description "3GPP TFT and Tunnel Information";
+          uses threegpp:threegpp-tunnel-info;
       }
       description "Configure 3GPP TFT and Tunnel Information Response";
     }
     augment "/fpc:configure-bundles/fpc:output/fpc:bundles/fpc:result-type/fpc:create-or-update-success/fpc:contexts/fpc:dpns/fpc:mobility-tunnel-parameters/fpc:profile-parameters" {
       case threegpp-tunnel {
-          uses threegpp:threeGPP-tunnel;
-          uses threegpp:tft;
-          description "3GPP TFT and Tunnel Information";
+          uses threegpp:threegpp-tunnel-info;
       }
       description "Configure Bundles 3GPP TFT and Tunnel Information Response";
     }
@@ -6936,12 +6940,12 @@ module ietf-dmm-threegpp {
       traffic-selector-types module defined in this document.</t>
         <figure>
           <artwork><![CDATA[
-<CODE BEGINS> file "ietf-dmm-fpc-pmip@2016-01-19.yang"
+<CODE BEGINS> file "ietf-dmm-fpc-pmip@2017-03-08.yang"
 module ietf-dmm-fpc-pmip {
     namespace "urn:ietf:params:xml:ns:yang:ietf-dmm-fpc-pmip";
     prefix fpc-pmip;
 
-    import ietf-dmm-fpc { prefix fpc; }
+    import ietf-dmm-fpc { prefix fpc; revision-date 2017-03-08; }
     import ietf-pmip-qos { prefix qos-pmip; }
     import ietf-traffic-selector-types { prefix traffic-selectors; }
 
@@ -6980,6 +6984,11 @@ module ietf-dmm-fpc-pmip {
      document must include Simplified BSD License text as described
      in Section 4.e of the Trust Legal Provisions and are provided
      without warranty as described in the Simplified BSD License.";
+
+    revision 2017-03-08 {
+        description "Version 06 update. Adds predfined selector.";
+        reference "draft-ietf-dmm-fpc-cpdp-06";
+    }
 
     revision 2016-01-19 {
         description "Changes based on -01 version of FPCP draft.";
@@ -7074,78 +7083,75 @@ module ietf-dmm-fpc-pmip {
       description "Policy Descriptor";
     }
 
+    grouping pmip-tunnel-info {
+        uses fpc-pmip:pmip-mobility;
+        choice pmiptunnel-or-ref {
+          case defined-selector {
+            uses traffic-selectors:traffic-selector;
+          }
+          case predefined-selector {
+            leaf selector-reference {
+              type fpc:fpc-identity;
+            }
+          }
+        }
+        description "PMIP Tunnel Information";
+    }
+
     // Contexts Update - Contexts / UL / mob-profile, Contexts / DL / mob-profile and Contexts / dpns / mobility-tunnel-parameters
     augment "/fpc:tenants/fpc:tenant/fpc:fpc-mobility/fpc:contexts/fpc:ul/fpc:mobility-tunnel-parameters/fpc:profile-parameters" {
       case pmip-tunnel {
-        uses fpc-pmip:pmip-mobility;
-        uses traffic-selectors:traffic-selector;
-        description "PMIP Tunnel Information";
+        uses fpc-pmip:pmip-tunnel-info;
       }
       description "Context UL Mobility";
     }
     augment "/fpc:configure/fpc:input/fpc:op_body/fpc:create_or_update/fpc:contexts/fpc:ul/fpc:mobility-tunnel-parameters/fpc:profile-parameters" {
       case pmip-tunnel {
-        uses fpc-pmip:pmip-mobility;
-        uses traffic-selectors:traffic-selector;
-        description "PMIP Tunnel Information";
+        uses fpc-pmip:pmip-tunnel-info;
       }
       description "CONF Context UL Mobility";
     }
     augment "/fpc:configure-bundles/fpc:input/fpc:bundles/fpc:op_body/fpc:create_or_update/fpc:contexts/fpc:ul/fpc:mobility-tunnel-parameters/fpc:profile-parameters" {
       case pmip-tunnel {
-        uses fpc-pmip:pmip-mobility;
-        uses traffic-selectors:traffic-selector;
-        description "PMIP Tunnel Information";
+        uses fpc-pmip:pmip-tunnel-info;
       }
       description "CONF_BUNDLES Context UL Mobility";
     }
 
     augment "/fpc:tenants/fpc:tenant/fpc:fpc-mobility/fpc:contexts/fpc:dl/fpc:mobility-tunnel-parameters/fpc:profile-parameters" {
       case pmip-tunnel {
-        uses fpc-pmip:pmip-mobility;
-        uses traffic-selectors:traffic-selector;
-        description "PMIP Tunnel Information";
+        uses fpc-pmip:pmip-tunnel-info;
       }
       description "Context DL Mobility";
     }
     augment "/fpc:configure/fpc:input/fpc:op_body/fpc:create_or_update/fpc:contexts/fpc:dl/fpc:mobility-tunnel-parameters/fpc:profile-parameters" {
       case pmip-tunnel {
-        uses fpc-pmip:pmip-mobility;
-        uses traffic-selectors:traffic-selector;
-        description "PMIP Tunnel Information";
+        uses fpc-pmip:pmip-tunnel-info;
       }
       description "CONF Context DL Mobility";
     }
     augment "/fpc:configure-bundles/fpc:input/fpc:bundles/fpc:op_body/fpc:create_or_update/fpc:contexts/fpc:dl/fpc:mobility-tunnel-parameters/fpc:profile-parameters" {
       case pmip-tunnel {
-        uses fpc-pmip:pmip-mobility;
-        uses traffic-selectors:traffic-selector;
-        description "PMIP Tunnel Information";
+        uses fpc-pmip:pmip-tunnel-info;
       }
       description "CONF_BUNDLES Context DL Mobility";
     }
 
     augment "/fpc:tenants/fpc:tenant/fpc:fpc-mobility/fpc:contexts/fpc:dpns/fpc:mobility-tunnel-parameters/fpc:profile-parameters" {
       case pmip-tunnel {
-        uses fpc-pmip:pmip-mobility;
-        uses traffic-selectors:traffic-selector;
-        description "PMIP Tunnel Information";
+        uses fpc-pmip:pmip-tunnel-info;
       }
       description "Context DPN Mobility";
     }
     augment "/fpc:configure/fpc:input/fpc:op_body/fpc:create_or_update/fpc:contexts/fpc:dpns/fpc:mobility-tunnel-parameters/fpc:profile-parameters" {
       case pmip-tunnel {
-        uses fpc-pmip:pmip-mobility;
-        uses traffic-selectors:traffic-selector;
-        description "PMIP Tunnel Information";
+        uses fpc-pmip:pmip-tunnel-info;
       }
       description "CONF Context DPN Mobility";
     }
     augment "/fpc:configure-bundles/fpc:input/fpc:bundles/fpc:op_body/fpc:create_or_update/fpc:contexts/fpc:dpns/fpc:mobility-tunnel-parameters/fpc:profile-parameters" {
       case pmip-tunnel {
-        uses fpc-pmip:pmip-mobility;
-        uses traffic-selectors:traffic-selector;
-        description "PMIP Tunnel Information";
+        uses fpc-pmip:pmip-tunnel-info;
       }
       description "CONF_BUNDLES Context DPN Mobility";
     }
@@ -7257,12 +7263,12 @@ module ietf-dmm-fpc-pmip {
       and fpcagent module defined in this document.</t>
         <figure>
           <artwork><![CDATA[
-<CODE BEGINS> file "ietf-dmm-fpc-policyext@2016-08-03.yang"
+<CODE BEGINS> file "ietf-dmm-fpc-policyext@2017-03-08.yang"
 module ietf-dmm-fpc-policyext {
     namespace "urn:ietf:params:xml:ns:yang:ietf-dmm-fpc-policyext";
     prefix fpcpolicyext;
 
-    import ietf-dmm-fpc { prefix fpc; revision-date 2016-08-03; }
+    import ietf-dmm-fpc { prefix fpc; revision-date 2017-03-08; }
     import ietf-inet-types { prefix inet; revision-date 2013-07-15; }
 
     organization "IETF Distributed Mobility Management (DMM)
@@ -7301,6 +7307,11 @@ module ietf-dmm-fpc-policyext {
      document must include Simplified BSD License text as described
      in Section 4.e of the Trust Legal Provisions and are provided
      without warranty as described in the Simplified BSD License.";
+
+    revision 2017-03-08 {
+        description "Version 06 update.";
+        reference "draft-ietf-dmm-fpc-cpdp-06";
+    }
 
     revision 2016-08-03 {
         description "Changes based on -04 version of FPC draft.";
@@ -7352,7 +7363,7 @@ module ietf-dmm-fpc-policyext {
         choice value {
           case port-ref {
             leaf port-ref {
-              type fpc:fpc-port-id;
+              type fpc:fpc-vport-id;
               description "Port";
             }
             description "Port Forward Case";
@@ -7415,13 +7426,12 @@ module ietf-dmm-fpc-policyext {
   </section>
 <!-- template for YANG model, end -->
   </section>
-  <section anchor="ietf-dmm-fpc-tree" title="FPC nformation Model YANG Tree">
+  <section anchor="ietf-dmm-fpc-tree" title="FPC Information Model YANG Tree">
     <t>This section only shows the YANG tree for the information model.</t>
 <t>
  <figure anchor="fig-ietf-dmm-fpc-tree"
               title="YANG FPC Agent Tree">
 <artwork align="center"><![CDATA[
-module: ietf-dmm-fpc
 module: ietf-dmm-fpc
    +--rw tenants
    |  +--rw tenant* [tenant-id]
@@ -7438,8 +7448,8 @@ module: ietf-dmm-fpc
    |     |  |     |  +--rw descriptor-id    fpc:fpc-identity
    |     |  |     |  +--rw direction?       fpc:fpc-direction
    |     |  |     +--rw actions* [action-id]
-   |     |  |        +--rw order?       uint32
-   |     |  |        +--rw action-id    fpc:fpc-action-id-type
+   |     |  |        +--rw action-order?   uint32
+   |     |  |        +--rw action-id       fpc:fpc-action-id-type
    |     |  +--rw descriptors* [descriptor-id]
    |     |  |  +--rw descriptor-id      fpc:fpc-identity
    |     |  |  +--rw descriptor-type    identityref
@@ -7454,10 +7464,10 @@ module: ietf-dmm-fpc
    |     |           +--rw drop?          empty
    |     +--ro fpc-mobility
    |     |  +--ro contexts* [context-id]
-   |     |  |  +--ro context-id                fpc:fpc-context-id
-   |     |  |  +--ro ports*                    fpc:fpc-port-id
-   |     |  |  +--ro dpn-group?                fpc:fpc-dpn-group-id
-   |     |  |  +--ro delegating-ip-prefixes*   inet:ip-prefix
+   |     |  |  +--ro context-id               fpc:fpc-context-id
+   |     |  |  +--ro vports*                  fpc:fpc-vport-id
+   |     |  |  +--ro dpn-group?               fpc:fpc-dpn-group-id
+   |     |  |  +--ro delegated-ip-prefixes*   inet:ip-prefix
    |     |  |  +--ro ul {fpc:fpc-basic-agent}?
    |     |  |  |  +--ro tunnel-local-address?         inet:ip-address
    |     |  |  |  +--ro tunnel-remote-address?        inet:ip-address
@@ -7535,9 +7545,9 @@ module: ietf-dmm-fpc
    |     |  |  |     +--ro (value)?
    |     |  |  |        +--:(empty-type)
    |     |  |  |           +--ro empty-type?    empty
-   |     |  |  +--ro parent-context?           fpc:fpc-context-id
-   |     |  +--ro ports* [port-id]
-   |     |  |  +--ro port-id          fpc:fpc-port-id
+   |     |  |  +--ro parent-context?          fpc:fpc-context-id
+   |     |  +--ro vports* [vport-id]
+   |     |  |  +--ro vport-id         fpc:fpc-vport-id
    |     |  |  +--ro policy-groups*   fpc:fpc-policy-group-id
    |     |  +--ro monitors*
    |     |     +--ro monitor-id?         fpc:fpc-identity
@@ -7556,19 +7566,13 @@ module: ietf-dmm-fpc
    |     |           +--ro event-ids*          uint32
    |     +--rw fpc-topology
    |        +--rw domains* [domain-id]
-   |        |  +--rw domain-id          fpc:fpc-domain-id
-   |        |  +--rw domain-name?       string
-   |        |  +--rw domain-type?       string
-   |        |  +--rw basename?          fpc:fpc-identity {fpc:fpc-basename-registry}?
-   |        |  +--rw base-state?        string {fpc:fpc-basename-registry}?
-   |        |  +--rw base-checkpoint?   string {fpc:fpc-basename-registry}?
-   |        +--rw dpn-group-peers* [remote-dpn-group-id] {fpc:fpc-basic-agent}?
-   |        |  +--rw remote-dpn-group-id        fpc:fpc-dpn-group-id
-   |        |  +--rw remote-mobility-profile?   identityref
-   |        |  +--rw remote-data-plane-role?    identityref
-   |        |  +--rw remote-endpoint-address?   inet:ip-address
-   |        |  +--rw local-endpoint-address?    inet:ip-address
-   |        |  +--rw mtu-size?                  uint32
+   |        |  +--rw domain-id           fpc:fpc-domain-id
+   |        |  +--rw domain-name?        string
+   |        |  +--rw domain-type?        string
+   |        |  +--rw domain-reference?   instance-identifier
+   |        |  +--rw basename?           fpc:fpc-identity {fpc:fpc-basename-registry}?
+   |        |  +--rw base-state?         string {fpc:fpc-basename-registry}?
+   |        |  +--rw base-checkpoint?    string {fpc:fpc-basename-registry}?
    |        +--rw dpn-id?              fpc:fpc-dpn-id {fpc:fpc-basic-agent}?
    |        +--rw control-protocols*   identityref {fpc:fpc-basic-agent}?
    |        +--rw dpn-groups* [dpn-group-id] {fpc:fpc-multi-dpn}?
@@ -7584,12 +7588,13 @@ module: ietf-dmm-fpc
    |        |  |  +--rw local-endpoint-address?    inet:ip-address
    |        |  |  +--rw mtu-size?                  uint32
    |        |  +--rw domains* [domain-id]
-   |        |     +--rw domain-id          fpc:fpc-domain-id
-   |        |     +--rw domain-name?       string
-   |        |     +--rw domain-type?       string
-   |        |     +--rw basename?          fpc:fpc-identity {fpc:fpc-basename-registry}?
-   |        |     +--rw base-state?        string {fpc:fpc-basename-registry}?
-   |        |     +--rw base-checkpoint?   string {fpc:fpc-basename-registry}?
+   |        |     +--rw domain-id           fpc:fpc-domain-id
+   |        |     +--rw domain-name?        string
+   |        |     +--rw domain-type?        string
+   |        |     +--rw domain-reference?   instance-identifier
+   |        |     +--rw basename?           fpc:fpc-identity {fpc:fpc-basename-registry}?
+   |        |     +--rw base-state?         string {fpc:fpc-basename-registry}?
+   |        |     +--rw base-checkpoint?    string {fpc:fpc-basename-registry}?
    |        +--rw dpns* [dpn-id] {fpc:fpc-multi-dpn}?
    |           +--rw dpn-id            fpc:fpc-dpn-id
    |           +--rw dpn-name?         string
@@ -7603,7 +7608,7 @@ module: ietf-dmm-fpc
       +--rw supported-error-types* [error-type]
          +--rw error-type       identityref
          +--rw error-type-id?   fpc:error-type-id
-rpcs: ...
+rpcs...
      ]]></artwork>
         <postamble></postamble>
       </figure>
