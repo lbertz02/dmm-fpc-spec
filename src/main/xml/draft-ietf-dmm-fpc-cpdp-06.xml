@@ -1639,19 +1639,19 @@ DPN         |                 DPN        |
     <c> A Conf-bundle takes multiple operations that are to be executed as a
     group with partial failures allowed. They are executed according to the
     OP_ID value in the OP_BODY in ascending order. If a CONF_BUNDLE
-    fails, any entities provisioned in the CURRENT operation are removed,
-    however, any successful operations completed prior to
+    fails, any entities provisioned in the CURRENT operation are removed.
+    However, any successful operations completed prior to
     the current operation are preserved in order to reduce system load.</c>
 
     <c> REG_MONITOR</c>
     <c> HEADER ADMIN_STATE *[ MONITOR ]</c>
-    <c> Install a monitor at an Agent. The message includes information about
+    <c> Register a monitor at an Agent. The message includes information about
     the attribute to monitor and the reporting method.  Note that a
     MONITOR_CONFIG is required for this operation.</c>
 
     <c> DEREG_MONITOR</c>
     <c> HEADER *[ MONITOR_ID ] [ boolean ]</c>
-    <c> Remove monitors from an Agent. Monitor IDs are provided. Boolean
+    <c> Deregister monitors from an Agent. Monitor IDs are provided. Boolean
     (optional) indicates if a successful DEREG triggers a NOTIFY with
     final data.</c>
 
@@ -1669,14 +1669,14 @@ DPN         |                 DPN        |
     communicating with the Agent, as well as the association of the Client
     and tenant in the information model.</t>
 
-    <t> Messages that create or update Monitors and Entities, i.e. CONF,
+    <t> Messages that create or update Monitors and Entities, i.e. CONFIG,
     CONF_BUNDLE and REG_MONITOR, specify an Administrative State which
     specifies the Administrative state of the message subject(s) after the
     successful completion of the operation. If the status is set to
     virtual, any existing data on the DPN is removed. If the value is set
-    to disabled, then an operation to disable the associated entity will
-    occur on the DPN IF that entity exists on the DPN. If set to 'active'
-    the DPN will be provisioned. Values are 'enabled', 'disabled' or
+    to disabled, and if that entity exists on the DPN, then an operation to
+    disable the associated entity will occur on the DPN . If set to 'active'
+    the DPN will be provisioned. Values are 'enabled', 'disabled', and
     'virtual'.</t>
 
     <t> CONF_BUNDLE also has the Transaction Strategy (TRANS_STRATEGY)
@@ -1686,14 +1686,13 @@ DPN         |                 DPN        |
     'all_or_nothing' will roll back all successfully executed operations
     within the bundle as well as the operation that failed.</t>
 
-    <t> It is important to note that an envelope protocol used to support this
+    <t> An FPC interface protocol used to support this
     specification may not need to support CONF_BUNDLE messages or specific
     TRANS_STRATEGY types beyond 'default' when the protocol provides
     similar semantics.  However, this MUST be clearly defined in the
-    specification that defines how the envelope protocol supports this
-    specification.</t>
+    specification that defines the interface protocol.</t>
 
-    <t> An Agent will respond with an error, ok, or an ok with indication that
+    <t> An Agent will respond with an ERROR, OK, or an OK WITH INDICATION that
     remaining data will be sent via a notify from the Agent to the Client
     <xref target="asyncnotification"/> for CONFIG and CONF_BUNDLE requests.
     When returning an 'ok' of any kind, optional data may be present.</t>
@@ -1728,8 +1727,8 @@ DPN         |                 DPN        |
     results.</t>
       <t hangText="OP_TYPE:"> specifies the type of operation. Valid values
     are 'create' (0), 'update' (1), 'query' (2) or 'delete' (3).</t>
-      <t hangText="COMMAND_SET:"> specifies the Command Set IF the feature is
-    supported (see <xref target="commandsets"/>).</t>
+      <t hangText="COMMAND_SET:"> If the feature is supported, specifies the Command Set
+      (see <xref target="commandsets"/>).</t>
       <t hangText="BODY:"> A list of Clones, if supported, Vports and Contexts
     when the OP_TYPE is 'create' or 'update'.  Otherwise it is a list of
     Targets for 'query' or 'deletion'.  See <xref target="op-body"/>
@@ -1748,11 +1747,11 @@ DPN         |                 DPN        |
 
    <t>The following Order Processing occurs when COMMAND Sets are present
         <list style="numbers">
-        <t> The Entity specific COMMAND_SET is processed according to its
+        <t> The Entity-specific COMMAND_SET is processed according to its
         bit order unless otherwise specified by the technology specific
         COMMAND_SET definition.</t>
     <t> Operation specific COMMAND_SET is processed upon all applicable
-        entities (even if they had Entity specific COMMAND_SET values
+        entities (even if they had Entity-specific COMMAND_SET values
         present) according to its bit order unless otherwise specified by
         the technology specific COMMAND_SET definition.</t>
     <t>Operation OP_TYPE is processed for all entities.</t>
@@ -2614,7 +2613,7 @@ DPN         |                 DPN        |
   </texttable>
 </section>
 
-<section anchor="mobilitystructs" title="Mobilty Structures">
+<section anchor="mobilitystructs" title="Mobility Structures">
   <texttable anchor="port_field" title="Vport Fields">
     <ttcol align="left">Field</ttcol>
     <ttcol align="left">Type</ttcol>
@@ -2854,7 +2853,7 @@ DPN         |                 DPN        |
 
     <c>ADMIN_STATE </c>
     <c>[8, admin state]</c>
-    <c>CONF, CONF_BUNDLE and REG_MONITOR</c>
+    <c>CONFIG, CONF_BUNDLE and REG_MONITOR</c>
 
     <c>OP_TYPE</c>
     <c>[8, op type]</c>
@@ -3452,7 +3451,7 @@ activation system:
       <t> FPC Naming <xref target="naming"/> permits arbirtrary string values
       but a users MUST avoid placing sensitive or vulnerable information
       in those values.</t>
-      <t> Policies that are very narrow and permit the identificaiton of
+      <t> Policies that are very narrow and permit the identification of
       specific traffic, e.g. that of a single user, SHOULD be avoided.</t>
       </list></t>
 </section>
