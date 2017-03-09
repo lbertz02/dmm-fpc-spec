@@ -419,8 +419,10 @@ module ietf-dmm-threegpp {
         case predefined-tft {
           leaf tft-reference {
             type fpc:fpc-identity;
+            description "Pre-configured TFT";
           }
         }
+        description "TFT Value";
       }
       description "3GPP TFT and Tunnel Information";
     }

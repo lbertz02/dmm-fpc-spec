@@ -149,8 +149,10 @@ module ietf-dmm-fpc-pmip {
           case predefined-selector {
             leaf selector-reference {
               type fpc:fpc-identity;
+              description "Pre-configured selector";
             }
           }
+          description "Traffic Selector Value";
         }
         description "PMIP Tunnel Information";
     }

@@ -4380,14 +4380,17 @@ module ietf-dmm-fpc {
                 case monitoring-suspension {
                   leaf monitoring-suspended {
                     type empty;
+                    description "Indicates that monitoring has suspended";
                   }
                   leaf suspension-note {
                     type string;
+                    description "Indicates the monitoring suspension reason";
                   }
                 }
                 case monitoring-resumption {
                   leaf monitoring-resumed {
                     type empty;
+                    description "Indicates that monitoring has resumed";
                   }
                 }
                 case simple-monitor {
@@ -6734,8 +6737,10 @@ module ietf-dmm-threegpp {
         case predefined-tft {
           leaf tft-reference {
             type fpc:fpc-identity;
+            description "Pre-configured TFT";
           }
         }
+        description "TFT Value";
       }
       description "3GPP TFT and Tunnel Information";
     }
@@ -7163,8 +7168,10 @@ module ietf-dmm-fpc-pmip {
           case predefined-selector {
             leaf selector-reference {
               type fpc:fpc-identity;
+              description "Pre-configured selector";
             }
           }
+          description "Traffic Selector Value";
         }
         description "PMIP Tunnel Information";
     }
