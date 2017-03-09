@@ -1636,7 +1636,7 @@ DPN         |                 DPN        |
 
     <c>CONF_BUNDLE</c>
     <c>1*[HEADER ADMIN_STATE SESSION_STATE TRANS_STRATEGY OP_TYPE BODY]</c>
-    <c> Configure-bundles takes multiple operations that are to be executed as a
+    <c> A Conf-bundle takes multiple operations that are to be executed as a
     group with partial failures allowed. They are executed according to the
     OP_ID value in the OP_BODY in ascending order. If a CONF_BUNDLE
     fails, any entities provisioned in the CURRENT operation are removed,
@@ -1695,7 +1695,7 @@ DPN         |                 DPN        |
 
     <t> An Agent will respond with an error, ok, or an ok with indication that
     remaining data will be sent via a notify from the Agent to the Client
-    <xref target="asyncnotification"/> for CONF and CONF_BUNDLE requests.
+    <xref target="asyncnotification"/> for CONFIG and CONF_BUNDLE requests.
     When returning an 'ok' of any kind, optional data may be present.</t>
     <t>Two Agent notifications are supported:</t>
     <texttable anchor="notifications"
@@ -1715,8 +1715,8 @@ DPN         |                 DPN        |
     registered MONITOR.</c>
     </texttable>
 
-  <section anchor="conf-processing" title="CONF and CONF_BUNDLE Messages">
-    <t>CONF and CONF_BUNDLE specify the following information for each
+  <section anchor="conf-processing" title="CONFIG and CONF_BUNDLE Messages">
+    <t>CONFIG and CONF_BUNDLE specify the following information for each
     operation in addition to the header information:
     <list hangIndent="4" style="hanging">
       <t hangText="SESSION_STATE:"> sets the expected state of the entities
@@ -1766,7 +1766,7 @@ DPN         |                 DPN        |
     </section>
     <section anchor="policprov" title="Policy RPC Support">
     <t> This optional feature permits policy elements, (Policy-Group, Policy,
-    Action and Descriptor), values to be in CONF or CONF_BUNDLE requests.
+    Action and Descriptor), values to be in CONFIG or CONF_BUNDLE requests.
     It enables RPC based policy provisioning.</t>
     </section>
     <section anchor="cloning" title="Cloning">
@@ -2858,14 +2858,14 @@ DPN         |                 DPN        |
 
     <c>OP_TYPE</c>
     <c>[8, op type]</c>
-    <c>CONF and CONF_BUNDLE</c>
+    <c>CONFIG and CONF_BUNDLE</c>
 
     </texttable>
   </section>
 
   <section anchor="op-body"
-       title="CONF and CONF_BUNDLE Attributes and Notifications">
-    <texttable anchor="op_input" title="CONF and CONF_BUNDLE OP_BODY Fields">
+       title="CONFIG and CONF_BUNDLE Attributes and Notifications">
+    <texttable anchor="op_input" title="CONFIG and CONF_BUNDLE OP_BODY Fields">
       <ttcol align="left">Field</ttcol>
       <ttcol align="left">Type</ttcol>
       <ttcol align="left">Operation Types Create(C), Update(U),
@@ -2948,7 +2948,7 @@ DPN         |                 DPN        |
       <list>
         <t> NOTE 1 - Only present if the corresponding feature is supported by
         the Agent.</t>
-        <t> NOTE 2 - Present in OK and OK_NOTIFY_FOLLOWS for both CONF and
+        <t> NOTE 2 - Present in OK and OK_NOTIFY_FOLLOWS for both CONFIG and
         CONF_BUNDLE. MAY also be present in an CONF_BUNDLE Error response
         (ERR) if one of the operations completed successfully.</t>
         <t> NOTE 3 - Present only for Error (ERR) responses.</t>
@@ -3434,7 +3434,7 @@ activation system:
       control access to these operations.  These are the operations and their
       sensitivity/vulnerability:
       <list>
-      <t> CONF and CONF_BUNDLE send Context information which can include
+      <t> CONFIG and CONF_BUNDLE send Context information which can include
           information of a sensitive or vulnerable nature in some network
       environments as described above.</t>
       <t> Monitor related RPC operations do not specicially provide sensitive
@@ -3443,7 +3443,7 @@ activation system:
       <t> Notications MUST be treated with same level of protection and
       scrutiny as the operations they correspond to.  For example, a
       CONFIG_RESULT_NOTIFY notification provides the same information that
-      is sent as part of the input and output of the CONF and CONF_BUNDLE
+      is sent as part of the input and output of the CONFIG and CONF_BUNDLE
       RPC operations.</t>
       </list> </t>
 
@@ -3710,7 +3710,7 @@ module ietf-dmm-fpc {
     }
     feature policy-rpc-provisioning {
       description "Enables the ability to send policy elements (Policy Groups, Policies,
-        Descriptors and Actions) to be sent in CONF or CONF_BUNDLE operations.";
+        Descriptors and Actions) to be sent in CONFIG or CONF_BUNDLE operations.";
     }
 
     typedef agent-identifier {
@@ -4224,7 +4224,7 @@ module ietf-dmm-fpc {
 
     // Common RPCs
     rpc configure {
-      description "CONF message";
+      description "CONFIG message";
       input {
         uses fpc:op-input;
       }
@@ -4285,7 +4285,7 @@ module ietf-dmm-fpc {
         case config-result {
           uses fpc:op-status-value;
           uses fpc:result-body;
-          description "CONF Result";
+          description "CONFIG Result";
         }
         case config-bundle-result {
           list bundles {
@@ -7187,7 +7187,7 @@ module ietf-dmm-fpc-pmip {
       case pmip-tunnel {
         uses fpc-pmip:pmip-tunnel-info;
       }
-      description "CONF Context UL Mobility";
+      description "CONFIG Context UL Mobility";
     }
     augment "/fpc:configure-bundles/fpc:input/fpc:bundles/fpc:op_body/fpc:create_or_update/fpc:contexts/fpc:ul/fpc:mobility-tunnel-parameters/fpc:profile-parameters" {
       case pmip-tunnel {
@@ -7206,7 +7206,7 @@ module ietf-dmm-fpc-pmip {
       case pmip-tunnel {
         uses fpc-pmip:pmip-tunnel-info;
       }
-      description "CONF Context DL Mobility";
+      description "CONFIG Context DL Mobility";
     }
     augment "/fpc:configure-bundles/fpc:input/fpc:bundles/fpc:op_body/fpc:create_or_update/fpc:contexts/fpc:dl/fpc:mobility-tunnel-parameters/fpc:profile-parameters" {
       case pmip-tunnel {
@@ -7225,7 +7225,7 @@ module ietf-dmm-fpc-pmip {
       case pmip-tunnel {
         uses fpc-pmip:pmip-tunnel-info;
       }
-      description "CONF Context DPN Mobility";
+      description "CONFIG Context DPN Mobility";
     }
     augment "/fpc:configure-bundles/fpc:input/fpc:bundles/fpc:op_body/fpc:create_or_update/fpc:contexts/fpc:dpns/fpc:mobility-tunnel-parameters/fpc:profile-parameters" {
       case pmip-tunnel {
@@ -7247,7 +7247,7 @@ module ietf-dmm-fpc-pmip {
           uses qos-pmip:qosattribute;
           description "PMIP QoS Information";
       }
-      description "CONF Context UL QoS";
+      description "CONFIG Context UL QoS";
     }
     augment "/fpc:configure-bundles/fpc:input/fpc:bundles/fpc:op_body/fpc:create_or_update/fpc:contexts/fpc:ul/fpc:qos-profile-parameters/fpc:value" {
       case qos-pmip {
@@ -7269,7 +7269,7 @@ module ietf-dmm-fpc-pmip {
           uses qos-pmip:qosattribute;
           description "PMIP QoS Information";
       }
-      description "CONF Context DL QoS";
+      description "CONFIG Context DL QoS";
     }
     augment "/fpc:configure-bundles/fpc:input/fpc:bundles/fpc:op_body/fpc:create_or_update/fpc:contexts/fpc:dl/fpc:qos-profile-parameters/fpc:value" {
       case qos-pmip {
@@ -7293,21 +7293,21 @@ module ietf-dmm-fpc-pmip {
         uses fpc-pmip:pmip-commandset;
         description "PMIP Commandset";
       }
-      description "CONF Instructions";
+      description "CONFIG Instructions";
     }
     augment "/fpc:configure/fpc:input/fpc:op_body/fpc:create_or_update/fpc:contexts/fpc:instructions/fpc:instr-type" {
       case pmip-instr {
         uses fpc-pmip:pmip-commandset;
         description "PMIP Commandset";
       }
-      description "CONF Context Instructions";
+      description "CONFIG Context Instructions";
     }
     augment "/fpc:configure/fpc:output/fpc:result-type/fpc:create-or-update-success/fpc:contexts/fpc:instructions/fpc:instr-type" {
       case pmip-instr {
         uses fpc-pmip:pmip-commandset;
         description "PMIP Commandset";
       }
-      description "CONF Result Context Instructions";
+      description "CONFIG Result Context Instructions";
     }
 
     augment "/fpc:configure-bundles/fpc:input/fpc:bundles/fpc:instructions/fpc:instr-type" {
