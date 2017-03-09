@@ -29,7 +29,7 @@ module ietf-pmip-qos {
                   <mailto:satoru.matsushima@g.softbank.co.jp>
 
         Editor:   Lyle Bertz
-                  <mailto:lyleb551144@gmail.com>";
+                  <mailto:lylebe551144@gmail.com>";
 
     description
       "This module contains a collection of YANG definitions for

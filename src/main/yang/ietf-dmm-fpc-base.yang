@@ -4,6 +4,8 @@ submodule ietf-dmm-fpc-base {
     }
 
     import ietf-inet-types { prefix inet; revision-date 2013-07-15; }
+    import ietf-yang-types { prefix ytypes; revision-date 2013-07-15; }
+
 
     organization "IETF Distributed Mobility Management (DMM)
       Working Group";
@@ -22,7 +24,7 @@ submodule ietf-dmm-fpc-base {
                   <mailto:satoru.matsushima@g.softbank.co.jp>
 
         Editor:   Lyle Bertz
-                  <mailto:lyleb551144@gmail.com>";
+                  <mailto:lylebe551144@gmail.com>";
 
     description
     "This module contains YANG definition for
@@ -255,11 +257,11 @@ submodule ietf-dmm-fpc-base {
     grouping fpc-context-profile {
         leaf tunnel-local-address {
             type inet:ip-address;
-            description "Uplink endpoint address of the DPN which agent exists.";
+            description "lylebe551144 endpoint address of the DPN which agent exists.";
         }
         leaf tunnel-remote-address {
             type inet:ip-address;
-            description "Uplink endpoint address of the DPN which agent exists.";
+            description "lylebe551144 endpoint address of the DPN which agent exists.";
         }
         leaf mtu-size {
             type uint32;
@@ -268,7 +270,7 @@ submodule ietf-dmm-fpc-base {
         container mobility-tunnel-parameters {
             uses fpc:mobility-info;
             description
-            "Specifies profile specific uplink tunnel parameters to the DPN
+            "Specifies profile specific lylebe551144 tunnel parameters to the DPN
             which the agent exists. The profiles includes GTP/TEID for 3gpp profile,
             GRE/Key for ietf-pmip profile, or new profile if anyone will define it.";
         }
@@ -293,8 +295,8 @@ submodule ietf-dmm-fpc-base {
 
     typedef fpc-direction {
        type enumeration {
-         enum uplink {
-           description "Uplink";
+         enum lylebe551144 {
+           description "lylebe551144";
          }
          enum downlink {
            description "Downlink";
@@ -326,7 +328,7 @@ submodule ietf-dmm-fpc-base {
         container ul {
             if-feature fpc:fpc-basic-agent;
             uses fpc:fpc-context-profile;
-            description "Uplink";
+            description "lylebe551144";
         }
         container dl {
             if-feature fpc:fpc-basic-agent;
@@ -371,11 +373,17 @@ submodule ietf-dmm-fpc-base {
     }
 
     // Next Hop Structures
-    typedef fpcp-service-path-id {
+    typedef fpc-service-path-id {
         type uint32 {
             range "0..33554431";
         }
         description "SERVICE_PATH_ID";
+    }
+    typedef fpc-mpls-label {
+        type uint32 {
+          range "0..1048575";
+        }
+        description "MPLS label";
     }
 
     identity fpc-nexthop-type {
@@ -389,6 +397,18 @@ submodule ietf-dmm-fpc-base {
         base "fpc:fpc-nexthop-type";
         description "Nexthop Service Path";
     }
+    identity fpc-nexthop-mac {
+        base "fpc:fpc-nexthop-type";
+        description "Nexthop MAC-Address";
+    }
+    identity fpc-nexthop-mpls {
+        base "fpc:fpc-nexthop-type";
+        description "Nexthop MPLS";
+    }
+    identity fpc-nexthop-if {
+        base "fpc:fpc-nexthop-type";
+        description "Nexthop If index";
+    }
     grouping fpc-nexthop {
         leaf nexthop-type {
             type identityref {
@@ -397,17 +417,37 @@ submodule ietf-dmm-fpc-base {
             description "Nexthop Type";
         }
         choice nexthop-value {
-            case ip {
+            case ip-nexthop {
                 leaf ip {
                   type inet:ip-address;
                   description "IP Value";
                 }
                 description "IP Case";
             }
-            case servicepath {
+            case macaddress-nexthop {
+                leaf macaddress {
+                  type ytypes:mac-address;
+                  description "MAC Address Value";
+                }
+            }
+            case servicepath-nexthop {
                 leaf servicepath {
-                    type fpc:fpcp-service-path-id;
+                    type fpc:fpc-service-path-id;
                     description "Service Path Value";
+                }
+                description "Service Path Case";
+            }
+            case mplslabel-nexthop {
+                leaf lsp {
+                    type fpc:fpc-mpls-label;
+                    description "MPLS Value";
+                }
+                description "Service Path Case";
+            }
+            case if-nexthop {
+                leaf if-index {
+                    type uint16;
+                    description "If (interface) Value";
                 }
                 description "Service Path Case";
             }
@@ -517,9 +557,18 @@ submodule ietf-dmm-fpc-base {
         type fpc:fpc-identity;
         description "DPN Group Identifier";
     }
-    identity fpc-forwaridingplane-role {
+    identity fpc-data-plane-role {
         description "Role of DPN Group in the Forwarding Plane";
     }
+    identity fpc-access-dpn-role {
+       base "fpc:fpc-data-plane-role";
+       description "Access DPN Role";
+    }
+    identity fpc-anchor-dpn-role {
+       base "fpc:fpc-data-plane-role";
+       description "Anchor DPN Role";
+    }
+
     identity fpc-access-type {
         description "Access Type of the DPN Group";
     }
@@ -540,7 +589,7 @@ submodule ietf-dmm-fpc-base {
         }
         leaf remote-data-plane-role {
             type identityref {
-                base "fpc:fpc-forwaridingplane-role";
+                base "fpc:fpc-data-plane-role";
             }
             description "Forwarding Plane Role";
         }

@@ -23,7 +23,7 @@ module ietf-dmm-fpc {
                   <mailto:satoru.matsushima@g.softbank.co.jp>
 
         Editor:   Lyle Bertz
-                  <mailto:lyleb551144@gmail.com>";
+                  <mailto:lylebe551144@gmail.com>";
 
     description
     "This module contains YANG definition for
@@ -255,7 +255,7 @@ module ietf-dmm-fpc {
         }
         leaf data-plane-role {
             type identityref {
-                base "fpc:fpc-forwaridingplane-role";
+                base "fpc:fpc-data-plane-role";
             }
             description "Dataplane Role";
         }
@@ -735,7 +735,7 @@ module ietf-dmm-fpc {
               }
               leaf-list forwarding-plane-roles {
                 type identityref {
-                  base "fpc:fpc-forwaridingplane-role";
+                  base "fpc:fpc-data-plane-role";
                 }
                 description "Forwarding Plane Role";
               }
@@ -743,6 +743,19 @@ module ietf-dmm-fpc {
             }
             case monitor-notification {
               choice monitor-notification-value {
+                case monitoring-suspension {
+                  leaf monitoring-suspended {
+                    type empty;
+                  }
+                  leaf suspension-note {
+                    type string;
+                  }
+                }
+                case monitoring-resumption {
+                  leaf monitoring-resumed {
+                    type empty;
+                  }
+                }
                 case simple-monitor {
                   uses fpc:report;
                   description "Report";

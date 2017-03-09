@@ -113,7 +113,7 @@
 
             <phone></phone>
 
-            <email>lyleb551144@gmail.com</email>
+            <email>lylebe551144@gmail.com</email>
 
     </address>
     </author>
@@ -279,7 +279,7 @@
         mobility sessions from the data model, and then renders those policies
         into specific configurations for each DPN to which the sessions
         attached. The specific protocols and configurations to configure DPN
-        from FPC Agent are outside the scope of this document.</t>
+        from a FPC Agent are outside the scope of this document.</t>
 
         <t> The data-plane abstractions may be extended to support many
         different mobility management systems and data-plane functions. The
@@ -331,7 +331,7 @@
                 A set of forwarding policies.</t>
 
             <t hangText="Context:">An abstracted endpoint of a mobility
-            session associated with runtime attributes. Ports may
+            session associated with runtime attributes. Vports may
             apply to Context which instantiates those forwarding policies
             on a DPN.
             </t>
@@ -362,11 +362,11 @@
         <t> The FPC Agent carries out the required configuration and management
             of the DPN(s). The Agent determines DPN configurations according to
             the forwarding policies requested by the FPC Client.  The DPN
-            configurations could be specific to each DPN implementation so that
+            configurations could be specific to each DPN implementation such that
             how FPC Agent determines implementation specific configuration for
-            DPN is outside of the scope of this document. Along with the models,
+            a DPN is outside of the scope of this document. Along with the models,
             the control-plane and the applications put Policies to the Agent
-            prior to create their mobility sessions. </t>
+            prior to creating their mobility sessions. </t>
 
         <t> Once the Topology of DPN(s) and domains are defined for a data
             plane on an Agent, the data-plane nodes (DPNs) are available for
@@ -580,7 +580,7 @@ DPN         |                 DPN        |
 
                <t hangText="DPN-name:"> The name of the DPN.</t>
 
-               <t hangText="DPN-groups:"> The list of DPN-group
+               <t hangText="DPN-groups:"> The list of DPN-groups
                    to which the DPN belongs.</t>
 
                <t hangText="Node-reference:"> Indicates a physical node, or
@@ -699,7 +699,7 @@ DPN         |                 DPN        |
            <t><list hangIndent="4" style="hanging">
 
                <t hangText="Remote-DPN-group-id:">The ID of the peering DPN-Group.
-               </t>
+               The ID format MUST conform to <xref target="naming"></xref>.</t>
 
                <t hangText="Remote-mobility-profile:">The
                mobility-profile for the peering DPN-group. Currently defined
@@ -784,13 +784,13 @@ DPN         |                 DPN        |
         Policy-groups. These can be viewed as configuration data, in contrast
         to Contexts and Vports, which are structures that are instantiated on
         the Agent.  The Descriptors and Actions in a Policy referenced by a
-        Vport are active when the Vport is in a active Context, i.e. they can
+        Vport are active when the Vport is in an active Context, i.e. they can
         be applied to traffic on a DPN. </t>
 
 
         <section anchor="descriptors" title="Descriptors">
 
-        <t> Descriptors defines classifiers of specific traffic flow, such
+        <t> Descriptors defines classifiers of specific traffic flows, such
             as those based on source and destination addresses, protocols,
             port numbers of TCP/UDP/SCTP/DCCP, or any way of classifying
             packets. Descriptors are defined by specific profiles that
@@ -828,7 +828,7 @@ DPN         |                 DPN        |
                target="naming"></xref>. </t>
 
                <t hangText="Descriptor-type:">The descriptor type,
-               which determines the classification of a specific traffic flow,
+               which determines the classification of a specific traffic flows,
                such as source and destination addresses, protocols, port numbers
                of TCP/UDP/SCTP/DCCP, or any other way of selecting packets. </t>
 
@@ -875,7 +875,7 @@ DPN         |                 DPN        |
                format MUST conform to <xref target="naming"></xref>.</t>
 
                <t hangText="Action-type:"> The type of the action -- i.e. how to
-               treat the specified traffic flow. Examples include pass, drop, forward
+               treat the specified traffic flows. Examples include pass, drop, forward
                to a given nexthop value, shape or police based on given
                bandwidth value, etc. </t>
 
@@ -956,7 +956,7 @@ DPN         |                 DPN        |
                Identifies each Descriptor in the Rule.</t>
 
                <t hangText="Direction:">Specifies which
-               direction applies, such as upstream, downstream or both.</t>
+               direction applies, such as uplink, downlink or both.</t>
 
                <t hangText="Actions:">List of Actions.</t>
 
@@ -1134,7 +1134,7 @@ DPN         |                 DPN        |
 
             <t> In the case where a FPC Agent supports only one DPN, the Agent
                 MUST maintain Context data just for the DPN. The Agent does not
-                need to maintain a Topology model. The Context in
+                need to maintain a Topology model. Contexts in
                 single DPN case consists of following parameters for both
                 direction of uplink and downlink.</t>
 
@@ -1181,7 +1181,7 @@ DPN         |                 DPN        |
                 <t hangText="UL-Mobility-specific-tunnel-parameters:">
                     Specifies profile specific uplink tunnel parameters to
                     the DPN which the agent exists. This may, for example,
-                    includes GTP/TEID for 3gpp profile, or GRE/Key for
+                    include GTP/TEID for 3gpp profile, or GRE/Key for
                     ietf-pmip profile.</t>
 
                 <t hangText="UL-Nexthop:">
@@ -1206,7 +1206,7 @@ DPN         |                 DPN        |
                     unique in the DPN. </t>
 
                 <t hangText="UL-Vendor-specific-parameters:">
-                    Specifies a vendor specific parameter space for uplink.
+                    Specifies a vendor specific parameter space for the uplink.
                     </t>
 
             </list></t>
@@ -1254,7 +1254,7 @@ DPN         |                 DPN        |
                 <t hangText="DL-Mobility-specific-tunnel-parameters:">
                     Specifies profile specific downlink tunnel parameters to
                     the DPN which the agent exists. This may, for example,
-                    includes GTP/TEID for 3gpp profile, or GRE/Key for
+                    include GTP/TEID for 3gpp profile, or GRE/Key for
                     ietf-pmip profile.</t>
 
                 <t hangText="DL-Nexthop:">
@@ -1280,7 +1280,7 @@ DPN         |                 DPN        |
 
                 <t hangText="DL-Vendor-specific-parameters:">
                     Specifies a vendor specific parameter space for
-                    downlink. </t>
+                    the downlink. </t>
 
             </list></t>
         </section>        <!-- end section title="Single DPN Agent Case"  -->
@@ -1293,8 +1293,8 @@ DPN         |                 DPN        |
                 The Context contains a list of DPNs, where each entry of
                 the list consists of the parameters in <xref
                 target="fig_dpn-context-im"/>. A Context data for one DPN
-                has two entries for uplink and for downlink or, where
-                applicable, a direction of 'both'. </t>
+                has two entries - one for uplink and another for downlink or,
+                where applicable, a direction of 'both'. </t>
 
             <t>
             <figure anchor="fig_dpn-context-im"
@@ -1338,7 +1338,7 @@ DPN         |                 DPN        |
 
                 <t hangText="Direction:">
                     Specifies which side of connection at the DPN
-                    indicated, "uplink", "downlink" or "both". </t>
+                    indicated - uplink, downlink or both. </t>
 
                 <t hangText="Tunnel-local-address:">
                     Specifies endpoint address of the DPN at the uplink or
@@ -1403,7 +1403,7 @@ DPN         |                 DPN        |
         <t> When a Monitor is specified, the configuration MUST be applicable
             to the attribute/entity monitored. For example, a Monitor using a
             Threshold configuration cannot be applied to a Context, because
-            Context do not have thresholds. But  such a monitor could be
+            Contexts do not have thresholds. But  such a monitor could be
             applied to a numeric threshold property of a Context. </t>
 
         <t>
@@ -1560,19 +1560,19 @@ DPN         |                 DPN        |
         <t> Attributes in FPC Topology and Policy SHOULD be pre-configured
             in a FPC Agent prior to Contexts and Vports. The FPC Agent
             requires those pre-configured attributes to be able to derive
-            Context's detailed runtime attributes.</t>
+            a Context's detailed runtime attributes.</t>
 
-        <t> When a FPC Client creates a Context, the FPC Client is then be
+        <t> When a FPC Client creates a Context, the FPC Client is then
             able to indicate specific DPN-group(s) instead of all endpoint
             addresses of the DPN(s) and MTU-size of the tunnels for
             example. This is because that the FPC Agent can derive data for
             those details from the pre-configured DPN-group information in
             the FPC Topology.</t>
 
-        <t> Similarly when a Vport is created to the Context, the FPC Agent
-            can derive detail forwarding policies from the pre-configured
+        <t> Similarly when a Vport is created for the Context, the FPC Agent
+            can derive detailed forwarding policies from the pre-configured
             Policy information in the FPC Policy. The FPC Client thereby has
-            no need to indicate those specific policies to each of all the
+            no need to indicate those specific policies to all of the
             Contexts which share the same set of Policy-groups.</t>
 
         <t> This is intentional as it provides FPC Clients the ability to
@@ -1587,16 +1587,16 @@ DPN         |                 DPN        |
             forwarding policies on DPN(s) based on those attributes.</t>
 
         <t> When a Context inherits another Context as its parent, missing
-            attribute in the child Context are provided by the Parent
-            Context (for example, IMSI defined in the 3GPP extencion) .</t>
+            attributes in the child Context are provided by the Parent
+            Context (for example, IMSI defined in the 3GPP extension) .</t>
 
         <t> It is noted that the Agent SHOULD update the Context's
             attributes which are instantiated on DPN(s) when the applied
             attributes of Topology and Policy are changed.</t>
 
-        <t> In case of FPC Client modifying an existing runtime attribute
+        <t> In the case of FPC Client modifying an existing runtime attribute
             of a Context which the FPC Agent derived, the FPC Agent MUST
-            overwrite that attribute with the value of which the Client
+            overwrite that attribute with the value which the Client
             brings to the Agent. However risks exist, for example, the
             attributes could be outside of allowable range of DPNs which
             the FPC Agent managed.</t>
@@ -1681,7 +1681,7 @@ DPN         |                 DPN        |
 
     <t> CONF_BUNDLES also has the Transaction Strategy (TRANS_STRATEGY)
     attribute.  This value specifies the behavior of the Agent when an
-    operation fails while prodessing a CONF_BUNDLES message.  The value of
+    operation fails while processing a CONF_BUNDLES message.  The value of
     'default' uses the default strategy defined for the message.  The value
     'all_or_nothing' will roll back all successfully executed operations
     within the bundle as well as the operation that failed.</t>
@@ -1730,7 +1730,7 @@ DPN         |                 DPN        |
     are 'create' (0), 'update' (1), 'query' (2) or 'delete' (3).</t>
       <t hangText="COMMAND_SET:"> specifies the Command Set IF the feature is
     supported (see <xref target="commandsets"/>).</t>
-      <t hangText="BODY"> A list of Clones, if supported, Ports and Contexts
+      <t hangText="BODY:"> A list of Clones, if supported, Vports and Contexts
     when the OP_TYPE is 'create' or 'update'.  Otherwise it is a list of
     Targets for 'query' or 'deletion'.  See <xref target="op-body"/>
         for details.</t>
@@ -1742,7 +1742,7 @@ DPN         |                 DPN        |
     following order:
         <list style="numbers">
     <t>Clone Instructions, if the feature is supported</t>
-    <t>Ports</t>
+    <t>Vports</t>
     <t>Contexts according to COMMAND_SET order processing</t>
     </list></t>
 
@@ -1778,7 +1778,7 @@ DPN         |                 DPN        |
     copied and a second operation with the Cloning instructions.  A CLONE
     operation takes two arguments, the first is the name of the target to
     clone and the second is the name of the newly created entity.
-    Individual attributes are not clonable; only Ports and Contexts can
+    Individual attributes are not clonable; only Vports and Contexts can
     be cloned.</t>
     </section>
     <section anchor="commandsets" title="Command Bitsets">
@@ -1800,20 +1800,20 @@ DPN         |                 DPN        |
     CONFIG_BUNDLES. These scopes are defined as
     <list style="symbols">
     <t> none - all entities have no references to other entities.  This
-        implies only Contexts are present. Ports MUST have references to
+        implies only Contexts are present. Vports MUST have references to
         Policy-Groups.</t>
         <t> op - All references are contained in the operation body, i.e. only
         intra-operation references exist.</t>
-        <t> bundle - All references in exist in bundle
-        (inter-operation/intra-bundle). NOTE - If this value comes in
-        CONFIG call it is equivalent to 'op'.</t>
+        <t> bundle - All references exist in bundle
+        (inter-operation/intra-bundle). NOTE - If this value is present in
+        a CONFIG message it is equivalent to 'op'.</t>
         <t> storage - One or more references exist outside of the operation
         and bundle. A lookup to a cache / storage is required.</t>
         <t> unknown - the location of the references are unknown. This is
         treated as a 'storage' type.</t>
     </list></t>
     <t> If supported by the Agent, when cloning instructions are present, the
-    scope MUST NOT be 'none'.  When Ports are present the scope MUST be
+    scope MUST NOT be 'none'.  When Vports are present the scope MUST be
     'storage' or 'unknown'.</t>
     <t> An agent that only accepts 'op' or 'bundle' reference scope messages
     is referred to as 'stateless' as it has no direct memory of references
@@ -1827,14 +1827,14 @@ DPN         |                 DPN        |
     <t>Results will be supplied per operation input. Each result contains the
       RESULT_STATUS and OP_ID that it corresponds to. RESULT_STATUS values are:
       <list>
-      <t> OK - SUCCESS </t>
+      <t> OK - Success </t>
       <t> ERR - An Error has occurred </t>
       <t> OK_NOTIFY_FOLLOWS - The Operation has been accepted by the Agent
       but further processing is required. A CONFIG_RESULT_NOTIFY will be
       sent once the processing has succeeded or failed.</t>
       </list>
     </t>
-    <t> Any result MAY contain nothing or a entities created or partially
+    <t> Any result MAY contain nothing or entities created or partially
     fulfilled as part of the operation as specified in
     <xref target="op_respbody"/>.  For Clients that need attributes back
     quickly for call processing, the AGENT MUST respond back with an
@@ -1894,7 +1894,7 @@ DPN         |                 DPN        |
     <t>Results will be supplied per operation input. Each result contains the
       RESULT_STATUS and OP_ID that it corresponds to. RESULT_STATUS values are:
       <list>
-      <t> OK - SUCCESS</t>
+      <t> OK - Success</t>
       <t> ERR - An Error has occurred</t>
       </list>
     </t>
@@ -1908,7 +1908,7 @@ DPN         |                 DPN        |
       </list></t>
   </section>
   <section anchor="asyncmonitornotification" title="Asynchronous Notification">
-    <t> A NOTIFY is sent as part of de-registraiton, a trigger based upon a
+    <t> A NOTIFY can be sent as part of de-registraiton, a trigger based upon a
     Monitor Configuration or a PROBE.   A NOTIFY is comprised of unique
     Notification Identifier from the Agent, the Monitor ID the notification
     applies to, the Trigger for the notification, a timestamp of when the
@@ -1936,7 +1936,7 @@ DPN         |                 DPN        |
       information, which indicates the result of processing the message, using
       the RESPONSE_BODY property. In case the processing of the message results
       in a failure, the Agent sets the ERROR_TYPE_ID and ERROR_INFORMATION
-      accordingly and MAY clear the Context or Port, which caused the failure,
+      accordingly and MAY clear the Context or Vport, which caused the failure,
       in the response.</t>
 
   <t> If based upon Agent configuration or the processing of the request
@@ -2017,7 +2017,7 @@ DPN         |                 DPN        |
   </t>
 
   <t> After reception of the Proxy Binding Update (PBU) at the LMA
-      Control-Plane function (LMA_C), the LMA-C selects a suitable DPN, which
+      Control-Plane function (LMA-C), the LMA-C selects a suitable DPN, which
       serves as Data-Plane anchor to the mobile node's (MN) traffic. The
       LMA-C adds a new logical Context to the DPN to treat the MN's
       traffic (1) and includes a Context Identifier (CONTEXT_ID) to the
@@ -2131,7 +2131,7 @@ DPN         |                 DPN        |
   <t> <xref target="fig_multidpn_example"/> shows how the first 2 messages in
       <xref target="fig_msc_example"/> are supported when a multi-DPN Agent
       communicates with both Anchor DPN1 and Edge DPN2.  In such a case, the
-      FPC Client sends the donwnlink and uplink for both DPNs in the "DPNS"
+      FPC Client sends the downlink and uplink for both DPNs in the "DPNS"
       list of the same Context. Message 1 shows the DPNS list with all entries.
       Each entry identifies the DPN and direction (one of 'uplink', 'downlink'
       or 'both').  Generally, the 'both' direction is not used for normal
@@ -2151,7 +2151,7 @@ DPN         |                 DPN        |
       therefore, there are no specific messages defined for them in this
       specification.</t>
 
-  <t> The Client may add, modify or delete many Ports and Contexts in a single
+  <t> The Client may add, modify or delete many Vports and Contexts in a single
       FPC message. This includes linking Contexts to Actions and Descriptors,
       i.e. a Rule.  As example, a Rule which performs re-writing of an arriving
       packet's destination IP address from IP_A to IP_B matching an associated
@@ -2165,7 +2165,7 @@ DPN         |                 DPN        |
   </t>
 
   <t>
-     <figure anchor="fig_port" title="Structure of Policies and Ports">
+     <figure anchor="fig_port" title="Structure of Policies and Vports">
         <artwork align="center"><![CDATA[
 
   Descriptor_1 -+          +- Action_1
@@ -2181,14 +2181,14 @@ DPN         |                 DPN        |
                   +------+             | <PolicyGroupID>
                   /Order#/-------------+  ^
                   +------+                |
-                                         <PortID>
+                                         <VportID>
 
   +-------------------+     +---------------------+
   | Bind 1..M traffic |     |  Bind 1..N traffic  |
   |  Descriptors to   | --> |  treatment actions  |
   |     a Policy,     |     |      to a Policy,   |
   | Policy-Group and  |     |   Policy-Group and  |
-  |       Port        |     |       Port          |
+  |       Vport        |     |       Vport          |
   +-------------------+     +---------------------+
 
  |                                                 |
@@ -2199,7 +2199,7 @@ DPN         |                 DPN        |
   </t>
 
   <t>
-   As depicted in <xref target="fig_port"/>, the Port represents the anchor
+   As depicted in <xref target="fig_port"/>, the Vport represents the anchor
    of Rules through the Policy-group, Policy, Rule hierarchy configured by any
    mechanism including RPC or N.  A Client and Agent use the identifier of the
    associated Policy to directly access the Rule and perform modifications of
@@ -2207,7 +2207,7 @@ DPN         |                 DPN        |
    identifiers to access the Descriptors or Actions to perform modifications.
    From the viewpoint of packet processing, arriving packets are matched
    against traffic Descriptors and processed according to the treatment
-   Actions specified in the list of properties associated with the Port.
+   Actions specified in the list of properties associated with the Vport.
   </t>
   <t>
    A Client complements a rule's Descriptors with a Rule's Order (priority)
@@ -2335,7 +2335,7 @@ DPN         |                 DPN        |
 +-----------+            +-------+ +---------+
      |                          |           |
      |-CONFIG_BUNDLES(CREATE)-->|           |
-     |   [ OP 1, [PORT X ]      |           |
+     |   [ OP 1, [VPORT X ]     |           |
      |   [ CONTEXT_ID 1,        |           |
      |   DOWNLINK(QOS/TUN),     |           |
      |   UPLINK(QOS/TUN),       |           |
@@ -2354,7 +2354,7 @@ DPN         |                 DPN        |
     <section anchor="cloningexample" title="Cloning Feature (Optional)">
     <t> Cloning provides a high speed copy/paste mechanism. The example below
     shows a single Context that will be copied two times.  A subsequent
-    update then overrides the value.  The avoid the accidental activation
+    update will then override copied values.  To avoid the accidental activation
     of the Contexts on the DPN, the CONFIGURE (1) message with the cloning
         instruction has a SESSION_STATE with a value of 'incomplete' and
     OP_TYPE of 'CREATE'.  A second CONFIGURE (2) is sent with the
@@ -2442,7 +2442,7 @@ DPN         |                 DPN        |
 
     <section anchor="referenceexample" title="Reference Scope(Optional)">
     <t> Although entities MAY refer to any other entity of an appropriate
-    type, e.g. Contexts can refer to Ports or Contexts, the Reference
+    type, e.g. Contexts can refer to Vports or Contexts, the Reference
     Scope gives the Agent an idea of where those references reside.  They
     may be in the same operation, an operation in the same CONFIG_BUNDLES
     message or in storage.  There may also be no references.  This permits
@@ -2458,8 +2458,8 @@ DPN         |                 DPN        |
     Reference Scope</t>
     <t> Caches are temporarily created at each level and as the scope includes
     more caches the amount of entities that are searched increases.
-    <xref target="fig_cache_example"/> shows an example cache where
-        each Cache where a containment hierarchy is provided for all caches.</t>
+    <xref target="fig_cache_example"/> shows an example containment hierarchy
+      provided for all caches.</t>
     <t>
         <figure anchor="fig_cache_example"
               title="Exemplary Hierarchical Cache">
@@ -2492,13 +2492,13 @@ DPN         |                 DPN        |
   </section>
 
   <section anchor="preprov" title="Pre-provisioning">
-  <t> Although Contexts are used for Session based lifecycle elements, Ports
+  <t> Although Contexts are used for Session based lifecycle elements, Vports
       may exist outside of a specific lifecycle and represent more general
       policies that may affect multiple Contexts (sessions).   The use of
-      pre-provisioning of Ports permits policy and administrative use cases to
+      pre-provisioning of Vports permits policy and administrative use cases to
       be executed.  For example, creating tunnels to forward traffic to a
       trouble management platform and dropping packets to a defective web server
-      can be accomplished via provisioning of Ports.</t>
+      can be accomplished via provisioning of Vports.</t>
   <t> The figure below shows a CONFIGURE (1) message used to install a
       Policy-group, policy-group1, using a Context set aside for
       pre-provisioning on a DPN.</t>
@@ -2513,7 +2513,7 @@ DPN         |                 DPN        |
 +-----------+            +-------+ +---------+
      |                          |           |
      |------CONFIG(CREATE)----->|           |
-     |  [ PORT_ID port1,        |           |
+     |  [ VPORT_ID port1,       |           |
      |     [ policy-group1 ] ]  |           |
      |  [ CONTEXT_ID preprov,   |           |
      |     DPN_ID X,            |           |
@@ -2609,16 +2609,16 @@ DPN         |                 DPN        |
       <c>DIRECTION [2, unsigned bits] is an ENUMERATION
      (uplink, downlink or both).</c>
       <c>RULE_ACTIONS</c>
-      <c>*[ ACTION_ID ORDER ]</c>
-      <c>ORDER [8, unsigned integer] specifies action execution order.</c>
+      <c>*[ ACTION_ID ACTION-ORDER ]</c>
+      <c>ACTION-ORDER [8, unsigned integer] specifies action execution order.</c>
   </texttable>
 </section>
 
 <section anchor="mobilitystructs" title="Mobilty Structures">
-  <texttable anchor="port_field" title="Port Fields">
+  <texttable anchor="port_field" title="Vport Fields">
     <ttcol align="left">Field</ttcol>
     <ttcol align="left">Type</ttcol>
-      <c>PORT_ID</c>
+      <c>VPORT_ID</c>
       <c>FPC-Identity (<xref target="naming"/>)</c>
 
       <c>POLICIES</c>
@@ -2630,13 +2630,13 @@ DPN         |                 DPN        |
       <c>CONTEXT_ID</c>
       <c>FPC-Identity (<xref target="naming"/>)</c>
 
-      <c>PORTS</c>
-      <c>*[ PORT_ID ]</c>
+      <c>VPORTS</c>
+      <c>*[ VPORT_ID ]</c>
 
       <c>DPN_GROUP_ID</c>
       <c>FPC-Identity (<xref target="naming"/>)</c>
 
-      <c>DELEGATING IP PREFIXES</c>
+      <c>DELEGATED IP PREFIXES</c>
       <c>*[ IP_PREFIX ]</c>
 
       <c>PARENT_CONTEXT_ID</c>
@@ -2650,7 +2650,7 @@ DPN         |                 DPN        |
       <c>MOB_FIELDS</c>
 
       <c>DPNS [NOTE 2]</c>
-      <c>*[ DPN_ID DPN_DIRECTION MOB_FIELDS</c>
+      <c>*[ DPN_ID DPN_DIRECTION MOB_FIELDS ]</c>
 
       <c>MOB_FIELDS</c>
       <c> All parameters from <xref target="context_link_fields"/> </c>
@@ -2658,7 +2658,7 @@ DPN         |                 DPN        |
 
   <t> NOTE 1 - These fields are present when the Agent supports only a
     single DPN.</t>
-  <t> NOTE 2 - This fields is present when the Agent supports multiple DPNs.</t>
+  <t> NOTE 2 - This field is present when the Agent supports multiple DPNs.</t>
 
   <texttable anchor="context_link_fields"
          title="Context Downlink/Uplink Field Definitions">
@@ -2748,6 +2748,9 @@ DPN         |                 DPN        |
     <c>[1024, OCTET STRING]</c>
 
     <c>DOMAIN_TYPE</c>
+    <c>[1024, OCTET STRING]</c>
+
+    <c>DOMAIN_REFERENCE</c>
     <c>[1024, OCTET STRING]</c>
   </texttable>
 
@@ -2880,8 +2883,8 @@ DPN         |                 DPN        |
       <c>*[ FPC-Identity FPC-Identity ] (<xref target="naming"/>)</c>
       <c>C,U [NOTE 1]</c>
 
-      <c>PORTS</c>
-      <c>*[ PORT ]</c>
+      <c>VPORTS</c>
+      <c>*[ VPORT ]</c>
       <c>C,U</c>
 
       <c>CONTEXTS</c>
@@ -2921,8 +2924,8 @@ DPN         |                 DPN        |
       <ttcol align="left">Operation Types Create(C), Update(U),
               Query(Q) and Delete(D)</ttcol>
 
-      <c>PORTS</c>
-      <c>*[ PORT ]</c>
+      <c>VPORTS</c>
+      <c>*[ VPORT ]</c>
       <c>C,U [NOTE 2]</c>
 
       <c>CONTEXTS</c>
@@ -3085,6 +3088,11 @@ DPN         |                 DPN        |
     <c>5</c>
     <c>[16, unsigned integer]</c>
     <c>Interface Index (an unsigned integer).</c>
+
+    <c>SEGMENT_ID</c>
+    <c>5</c>
+    <c>[128, unsigned integer]</c>
+    <c>Segement Identifier.</c>
   </texttable>
 
   <texttable anchor="qos_subtypes" title="QoS Subtypes" align="left">
@@ -3266,12 +3274,13 @@ DPN         |                 DPN        |
       2016. fpcagent will no longer be developed and will remain a proprietary
       implementation.</t>
   <t> The learnings of fpcagent has influenced the second project, fpc. Fpc is
-      also an OpenDaylight project but is intended for open source release, if
-      circumstances permit.  It is also scoped to be a fully compliant FPC
-      Agent that supports multiple DPNs including those that communicate via
-      OpenFlow. The following features present in this draft and others
-      developed by the FPC development team have already lead to an order of
-      magnitude improvement.
+      also an OpenDaylight project but is being prepared for open source release
+      as the Opendaylight FpcAgent plugin
+      (https://wiki.opendaylight.org/view/Project_Proposals:FpcAgent).
+      This project is scoped to be a fully compliant FPC Agent that supports
+      multiple DPNs including those that communicate via OpenFlow. The following
+      features present in this draft and others developed by the FPC development
+      team have already lead to an order of magnitude improvement.
       <list hangIndent="4" style="hanging">
       <t> Migration of non-realtime provisioning of entities such as topology
       and policy allowed the implementation to focus only on the rpc.</t>
@@ -3394,7 +3403,7 @@ activation system:
       are the subtrees and data nodes and their sensitivity/vulnerability:
       <list>
       <t> Nodes under the Policy tree provide generic policy enforcement and
-      traffic classification.  The can be used to block or permit traffic.
+      traffic classification.  They can be used to block or permit traffic.
       If this portion of the model was to be compromised it may be used to
       block, identify or permit traffic that was not intended by the Tenant
       or FPC CLient.</t>
@@ -3648,7 +3657,7 @@ module ietf-dmm-fpc {
                   <mailto:satoru.matsushima@g.softbank.co.jp>
 
         Editor:   Lyle Bertz
-                  <mailto:lyleb551144@gmail.com>";
+                  <mailto:lylebe551144@gmail.com>";
 
     description
     "This module contains YANG definition for
@@ -3880,7 +3889,7 @@ module ietf-dmm-fpc {
         }
         leaf data-plane-role {
             type identityref {
-                base "fpc:fpc-forwaridingplane-role";
+                base "fpc:fpc-data-plane-role";
             }
             description "Dataplane Role";
         }
@@ -4360,7 +4369,7 @@ module ietf-dmm-fpc {
               }
               leaf-list forwarding-plane-roles {
                 type identityref {
-                  base "fpc:fpc-forwaridingplane-role";
+                  base "fpc:fpc-data-plane-role";
                 }
                 description "Forwarding Plane Role";
               }
@@ -4368,6 +4377,19 @@ module ietf-dmm-fpc {
             }
             case monitor-notification {
               choice monitor-notification-value {
+                case monitoring-suspension {
+                  leaf monitoring-suspended {
+                    type empty;
+                  }
+                  leaf suspension-note {
+                    type string;
+                  }
+                }
+                case monitoring-resumption {
+                  leaf monitoring-resumed {
+                    type empty;
+                  }
+                }
                 case simple-monitor {
                   uses fpc:report;
                   description "Report";
@@ -4405,6 +4427,8 @@ submodule ietf-dmm-fpc-base {
     }
 
     import ietf-inet-types { prefix inet; revision-date 2013-07-15; }
+    import ietf-yang-types { prefix ytypes; revision-date 2013-07-15; }
+
 
     organization "IETF Distributed Mobility Management (DMM)
       Working Group";
@@ -4423,7 +4447,7 @@ submodule ietf-dmm-fpc-base {
                   <mailto:satoru.matsushima@g.softbank.co.jp>
 
         Editor:   Lyle Bertz
-                  <mailto:lyleb551144@gmail.com>";
+                  <mailto:lylebe551144@gmail.com>";
 
     description
     "This module contains YANG definition for
@@ -4656,11 +4680,11 @@ submodule ietf-dmm-fpc-base {
     grouping fpc-context-profile {
         leaf tunnel-local-address {
             type inet:ip-address;
-            description "Uplink endpoint address of the DPN which agent exists.";
+            description "lylebe551144 endpoint address of the DPN which agent exists.";
         }
         leaf tunnel-remote-address {
             type inet:ip-address;
-            description "Uplink endpoint address of the DPN which agent exists.";
+            description "lylebe551144 endpoint address of the DPN which agent exists.";
         }
         leaf mtu-size {
             type uint32;
@@ -4669,7 +4693,7 @@ submodule ietf-dmm-fpc-base {
         container mobility-tunnel-parameters {
             uses fpc:mobility-info;
             description
-            "Specifies profile specific uplink tunnel parameters to the DPN
+            "Specifies profile specific lylebe551144 tunnel parameters to the DPN
             which the agent exists. The profiles includes GTP/TEID for 3gpp profile,
             GRE/Key for ietf-pmip profile, or new profile if anyone will define it.";
         }
@@ -4694,8 +4718,8 @@ submodule ietf-dmm-fpc-base {
 
     typedef fpc-direction {
        type enumeration {
-         enum uplink {
-           description "Uplink";
+         enum lylebe551144 {
+           description "lylebe551144";
          }
          enum downlink {
            description "Downlink";
@@ -4727,7 +4751,7 @@ submodule ietf-dmm-fpc-base {
         container ul {
             if-feature fpc:fpc-basic-agent;
             uses fpc:fpc-context-profile;
-            description "Uplink";
+            description "lylebe551144";
         }
         container dl {
             if-feature fpc:fpc-basic-agent;
@@ -4772,11 +4796,17 @@ submodule ietf-dmm-fpc-base {
     }
 
     // Next Hop Structures
-    typedef fpcp-service-path-id {
+    typedef fpc-service-path-id {
         type uint32 {
             range "0..33554431";
         }
         description "SERVICE_PATH_ID";
+    }
+    typedef fpc-mpls-label {
+        type uint32 {
+          range "0..1048575";
+        }
+        description "MPLS label";
     }
 
     identity fpc-nexthop-type {
@@ -4790,6 +4820,18 @@ submodule ietf-dmm-fpc-base {
         base "fpc:fpc-nexthop-type";
         description "Nexthop Service Path";
     }
+    identity fpc-nexthop-mac {
+        base "fpc:fpc-nexthop-type";
+        description "Nexthop MAC-Address";
+    }
+    identity fpc-nexthop-mpls {
+        base "fpc:fpc-nexthop-type";
+        description "Nexthop MPLS";
+    }
+    identity fpc-nexthop-if {
+        base "fpc:fpc-nexthop-type";
+        description "Nexthop If index";
+    }
     grouping fpc-nexthop {
         leaf nexthop-type {
             type identityref {
@@ -4798,17 +4840,37 @@ submodule ietf-dmm-fpc-base {
             description "Nexthop Type";
         }
         choice nexthop-value {
-            case ip {
+            case ip-nexthop {
                 leaf ip {
                   type inet:ip-address;
                   description "IP Value";
                 }
                 description "IP Case";
             }
-            case servicepath {
+            case macaddress-nexthop {
+                leaf macaddress {
+                  type ytypes:mac-address;
+                  description "MAC Address Value";
+                }
+            }
+            case servicepath-nexthop {
                 leaf servicepath {
-                    type fpc:fpcp-service-path-id;
+                    type fpc:fpc-service-path-id;
                     description "Service Path Value";
+                }
+                description "Service Path Case";
+            }
+            case mplslabel-nexthop {
+                leaf lsp {
+                    type fpc:fpc-mpls-label;
+                    description "MPLS Value";
+                }
+                description "Service Path Case";
+            }
+            case if-nexthop {
+                leaf if-index {
+                    type uint16;
+                    description "If (interface) Value";
                 }
                 description "Service Path Case";
             }
@@ -4918,9 +4980,18 @@ submodule ietf-dmm-fpc-base {
         type fpc:fpc-identity;
         description "DPN Group Identifier";
     }
-    identity fpc-forwaridingplane-role {
+    identity fpc-data-plane-role {
         description "Role of DPN Group in the Forwarding Plane";
     }
+    identity fpc-access-dpn-role {
+       base "fpc:fpc-data-plane-role";
+       description "Access DPN Role";
+    }
+    identity fpc-anchor-dpn-role {
+       base "fpc:fpc-data-plane-role";
+       description "Anchor DPN Role";
+    }
+
     identity fpc-access-type {
         description "Access Type of the DPN Group";
     }
@@ -4941,7 +5012,7 @@ submodule ietf-dmm-fpc-base {
         }
         leaf remote-data-plane-role {
             type identityref {
-                base "fpc:fpc-forwaridingplane-role";
+                base "fpc:fpc-data-plane-role";
             }
             description "Forwarding Plane Role";
         }
@@ -5120,7 +5191,7 @@ module ietf-pmip-qos {
                   <mailto:satoru.matsushima@g.softbank.co.jp>
 
         Editor:   Lyle Bertz
-                  <mailto:lyleb551144@gmail.com>";
+                  <mailto:lylebe551144@gmail.com>";
 
     description
       "This module contains a collection of YANG definitions for
@@ -5746,7 +5817,7 @@ module ietf-traffic-selector-types {
                   <mailto:satoru.matsushima@g.softbank.co.jp>
 
         Editor:   Lyle Bertz
-                  <mailto:lyleb551144@gmail.com>";
+                  <mailto:lylebe551144@gmail.com>";
 
     description
       "This module contains a collection of YANG definitions for
@@ -6268,7 +6339,7 @@ module ietf-dmm-threegpp {
                   <mailto:satoru.matsushima@g.softbank.co.jp>
 
         Editor:   Lyle Bertz
-                  <mailto:lyleb551144@gmail.com>";
+                  <mailto:lylebe551144@gmail.com>";
 
     description
     "This module contains YANG definition for 3GPP Related Mobility
@@ -6966,7 +7037,7 @@ module ietf-dmm-fpc-pmip {
                   <mailto:satoru.matsushima@g.softbank.co.jp>
 
         Editor:   Lyle Bertz
-                  <mailto:lyleb551144@gmail.com>";
+                  <mailto:lylebe551144@gmail.com>";
 
     description
     "This module contains YANG definition for Forwarding Policy
@@ -7288,7 +7359,7 @@ module ietf-dmm-fpc-policyext {
                   <mailto:satoru.matsushima@g.softbank.co.jp>
 
         Editor:   Lyle Bertz
-                  <mailto:lyleb551144@gmail.com>";
+                  <mailto:lylebe551144@gmail.com>";
 
     description
     "This module contains YANG definition for Forwarding Policy
