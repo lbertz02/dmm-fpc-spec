@@ -1634,24 +1634,24 @@ DPN         |                 DPN        |
     <c>HEADER ADMIN_STATE SESSION_STATE OP_TYPE BODY</c>
     <c>Configure processes a single operation.</c>
 
-    <c>CONF_BUNDLES</c>
+    <c>CONF_BUNDLE</c>
     <c>1*[HEADER ADMIN_STATE SESSION_STATE TRANS_STRATEGY OP_TYPE BODY]</c>
-    <c> Configure-bundles takes multiple operations that are to be executed as a
+    <c> A Conf-bundle takes multiple operations that are to be executed as a
     group with partial failures allowed. They are executed according to the
-    OP_ID value in the OP_BODY in ascending order. If a CONFIGURE_BUNDLES
-    fails, any entities provisioned in the CURRENT operation are removed,
-    however, any successful operations completed prior to
+    OP_ID value in the OP_BODY in ascending order. If a CONF_BUNDLE
+    fails, any entities provisioned in the CURRENT operation are removed.
+    However, any successful operations completed prior to
     the current operation are preserved in order to reduce system load.</c>
 
     <c> REG_MONITOR</c>
     <c> HEADER ADMIN_STATE *[ MONITOR ]</c>
-    <c> Install a monitor at an Agent. The message includes information about
+    <c> Register a monitor at an Agent. The message includes information about
     the attribute to monitor and the reporting method.  Note that a
     MONITOR_CONFIG is required for this operation.</c>
 
     <c> DEREG_MONITOR</c>
     <c> HEADER *[ MONITOR_ID ] [ boolean ]</c>
-    <c> Remove monitors from an Agent. Monitor IDs are provided. Boolean
+    <c> Deregister monitors from an Agent. Monitor IDs are provided. Boolean
     (optional) indicates if a successful DEREG triggers a NOTIFY with
     final data.</c>
 
@@ -1669,33 +1669,32 @@ DPN         |                 DPN        |
     communicating with the Agent, as well as the association of the Client
     and tenant in the information model.</t>
 
-    <t> Messages that create or update Monitors and Entities, i.e. CONF,
-    CONF_BUNDLES and REG_MONITOR, specify an Administrative State which
+    <t> Messages that create or update Monitors and Entities, i.e. CONFIG,
+    CONF_BUNDLE and REG_MONITOR, specify an Administrative State which
     specifies the Administrative state of the message subject(s) after the
     successful completion of the operation. If the status is set to
     virtual, any existing data on the DPN is removed. If the value is set
-    to disabled, then an operation to disable the associated entity will
-    occur on the DPN IF that entity exists on the DPN. If set to 'active'
-    the DPN will be provisioned. Values are 'enabled', 'disabled' or
+    to disabled, and if that entity exists on the DPN, then an operation to
+    disable the associated entity will occur on the DPN . If set to 'active'
+    the DPN will be provisioned. Values are 'enabled', 'disabled', and
     'virtual'.</t>
 
-    <t> CONF_BUNDLES also has the Transaction Strategy (TRANS_STRATEGY)
+    <t> CONF_BUNDLE also has the Transaction Strategy (TRANS_STRATEGY)
     attribute.  This value specifies the behavior of the Agent when an
-    operation fails while processing a CONF_BUNDLES message.  The value of
+    operation fails while processing a CONF_BUNDLE message.  The value of
     'default' uses the default strategy defined for the message.  The value
     'all_or_nothing' will roll back all successfully executed operations
     within the bundle as well as the operation that failed.</t>
 
-    <t> It is important to note that an envelope protocol used to support this
-    specification may not need to support CONF_BUNDLES messages or specific
+    <t> An FPC interface protocol used to support this
+    specification may not need to support CONF_BUNDLE messages or specific
     TRANS_STRATEGY types beyond 'default' when the protocol provides
     similar semantics.  However, this MUST be clearly defined in the
-    specification that defines how the envelope protocol supports this
-    specification.</t>
+    specification that defines the interface protocol.</t>
 
-    <t> An Agent will respond with an error, ok, or an ok with indication that
+    <t> An Agent will respond with an ERROR, OK, or an OK WITH INDICATION that
     remaining data will be sent via a notify from the Agent to the Client
-    <xref target="asyncnotification"/> for CONF and CONF_BUNDLES requests.
+    <xref target="asyncnotification"/> for CONFIG and CONF_BUNDLE requests.
     When returning an 'ok' of any kind, optional data may be present.</t>
     <t>Two Agent notifications are supported:</t>
     <texttable anchor="notifications"
@@ -1707,7 +1706,7 @@ DPN         |                 DPN        |
       <c>CONFIG_RESULT_NOTIFY</c>
       <c>See <xref target="ayncnotify_detail"/></c>
       <c>An asynchronous notification from Agent to Client based upon a
-    previous CONFIG or CONFIG_BUNDLES request.</c>
+    previous CONFIG or CONF_BUNDLE request.</c>
 
       <c>NOTIFY</c>
       <c>See <xref target="notify_structs"/></c>
@@ -1715,8 +1714,8 @@ DPN         |                 DPN        |
     registered MONITOR.</c>
     </texttable>
 
-  <section anchor="conf-processing" title="CONF and CONF_BUNDLES Messages">
-    <t>CONF and CONF_BUNDLES specify the following information for each
+  <section anchor="conf-processing" title="CONFIG and CONF_BUNDLE Messages">
+    <t>CONFIG and CONF_BUNDLE specify the following information for each
     operation in addition to the header information:
     <list hangIndent="4" style="hanging">
       <t hangText="SESSION_STATE:"> sets the expected state of the entities
@@ -1728,8 +1727,8 @@ DPN         |                 DPN        |
     results.</t>
       <t hangText="OP_TYPE:"> specifies the type of operation. Valid values
     are 'create' (0), 'update' (1), 'query' (2) or 'delete' (3).</t>
-      <t hangText="COMMAND_SET:"> specifies the Command Set IF the feature is
-    supported (see <xref target="commandsets"/>).</t>
+      <t hangText="COMMAND_SET:"> If the feature is supported, specifies the Command Set
+      (see <xref target="commandsets"/>).</t>
       <t hangText="BODY:"> A list of Clones, if supported, Vports and Contexts
     when the OP_TYPE is 'create' or 'update'.  Otherwise it is a list of
     Targets for 'query' or 'deletion'.  See <xref target="op-body"/>
@@ -1748,11 +1747,11 @@ DPN         |                 DPN        |
 
    <t>The following Order Processing occurs when COMMAND Sets are present
         <list style="numbers">
-        <t> The Entity specific COMMAND_SET is processed according to its
+        <t> The Entity-specific COMMAND_SET is processed according to its
         bit order unless otherwise specified by the technology specific
         COMMAND_SET definition.</t>
     <t> Operation specific COMMAND_SET is processed upon all applicable
-        entities (even if they had Entity specific COMMAND_SET values
+        entities (even if they had Entity-specific COMMAND_SET values
         present) according to its bit order unless otherwise specified by
         the technology specific COMMAND_SET definition.</t>
     <t>Operation OP_TYPE is processed for all entities.</t>
@@ -1766,7 +1765,7 @@ DPN         |                 DPN        |
     </section>
     <section anchor="policprov" title="Policy RPC Support">
     <t> This optional feature permits policy elements, (Policy-Group, Policy,
-    Action and Descriptor), values to be in CONF or CONF_BUNDLES requests.
+    Action and Descriptor), values to be in CONFIG or CONF_BUNDLE requests.
     It enables RPC based policy provisioning.</t>
     </section>
     <section anchor="cloning" title="Cloning">
@@ -1774,7 +1773,7 @@ DPN         |                 DPN        |
     structure to another in an operation. Cloning is always done first
     within the operation (see Operation Order of Execution for more
     detail). If a Client wants to build an object then Clone it, use
-    CONFIG_BUNDLES with the first operation being the entities to be
+    CONF_BUNDLE with the first operation being the entities to be
     copied and a second operation with the Cloning instructions.  A CLONE
     operation takes two arguments, the first is the name of the target to
     clone and the second is the name of the newly created entity.
@@ -1797,7 +1796,7 @@ DPN         |                 DPN        |
     <section anchor="refscope" title="Reference Scope">
     <t> The Reference Scope is an optional feature that provides the scope of
     references used in a configuration command, i.e. CONFIG or
-    CONFIG_BUNDLES. These scopes are defined as
+    CONF_BUNDLE. These scopes are defined as
     <list style="symbols">
     <t> none - all entities have no references to other entities.  This
         implies only Contexts are present. Vports MUST have references to
@@ -1853,7 +1852,7 @@ DPN         |                 DPN        |
 
     <section anchor="asyncnotification" title="Asynchronous Notification">
     <t> A CONFIG_RESULT_NOTIFY occurs after the Agent has completed processing
-    related to a CONFIG or CONFIG_BUNDLES request. It is an asynchronous
+    related to a CONFIG or CONF_BUNDLE request. It is an asynchronous
     communication from the Agent to the Client.</t>
 
     <t> The values of the CONFIG_RESULT_NOTIFY are detailed in
@@ -2021,7 +2020,7 @@ DPN         |                 DPN        |
       serves as Data-Plane anchor to the mobile node's (MN) traffic. The
       LMA-C adds a new logical Context to the DPN to treat the MN's
       traffic (1) and includes a Context Identifier (CONTEXT_ID) to the
-      CONFIGURE command. The LMA-C identifies the selected Anchor DPN by
+      CONFIG command. The LMA-C identifies the selected Anchor DPN by
       including the associated DPN identifier.  </t>
 
   <t> The LMA-C adds properties during the creation of the new Context. One
@@ -2038,10 +2037,10 @@ DPN         |                 DPN        |
   <t> During handover, the LMA-C receives an updating PBU from the handover
       target MAG-C2. The PBU refers to a new Data-Plane node (Edge DPN2) to
       represent the new tunnel endpoints in the downlink and uplink, as
-      required.  The LMA-C sends a CONFIGURE message (3) to the Agent to
+      required.  The LMA-C sends a CONFIG message (3) to the Agent to
       modify the existing tunnel property of the existing Context and to update
       the tunnel endpoint from Edge DPN1 to Edge DPN2. Upon reception of the
-      CONFIGURE message, the Agent applies updated tunnel property to the local
+      CONFIG message, the Agent applies updated tunnel property to the local
       configuration and responds to the Client (4).</t>
 
   <t>
@@ -2076,16 +2075,16 @@ DPN         |                 DPN        |
   </t>
 
   <t> When a teardown of the session occurs, MAG-C1 will send a PBU with a
-      lifetime value of zero.  The LMA-C sends a CONFIGURE message (1) to the
+      lifetime value of zero.  The LMA-C sends a CONFIG message (1) to the
       Agent to modify the existing tunnel property of the existing Context to
-      delete the tunnel information.) Upon reception of the CONFIGURE message,
+      delete the tunnel information.) Upon reception of the CONFIG message,
       the Agent removes the tunnel configuration and responds to the Client (2).
       Per <xref target="RFC5213"/>, the PBA is sent back immediately after the
       PBA is received.</t>
 
   <t> If no valid PBA is received after the expiration of the
       MinDelayBeforeBCEDelete timer (see <xref target="RFC5213"/>),
-      the LMA-C will send a CONFIGURE (3) message with a deletion request for
+      the LMA-C will send a CONFIG (3) message with a deletion request for
       the Context.  Upon reception of the message, the Agent deletes the tunnel
       and route on the DPN and responds to the Client (4).</t>
 
@@ -2188,7 +2187,7 @@ DPN         |                 DPN        |
   |  Descriptors to   | --> |  treatment actions  |
   |     a Policy,     |     |      to a Policy,   |
   | Policy-Group and  |     |   Policy-Group and  |
-  |       Vport        |     |       Vport          |
+  |       Vport       |     |       Vport         |
   +-------------------+     +---------------------+
 
  |                                                 |
@@ -2269,7 +2268,7 @@ DPN         |                 DPN        |
     <t> A single operation MAY contain multiple entities.  This permits
     bundling of requests into a single operation.   In the example below
     two PMIP sessions are created via two PBU messages and sent to the
-    Agent in a single CONFIGURE message (1). Upon recieveing the message,
+    Agent in a single CONFIG message (1). Upon recieveing the message,
         the Agent responds back with an OK_NOTIFY_FOLLOWS (2), completes work
     on the DPN to activate the associated sessions then responds to the
     Client with a CONFIG_RESULT_NOTIFY (3).</t>
@@ -2317,10 +2316,10 @@ DPN         |                 DPN        |
     <t> The example bundle shows in Operation 1 (OP 1) the creation of a
     Context 1 which is then referenced in Operation 2 (OP 2) by CONTEXT_ID
     2.  If OP 1 fails then OP 2 will not be executed.  The advantage of the
-        CONFIGURE_BUNDLES is preservation of dependency orders in a single
-    message as opposed to sending multiple CONFIGURE messages and awaiting
+        CONF_BUNDLE is preservation of dependency orders in a single
+    message as opposed to sending multiple CONFIG messages and awaiting
     results from the Agent.</t>
-    <t> When a CONFIGURE_BUNDLES fails, any entities provisioned in the
+    <t> When a CONF_BUNDLE fails, any entities provisioned in the
     CURRENT operation are removed, however, any successful operations
     completed prior to the current operation are preserved in order to
     reduce system load.</t>
@@ -2334,7 +2333,7 @@ DPN         |                 DPN        |
 |  Client   |            | Agent | |   DPN   |
 +-----------+            +-------+ +---------+
      |                          |           |
-     |-CONFIG_BUNDLES(CREATE)-->|           |
+     |--CONF_BUNDLE(CREATE)---->|           |
      |   [ OP 1, [VPORT X ]     |           |
      |   [ CONTEXT_ID 1,        |           |
      |   DOWNLINK(QOS/TUN),     |           |
@@ -2355,9 +2354,9 @@ DPN         |                 DPN        |
     <t> Cloning provides a high speed copy/paste mechanism. The example below
     shows a single Context that will be copied two times.  A subsequent
     update will then override copied values.  To avoid the accidental activation
-    of the Contexts on the DPN, the CONFIGURE (1) message with the cloning
+    of the Contexts on the DPN, the CONFIG (1) message with the cloning
         instruction has a SESSION_STATE with a value of 'incomplete' and
-    OP_TYPE of 'CREATE'.  A second CONFIGURE (2) is sent with the
+    OP_TYPE of 'CREATE'.  A second CONFIG (2) is sent with the
     SESSION_STATE of 'complete' and OP_TYPE of 'UPDATE'.  The second
         message includes any differences between the original (copied)
     Context and its Clones.</t>
@@ -2371,7 +2370,7 @@ DPN         |                 DPN        |
 |  Client   |            | Agent | |   DPN   |
 +-----------+            +-------+ +---------+
      |                          |           |
-     |-CONFIG_BUNDLES(CREATE)-->|           |
+     |--CONF_BUNDLE(CREATE)---->|           |
      |   [ OP 1,                |           |
      |    [ SESSION_STATE       |           |
      |       (incomplete) ],    |           |
@@ -2384,7 +2383,7 @@ DPN         |                 DPN        |
      |   IP_PREFIX(HNP)    ] ]  |           |
      |<----- OK ----------------|           |
      |                          |           |
-     |-CONFIG_BUNDLES(UPDATE)-->|           |
+     |--CONF_BUNDLE(UPDATE)--->|           |
      |    [ CONTEXT_ID 3,       |           |
      | PARENT_CONTEXT_ID(empty),|           |
      |   UPLINK(QOS/TUN),       |           |
@@ -2444,13 +2443,13 @@ DPN         |                 DPN        |
     <t> Although entities MAY refer to any other entity of an appropriate
     type, e.g. Contexts can refer to Vports or Contexts, the Reference
     Scope gives the Agent an idea of where those references reside.  They
-    may be in the same operation, an operation in the same CONFIG_BUNDLES
+    may be in the same operation, an operation in the same CONF_BUNDLE
     message or in storage.  There may also be no references.  This permits
     the Agent to understand when it can stop searching for reference it
-    cannot find.  For example, if a CONFIG_BUNDLES message uses a
+    cannot find.  For example, if a CONF_BUNDLE message uses a
     Reference Scope of type 'op' then it merely needs to keep an operation
     level cache and consume no memory or resources searching across the many
-        operations in the CONFIG_BUNDLES message or the data store.</t>
+        operations in the CONF_BUNDLE message or the data store.</t>
     <t> Agents can also be stateless by only supporting the 'none', 'op' and
     'bundle' reference scopes.   This does not imply they lack storage but
     merely the search space they use when looking up references for an
@@ -2499,7 +2498,7 @@ DPN         |                 DPN        |
       be executed.  For example, creating tunnels to forward traffic to a
       trouble management platform and dropping packets to a defective web server
       can be accomplished via provisioning of Vports.</t>
-  <t> The figure below shows a CONFIGURE (1) message used to install a
+  <t> The figure below shows a CONFIG (1) message used to install a
       Policy-group, policy-group1, using a Context set aside for
       pre-provisioning on a DPN.</t>
   <t>
@@ -2614,7 +2613,7 @@ DPN         |                 DPN        |
   </texttable>
 </section>
 
-<section anchor="mobilitystructs" title="Mobilty Structures">
+<section anchor="mobilitystructs" title="Mobility Structures">
   <texttable anchor="port_field" title="Vport Fields">
     <ttcol align="left">Field</ttcol>
     <ttcol align="left">Type</ttcol>
@@ -2854,18 +2853,18 @@ DPN         |                 DPN        |
 
     <c>ADMIN_STATE </c>
     <c>[8, admin state]</c>
-    <c>CONF, CONF_BUNDLES and REG_MONITOR</c>
+    <c>CONFIG, CONF_BUNDLE and REG_MONITOR</c>
 
     <c>OP_TYPE</c>
     <c>[8, op type]</c>
-    <c>CONF and CONF_BUNDLES</c>
+    <c>CONFIG and CONF_BUNDLE</c>
 
     </texttable>
   </section>
 
   <section anchor="op-body"
-       title="CONF and CONF_BUNDLES Attributes and Notifications">
-    <texttable anchor="op_input" title="CONF and CONF_BUNDLES OP_BODY Fields">
+       title="CONFIG and CONF_BUNDLE Attributes and Notifications">
+    <texttable anchor="op_input" title="CONFIG and CONF_BUNDLE OP_BODY Fields">
       <ttcol align="left">Field</ttcol>
       <ttcol align="left">Type</ttcol>
       <ttcol align="left">Operation Types Create(C), Update(U),
@@ -2948,8 +2947,8 @@ DPN         |                 DPN        |
       <list>
         <t> NOTE 1 - Only present if the corresponding feature is supported by
         the Agent.</t>
-        <t> NOTE 2 - Present in OK and OK_NOTIFY_FOLLOWS for both CONF and
-        CONF_BUNDLES. MAY also be present in an CONF_BUNDLES Error response
+        <t> NOTE 2 - Present in OK and OK_NOTIFY_FOLLOWS for both CONFIG and
+        CONF_BUNDLE. MAY also be present in an CONF_BUNDLE Error response
         (ERR) if one of the operations completed successfully.</t>
         <t> NOTE 3 - Present only for Error (ERR) responses.</t>
         </list>
@@ -3300,7 +3299,7 @@ DPN         |                 DPN        |
       development roadmap.</t>
       <t> Use of Contexts to pre-provision policy has also eliminated any
       processing of Ports for DPNs which permitted the code for CONFIGURE
-      and CONFIGURE_BUNDLES to be implemented as a simple nested FOR loops
+      and CONF_BUNDLE to be implemented as a simple nested FOR loops
       (see below).</t>
       </list>
   </t>
@@ -3314,7 +3313,7 @@ DPN         |                 DPN        |
       <t> 1 proprietary DPN API</t>
       <t> Policy and Topology as defined in this specification using
       OpenDaylight North Bound Interfaces such as NetConf and RestConf</t>
-      <t> CONFIGURE and CONFIGURE_BUNDLES (all operations)</t>
+      <t> CONFIG and CONF_BUNDLE (all operations)</t>
       <t> DPN assignment, Tunnel allocations and IPv4 address assignment
       by the Agent or Client.</t>
       <t> Immediate Response is always an OK_NOTIFY_FOLLOWS.</t>
@@ -3326,7 +3325,7 @@ DPN         |                 DPN        |
         <artwork align="center"><![CDATA[
 assignment system (receives rpc call):
   perform basic operation integrity check
-  if CONFIGURE then
+  if CONFIG then
     goto assignments
     if assignments was ok then
       send request to activation system
@@ -3334,7 +3333,7 @@ assignment system (receives rpc call):
     else
       send back error
     end if
-  else if CONFIGURE_BUNDLES then
+  else if CONF_BUNDLE then
     for each operation in bundles
     goto assignments
     if assignments was ok then
@@ -3434,7 +3433,7 @@ activation system:
       control access to these operations.  These are the operations and their
       sensitivity/vulnerability:
       <list>
-      <t> CONF and CONF_BUNDLES send Context information which can include
+      <t> CONFIG and CONF_BUNDLE send Context information which can include
           information of a sensitive or vulnerable nature in some network
       environments as described above.</t>
       <t> Monitor related RPC operations do not specicially provide sensitive
@@ -3443,7 +3442,7 @@ activation system:
       <t> Notications MUST be treated with same level of protection and
       scrutiny as the operations they correspond to.  For example, a
       CONFIG_RESULT_NOTIFY notification provides the same information that
-      is sent as part of the input and output of the CONF and CONF_BUNDLES
+      is sent as part of the input and output of the CONFIG and CONF_BUNDLE
       RPC operations.</t>
       </list> </t>
 
@@ -3452,7 +3451,7 @@ activation system:
       <t> FPC Naming <xref target="naming"/> permits arbirtrary string values
       but a users MUST avoid placing sensitive or vulnerable information
       in those values.</t>
-      <t> Policies that are very narrow and permit the identificaiton of
+      <t> Policies that are very narrow and permit the identification of
       specific traffic, e.g. that of a single user, SHOULD be avoided.</t>
       </list></t>
 </section>
@@ -3710,7 +3709,7 @@ module ietf-dmm-fpc {
     }
     feature policy-rpc-provisioning {
       description "Enables the ability to send policy elements (Policy Groups, Policies,
-        Descriptors and Actions) to be sent in CONF or CONF_BUNDLES operations.";
+        Descriptors and Actions) to be sent in CONFIG or CONF_BUNDLE operations.";
     }
 
     typedef agent-identifier {
@@ -4224,7 +4223,7 @@ module ietf-dmm-fpc {
 
     // Common RPCs
     rpc configure {
-      description "CONF message";
+      description "CONFIG message";
       input {
         uses fpc:op-input;
       }
@@ -4239,7 +4238,7 @@ module ietf-dmm-fpc {
 
     rpc configure-bundles {
       if-feature fpc:fpc-bundles;
-      description "CONF_BUNDLES message";
+      description "CONF_BUNDLE message";
       input {
         leaf highest-op-ref-scope {
             if-feature operation-ref-scope;
@@ -4285,7 +4284,7 @@ module ietf-dmm-fpc {
         case config-result {
           uses fpc:op-status-value;
           uses fpc:result-body;
-          description "CONF Result";
+          description "CONFIG Result";
         }
         case config-bundle-result {
           list bundles {
@@ -4293,11 +4292,11 @@ module ietf-dmm-fpc {
             uses fpc:result-body;
             description "Operation Results";
           }
-          description "CONF_BUNDLES Result";
+          description "CONF_BUNDLE Result";
         }
         description "Config Result value";
       }
-      description "CONF/CONF_BUNDLES Async Result";
+      description "CONF/CONF_BUNDLE Async Result";
     }
 
     rpc event_register {
@@ -7187,13 +7186,13 @@ module ietf-dmm-fpc-pmip {
       case pmip-tunnel {
         uses fpc-pmip:pmip-tunnel-info;
       }
-      description "CONF Context UL Mobility";
+      description "CONFIG Context UL Mobility";
     }
     augment "/fpc:configure-bundles/fpc:input/fpc:bundles/fpc:op_body/fpc:create_or_update/fpc:contexts/fpc:ul/fpc:mobility-tunnel-parameters/fpc:profile-parameters" {
       case pmip-tunnel {
         uses fpc-pmip:pmip-tunnel-info;
       }
-      description "CONF_BUNDLES Context UL Mobility";
+      description "CONF_BUNDLE Context UL Mobility";
     }
 
     augment "/fpc:tenants/fpc:tenant/fpc:fpc-mobility/fpc:contexts/fpc:dl/fpc:mobility-tunnel-parameters/fpc:profile-parameters" {
@@ -7206,13 +7205,13 @@ module ietf-dmm-fpc-pmip {
       case pmip-tunnel {
         uses fpc-pmip:pmip-tunnel-info;
       }
-      description "CONF Context DL Mobility";
+      description "CONFIG Context DL Mobility";
     }
     augment "/fpc:configure-bundles/fpc:input/fpc:bundles/fpc:op_body/fpc:create_or_update/fpc:contexts/fpc:dl/fpc:mobility-tunnel-parameters/fpc:profile-parameters" {
       case pmip-tunnel {
         uses fpc-pmip:pmip-tunnel-info;
       }
-      description "CONF_BUNDLES Context DL Mobility";
+      description "CONF_BUNDLE Context DL Mobility";
     }
 
     augment "/fpc:tenants/fpc:tenant/fpc:fpc-mobility/fpc:contexts/fpc:dpns/fpc:mobility-tunnel-parameters/fpc:profile-parameters" {
@@ -7225,13 +7224,13 @@ module ietf-dmm-fpc-pmip {
       case pmip-tunnel {
         uses fpc-pmip:pmip-tunnel-info;
       }
-      description "CONF Context DPN Mobility";
+      description "CONFIG Context DPN Mobility";
     }
     augment "/fpc:configure-bundles/fpc:input/fpc:bundles/fpc:op_body/fpc:create_or_update/fpc:contexts/fpc:dpns/fpc:mobility-tunnel-parameters/fpc:profile-parameters" {
       case pmip-tunnel {
         uses fpc-pmip:pmip-tunnel-info;
       }
-      description "CONF_BUNDLES Context DPN Mobility";
+      description "CONF_BUNDLE Context DPN Mobility";
     }
 
     // QoS Updates - Context / UL / qosprofile, Context / DL / QoS Profile
@@ -7247,14 +7246,14 @@ module ietf-dmm-fpc-pmip {
           uses qos-pmip:qosattribute;
           description "PMIP QoS Information";
       }
-      description "CONF Context UL QoS";
+      description "CONFIG Context UL QoS";
     }
     augment "/fpc:configure-bundles/fpc:input/fpc:bundles/fpc:op_body/fpc:create_or_update/fpc:contexts/fpc:ul/fpc:qos-profile-parameters/fpc:value" {
       case qos-pmip {
           uses qos-pmip:qosattribute;
           description "PMIP QoS Information";
       }
-      description "CONF_BUNDLES Context UL QoS";
+      description "CONF_BUNDLE Context UL QoS";
     }
 
     augment "/fpc:tenants/fpc:tenant/fpc:fpc-mobility/fpc:contexts/fpc:dl/fpc:qos-profile-parameters/fpc:value" {
@@ -7269,14 +7268,14 @@ module ietf-dmm-fpc-pmip {
           uses qos-pmip:qosattribute;
           description "PMIP QoS Information";
       }
-      description "CONF Context DL QoS";
+      description "CONFIG Context DL QoS";
     }
     augment "/fpc:configure-bundles/fpc:input/fpc:bundles/fpc:op_body/fpc:create_or_update/fpc:contexts/fpc:dl/fpc:qos-profile-parameters/fpc:value" {
       case qos-pmip {
           uses qos-pmip:qosattribute;
           description "PMIP QoS Information";
       }
-      description "CONF_BUNDLES Context DL QoS";
+      description "CONF_BUNDLE Context DL QoS";
     }
 
     grouping pmip-commandset {
@@ -7293,21 +7292,21 @@ module ietf-dmm-fpc-pmip {
         uses fpc-pmip:pmip-commandset;
         description "PMIP Commandset";
       }
-      description "CONF Instructions";
+      description "CONFIG Instructions";
     }
     augment "/fpc:configure/fpc:input/fpc:op_body/fpc:create_or_update/fpc:contexts/fpc:instructions/fpc:instr-type" {
       case pmip-instr {
         uses fpc-pmip:pmip-commandset;
         description "PMIP Commandset";
       }
-      description "CONF Context Instructions";
+      description "CONFIG Context Instructions";
     }
     augment "/fpc:configure/fpc:output/fpc:result-type/fpc:create-or-update-success/fpc:contexts/fpc:instructions/fpc:instr-type" {
       case pmip-instr {
         uses fpc-pmip:pmip-commandset;
         description "PMIP Commandset";
       }
-      description "CONF Result Context Instructions";
+      description "CONFIG Result Context Instructions";
     }
 
     augment "/fpc:configure-bundles/fpc:input/fpc:bundles/fpc:instructions/fpc:instr-type" {
@@ -7315,21 +7314,21 @@ module ietf-dmm-fpc-pmip {
         uses fpc-pmip:pmip-commandset;
         description "PMIP Commandset";
       }
-      description "CONF_BUNDLES Instructions";
+      description "CONF_BUNDLE Instructions";
     }
     augment "/fpc:configure-bundles/fpc:input/fpc:bundles/fpc:op_body/fpc:create_or_update/fpc:contexts/fpc:instructions/fpc:instr-type" {
       case pmip-instr {
         uses fpc-pmip:pmip-commandset;
         description "PMIP Commandset";
       }
-      description "CONF_BUNDLES Context Instructions";
+      description "CONF_BUNDLE Context Instructions";
     }
     augment "/fpc:configure-bundles/fpc:output/fpc:bundles/fpc:result-type/fpc:create-or-update-success/fpc:contexts/fpc:instructions/fpc:instr-type" {
       case pmip-instr {
         uses fpc-pmip:pmip-commandset;
         description "PMIP Commandset";
       }
-      description "CONF_BUNDLES Result Context Instructions";
+      description "CONF_BUNDLE Result Context Instructions";
     }
 }
 <CODE ENDS>]]></artwork>
