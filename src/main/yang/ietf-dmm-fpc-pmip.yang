@@ -157,58 +157,81 @@ module ietf-dmm-fpc-pmip {
         description "PMIP Tunnel Information";
     }
 
-    // Contexts Update - Contexts / UL / mob-profile, Contexts / DL / mob-profile and Contexts / dpns / mobility-tunnel-parameters
-    augment "/fpc:tenants/fpc:tenant/fpc:fpc-mobility/fpc:contexts/fpc:ul/fpc:mobility-tunnel-parameters/fpc:profile-parameters" {
+    // Contexts Update - Contexts / UL / mob-profile, Contexts / DL / 
+    //     mob-profile and Contexts / dpns / mobility-tunnel-parameters
+    augment "/fpc:tenants/fpc:tenant/fpc:fpc-mobility/fpc:contexts/fpc:"
+        + "ul/fpc:mobility-tunnel-parameters/fpc:profile-parameters" {
       case pmip-tunnel {
         uses fpc-pmip:pmip-tunnel-info;
       }
       description "Context UL Mobility";
     }
-    augment "/fpc:configure/fpc:input/fpc:op_body/fpc:create_or_update/fpc:contexts/fpc:ul/fpc:mobility-tunnel-parameters/fpc:profile-parameters" {
+    augment "/fpc:configure/fpc:input/fpc:op_body/fpc:"
+        + "create_or_update/fpc:contexts/fpc:ul/fpc:"
+        + "mobility-tunnel-parameters/fpc:"
+        + "profile-parameters" {
       case pmip-tunnel {
         uses fpc-pmip:pmip-tunnel-info;
       }
       description "CONF Context UL Mobility";
     }
-    augment "/fpc:configure-bundles/fpc:input/fpc:bundles/fpc:op_body/fpc:create_or_update/fpc:contexts/fpc:ul/fpc:mobility-tunnel-parameters/fpc:profile-parameters" {
+    augment "/fpc:configure-bundles/fpc:input/fpc:bundles/fpc:"
+        + "op_body/fpc:create_or_update/fpc:contexts/fpc:"
+        + "ul/fpc:mobility-tunnel-parameters/fpc:"
+        + "profile-parameters" {
       case pmip-tunnel {
         uses fpc-pmip:pmip-tunnel-info;
       }
       description "CONF_BUNDLES Context UL Mobility";
     }
 
-    augment "/fpc:tenants/fpc:tenant/fpc:fpc-mobility/fpc:contexts/fpc:dl/fpc:mobility-tunnel-parameters/fpc:profile-parameters" {
+    augment "/fpc:tenants/fpc:tenant/fpc:fpc-mobility/fpc:"
+        + "contexts/fpc:dl/fpc:mobility-tunnel-parameters/fpc:"
+        + "profile-parameters" {
       case pmip-tunnel {
         uses fpc-pmip:pmip-tunnel-info;
       }
       description "Context DL Mobility";
     }
-    augment "/fpc:configure/fpc:input/fpc:op_body/fpc:create_or_update/fpc:contexts/fpc:dl/fpc:mobility-tunnel-parameters/fpc:profile-parameters" {
+    augment "/fpc:configure/fpc:input/fpc:op_body/fpc:"
+        + "create_or_update/fpc:contexts/fpc:dl/fpc:"
+        + "mobility-tunnel-parameters/fpc:"
+        + "profile-parameters" {
       case pmip-tunnel {
         uses fpc-pmip:pmip-tunnel-info;
       }
       description "CONF Context DL Mobility";
     }
-    augment "/fpc:configure-bundles/fpc:input/fpc:bundles/fpc:op_body/fpc:create_or_update/fpc:contexts/fpc:dl/fpc:mobility-tunnel-parameters/fpc:profile-parameters" {
+    augment "/fpc:configure-bundles/fpc:input/fpc:"
+        + "bundles/fpc:op_body/fpc:create_or_update/fpc:"
+        + "contexts/fpc:dl/fpc:mobility-tunnel-parameters/fpc:"
+        + "profile-parameters" {
       case pmip-tunnel {
         uses fpc-pmip:pmip-tunnel-info;
       }
       description "CONF_BUNDLES Context DL Mobility";
     }
 
-    augment "/fpc:tenants/fpc:tenant/fpc:fpc-mobility/fpc:contexts/fpc:dpns/fpc:mobility-tunnel-parameters/fpc:profile-parameters" {
+    augment "/fpc:tenants/fpc:tenant/fpc:fpc-mobility/fpc:"
+        + "contexts/fpc:dpns/fpc:mobility-tunnel-parameters/fpc:"
+        + "profile-parameters" {
       case pmip-tunnel {
         uses fpc-pmip:pmip-tunnel-info;
       }
       description "Context DPN Mobility";
     }
-    augment "/fpc:configure/fpc:input/fpc:op_body/fpc:create_or_update/fpc:contexts/fpc:dpns/fpc:mobility-tunnel-parameters/fpc:profile-parameters" {
+    augment "/fpc:configure/fpc:input/fpc:op_body/fpc:"
+        + "create_or_update/fpc:contexts/fpc:dpns/fpc:"
+        + "mobility-tunnel-parameters/fpc:profile-parameters" {
       case pmip-tunnel {
         uses fpc-pmip:pmip-tunnel-info;
       }
       description "CONF Context DPN Mobility";
     }
-    augment "/fpc:configure-bundles/fpc:input/fpc:bundles/fpc:op_body/fpc:create_or_update/fpc:contexts/fpc:dpns/fpc:mobility-tunnel-parameters/fpc:profile-parameters" {
+    augment "/fpc:configure-bundles/fpc:input/fpc:"
+        + "bundles/fpc:op_body/fpc:create_or_update/fpc:"
+        + "contexts/fpc:dpns/fpc:mobility-tunnel-parameters/fpc:"
+        + "profile-parameters" {
       case pmip-tunnel {
         uses fpc-pmip:pmip-tunnel-info;
       }
@@ -216,21 +239,26 @@ module ietf-dmm-fpc-pmip {
     }
 
     // QoS Updates - Context / UL / qosprofile, Context / DL / QoS Profile
-    augment "/fpc:tenants/fpc:tenant/fpc:fpc-mobility/fpc:contexts/fpc:ul/fpc:qos-profile-parameters/fpc:value" {
+    augment "/fpc:tenants/fpc:tenant/fpc:fpc-mobility/fpc:"
+        + "contexts/fpc:ul/fpc:qos-profile-parameters/fpc:value" {
       case qos-pmip {
           uses qos-pmip:qosattribute;
           description "PMIP QoS Information";
       }
       description "Context UL QoS";
     }
-    augment "/fpc:configure/fpc:input/fpc:op_body/fpc:create_or_update/fpc:contexts/fpc:ul/fpc:qos-profile-parameters/fpc:value" {
+    augment "/fpc:configure/fpc:input/fpc:op_body/fpc:"
+        + "create_or_update/fpc:contexts/fpc:ul/fpc:"
+        + "qos-profile-parameters/fpc:value" {
       case qos-pmip {
           uses qos-pmip:qosattribute;
           description "PMIP QoS Information";
       }
       description "CONF Context UL QoS";
     }
-    augment "/fpc:configure-bundles/fpc:input/fpc:bundles/fpc:op_body/fpc:create_or_update/fpc:contexts/fpc:ul/fpc:qos-profile-parameters/fpc:value" {
+    augment "/fpc:configure-bundles/fpc:input/fpc:"
+        + "bundles/fpc:op_body/fpc:create_or_update/fpc:"
+        + "contexts/fpc:ul/fpc:qos-profile-parameters/fpc:value" {
       case qos-pmip {
           uses qos-pmip:qosattribute;
           description "PMIP QoS Information";
@@ -238,21 +266,26 @@ module ietf-dmm-fpc-pmip {
       description "CONF_BUNDLES Context UL QoS";
     }
 
-    augment "/fpc:tenants/fpc:tenant/fpc:fpc-mobility/fpc:contexts/fpc:dl/fpc:qos-profile-parameters/fpc:value" {
+    augment "/fpc:tenants/fpc:tenant/fpc:fpc-mobility/fpc:"
+        + "contexts/fpc:dl/fpc:qos-profile-parameters/fpc:value" {
       case qos-pmip {
           uses qos-pmip:qosattribute;
           description "PMIP QoS Information";
       }
       description "Context DL QoS";
     }
-    augment "/fpc:configure/fpc:input/fpc:op_body/fpc:create_or_update/fpc:contexts/fpc:dl/fpc:qos-profile-parameters/fpc:value" {
+    augment "/fpc:configure/fpc:input/fpc:op_body/fpc:"
+        + "create_or_update/fpc:contexts/fpc:dl/fpc:"
+        + "qos-profile-parameters/fpc:value" {
       case qos-pmip {
           uses qos-pmip:qosattribute;
           description "PMIP QoS Information";
       }
       description "CONF Context DL QoS";
     }
-    augment "/fpc:configure-bundles/fpc:input/fpc:bundles/fpc:op_body/fpc:create_or_update/fpc:contexts/fpc:dl/fpc:qos-profile-parameters/fpc:value" {
+    augment "/fpc:configure-bundles/fpc:input/fpc:"
+        + "bundles/fpc:op_body/fpc:create_or_update/fpc:"
+        + "contexts/fpc:dl/fpc:qos-profile-parameters/fpc:value" {
       case qos-pmip {
           uses qos-pmip:qosattribute;
           description "PMIP QoS Information";
@@ -276,14 +309,17 @@ module ietf-dmm-fpc-pmip {
       }
       description "CONF Instructions";
     }
-    augment "/fpc:configure/fpc:input/fpc:op_body/fpc:create_or_update/fpc:contexts/fpc:instructions/fpc:instr-type" {
+    augment "/fpc:configure/fpc:input/fpc:op_body/fpc:"
+        + "create_or_update/fpc:contexts/fpc:instructions/fpc:instr-type" {
       case pmip-instr {
         uses fpc-pmip:pmip-commandset;
         description "PMIP Commandset";
       }
       description "CONF Context Instructions";
     }
-    augment "/fpc:configure/fpc:output/fpc:result-type/fpc:create-or-update-success/fpc:contexts/fpc:instructions/fpc:instr-type" {
+    augment "/fpc:configure/fpc:output/fpc:result-type/fpc:"
+        + "create-or-update-success/fpc:contexts/fpc:"
+        + "instructions/fpc:instr-type" {
       case pmip-instr {
         uses fpc-pmip:pmip-commandset;
         description "PMIP Commandset";
@@ -291,21 +327,26 @@ module ietf-dmm-fpc-pmip {
       description "CONF Result Context Instructions";
     }
 
-    augment "/fpc:configure-bundles/fpc:input/fpc:bundles/fpc:instructions/fpc:instr-type" {
+    augment "/fpc:configure-bundles/fpc:input/fpc:"
+        + "bundles/fpc:instructions/fpc:instr-type" {
       case pmip-instr {
         uses fpc-pmip:pmip-commandset;
         description "PMIP Commandset";
       }
       description "CONF_BUNDLES Instructions";
     }
-    augment "/fpc:configure-bundles/fpc:input/fpc:bundles/fpc:op_body/fpc:create_or_update/fpc:contexts/fpc:instructions/fpc:instr-type" {
+    augment "/fpc:configure-bundles/fpc:input/fpc:bundles/fpc:"
+        + "op_body/fpc:create_or_update/fpc:contexts/fpc:"
+        + "instructions/fpc:instr-type" {
       case pmip-instr {
         uses fpc-pmip:pmip-commandset;
         description "PMIP Commandset";
       }
       description "CONF_BUNDLES Context Instructions";
     }
-    augment "/fpc:configure-bundles/fpc:output/fpc:bundles/fpc:result-type/fpc:create-or-update-success/fpc:contexts/fpc:instructions/fpc:instr-type" {
+    augment "/fpc:configure-bundles/fpc:output/fpc:"
+        + "bundles/fpc:result-type/fpc:create-or-update-success/fpc:"
+        + "contexts/fpc:instructions/fpc:instr-type" {
       case pmip-instr {
         uses fpc-pmip:pmip-commandset;
         description "PMIP Commandset";

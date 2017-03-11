@@ -229,7 +229,8 @@ module ietf-dmm-threegpp {
 
     typedef component-type-id {
         type uint8 {
-          range "16 | 17 | 32 | 33 | 35 | 48 | 64 | 65 | 80 | 81 | 96 | 112 | 128";
+          range "16 | 17 | 32 | 33 | 35 | 48 | 64 | 65 |"
+          + " 80 | 81 | 96 | 112 | 128";
         }
         description "Specifies the Component Type";
     }
@@ -364,7 +365,8 @@ module ietf-dmm-threegpp {
 
     typedef imsi-type {
         type uint64;
-        description "International Mobile Subscriber Identity (IMSI) Value Type";
+        description 
+            "International Mobile Subscriber Identity (IMSI) Value Type";
     }
 
     typedef threegpp-instr {
@@ -401,8 +403,10 @@ module ietf-dmm-threegpp {
       description "Instruction Set for 3GPP R11";
     }
 
-    // Descriptors update - goes to Entities, Configure and Configure Bundles
-    augment "/fpc:tenants/fpc:tenant/fpc:fpc-policy/fpc:descriptors/fpc:descriptor-value" {
+    // Descriptors update - goes to Entities, Configure
+    //              and Configure Bundles
+    augment "/fpc:tenants/fpc:tenant/fpc:fpc-policy/fpc:"
+       + "descriptors/fpc:descriptor-value" {
       case threegpp-tft {
           uses threegpp:tft;
           description "3GPP TFT";
@@ -428,31 +432,41 @@ module ietf-dmm-threegpp {
     }
 
     // Contexts Update - Contexts / UL / mob-profile
-    augment "/fpc:tenants/fpc:tenant/fpc:fpc-mobility/fpc:contexts/fpc:ul/fpc:mobility-tunnel-parameters/fpc:profile-parameters" {
+    augment "/fpc:tenants/fpc:tenant/fpc:fpc-mobility/fpc:"
+        + "contexts/fpc:ul/fpc:mobility-tunnel-parameters/fpc:"
+        + "profile-parameters" {
       case threegpp-tunnel {
           uses threegpp:threegpp-tunnel-info;
       }
       description "Context UL Tunnel";
     }
-    augment "/fpc:configure/fpc:input/fpc:op_body/fpc:create_or_update/fpc:contexts/fpc:ul/fpc:mobility-tunnel-parameters/fpc:profile-parameters" {
+    augment "/fpc:configure/fpc:input/fpc:op_body/fpc:"
+        + "create_or_update/fpc:contexts/fpc:ul/fpc:"
+        + "mobility-tunnel-parameters/fpc:profile-parameters" {
       case threegpp-tunnel {
           uses threegpp:threegpp-tunnel-info;
       }
       description "Create Context UL Tunnel";
     }
-    augment "/fpc:configure-bundles/fpc:input/fpc:bundles/fpc:op_body/fpc:create_or_update/fpc:contexts/fpc:ul/fpc:mobility-tunnel-parameters/fpc:profile-parameters" {
+    augment "/fpc:configure-bundles/fpc:input/fpc:bundles/fpc:"
+        + "op_body/fpc:create_or_update/fpc:contexts/fpc:"
+        + "ul/fpc:mobility-tunnel-parameters/fpc:profile-parameters" {
       case threegpp-tunnel {
           uses threegpp:threegpp-tunnel-info;
       }
       description "Bundles Create Context UL Tunnel";
     }
-    augment "/fpc:configure/fpc:output/fpc:result-type/fpc:create-or-update-success/fpc:contexts/fpc:ul/fpc:mobility-tunnel-parameters/fpc:profile-parameters" {
+    augment "/fpc:configure/fpc:output/fpc:result-type/fpc:"
+        + "create-or-update-success/fpc:contexts/fpc:"
+        + "ul/fpc:mobility-tunnel-parameters/fpc:profile-parameters" {
       case threegpp-tunnel {
           uses threegpp:threegpp-tunnel-info;
       }
       description "Create Context UL Tunnel Response";
     }
-    augment "/fpc:configure-bundles/fpc:output/fpc:bundles/fpc:result-type/fpc:create-or-update-success/fpc:contexts/fpc:ul/fpc:mobility-tunnel-parameters/fpc:profile-parameters" {
+    augment "/fpc:configure-bundles/fpc:output/fpc:bundles/fpc:"
+        + "result-type/fpc:create-or-update-success/fpc:contexts/fpc:"
+        + "ul/fpc:mobility-tunnel-parameters/fpc:profile-parameters" {
       case threegpp-tunnel {
           uses threegpp:threegpp-tunnel-info;
       }
@@ -460,31 +474,42 @@ module ietf-dmm-threegpp {
     }
 
     // Contexts Update - Contexts / DL / mob-profile
-    augment "/fpc:tenants/fpc:tenant/fpc:fpc-mobility/fpc:contexts/fpc:dl/fpc:mobility-tunnel-parameters/fpc:profile-parameters" {
+    augment "/fpc:tenants/fpc:tenant/fpc:fpc-mobility/fpc:"
+        + "contexts/fpc:dl/fpc:mobility-tunnel-parameters/fpc:"
+        + "profile-parameters" {
       case threegpp-tunnel {
           uses threegpp:threegpp-tunnel-info;
       }
       description "Context DL Tunnel";
     }
-    augment "/fpc:configure/fpc:input/fpc:op_body/fpc:create_or_update/fpc:contexts/fpc:dl/fpc:mobility-tunnel-parameters/fpc:profile-parameters" {
+    augment "/fpc:configure/fpc:input/fpc:op_body/fpc:"
+        + "create_or_update/fpc:contexts/fpc:dl/fpc:"
+        + "mobility-tunnel-parameters/fpc:profile-parameters" {
       case threegpp-tunnel {
           uses threegpp:threegpp-tunnel-info;
       }
       description "Bundles Create Context DL Tunnel";
     }
-    augment "/fpc:configure-bundles/fpc:input/fpc:bundles/fpc:op_body/fpc:create_or_update/fpc:contexts/fpc:dl/fpc:mobility-tunnel-parameters/fpc:profile-parameters" {
+    augment "/fpc:configure-bundles/fpc:input/fpc:bundles/fpc:"
+        + "op_body/fpc:create_or_update/fpc:contexts/fpc:dl/fpc:"
+        + "mobility-tunnel-parameters/fpc:profile-parameters" {
       case threegpp-tunnel {
           uses threegpp:threegpp-tunnel-info;
       }
       description "Bundles Create Context DL Tunnel";
     }
-    augment "/fpc:configure/fpc:output/fpc:result-type/fpc:create-or-update-success/fpc:contexts/fpc:dl/fpc:mobility-tunnel-parameters/fpc:profile-parameters" {
+    augment "/fpc:configure/fpc:output/fpc:result-type/fpc:"
+        + "create-or-update-success/fpc:contexts/fpc:dl/fpc:"
+        + "mobility-tunnel-parameters/fpc:profile-parameters" {
       case threegpp-tunnel {
           uses threegpp:threegpp-tunnel-info;
       }
       description "Create Context DL Tunnel Response";
     }
-    augment "/fpc:configure-bundles/fpc:output/fpc:bundles/fpc:result-type/fpc:create-or-update-success/fpc:contexts/fpc:dl/fpc:mobility-tunnel-parameters/fpc:profile-parameters" {
+    augment "/fpc:configure-bundles/fpc:output/fpc:bundles/fpc:"
+        + "result-type/fpc:create-or-update-success/fpc:"
+        + "contexts/fpc:dl/fpc:mobility-tunnel-parameters/fpc:"
+        + "profile-parameters" {
       case threegpp-tunnel {
           uses threegpp:threegpp-tunnel-info;
       }
@@ -493,31 +518,45 @@ module ietf-dmm-threegpp {
 
 
     // Contexts Update -  Contexts / dpns / mobility-tunnel-parameters
-    augment "/fpc:tenants/fpc:tenant/fpc:fpc-mobility/fpc:contexts/fpc:dpns/fpc:mobility-tunnel-parameters/fpc:profile-parameters" {
+    augment "/fpc:tenants/fpc:tenant/fpc:fpc-mobility/fpc:contexts/fpc:"
+        + "dpns/fpc:mobility-tunnel-parameters/fpc:"
+        + "profile-parameters" {
       case threegpp-tunnel {
           uses threegpp:threegpp-tunnel-info;
       }
       description "Context 3GPP TFT and Tunnel Information";
     }
-    augment "/fpc:configure/fpc:input/fpc:op_body/fpc:create_or_update/fpc:contexts/fpc:dpns/fpc:mobility-tunnel-parameters/fpc:profile-parameters" {
+    augment "/fpc:configure/fpc:input/fpc:op_body/fpc:"
+        + "create_or_update/fpc:contexts/fpc:dpns/fpc:"
+        + "mobility-tunnel-parameters/fpc:"
+        + "profile-parameters" {
       case threegpp-tunnel {
           uses threegpp:threegpp-tunnel-info;
       }
       description "Configure 3GPP TFT and Tunnel Information";
     }
-    augment "/fpc:configure-bundles/fpc:input/fpc:bundles/fpc:op_body/fpc:create_or_update/fpc:contexts/fpc:dpns/fpc:mobility-tunnel-parameters/fpc:profile-parameters" {
+    augment "/fpc:configure-bundles/fpc:input/fpc:bundles/fpc:"
+        + "op_body/fpc:create_or_update/fpc:contexts/fpc:"
+        + "dpns/fpc:mobility-tunnel-parameters/fpc:"
+        + "profile-parameters" {
       case threegpp-tunnel {
           uses threegpp:threegpp-tunnel-info;
       }
       description "Configure Bundles 3GPP TFT and Tunnel Information";
     }
-    augment "/fpc:configure/fpc:output/fpc:result-type/fpc:create-or-update-success/fpc:contexts/fpc:dpns/fpc:mobility-tunnel-parameters/fpc:profile-parameters" {
+    augment "/fpc:configure/fpc:output/fpc:result-type/fpc:"
+        + "create-or-update-success/fpc:contexts/fpc:"
+        + "dpns/fpc:mobility-tunnel-parameters/fpc:"
+        + "profile-parameters" {
       case threegpp-tunnel {
           uses threegpp:threegpp-tunnel-info;
       }
       description "Configure 3GPP TFT and Tunnel Information Response";
     }
-    augment "/fpc:configure-bundles/fpc:output/fpc:bundles/fpc:result-type/fpc:create-or-update-success/fpc:contexts/fpc:dpns/fpc:mobility-tunnel-parameters/fpc:profile-parameters" {
+    augment "/fpc:configure-bundles/fpc:output/fpc:bundles/fpc:"
+        + "result-type/fpc:create-or-update-success/fpc:"
+        + "contexts/fpc:dpns/fpc:mobility-tunnel-parameters/fpc:"
+        + "profile-parameters" {
       case threegpp-tunnel {
           uses threegpp:threegpp-tunnel-info;
       }
@@ -526,35 +565,44 @@ module ietf-dmm-threegpp {
 
 
     // QoS Updates - Context / UL / qosprofile
-    augment "/fpc:tenants/fpc:tenant/fpc:fpc-mobility/fpc:contexts/fpc:ul/fpc:qos-profile-parameters/fpc:value" {
+    augment "/fpc:tenants/fpc:tenant/fpc:fpc-mobility/fpc:"
+        + "contexts/fpc:ul/fpc:qos-profile-parameters/fpc:value" {
       case threegpp-qos {
           uses threegpp:threeGPP-QoS;
           description "3GPP QoS Values";
       }
       description "Context UL 3GPP QoS Values";
     }
-    augment "/fpc:configure/fpc:input/fpc:op_body/fpc:create_or_update/fpc:contexts/fpc:ul/fpc:qos-profile-parameters/fpc:value" {
+    augment "/fpc:configure/fpc:input/fpc:op_body/fpc:"
+        + "create_or_update/fpc:contexts/fpc:ul/fpc:"
+        + "qos-profile-parameters/fpc:value" {
       case threegpp-qos {
           uses threegpp:threeGPP-QoS;
           description "3GPP QoS Values";
       }
       description "Configure Context UL 3GPP QoS Values";
     }
-    augment "/fpc:configure-bundles/fpc:input/fpc:bundles/fpc:op_body/fpc:create_or_update/fpc:contexts/fpc:ul/fpc:qos-profile-parameters/fpc:value" {
+    augment "/fpc:configure-bundles/fpc:input/fpc:bundles/fpc:"
+        + "op_body/fpc:create_or_update/fpc:contexts/fpc:"
+        + "ul/fpc:qos-profile-parameters/fpc:value" {
       case threegpp-qos {
           uses threegpp:threeGPP-QoS;
           description "3GPP QoS Values";
       }
       description "Configure Bundles Context UL 3GPP QoS Values";
     }
-    augment "/fpc:configure/fpc:output/fpc:result-type/fpc:create-or-update-success/fpc:contexts/fpc:ul/fpc:qos-profile-parameters/fpc:value" {
+    augment "/fpc:configure/fpc:output/fpc:result-type/fpc:"
+        + "create-or-update-success/fpc:contexts/fpc:ul/fpc:"
+        + "qos-profile-parameters/fpc:value" {
       case threegpp-qos {
           uses threegpp:threeGPP-QoS;
           description "3GPP QoS Values";
       }
       description "Configure Context UL 3GPP QoS Values Response";
     }
-    augment "/fpc:configure-bundles/fpc:output/fpc:bundles/fpc:result-type/fpc:create-or-update-success/fpc:contexts/fpc:ul/fpc:qos-profile-parameters/fpc:value" {
+    augment "/fpc:configure-bundles/fpc:output/fpc:bundles/fpc:"
+        + "result-type/fpc:create-or-update-success/fpc:"
+        + "contexts/fpc:ul/fpc:qos-profile-parameters/fpc:value" {
       case threegpp-qos {
           uses threegpp:threeGPP-QoS;
           description "3GPP QoS Values";
@@ -563,35 +611,44 @@ module ietf-dmm-threegpp {
     }
 
     // QoS Updates -  Context / DL / QoS Profile
-    augment "/fpc:tenants/fpc:tenant/fpc:fpc-mobility/fpc:contexts/fpc:dl/fpc:qos-profile-parameters/fpc:value" {
+    augment "/fpc:tenants/fpc:tenant/fpc:fpc-mobility/fpc:"
+        + "contexts/fpc:dl/fpc:qos-profile-parameters/fpc:value" {
       case threegpp-qos {
           uses threegpp:threeGPP-QoS;
           description "3GPP QoS Values";
       }
       description "Context DL 3GPP QoS Values";
     }
-    augment "/fpc:configure/fpc:input/fpc:op_body/fpc:create_or_update/fpc:contexts/fpc:dl/fpc:qos-profile-parameters/fpc:value" {
+    augment "/fpc:configure/fpc:input/fpc:op_body/fpc:"
+        + "create_or_update/fpc:contexts/fpc:dl/fpc:"
+        + "qos-profile-parameters/fpc:value" {
       case threegpp-qos {
           uses threegpp:threeGPP-QoS;
           description "3GPP QoS Values";
       }
       description "Configure Context DL 3GPP QoS Values";
     }
-    augment "/fpc:configure-bundles/fpc:input/fpc:bundles/fpc:op_body/fpc:create_or_update/fpc:contexts/fpc:dl/fpc:qos-profile-parameters/fpc:value" {
+    augment "/fpc:configure-bundles/fpc:input/fpc:bundles/fpc:"
+        + "op_body/fpc:create_or_update/fpc:contexts/fpc:dl/fpc:"
+        + "qos-profile-parameters/fpc:value" {
       case threegpp-qos {
           uses threegpp:threeGPP-QoS;
           description "3GPP QoS Values";
       }
       description "Configure Bundles Context DL 3GPP QoS Values";
     }
-    augment "/fpc:configure/fpc:output/fpc:result-type/fpc:create-or-update-success/fpc:contexts/fpc:dl/fpc:qos-profile-parameters/fpc:value" {
+    augment "/fpc:configure/fpc:output/fpc:result-type/fpc:"
+        + "create-or-update-success/fpc:contexts/fpc:dl/fpc:"
+        + "qos-profile-parameters/fpc:value" {
       case threegpp-qos {
           uses threegpp:threeGPP-QoS;
           description "3GPP QoS Values";
       }
       description "Configure Context DL 3GPP QoS Values Response";
     }
-    augment "/fpc:configure-bundles/fpc:output/fpc:bundles/fpc:result-type/fpc:create-or-update-success/fpc:contexts/fpc:dl/fpc:qos-profile-parameters/fpc:value" {
+    augment "/fpc:configure-bundles/fpc:output/fpc:bundles/fpc:"
+        + "result-type/fpc:create-or-update-success/fpc:"
+        + "contexts/fpc:dl/fpc:qos-profile-parameters/fpc:value" {
       case threegpp-qos {
           uses threegpp:threeGPP-QoS;
           description "3GPP QoS Values";
@@ -619,19 +676,23 @@ module ietf-dmm-threegpp {
       uses threegpp:threegpp-properties;
       description "3GPP Mobility Session Properties";
     }
-    augment "/fpc:configure/fpc:input/fpc:op_body/fpc:create_or_update/fpc:contexts" {
+    augment "/fpc:configure/fpc:input/fpc:op_body/fpc:"
+        + "create_or_update/fpc:contexts" {
       uses threegpp:threegpp-properties;
       description "3GPP Mobility Session Properties";
     }
-    augment "/fpc:configure-bundles/fpc:input/fpc:bundles/fpc:op_body/fpc:create_or_update/fpc:contexts" {
+    augment "/fpc:configure-bundles/fpc:input/fpc:"
+        + "bundles/fpc:op_body/fpc:create_or_update/fpc:contexts" {
        uses threegpp:threegpp-properties;
        description "3GPP Mobility Session Properties";
     }
-    augment "/fpc:configure/fpc:output/fpc:result-type/fpc:create-or-update-success/fpc:contexts" {
+    augment "/fpc:configure/fpc:output/fpc:result-type/fpc:"
+        + "create-or-update-success/fpc:contexts" {
       uses threegpp:threegpp-properties;
       description "3GPP Mobility Session Properties";
     }
-    augment "/fpc:configure-bundles/fpc:output/fpc:bundles/fpc:result-type/fpc:create-or-update-success/fpc:contexts" {
+    augment "/fpc:configure-bundles/fpc:output/fpc:bundles/fpc:"
+        + "result-type/fpc:create-or-update-success/fpc:contexts" {
        uses threegpp:threegpp-properties;
        description "3GPP Mobility Session Properties";
     }
@@ -651,14 +712,17 @@ module ietf-dmm-threegpp {
       }
       description "Configure 3GPP Instructions";
     }
-    augment "/fpc:configure/fpc:input/fpc:op_body/fpc:create_or_update/fpc:contexts/fpc:instructions/fpc:instr-type" {
+    augment "/fpc:configure/fpc:input/fpc:op_body/fpc:"
+        + "create_or_update/fpc:contexts/fpc:instructions/fpc:instr-type" {
       case instr-3gpp-mob {
         uses threegpp:threegpp-commandset;
         description "3GPP Instructions";
       }
       description "Configure 3GPP Context Instructions";
     }
-    augment "/fpc:configure/fpc:output/fpc:result-type/fpc:create-or-update-success/fpc:contexts/fpc:instructions/fpc:instr-type" {
+    augment "/fpc:configure/fpc:output/fpc:result-type/fpc:"
+        + "create-or-update-success/fpc:contexts/fpc:"
+        + "instructions/fpc:instr-type" {
       case instr-3gpp-mob {
         uses threegpp:threegpp-commandset;
         description "3GPP Instructions";
@@ -667,21 +731,26 @@ module ietf-dmm-threegpp {
     }
 
 
-    augment "/fpc:configure-bundles/fpc:input/fpc:bundles/fpc:instructions/fpc:instr-type" {
+    augment "/fpc:configure-bundles/fpc:input/fpc:bundles/fpc:"
+        + "instructions/fpc:instr-type" {
       case instr-3gpp-mob {
         uses threegpp:threegpp-commandset;
         description "3GPP Instructions";
       }
       description "Configure Bundles 3GPP Instructions";
     }
-    augment "/fpc:configure-bundles/fpc:input/fpc:bundles/fpc:op_body/fpc:create_or_update/fpc:contexts/fpc:instructions/fpc:instr-type" {
+    augment "/fpc:configure-bundles/fpc:input/fpc:bundles/fpc:"
+        + "op_body/fpc:create_or_update/fpc:contexts/fpc:"
+        + "instructions/fpc:instr-type" {
       case instr-3gpp-mob {
         uses threegpp:threegpp-commandset;
         description "3GPP Instructions";
       }
       description "Configure Bundles 3GPP Context Instructions";
     }
-    augment "/fpc:configure-bundles/fpc:output/fpc:bundles/fpc:result-type/fpc:create-or-update-success/fpc:contexts/fpc:instructions/fpc:instr-type" {
+    augment "/fpc:configure-bundles/fpc:output/fpc:bundles/fpc:"
+        + "result-type/fpc:create-or-update-success/fpc:"
+        + "contexts/fpc:instructions/fpc:instr-type" {
       case instr-3gpp-mob {
         uses threegpp:threegpp-commandset;
         description "3GPP Instructions";

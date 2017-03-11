@@ -5690,7 +5690,8 @@ module ietf-pmip-qos {
                 description "Per-MN-Agg-Max-UL-Bit-Rate Case";
             }
             case per-session-agg-max-dl-case {
-                when "../attributetype = 'Per-Session-Agg-Max-DL-Bit-Rate-type'";
+                when "../attributetype = "
+                + "'Per-Session-Agg-Max-DL-Bit-Rate-type'";
                 container per-session-agg-max-dl {
                     uses qos-pmip:Per-Session-Agg-Max-Bit-Rate-Value;
                     description "Per-Session-Agg-Max-Bit-Rate Value";
@@ -5698,7 +5699,8 @@ module ietf-pmip-qos {
                 description "Per-Session-Agg-Max-Bit-Rate Case";
             }
             case per-session-agg-max-ul-case {
-                when "../attributetype = 'Per-Session-Agg-Max-UL-Bit-Rate-type'";
+                when "../attributetype = "
+                + "'Per-Session-Agg-Max-UL-Bit-Rate-type'";
                 container per-session-agg-max-ul {
                     uses qos-pmip:Per-Session-Agg-Max-Bit-Rate-Value;
                     description "Per-Session-Agg-Max-Bit-Rate Value";
@@ -5851,436 +5853,440 @@ module ietf-traffic-selector-types {
     }
 
     // Identities
-      identity traffic-selector-format {
-          description "The base type for Traffic-Selector Formats";
-      }
+    identity traffic-selector-format {
+        description "The base type for Traffic-Selector Formats";
+    }
 
-      identity ipv4-binary-selector-format {
-          base traffic-selector-format;
-          description
-              "IPv4 Binary Traffic Selector Format";
-      }
+    identity ipv4-binary-selector-format {
+        base traffic-selector-format;
+        description
+            "IPv4 Binary Traffic Selector Format";
+    }
 
-      identity ipv6-binary-selector-format {
-          base traffic-selector-format;
-          description
-              "IPv6 Binary Traffic Selector Format";
-      }
+    identity ipv6-binary-selector-format {
+        base traffic-selector-format;
+        description
+            "IPv6 Binary Traffic Selector Format";
+    }
 
-      // Type definitions and groupings
-      typedef ipsec-spi {
-          type uint32;
-          description "This type defines the first 32-bit IPsec Security Parameter
+    // Type definitions and groupings
+    typedef ipsec-spi {
+        type uint32;
+        description "This type defines the first 32-bit IPsec Security Parameter
                 Index (SPI) value on data packets sent from a corresponding
                 node to the mobile node as seen by the home agent. This field
                 is defined in [RFC4303].";
-              reference
-                  "RFC 4303: IP Encapsulating Security Payload (ESP)";
-      }
+            reference
+                "RFC 4303: IP Encapsulating Security Payload (ESP)";
+    }
 
-      grouping traffic-selector-base {
-          description "A grouping of the commen leaves between the v4 and v6 Traffic Selectors";
-          container ipsec-spi-range {
-            presence "Enables setting ipsec spi range";
-            description
-              "Inclusive range representing IPSec Security Parameter Indices to be used.
-              When only start-spi is present, it represents a single spi.";
-              leaf start-spi {
-                  type ipsec-spi;
-                  mandatory true;
-                  description
-                      "This field identifies the first 32-bit IPsec SPI value, from the
-                    range of SPI values to be matched, on data packets sent from a
-                    corresponding node to the mobile node as seen by the home agent.
-                    This field is defined in [RFC4303].";
-              }
-              leaf end-spi {
-                  type ipsec-spi;
-                  must ". >= ../start-spi" {
-                    error-message
-                      "The end-spi must be greater than or equal to start-spi";
-                  }
-                  description
-                      "If more than one contiguous SPI value needs to be matched, then
-                    this field can be used to indicate the end value of a range
-                    starting from the value of the Start SPI field.  This field
-                    MUST NOT be included unless the Start SPI field is included
-                    and has a value less than or equal to this field.
+    grouping traffic-selector-base {
+        description "A grouping of the commen leaves between the v4 and v6 Traffic Selectors";
+        container ipsec-spi-range {
+          presence "Enables setting ipsec spi range";
+          description
+            "Inclusive range representing IPSec Security Parameter Indices to be used.
+            When only start-spi is present, it represents a single spi.";
+            leaf start-spi {
+                type ipsec-spi;
+                mandatory true;
+                description
+                    "This field identifies the first 32-bit IPsec SPI value, from the
+                  range of SPI values to be matched, on data packets sent from a
+                  corresponding node to the mobile node as seen by the home agent.
+                  This field is defined in [RFC4303].";
+            }
+            leaf end-spi {
+                type ipsec-spi;
+                must ". >= ../start-spi" {
+                  error-message
+                    "The end-spi must be greater than or equal to start-spi";
+                }
+                description
+                    "If more than one contiguous SPI value needs to be matched, then
+                  this field can be used to indicate the end value of a range
+                  starting from the value of the Start SPI field.  This field
+                  MUST NOT be included unless the Start SPI field is included
+                  and has a value less than or equal to this field.
 
-                    When this field is included, the receiver will match all of the
-                    SPI values between fields start-spi and end-spi,
-                    inclusive of start-spi and end-spi.";
-              }
-          }
-          container source-port-range {
-            presence "Enables setting source port range";
-            description
-              "Inclusive range representing source ports to be used.
-              When only start-port is present, it represents a single port.";
-              leaf start-port {
-                  type inet:port-number;
-                  mandatory true;
-                  description
-                      "This field identifies the first 16-bit source port number, from
-                    the range of port numbers to be matched, on data packets sent from
-                    a corresponding node to the mobile node as seen by the home agent.
-                    This is from the range of port numbers defined by IANA
-                    (http://www.iana.org).";
-              }
-              leaf end-port {
-                  type inet:port-number;
-                  must ". >= ../start-port" {
-                    error-message
-                    "The end-port must be greater than or equal to start-port";
-                  }
-                  description
-                      "If more than one contiguous source port number needs to be
-                    matched, then this field can be used to indicate the end value of
-                    a range starting from the value of the Start Port field.
-                    This field MUST NOT be included unless the Start Port field
-                    is included and has a value less than or equal to this field.
-
-                    When this field is included, the receiver will match
-                    all of the port numbers between fields start-port and
-                    end-port, inclusive of start-port and end-port.";
-              }
-         }
-        container destination-port-range {
-            presence "Enables setting destination port range";
-            description
-              "Inclusive range representing destination ports to be used. When
-                 only start-port is present, it represents a single port.";
-              leaf start-port {
-                  type inet:port-number;
-                  mandatory true;
-                  description
-                      "This field identifies the first 16-bit destination port number,
-                    from the range of port numbers to be matched, on data packets sent
-                    from a corresponding node to the mobile node as seen by the home
-                    agent.";
-              }
-              leaf end-port {
-                  type inet:port-number;
-                  must ". >= ../start-port" {
-                    error-message
-                      "The end-port must be greater than or equal to start-port";
-                  }
-                  description
-                      "If more than one contiguous destination port number needs to be
-                    matched, then this field can be used to indicate the end value of
-                    a range starting from the value of the Start Destination Port
-                    field.  This field MUST NOT be included unless the Start
-                    Port field is included and has a value less than or equal to this
-                    field.
-
-                    When this field is included, the receiver will match all of the
-                    port numbers between fields start-port and end-port, inclusive of
-                    start-port and end-port.";
-              }
+                  When this field is included, the receiver will match all of the
+                  SPI values between fields start-spi and end-spi,
+                  inclusive of start-spi and end-spi.";
+            }
         }
+        container source-port-range {
+          presence "Enables setting source port range";
+          description
+            "Inclusive range representing source ports to be used.
+            When only start-port is present, it represents a single port.";
+            leaf start-port {
+                type inet:port-number;
+                mandatory true;
+                description
+                    "This field identifies the first 16-bit source port number, from
+                  the range of port numbers to be matched, on data packets sent from
+                  a corresponding node to the mobile node as seen by the home agent.
+                  This is from the range of port numbers defined by IANA
+                  (http://www.iana.org).";
+            }
+            leaf end-port {
+                type inet:port-number;
+                must ". >= ../start-port" {
+                  error-message
+                  "The end-port must be greater than or equal to start-port";
+                }
+                description
+                    "If more than one contiguous source port number needs to be
+                  matched, then this field can be used to indicate the end value of
+                  a range starting from the value of the Start Port field.
+                  This field MUST NOT be included unless the Start Port field
+                  is included and has a value less than or equal to this field.
+
+                  When this field is included, the receiver will match
+                  all of the port numbers between fields start-port and
+                  end-port, inclusive of start-port and end-port.";
+            }
+       }
+      container destination-port-range {
+          presence "Enables setting destination port range";
+          description
+            "Inclusive range representing destination ports to be used. When
+             only start-port is present, it represents a single port.";
+            leaf start-port {
+                type inet:port-number;
+                mandatory true;
+                description
+                    "This field identifies the first 16-bit destination port number,
+                  from the range of port numbers to be matched, on data packets sent
+                  from a corresponding node to the mobile node as seen by the home
+                  agent.";
+            }
+            leaf end-port {
+                type inet:port-number;
+                must ". >= ../start-port" {
+                  error-message
+                    "The end-port must be greater than or equal to start-port";
+                }
+                description
+                    "If more than one contiguous destination port number needs to be
+                  matched, then this field can be used to indicate the end value of
+                  a range starting from the value of the Start Destination Port
+                  field.  This field MUST NOT be included unless the Start
+                  Port field is included and has a value less than or equal to this
+                  field.
+
+                  When this field is included, the receiver will match all of the
+                  port numbers between fields start-port and end-port, inclusive of
+                  start-port and end-port.";
+            }
       }
+    }
 
   grouping ipv4-binary-traffic-selector {
       container source-address-range-v4 {
-            presence "Enables setting source IPv4 address range";
-            description
-              "Inclusive range representing IPv4 addresses to be used. When
-                 only start-address is present, it represents a single address.";
-              leaf start-address {
-                  type inet:ipv4-address;
-                  mandatory true;
-                  description
-                      "This field identifies the first source address, from the range of
-                    32-bit IPv4 addresses to be matched, on data packets sent from a
-                    corresponding node to the mobile node as seen by the home agent.
-                    In other words, this is one of the addresses of the correspondent
-                    node.";
-              }
-              leaf end-address {
-                  type inet:ipv4-address;
-                  description
-                      "If more than one contiguous source address needs to be matched,
-                    then this field can be used to indicate the end value of a range
-                    starting from the value of the Start Address field.  This
-                    field MUST NOT be included unless the Start Address field
-                    is included.  When this field is included, the receiver will match
-                    all of the addresses between fields start-address and
-                    end-address, inclusive of start-address and end-address.";
-              }
+          presence "Enables setting source IPv4 address range";
+          description
+            "Inclusive range representing IPv4 addresses to be used. When
+             only start-address is present, it represents a single address.";
+            leaf start-address {
+                type inet:ipv4-address;
+                mandatory true;
+                description
+                    "This field identifies the first source address, from the range of
+                  32-bit IPv4 addresses to be matched, on data packets sent from a
+                  corresponding node to the mobile node as seen by the home agent.
+                  In other words, this is one of the addresses of the correspondent
+                  node.";
+            }
+            leaf end-address {
+                type inet:ipv4-address;
+                description
+                    "If more than one contiguous source address needs to be matched,
+                  then this field can be used to indicate the end value of a range
+                  starting from the value of the Start Address field.  This
+                  field MUST NOT be included unless the Start Address field
+                  is included.  When this field is included, the receiver will match
+                  all of the addresses between fields start-address and
+                  end-address, inclusive of start-address and end-address.";
+            }
       }
       container destination-address-range-v4 {
-            presence "Enables setting destination IPv4 address range";
-            description
-              "Inclusive range representing IPv4 addresses to be used. When
-                 only start-address is present, it represents a single address.";
-              leaf start-address {
-                  type inet:ipv4-address;
-                  mandatory true;
-                  description
-                      "This field identifies the first destination address, from the
-                    range of 32-bit IPv4 addresses to be matched, on data packets sent
-                    from a corresponding node to the mobile node as seen by the home
-                    agent.  In other words, this is one of the registered home
-                    addresses of the mobile node.";
-              }
-              leaf end-address {
-                  type inet:ipv4-address;
-                  description
-                      "If more than one contiguous destination address needs to be
-                    matched, then this field can be used to indicate the end value of
-                    a range starting from the value of the Start Destination Address
-                    field.  This field MUST NOT be included unless the Start
-                    Address field is included.  When this field is included, the receiver
-                    will match all of the addresses between fields start-address and
-                    end-address, inclusive of start-address and end-address.";
-              }
+          presence "Enables setting destination IPv4 address range";
+          description
+            "Inclusive range representing IPv4 addresses to be used. When
+             only start-address is present, it represents a single address.";
+            leaf start-address {
+                type inet:ipv4-address;
+                mandatory true;
+                description
+                    "This field identifies the first destination address, from the
+                  range of 32-bit IPv4 addresses to be matched, on data packets sent
+                  from a corresponding node to the mobile node as seen by the home
+                  agent.  In other words, this is one of the registered home
+                  addresses of the mobile node.";
+            }
+            leaf end-address {
+                type inet:ipv4-address;
+                description
+                    "If more than one contiguous destination address needs to be
+                  matched, then this field can be used to indicate the end value of
+                  a range starting from the value of the Start Destination Address
+                  field.  This field MUST NOT be included unless the Start
+                  Address field is included.  When this field is included, the receiver
+                  will match all of the addresses between fields start-address and
+                  end-address, inclusive of start-address and end-address.";
+            }
       }
       container ds-range {
-            presence "Enables setting dscp range";
+          presence "Enables setting dscp range";
+          description
+            "Inclusive range representing DiffServ Codepoints to be used. When
+             only start-ds is present, it represents a single Codepoint.";
+          leaf start-ds {
+            type inet:dscp;
+            mandatory true;
             description
-              "Inclusive range representing DiffServ Codepoints to be used. When
-                 only start-ds is present, it represents a single Codepoint.";
-            leaf start-ds {
-              type inet:dscp;
-              mandatory true;
-              description
-                  "This field identifies the first differential services value, from
-                the range of differential services values to be matched, on data
-                packets sent from a corresponding node to the mobile node as seen
-                by the home agent.  Note that this field is called a 'Type of
-                Service field' in [RFC0791].  [RFC3260] then clarified that the
-                field has been redefined as a 6-bit DS field with 2 bits reserved,
-                later claimed by Explicit Congestion Notification (ECN) [RFC3168].
-                For the purpose of this specification, the Start DS field is 8
-                bits long, where the 6 most significant bits indicate the DS field
-                to be matched and the 2 least significant bits' values MUST be
-                ignored in any comparison.";
-              }
-              leaf end-ds {
-                  type inet:dscp;
-                  must ". >= ../start-ds" {
-                    error-message
-                      "The end-ds must be greater than or equal to start-ds";
-                  }
-                  description
-                      "If more than one contiguous DS value needs to be matched, then
-                    this field can be used to indicate the end value of a range
-                    starting from the value of the Start DS field.  This field MUST
-                    NOT be included unless the Start DS field is included.  When this
-                    field is included, it MUST be coded the same way as defined for
-                    start-ds.  When this field is included, the receiver will match all of
-                    the values between fields start-ds and end-ds, inclusive of start-ds
-                    and end-ds.";
-              }
+                "This field identifies the first differential services value, from
+              the range of differential services values to be matched, on data
+              packets sent from a corresponding node to the mobile node as seen
+              by the home agent.  Note that this field is called a 'Type of
+              Service field' in [RFC0791].  [RFC3260] then clarified that the
+              field has been redefined as a 6-bit DS field with 2 bits reserved,
+              later claimed by Explicit Congestion Notification (ECN) [RFC3168].
+              For the purpose of this specification, the Start DS field is 8
+              bits long, where the 6 most significant bits indicate the DS field
+              to be matched and the 2 least significant bits' values MUST be
+              ignored in any comparison.";
+            }
+            leaf end-ds {
+                type inet:dscp;
+                must ". >= ../start-ds" {
+                  error-message
+                    "The end-ds must be greater than or equal to start-ds";
+                }
+                description
+                    "If more than one contiguous DS value needs to be matched, then
+                  this field can be used to indicate the end value of a range
+                  starting from the value of the Start DS field.  This field MUST
+                  NOT be included unless the Start DS field is included.  When this
+                  field is included, it MUST be coded the same way as defined for
+                  start-ds.  When this field is included, the receiver will match all of
+                  the values between fields start-ds and end-ds, inclusive of start-ds
+                  and end-ds.";
+            }
       }
       container protocol-range {
         presence "Enables setting protocol range";
         description
             "Inclusive range representing IP protocol(s) to be used. When
-                only start-protocol is present, it represents a single protocol.";
-          leaf start-protocol {
-              type uint8;
-              mandatory true;
-              description
-                  "This field identifies the first 8-bit protocol value, from the
-                range of protocol values to be matched, on data packets sent from
-                a corresponding node to the mobile node as seen by the home agent.";
-          }
-          leaf end-protocol {
-              type uint8;
-              must ". >= ../start-protocol" {
-                error-message
-                  "The end-protocol must be greater than or equal to start-protocol";
-              }
-              description
-                  "If more than one contiguous protocol value needs to be matched,
-                then this field can be used to indicate the end value of a range
-                starting from the value of the Start Protocol field.  This field
-                MUST NOT be included unless the Start Protocol field is included.
-                When this field is included, the receiver will match all of the
-                values between fields start-protocol and end-protocol, inclusive
-                of start-protocol and end-protocol.";
-          }
+             only start-protocol is present, it represents a single protocol.";
+        leaf start-protocol {
+            type uint8;
+            mandatory true;
+            description
+                "This field identifies the first 8-bit protocol value, from the
+              range of protocol values to be matched, on data packets sent from
+              a corresponding node to the mobile node as seen by the home agent.";
+        }
+        leaf end-protocol {
+            type uint8;
+            must ". >= ../start-protocol" {
+              error-message
+                "The end-protocol must be greater than or equal to start-protocol";
+            }
+            description
+                "If more than one contiguous protocol value needs to be matched,
+              then this field can be used to indicate the end value of a range
+              starting from the value of the Start Protocol field.  This field
+              MUST NOT be included unless the Start Protocol field is included.
+              When this field is included, the receiver will match all of the
+              values between fields start-protocol and end-protocol, inclusive
+              of start-protocol and end-protocol.";
+        }
       }
     description "ipv4 binary traffic selector";
   }
 
     grouping ipv6-binary-traffic-selector {
      container source-address-range-v6 {
-            presence "Enables setting source IPv6 address range";
-            description
-              "Inclusive range representing IPv6 addresses to be used. When
-                 only start-address is present, it represents a single address.";
-              leaf start-address {
-                  type inet:ipv6-address;
-                  mandatory true;
-                  description
-                      "This field identifies the first source address, from the range of
-                    128-bit IPv6 addresses to be matched, on data packets sent from a
-                    corresponding node to the mobile node as seen by the home agent.
-                    In other words, this is one of the addresses of the correspondent
-                    node.";
-              }
-              leaf end-address {
-                  type inet:ipv6-address;
-                  description
-                      "If more than one contiguous source address needs to be matched,
-                    then this field can be used to indicate the end value of a range
-                    starting from the value of the Start Address field.  This
-                    field MUST NOT be included unless the Start Address field is included.
-                    When this field is included, the receiver will match all of the addresses
-                    between fields start-address and end-address, inclusive of start-address
-                    and end-address .";
-              }
+          presence "Enables setting source IPv6 address range";
+          description
+            "Inclusive range representing IPv6 addresses to be used. When
+             only start-address is present, it represents a single address.";
+            leaf start-address {
+                type inet:ipv6-address;
+                mandatory true;
+                description
+                    "This field identifies the first source address, from the range of
+                  128-bit IPv6 addresses to be matched, on data packets sent from a
+                  corresponding node to the mobile node as seen by the home agent.
+                  In other words, this is one of the addresses of the correspondent
+                  node.";
+            }
+            leaf end-address {
+                type inet:ipv6-address;
+                description
+                    "If more than one contiguous source address needs to be matched,
+                  then this field can be used to indicate the end value of a range
+                  starting from the value of the Start Address field.  This
+                  field MUST NOT be included unless the Start Address field is included.
+                  When this field is included, the receiver will match all of the addresses
+                  between fields start-address and end-address, inclusive of start-address
+                  and end-address .";
+            }
       }
-        container destination-address-range-v6 {
-            presence "Enables setting destination IPv6 address range";
-            description
-              "Inclusive range representing IPv6 addresses to be used. When
-                 only start-address is present, it represents a single address.";
-              leaf start-address {
-                  type inet:ipv6-address;
-                  mandatory true;
-                  description
-                      "This field identifies the first destination address, from the
-                    range of 128-bit IPv6 addresses to be matched, on data packets
-                    sent from a corresponding node to the mobile node as seen by the
-                    home agent.  In other words, this is one of the registered home
-                    addresses of the mobile node.";
-              }
-              leaf end-address {
-                  type inet:ipv6-address;
-                  description
-                      "If more than one contiguous destination address needs to be
-                    matched, then this field can be used to indicate the end value of
-                    a range starting from the value of the Start Address field. This
-                    field MUST NOT be included unless the Start Address field is included.
-                    When this field is included, the receiver will match all of the
-                    addresses between fields start-address and end-address, inclusive of
-                    start-address and end-address.";
-              }
-        }
-       container flow-label-range {
+      container destination-address-range-v6 {
+          presence "Enables setting destination IPv6 address range";
+          description
+            "Inclusive range representing IPv6 addresses to be used. When
+             only start-address is present, it represents a single address.";
+            leaf start-address {
+                type inet:ipv6-address;
+                mandatory true;
+                description
+                    "This field identifies the first destination address, from the
+                  range of 128-bit IPv6 addresses to be matched, on data packets
+                  sent from a corresponding node to the mobile node as seen by the
+                  home agent.  In other words, this is one of the registered home
+                  addresses of the mobile node.";
+            }
+            leaf end-address {
+                type inet:ipv6-address;
+                description
+                    "If more than one contiguous destination address needs to be
+                  matched, then this field can be used to indicate the end value of
+                  a range starting from the value of the Start Address field. This
+                  field MUST NOT be included unless the Start Address field is included.
+                  When this field is included, the receiver will match all of the
+                  addresses between fields start-address and end-address, inclusive of
+                  start-address and end-address.";
+            }
+      }
+     container flow-label-range {
       presence "Enables setting Flow Label range";
       description
         "Inclusive range representing IPv4 addresses to be used. When
-           only start-flow-label is present, it represents a single flow label.";
-          leaf start-flow-label {
-              type inet:ipv6-flow-label;
-              description
-                  "This field identifies the first flow label value, from the range
-                of flow label values to be matched, on data packets sent from a
-                corresponding node to the mobile node as seen by the home agent.
-                According to [RFC2460], the flow label is 24 bits long.  For the
-                purpose of this specification, the sender of this option MUST
-                prefix the flow label value with 8 bits of '0' before inserting it
-                in the start-flow-label field.  The receiver SHOULD ignore the
-                first 8 bits of this field before using it in comparisons with
-                flow labels in packets.";
-          }
-          leaf end-flow-label {
-              type inet:ipv6-flow-label;
-              must ". >= ../start-flow-label" {
-                error-message
-                  "The end-flow-lable must be greater than or equal to start-flow-label";
-              }
-              description
-                  "If more than one contiguous flow label value needs to be matched,
-                then this field can be used to indicate the end value of a range
-                starting from the value of the Start Flow Label field.  This field
-                MUST NOT be included unless the Start Flow Label field is
-                included.  When this field is included, the receiver will match
-                all of the flow label values between fields start-flow-label
-                and end-flow-label, inclusive of start-flow-label and end-flow-label.
-                When this field is included, it MUST be coded the same way as defined
-                for end-flow-label.";
-          }
-       }
-       container traffic-class-range {
+         only start-flow-label is present, it represents a single flow label.";
+        leaf start-flow-label {
+            type inet:ipv6-flow-label;
+            description
+                "This field identifies the first flow label value, from the range
+              of flow label values to be matched, on data packets sent from a
+              corresponding node to the mobile node as seen by the home agent.
+              According to [RFC2460], the flow label is 24 bits long.  For the
+              purpose of this specification, the sender of this option MUST
+              prefix the flow label value with 8 bits of '0' before inserting it
+              in the start-flow-label field.  The receiver SHOULD ignore the
+              first 8 bits of this field before using it in comparisons with
+              flow labels in packets.";
+        }
+        leaf end-flow-label {
+            type inet:ipv6-flow-label;
+            must ". >= ../start-flow-label" {
+              error-message
+                "The end-flow-lable must be greater than or equal to start-flow-label";
+            }
+            description
+                "If more than one contiguous flow label value needs to be matched,
+              then this field can be used to indicate the end value of a range
+              starting from the value of the Start Flow Label field.  This field
+              MUST NOT be included unless the Start Flow Label field is
+              included.  When this field is included, the receiver will match
+              all of the flow label values between fields start-flow-label
+              and end-flow-label, inclusive of start-flow-label and end-flow-label.
+              When this field is included, it MUST be coded the same way as defined
+              for end-flow-label.";
+        }
+     }
+     container traffic-class-range {
       presence "Enables setting the traffic class range";
       description
         "Inclusive range representing IPv4 addresses to be used. When
-           only start-traffic-class is present, it represents a single traffic class.";
-          leaf start-traffic-class {
-              type inet:dscp;
-              description
-                  "This field identifies the first traffic class value, from the
-                range of traffic class values to be matched, on data packets sent
-                from a corresponding node to the mobile node as seen by the home
-                agent.  This field is equivalent to the Start DS field in the IPv4
-                traffic selector in Figure 1.  As per RFC 3260, the field is
-                defined as a 6-bit DS field with 2 bits reserved, later claimed by
-                Explicit Congestion Notification (ECN) RFC 3168.  For the purpose
-                of this specification, the start-traffic-class field is 8 bits long, where
-                the 6 most significant bits indicate the DS field to be matched
-                and the 2 least significant bits' values MUST be ignored in any
-                comparison.";
-              reference
-                  "RFC 3260: New Terminology and Clarifications for Diffserv
-                   RFC 3168: The Addition of Explicit Congestion Notification (ECN) to IP";
-          }
-          leaf end-traffic-class {
-              type inet:dscp;
-              must ". >= ../start-traffic-class" {
-                error-message
-                  "The end-traffic-class must be greater than or equal to start-traffic-class";
-              }
-              description
-                  "If more than one contiguous TC value needs to be matched, then
-                this field can be used to indicate the end value of a range
-                starting from the value of the Start TC field.  This field MUST
-                NOT be included unless the Start TC field is included.  When this
-                field is included, it MUST be coded the same way as defined for
-                start-traffic-class.  When this field is included, the receiver
-                will match all of the values between fields start-traffic-class
-                and end-traffic-class, inclusive of start-traffic-class and
-                end-traffic-class.";
-          }
-       }
-       container next-header-range {
+         only start-traffic-class is present, it represents a single traffic class.";
+        leaf start-traffic-class {
+            type inet:dscp;
+            description
+                "This field identifies the first traffic class value, from the
+              range of traffic class values to be matched, on data packets sent
+              from a corresponding node to the mobile node as seen by the home
+              agent.  This field is equivalent to the Start DS field in the IPv4
+              traffic selector in Figure 1.  As per RFC 3260, the field is
+              defined as a 6-bit DS field with 2 bits reserved, later claimed by
+              Explicit Congestion Notification (ECN) RFC 3168.  For the purpose
+              of this specification, the start-traffic-class field is 8 bits long, where
+              the 6 most significant bits indicate the DS field to be matched
+              and the 2 least significant bits' values MUST be ignored in any
+              comparison.";
+            reference
+                "RFC 3260: New Terminology and Clarifications for Diffserv
+                 RFC 3168: The Addition of Explicit Congestion Notification (ECN) to IP";
+        }
+        leaf end-traffic-class {
+            type inet:dscp;
+            must ". >= ../start-traffic-class" {
+              error-message
+                "The end-traffic-class must be greater than or equal to start-traffic-class";
+            }
+            description
+                "If more than one contiguous TC value needs to be matched, then
+              this field can be used to indicate the end value of a range
+              starting from the value of the Start TC field.  This field MUST
+              NOT be included unless the Start TC field is included.  When this
+              field is included, it MUST be coded the same way as defined for
+              start-traffic-class.  When this field is included, the receiver
+              will match all of the values between fields start-traffic-class
+              and end-traffic-class, inclusive of start-traffic-class and
+              end-traffic-class.";
+        }
+     }
+     container next-header-range {
       presence "Enables setting Next Header range";
       description
         "Inclusive range representing Next Headers to be used. When
-           only start-next-header is present, it represents a single Next Header.";
-          leaf start-next-header {
-              type uint8;
-              description
-                  "This field identifies the first 8-bit next header value, from the
-                range of next header values to be matched, on data packets sent
-                from a corresponding node to the mobile node as seen by the home
-                agent.";
-          }
-          leaf end-next-header {
-              type uint8;
-              must ". >= ../start-next-header" {
-                error-message
-                  "The end-next-header must be greater than or equal to start-next-header";
-              }
-              description
-                  "If more than one contiguous next header value needs to be matched,
-                then this field can be used to indicate the end value of a range
-                starting from the value of the Start NH field.  This field MUST
-                NOT be included unless the Start next header field is included.
-                When this field is included, the receiver will match all of the
-                values between fields start-next-header and end-next-header,
-                inclusive of start-next-header and end-next-header.";
-          }
-       }
+         only start-next-header is present, it represents a single Next Header.";
+        leaf start-next-header {
+            type uint8;
+            description
+                "This field identifies the first 8-bit next header value, from the
+              range of next header values to be matched, on data packets sent
+              from a corresponding node to the mobile node as seen by the home
+              agent.";
+        }
+        leaf end-next-header {
+            type uint8;
+            must ". >= ../start-next-header" {
+              error-message
+                "The end-next-header must be greater than or equal to start-next-header";
+            }
+            description
+                "If more than one contiguous next header value needs to be matched,
+              then this field can be used to indicate the end value of a range
+              starting from the value of the Start NH field.  This field MUST
+              NOT be included unless the Start next header field is included.
+              When this field is included, the receiver will match all of the
+              values between fields start-next-header and end-next-header,
+              inclusive of start-next-header and end-next-header.";
+        }
+     }
      description "ipv6 binary traffic selector";
     }
 
     grouping traffic-selector {
         leaf ts-format {
-             type identityref {
-                  base traffic-selector-format;
-              }
-              description "Traffic Selector Format";
-          }
+            type identityref {
+                base traffic-selector-format;
+            }
+            description "Traffic Selector Format";
+        }
         uses traffic-selector-base {
-            when "boolean(../ts-format/text() = 'ipv6-binary-selector-format') | boolean(../ts-format/text() = 'ipv4-binary-selector-format')";
+            when "boolean(../ts-format/text() ="
+            + "'ipv6-binary-selector-format') |"
+            + " boolean(../ts-format/text() ="
+            + " 'ipv4-binary-selector-format')";
         }
         uses ipv4-binary-traffic-selector {
-            when "boolean(../ts-format/text() = 'ipv4-binary-selector-format')";
+            when "boolean(../ts-format/text() ="
+            + " 'ipv4-binary-selector-format')";
         }
         uses ipv6-binary-traffic-selector {
             when "boolean(../ts-format/text() = 'ipv6-binary-selector-format')";
@@ -6546,7 +6552,8 @@ module ietf-dmm-threegpp {
 
     typedef component-type-id {
         type uint8 {
-          range "16 | 17 | 32 | 33 | 35 | 48 | 64 | 65 | 80 | 81 | 96 | 112 | 128";
+          range "16 | 17 | 32 | 33 | 35 | 48 | 64 | 65 |"
+          + " 80 | 81 | 96 | 112 | 128";
         }
         description "Specifies the Component Type";
     }
@@ -6681,7 +6688,8 @@ module ietf-dmm-threegpp {
 
     typedef imsi-type {
         type uint64;
-        description "International Mobile Subscriber Identity (IMSI) Value Type";
+        description 
+            "International Mobile Subscriber Identity (IMSI) Value Type";
     }
 
     typedef threegpp-instr {
@@ -6718,8 +6726,10 @@ module ietf-dmm-threegpp {
       description "Instruction Set for 3GPP R11";
     }
 
-    // Descriptors update - goes to Entities, Configure and Configure Bundles
-    augment "/fpc:tenants/fpc:tenant/fpc:fpc-policy/fpc:descriptors/fpc:descriptor-value" {
+    // Descriptors update - goes to Entities, Configure
+    //              and Configure Bundles
+    augment "/fpc:tenants/fpc:tenant/fpc:fpc-policy/fpc:"
+       + "descriptors/fpc:descriptor-value" {
       case threegpp-tft {
           uses threegpp:tft;
           description "3GPP TFT";
@@ -6745,31 +6755,41 @@ module ietf-dmm-threegpp {
     }
 
     // Contexts Update - Contexts / UL / mob-profile
-    augment "/fpc:tenants/fpc:tenant/fpc:fpc-mobility/fpc:contexts/fpc:ul/fpc:mobility-tunnel-parameters/fpc:profile-parameters" {
+    augment "/fpc:tenants/fpc:tenant/fpc:fpc-mobility/fpc:"
+        + "contexts/fpc:ul/fpc:mobility-tunnel-parameters/fpc:"
+        + "profile-parameters" {
       case threegpp-tunnel {
           uses threegpp:threegpp-tunnel-info;
       }
       description "Context UL Tunnel";
     }
-    augment "/fpc:configure/fpc:input/fpc:op_body/fpc:create_or_update/fpc:contexts/fpc:ul/fpc:mobility-tunnel-parameters/fpc:profile-parameters" {
+    augment "/fpc:configure/fpc:input/fpc:op_body/fpc:"
+        + "create_or_update/fpc:contexts/fpc:ul/fpc:"
+        + "mobility-tunnel-parameters/fpc:profile-parameters" {
       case threegpp-tunnel {
           uses threegpp:threegpp-tunnel-info;
       }
       description "Create Context UL Tunnel";
     }
-    augment "/fpc:configure-bundles/fpc:input/fpc:bundles/fpc:op_body/fpc:create_or_update/fpc:contexts/fpc:ul/fpc:mobility-tunnel-parameters/fpc:profile-parameters" {
+    augment "/fpc:configure-bundles/fpc:input/fpc:bundles/fpc:"
+        + "op_body/fpc:create_or_update/fpc:contexts/fpc:"
+        + "ul/fpc:mobility-tunnel-parameters/fpc:profile-parameters" {
       case threegpp-tunnel {
           uses threegpp:threegpp-tunnel-info;
       }
       description "Bundles Create Context UL Tunnel";
     }
-    augment "/fpc:configure/fpc:output/fpc:result-type/fpc:create-or-update-success/fpc:contexts/fpc:ul/fpc:mobility-tunnel-parameters/fpc:profile-parameters" {
+    augment "/fpc:configure/fpc:output/fpc:result-type/fpc:"
+        + "create-or-update-success/fpc:contexts/fpc:"
+        + "ul/fpc:mobility-tunnel-parameters/fpc:profile-parameters" {
       case threegpp-tunnel {
           uses threegpp:threegpp-tunnel-info;
       }
       description "Create Context UL Tunnel Response";
     }
-    augment "/fpc:configure-bundles/fpc:output/fpc:bundles/fpc:result-type/fpc:create-or-update-success/fpc:contexts/fpc:ul/fpc:mobility-tunnel-parameters/fpc:profile-parameters" {
+    augment "/fpc:configure-bundles/fpc:output/fpc:bundles/fpc:"
+        + "result-type/fpc:create-or-update-success/fpc:contexts/fpc:"
+        + "ul/fpc:mobility-tunnel-parameters/fpc:profile-parameters" {
       case threegpp-tunnel {
           uses threegpp:threegpp-tunnel-info;
       }
@@ -6777,31 +6797,42 @@ module ietf-dmm-threegpp {
     }
 
     // Contexts Update - Contexts / DL / mob-profile
-    augment "/fpc:tenants/fpc:tenant/fpc:fpc-mobility/fpc:contexts/fpc:dl/fpc:mobility-tunnel-parameters/fpc:profile-parameters" {
+    augment "/fpc:tenants/fpc:tenant/fpc:fpc-mobility/fpc:"
+        + "contexts/fpc:dl/fpc:mobility-tunnel-parameters/fpc:"
+        + "profile-parameters" {
       case threegpp-tunnel {
           uses threegpp:threegpp-tunnel-info;
       }
       description "Context DL Tunnel";
     }
-    augment "/fpc:configure/fpc:input/fpc:op_body/fpc:create_or_update/fpc:contexts/fpc:dl/fpc:mobility-tunnel-parameters/fpc:profile-parameters" {
+    augment "/fpc:configure/fpc:input/fpc:op_body/fpc:"
+        + "create_or_update/fpc:contexts/fpc:dl/fpc:"
+        + "mobility-tunnel-parameters/fpc:profile-parameters" {
       case threegpp-tunnel {
           uses threegpp:threegpp-tunnel-info;
       }
       description "Bundles Create Context DL Tunnel";
     }
-    augment "/fpc:configure-bundles/fpc:input/fpc:bundles/fpc:op_body/fpc:create_or_update/fpc:contexts/fpc:dl/fpc:mobility-tunnel-parameters/fpc:profile-parameters" {
+    augment "/fpc:configure-bundles/fpc:input/fpc:bundles/fpc:"
+        + "op_body/fpc:create_or_update/fpc:contexts/fpc:dl/fpc:"
+        + "mobility-tunnel-parameters/fpc:profile-parameters" {
       case threegpp-tunnel {
           uses threegpp:threegpp-tunnel-info;
       }
       description "Bundles Create Context DL Tunnel";
     }
-    augment "/fpc:configure/fpc:output/fpc:result-type/fpc:create-or-update-success/fpc:contexts/fpc:dl/fpc:mobility-tunnel-parameters/fpc:profile-parameters" {
+    augment "/fpc:configure/fpc:output/fpc:result-type/fpc:"
+        + "create-or-update-success/fpc:contexts/fpc:dl/fpc:"
+        + "mobility-tunnel-parameters/fpc:profile-parameters" {
       case threegpp-tunnel {
           uses threegpp:threegpp-tunnel-info;
       }
       description "Create Context DL Tunnel Response";
     }
-    augment "/fpc:configure-bundles/fpc:output/fpc:bundles/fpc:result-type/fpc:create-or-update-success/fpc:contexts/fpc:dl/fpc:mobility-tunnel-parameters/fpc:profile-parameters" {
+    augment "/fpc:configure-bundles/fpc:output/fpc:bundles/fpc:"
+        + "result-type/fpc:create-or-update-success/fpc:"
+        + "contexts/fpc:dl/fpc:mobility-tunnel-parameters/fpc:"
+        + "profile-parameters" {
       case threegpp-tunnel {
           uses threegpp:threegpp-tunnel-info;
       }
@@ -6810,31 +6841,45 @@ module ietf-dmm-threegpp {
 
 
     // Contexts Update -  Contexts / dpns / mobility-tunnel-parameters
-    augment "/fpc:tenants/fpc:tenant/fpc:fpc-mobility/fpc:contexts/fpc:dpns/fpc:mobility-tunnel-parameters/fpc:profile-parameters" {
+    augment "/fpc:tenants/fpc:tenant/fpc:fpc-mobility/fpc:contexts/fpc:"
+        + "dpns/fpc:mobility-tunnel-parameters/fpc:"
+        + "profile-parameters" {
       case threegpp-tunnel {
           uses threegpp:threegpp-tunnel-info;
       }
       description "Context 3GPP TFT and Tunnel Information";
     }
-    augment "/fpc:configure/fpc:input/fpc:op_body/fpc:create_or_update/fpc:contexts/fpc:dpns/fpc:mobility-tunnel-parameters/fpc:profile-parameters" {
+    augment "/fpc:configure/fpc:input/fpc:op_body/fpc:"
+        + "create_or_update/fpc:contexts/fpc:dpns/fpc:"
+        + "mobility-tunnel-parameters/fpc:"
+        + "profile-parameters" {
       case threegpp-tunnel {
           uses threegpp:threegpp-tunnel-info;
       }
       description "Configure 3GPP TFT and Tunnel Information";
     }
-    augment "/fpc:configure-bundles/fpc:input/fpc:bundles/fpc:op_body/fpc:create_or_update/fpc:contexts/fpc:dpns/fpc:mobility-tunnel-parameters/fpc:profile-parameters" {
+    augment "/fpc:configure-bundles/fpc:input/fpc:bundles/fpc:"
+        + "op_body/fpc:create_or_update/fpc:contexts/fpc:"
+        + "dpns/fpc:mobility-tunnel-parameters/fpc:"
+        + "profile-parameters" {
       case threegpp-tunnel {
           uses threegpp:threegpp-tunnel-info;
       }
       description "Configure Bundles 3GPP TFT and Tunnel Information";
     }
-    augment "/fpc:configure/fpc:output/fpc:result-type/fpc:create-or-update-success/fpc:contexts/fpc:dpns/fpc:mobility-tunnel-parameters/fpc:profile-parameters" {
+    augment "/fpc:configure/fpc:output/fpc:result-type/fpc:"
+        + "create-or-update-success/fpc:contexts/fpc:"
+        + "dpns/fpc:mobility-tunnel-parameters/fpc:"
+        + "profile-parameters" {
       case threegpp-tunnel {
           uses threegpp:threegpp-tunnel-info;
       }
       description "Configure 3GPP TFT and Tunnel Information Response";
     }
-    augment "/fpc:configure-bundles/fpc:output/fpc:bundles/fpc:result-type/fpc:create-or-update-success/fpc:contexts/fpc:dpns/fpc:mobility-tunnel-parameters/fpc:profile-parameters" {
+    augment "/fpc:configure-bundles/fpc:output/fpc:bundles/fpc:"
+        + "result-type/fpc:create-or-update-success/fpc:"
+        + "contexts/fpc:dpns/fpc:mobility-tunnel-parameters/fpc:"
+        + "profile-parameters" {
       case threegpp-tunnel {
           uses threegpp:threegpp-tunnel-info;
       }
@@ -6843,35 +6888,44 @@ module ietf-dmm-threegpp {
 
 
     // QoS Updates - Context / UL / qosprofile
-    augment "/fpc:tenants/fpc:tenant/fpc:fpc-mobility/fpc:contexts/fpc:ul/fpc:qos-profile-parameters/fpc:value" {
+    augment "/fpc:tenants/fpc:tenant/fpc:fpc-mobility/fpc:"
+        + "contexts/fpc:ul/fpc:qos-profile-parameters/fpc:value" {
       case threegpp-qos {
           uses threegpp:threeGPP-QoS;
           description "3GPP QoS Values";
       }
       description "Context UL 3GPP QoS Values";
     }
-    augment "/fpc:configure/fpc:input/fpc:op_body/fpc:create_or_update/fpc:contexts/fpc:ul/fpc:qos-profile-parameters/fpc:value" {
+    augment "/fpc:configure/fpc:input/fpc:op_body/fpc:"
+        + "create_or_update/fpc:contexts/fpc:ul/fpc:"
+        + "qos-profile-parameters/fpc:value" {
       case threegpp-qos {
           uses threegpp:threeGPP-QoS;
           description "3GPP QoS Values";
       }
       description "Configure Context UL 3GPP QoS Values";
     }
-    augment "/fpc:configure-bundles/fpc:input/fpc:bundles/fpc:op_body/fpc:create_or_update/fpc:contexts/fpc:ul/fpc:qos-profile-parameters/fpc:value" {
+    augment "/fpc:configure-bundles/fpc:input/fpc:bundles/fpc:"
+        + "op_body/fpc:create_or_update/fpc:contexts/fpc:"
+        + "ul/fpc:qos-profile-parameters/fpc:value" {
       case threegpp-qos {
           uses threegpp:threeGPP-QoS;
           description "3GPP QoS Values";
       }
       description "Configure Bundles Context UL 3GPP QoS Values";
     }
-    augment "/fpc:configure/fpc:output/fpc:result-type/fpc:create-or-update-success/fpc:contexts/fpc:ul/fpc:qos-profile-parameters/fpc:value" {
+    augment "/fpc:configure/fpc:output/fpc:result-type/fpc:"
+        + "create-or-update-success/fpc:contexts/fpc:ul/fpc:"
+        + "qos-profile-parameters/fpc:value" {
       case threegpp-qos {
           uses threegpp:threeGPP-QoS;
           description "3GPP QoS Values";
       }
       description "Configure Context UL 3GPP QoS Values Response";
     }
-    augment "/fpc:configure-bundles/fpc:output/fpc:bundles/fpc:result-type/fpc:create-or-update-success/fpc:contexts/fpc:ul/fpc:qos-profile-parameters/fpc:value" {
+    augment "/fpc:configure-bundles/fpc:output/fpc:bundles/fpc:"
+        + "result-type/fpc:create-or-update-success/fpc:"
+        + "contexts/fpc:ul/fpc:qos-profile-parameters/fpc:value" {
       case threegpp-qos {
           uses threegpp:threeGPP-QoS;
           description "3GPP QoS Values";
@@ -6880,35 +6934,44 @@ module ietf-dmm-threegpp {
     }
 
     // QoS Updates -  Context / DL / QoS Profile
-    augment "/fpc:tenants/fpc:tenant/fpc:fpc-mobility/fpc:contexts/fpc:dl/fpc:qos-profile-parameters/fpc:value" {
+    augment "/fpc:tenants/fpc:tenant/fpc:fpc-mobility/fpc:"
+        + "contexts/fpc:dl/fpc:qos-profile-parameters/fpc:value" {
       case threegpp-qos {
           uses threegpp:threeGPP-QoS;
           description "3GPP QoS Values";
       }
       description "Context DL 3GPP QoS Values";
     }
-    augment "/fpc:configure/fpc:input/fpc:op_body/fpc:create_or_update/fpc:contexts/fpc:dl/fpc:qos-profile-parameters/fpc:value" {
+    augment "/fpc:configure/fpc:input/fpc:op_body/fpc:"
+        + "create_or_update/fpc:contexts/fpc:dl/fpc:"
+        + "qos-profile-parameters/fpc:value" {
       case threegpp-qos {
           uses threegpp:threeGPP-QoS;
           description "3GPP QoS Values";
       }
       description "Configure Context DL 3GPP QoS Values";
     }
-    augment "/fpc:configure-bundles/fpc:input/fpc:bundles/fpc:op_body/fpc:create_or_update/fpc:contexts/fpc:dl/fpc:qos-profile-parameters/fpc:value" {
+    augment "/fpc:configure-bundles/fpc:input/fpc:bundles/fpc:"
+        + "op_body/fpc:create_or_update/fpc:contexts/fpc:dl/fpc:"
+        + "qos-profile-parameters/fpc:value" {
       case threegpp-qos {
           uses threegpp:threeGPP-QoS;
           description "3GPP QoS Values";
       }
       description "Configure Bundles Context DL 3GPP QoS Values";
     }
-    augment "/fpc:configure/fpc:output/fpc:result-type/fpc:create-or-update-success/fpc:contexts/fpc:dl/fpc:qos-profile-parameters/fpc:value" {
+    augment "/fpc:configure/fpc:output/fpc:result-type/fpc:"
+        + "create-or-update-success/fpc:contexts/fpc:dl/fpc:"
+        + "qos-profile-parameters/fpc:value" {
       case threegpp-qos {
           uses threegpp:threeGPP-QoS;
           description "3GPP QoS Values";
       }
       description "Configure Context DL 3GPP QoS Values Response";
     }
-    augment "/fpc:configure-bundles/fpc:output/fpc:bundles/fpc:result-type/fpc:create-or-update-success/fpc:contexts/fpc:dl/fpc:qos-profile-parameters/fpc:value" {
+    augment "/fpc:configure-bundles/fpc:output/fpc:bundles/fpc:"
+        + "result-type/fpc:create-or-update-success/fpc:"
+        + "contexts/fpc:dl/fpc:qos-profile-parameters/fpc:value" {
       case threegpp-qos {
           uses threegpp:threeGPP-QoS;
           description "3GPP QoS Values";
@@ -6936,19 +6999,23 @@ module ietf-dmm-threegpp {
       uses threegpp:threegpp-properties;
       description "3GPP Mobility Session Properties";
     }
-    augment "/fpc:configure/fpc:input/fpc:op_body/fpc:create_or_update/fpc:contexts" {
+    augment "/fpc:configure/fpc:input/fpc:op_body/fpc:"
+        + "create_or_update/fpc:contexts" {
       uses threegpp:threegpp-properties;
       description "3GPP Mobility Session Properties";
     }
-    augment "/fpc:configure-bundles/fpc:input/fpc:bundles/fpc:op_body/fpc:create_or_update/fpc:contexts" {
+    augment "/fpc:configure-bundles/fpc:input/fpc:"
+        + "bundles/fpc:op_body/fpc:create_or_update/fpc:contexts" {
        uses threegpp:threegpp-properties;
        description "3GPP Mobility Session Properties";
     }
-    augment "/fpc:configure/fpc:output/fpc:result-type/fpc:create-or-update-success/fpc:contexts" {
+    augment "/fpc:configure/fpc:output/fpc:result-type/fpc:"
+        + "create-or-update-success/fpc:contexts" {
       uses threegpp:threegpp-properties;
       description "3GPP Mobility Session Properties";
     }
-    augment "/fpc:configure-bundles/fpc:output/fpc:bundles/fpc:result-type/fpc:create-or-update-success/fpc:contexts" {
+    augment "/fpc:configure-bundles/fpc:output/fpc:bundles/fpc:"
+        + "result-type/fpc:create-or-update-success/fpc:contexts" {
        uses threegpp:threegpp-properties;
        description "3GPP Mobility Session Properties";
     }
@@ -6968,14 +7035,17 @@ module ietf-dmm-threegpp {
       }
       description "Configure 3GPP Instructions";
     }
-    augment "/fpc:configure/fpc:input/fpc:op_body/fpc:create_or_update/fpc:contexts/fpc:instructions/fpc:instr-type" {
+    augment "/fpc:configure/fpc:input/fpc:op_body/fpc:"
+        + "create_or_update/fpc:contexts/fpc:instructions/fpc:instr-type" {
       case instr-3gpp-mob {
         uses threegpp:threegpp-commandset;
         description "3GPP Instructions";
       }
       description "Configure 3GPP Context Instructions";
     }
-    augment "/fpc:configure/fpc:output/fpc:result-type/fpc:create-or-update-success/fpc:contexts/fpc:instructions/fpc:instr-type" {
+    augment "/fpc:configure/fpc:output/fpc:result-type/fpc:"
+        + "create-or-update-success/fpc:contexts/fpc:"
+        + "instructions/fpc:instr-type" {
       case instr-3gpp-mob {
         uses threegpp:threegpp-commandset;
         description "3GPP Instructions";
@@ -6984,21 +7054,26 @@ module ietf-dmm-threegpp {
     }
 
 
-    augment "/fpc:configure-bundles/fpc:input/fpc:bundles/fpc:instructions/fpc:instr-type" {
+    augment "/fpc:configure-bundles/fpc:input/fpc:bundles/fpc:"
+        + "instructions/fpc:instr-type" {
       case instr-3gpp-mob {
         uses threegpp:threegpp-commandset;
         description "3GPP Instructions";
       }
       description "Configure Bundles 3GPP Instructions";
     }
-    augment "/fpc:configure-bundles/fpc:input/fpc:bundles/fpc:op_body/fpc:create_or_update/fpc:contexts/fpc:instructions/fpc:instr-type" {
+    augment "/fpc:configure-bundles/fpc:input/fpc:bundles/fpc:"
+        + "op_body/fpc:create_or_update/fpc:contexts/fpc:"
+        + "instructions/fpc:instr-type" {
       case instr-3gpp-mob {
         uses threegpp:threegpp-commandset;
         description "3GPP Instructions";
       }
       description "Configure Bundles 3GPP Context Instructions";
     }
-    augment "/fpc:configure-bundles/fpc:output/fpc:bundles/fpc:result-type/fpc:create-or-update-success/fpc:contexts/fpc:instructions/fpc:instr-type" {
+    augment "/fpc:configure-bundles/fpc:output/fpc:bundles/fpc:"
+        + "result-type/fpc:create-or-update-success/fpc:"
+        + "contexts/fpc:instructions/fpc:instr-type" {
       case instr-3gpp-mob {
         uses threegpp:threegpp-commandset;
         description "3GPP Instructions";
@@ -7006,6 +7081,7 @@ module ietf-dmm-threegpp {
       description "Configure Bundles 3GPP Context Instructions Response";
     }
 }
+
 <CODE ENDS>]]></artwork>
         </figure>
   </section>
@@ -7175,58 +7251,81 @@ module ietf-dmm-fpc-pmip {
         description "PMIP Tunnel Information";
     }
 
-    // Contexts Update - Contexts / UL / mob-profile, Contexts / DL / mob-profile and Contexts / dpns / mobility-tunnel-parameters
-    augment "/fpc:tenants/fpc:tenant/fpc:fpc-mobility/fpc:contexts/fpc:ul/fpc:mobility-tunnel-parameters/fpc:profile-parameters" {
+    // Contexts Update - Contexts / UL / mob-profile, Contexts / DL / 
+    //     mob-profile and Contexts / dpns / mobility-tunnel-parameters
+    augment "/fpc:tenants/fpc:tenant/fpc:fpc-mobility/fpc:contexts/fpc:"
+        + "ul/fpc:mobility-tunnel-parameters/fpc:profile-parameters" {
       case pmip-tunnel {
         uses fpc-pmip:pmip-tunnel-info;
       }
       description "Context UL Mobility";
     }
-    augment "/fpc:configure/fpc:input/fpc:op_body/fpc:create_or_update/fpc:contexts/fpc:ul/fpc:mobility-tunnel-parameters/fpc:profile-parameters" {
+    augment "/fpc:configure/fpc:input/fpc:op_body/fpc:"
+        + "create_or_update/fpc:contexts/fpc:ul/fpc:"
+        + "mobility-tunnel-parameters/fpc:"
+        + "profile-parameters" {
       case pmip-tunnel {
         uses fpc-pmip:pmip-tunnel-info;
       }
       description "CONFIG Context UL Mobility";
     }
-    augment "/fpc:configure-bundles/fpc:input/fpc:bundles/fpc:op_body/fpc:create_or_update/fpc:contexts/fpc:ul/fpc:mobility-tunnel-parameters/fpc:profile-parameters" {
+    augment "/fpc:configure-bundles/fpc:input/fpc:bundles/fpc:"
+        + "op_body/fpc:create_or_update/fpc:contexts/fpc:"
+        + "ul/fpc:mobility-tunnel-parameters/fpc:"
+        + "profile-parameters" {
       case pmip-tunnel {
         uses fpc-pmip:pmip-tunnel-info;
       }
       description "CONF_BUNDLE Context UL Mobility";
     }
 
-    augment "/fpc:tenants/fpc:tenant/fpc:fpc-mobility/fpc:contexts/fpc:dl/fpc:mobility-tunnel-parameters/fpc:profile-parameters" {
+    augment "/fpc:tenants/fpc:tenant/fpc:fpc-mobility/fpc:"
+        + "contexts/fpc:dl/fpc:mobility-tunnel-parameters/fpc:"
+        + "profile-parameters" {
       case pmip-tunnel {
         uses fpc-pmip:pmip-tunnel-info;
       }
       description "Context DL Mobility";
     }
-    augment "/fpc:configure/fpc:input/fpc:op_body/fpc:create_or_update/fpc:contexts/fpc:dl/fpc:mobility-tunnel-parameters/fpc:profile-parameters" {
+    augment "/fpc:configure/fpc:input/fpc:op_body/fpc:"
+        + "create_or_update/fpc:contexts/fpc:dl/fpc:"
+        + "mobility-tunnel-parameters/fpc:"
+        + "profile-parameters" {
       case pmip-tunnel {
         uses fpc-pmip:pmip-tunnel-info;
       }
       description "CONFIG Context DL Mobility";
     }
-    augment "/fpc:configure-bundles/fpc:input/fpc:bundles/fpc:op_body/fpc:create_or_update/fpc:contexts/fpc:dl/fpc:mobility-tunnel-parameters/fpc:profile-parameters" {
+    augment "/fpc:configure-bundles/fpc:input/fpc:"
+        + "bundles/fpc:op_body/fpc:create_or_update/fpc:"
+        + "contexts/fpc:dl/fpc:mobility-tunnel-parameters/fpc:"
+        + "profile-parameters" {
       case pmip-tunnel {
         uses fpc-pmip:pmip-tunnel-info;
       }
       description "CONF_BUNDLE Context DL Mobility";
     }
 
-    augment "/fpc:tenants/fpc:tenant/fpc:fpc-mobility/fpc:contexts/fpc:dpns/fpc:mobility-tunnel-parameters/fpc:profile-parameters" {
+    augment "/fpc:tenants/fpc:tenant/fpc:fpc-mobility/fpc:"
+        + "contexts/fpc:dpns/fpc:mobility-tunnel-parameters/fpc:"
+        + "profile-parameters" {
       case pmip-tunnel {
         uses fpc-pmip:pmip-tunnel-info;
       }
       description "Context DPN Mobility";
     }
-    augment "/fpc:configure/fpc:input/fpc:op_body/fpc:create_or_update/fpc:contexts/fpc:dpns/fpc:mobility-tunnel-parameters/fpc:profile-parameters" {
+    augment "/fpc:configure/fpc:input/fpc:op_body/fpc:"
+        + "create_or_update/fpc:contexts/fpc:dpns/fpc:"
+        + "mobility-tunnel-parameters/fpc:profile-parameters" {
       case pmip-tunnel {
         uses fpc-pmip:pmip-tunnel-info;
       }
       description "CONFIG Context DPN Mobility";
     }
-    augment "/fpc:configure-bundles/fpc:input/fpc:bundles/fpc:op_body/fpc:create_or_update/fpc:contexts/fpc:dpns/fpc:mobility-tunnel-parameters/fpc:profile-parameters" {
+    augment "/fpc:configure-bundles/fpc:input/fpc:"
+        + "bundles/fpc:op_body/fpc:create_or_update/fpc:"
+        + "contexts/fpc:dpns/fpc:mobility-tunnel-parameters/fpc:"
+        + "profile-parameters" {
       case pmip-tunnel {
         uses fpc-pmip:pmip-tunnel-info;
       }
@@ -7234,21 +7333,26 @@ module ietf-dmm-fpc-pmip {
     }
 
     // QoS Updates - Context / UL / qosprofile, Context / DL / QoS Profile
-    augment "/fpc:tenants/fpc:tenant/fpc:fpc-mobility/fpc:contexts/fpc:ul/fpc:qos-profile-parameters/fpc:value" {
+    augment "/fpc:tenants/fpc:tenant/fpc:fpc-mobility/fpc:"
+        + "contexts/fpc:ul/fpc:qos-profile-parameters/fpc:value" {
       case qos-pmip {
           uses qos-pmip:qosattribute;
           description "PMIP QoS Information";
       }
       description "Context UL QoS";
     }
-    augment "/fpc:configure/fpc:input/fpc:op_body/fpc:create_or_update/fpc:contexts/fpc:ul/fpc:qos-profile-parameters/fpc:value" {
+    augment "/fpc:configure/fpc:input/fpc:op_body/fpc:"
+        + "create_or_update/fpc:contexts/fpc:ul/fpc:"
+        + "qos-profile-parameters/fpc:value" {
       case qos-pmip {
           uses qos-pmip:qosattribute;
           description "PMIP QoS Information";
       }
       description "CONFIG Context UL QoS";
     }
-    augment "/fpc:configure-bundles/fpc:input/fpc:bundles/fpc:op_body/fpc:create_or_update/fpc:contexts/fpc:ul/fpc:qos-profile-parameters/fpc:value" {
+    augment "/fpc:configure-bundles/fpc:input/fpc:"
+        + "bundles/fpc:op_body/fpc:create_or_update/fpc:"
+        + "contexts/fpc:ul/fpc:qos-profile-parameters/fpc:value" {
       case qos-pmip {
           uses qos-pmip:qosattribute;
           description "PMIP QoS Information";
@@ -7256,21 +7360,26 @@ module ietf-dmm-fpc-pmip {
       description "CONF_BUNDLE Context UL QoS";
     }
 
-    augment "/fpc:tenants/fpc:tenant/fpc:fpc-mobility/fpc:contexts/fpc:dl/fpc:qos-profile-parameters/fpc:value" {
+    augment "/fpc:tenants/fpc:tenant/fpc:fpc-mobility/fpc:"
+        + "contexts/fpc:dl/fpc:qos-profile-parameters/fpc:value" {
       case qos-pmip {
           uses qos-pmip:qosattribute;
           description "PMIP QoS Information";
       }
       description "Context DL QoS";
     }
-    augment "/fpc:configure/fpc:input/fpc:op_body/fpc:create_or_update/fpc:contexts/fpc:dl/fpc:qos-profile-parameters/fpc:value" {
+    augment "/fpc:configure/fpc:input/fpc:op_body/fpc:"
+        + "create_or_update/fpc:contexts/fpc:dl/fpc:"
+        + "qos-profile-parameters/fpc:value" {
       case qos-pmip {
           uses qos-pmip:qosattribute;
           description "PMIP QoS Information";
       }
       description "CONFIG Context DL QoS";
     }
-    augment "/fpc:configure-bundles/fpc:input/fpc:bundles/fpc:op_body/fpc:create_or_update/fpc:contexts/fpc:dl/fpc:qos-profile-parameters/fpc:value" {
+    augment "/fpc:configure-bundles/fpc:input/fpc:"
+        + "bundles/fpc:op_body/fpc:create_or_update/fpc:"
+        + "contexts/fpc:dl/fpc:qos-profile-parameters/fpc:value" {
       case qos-pmip {
           uses qos-pmip:qosattribute;
           description "PMIP QoS Information";
@@ -7294,14 +7403,17 @@ module ietf-dmm-fpc-pmip {
       }
       description "CONFIG Instructions";
     }
-    augment "/fpc:configure/fpc:input/fpc:op_body/fpc:create_or_update/fpc:contexts/fpc:instructions/fpc:instr-type" {
+    augment "/fpc:configure/fpc:input/fpc:op_body/fpc:"
+        + "create_or_update/fpc:contexts/fpc:instructions/fpc:instr-type" {
       case pmip-instr {
         uses fpc-pmip:pmip-commandset;
         description "PMIP Commandset";
       }
       description "CONFIG Context Instructions";
     }
-    augment "/fpc:configure/fpc:output/fpc:result-type/fpc:create-or-update-success/fpc:contexts/fpc:instructions/fpc:instr-type" {
+    augment "/fpc:configure/fpc:output/fpc:result-type/fpc:"
+        + "create-or-update-success/fpc:contexts/fpc:"
+        + "instructions/fpc:instr-type" {
       case pmip-instr {
         uses fpc-pmip:pmip-commandset;
         description "PMIP Commandset";
@@ -7309,21 +7421,26 @@ module ietf-dmm-fpc-pmip {
       description "CONFIG Result Context Instructions";
     }
 
-    augment "/fpc:configure-bundles/fpc:input/fpc:bundles/fpc:instructions/fpc:instr-type" {
+    augment "/fpc:configure-bundles/fpc:input/fpc:"
+        + "bundles/fpc:instructions/fpc:instr-type" {
       case pmip-instr {
         uses fpc-pmip:pmip-commandset;
         description "PMIP Commandset";
       }
       description "CONF_BUNDLE Instructions";
     }
-    augment "/fpc:configure-bundles/fpc:input/fpc:bundles/fpc:op_body/fpc:create_or_update/fpc:contexts/fpc:instructions/fpc:instr-type" {
+    augment "/fpc:configure-bundles/fpc:input/fpc:bundles/fpc:"
+        + "op_body/fpc:create_or_update/fpc:contexts/fpc:"
+        + "instructions/fpc:instr-type" {
       case pmip-instr {
         uses fpc-pmip:pmip-commandset;
         description "PMIP Commandset";
       }
       description "CONF_BUNDLE Context Instructions";
     }
-    augment "/fpc:configure-bundles/fpc:output/fpc:bundles/fpc:result-type/fpc:create-or-update-success/fpc:contexts/fpc:instructions/fpc:instr-type" {
+    augment "/fpc:configure-bundles/fpc:output/fpc:"
+        + "bundles/fpc:result-type/fpc:create-or-update-success/fpc:"
+        + "contexts/fpc:instructions/fpc:instr-type" {
       case pmip-instr {
         uses fpc-pmip:pmip-commandset;
         description "PMIP Commandset";
@@ -7503,189 +7620,214 @@ module ietf-dmm-fpc-policyext {
   </section>
 <!-- template for YANG model, end -->
   </section>
-  <section anchor="ietf-dmm-fpc-tree" title="FPC Information Model YANG Tree">
-    <t>This section only shows the YANG tree for the information model.</t>
+  <section anchor="ietf-dmm-fpc-tree" title="FPC YANG Data Model Structure">
+    <t>This section only shows the structure for FPC YANG model.</t>
 <t>
  <figure anchor="fig-ietf-dmm-fpc-tree"
               title="YANG FPC Agent Tree">
 <artwork align="center"><![CDATA[
 module: ietf-dmm-fpc
-   +--rw tenants
-   |  +--rw tenant* [tenant-id]
-   |     +--rw tenant-id       fpc:fpc-identity
-   |     +--rw fpc-policy
-   |     |  +--rw policy-groups* [policy-group-id]
-   |     |  |  +--rw policy-group-id    fpc:fpc-policy-group-id
-   |     |  |  +--rw policies*          fpc:fpc-policy-id
-   |     |  +--rw policies* [policy-id]
-   |     |  |  +--rw policy-id    fpc:fpc-policy-id
-   |     |  |  +--rw rules* [order]
-   |     |  |     +--rw order          uint32
-   |     |  |     +--rw descriptors* [descriptor-id]
-   |     |  |     |  +--rw descriptor-id    fpc:fpc-identity
-   |     |  |     |  +--rw direction?       fpc:fpc-direction
-   |     |  |     +--rw actions* [action-id]
-   |     |  |        +--rw action-order?   uint32
-   |     |  |        +--rw action-id       fpc:fpc-action-id-type
-   |     |  +--rw descriptors* [descriptor-id]
-   |     |  |  +--rw descriptor-id      fpc:fpc-identity
-   |     |  |  +--rw descriptor-type    identityref
-   |     |  |  +--rw (descriptor-value)?
-   |     |  |     +--:(all-traffic)
-   |     |  |        +--rw all-traffic?       empty
-   |     |  +--rw actions* [action-id]
-   |     |     +--rw action-id      fpc:fpc-action-id-type
-   |     |     +--rw action-type    identityref
-   |     |     +--rw (action-value)?
-   |     |        +--:(drop)
-   |     |           +--rw drop?          empty
-   |     +--ro fpc-mobility
-   |     |  +--ro contexts* [context-id]
-   |     |  |  +--ro context-id               fpc:fpc-context-id
-   |     |  |  +--ro vports*                  fpc:fpc-vport-id
-   |     |  |  +--ro dpn-group?               fpc:fpc-dpn-group-id
-   |     |  |  +--ro delegated-ip-prefixes*   inet:ip-prefix
-   |     |  |  +--ro ul {fpc:fpc-basic-agent}?
-   |     |  |  |  +--ro tunnel-local-address?         inet:ip-address
-   |     |  |  |  +--ro tunnel-remote-address?        inet:ip-address
-   |     |  |  |  +--ro mtu-size?                     uint32
-   |     |  |  |  +--ro mobility-tunnel-parameters
-   |     |  |  |  |  +--ro (profile-parameters)?
-   |     |  |  |  |     +--:(nothing)
-   |     |  |  |  |        +--ro none?   empty
-   |     |  |  |  +--ro nexthop
-   |     |  |  |  |  +--ro nexthop-type?   identityref
-   |     |  |  |  |  +--ro (nexthop-value)?
-   |     |  |  |  |     +--:(ip)
-   |     |  |  |  |     |  +--ro ip?             inet:ip-address
-   |     |  |  |  |     +--:(servicepath)
-   |     |  |  |  |        +--ro servicepath?    fpc:fpcp-service-path-id
-   |     |  |  |  +--ro qos-profile-parameters
-   |     |  |  |  |  +--ro qos-type?   identityref
-   |     |  |  |  |  +--ro (value)?
-   |     |  |  |  +--ro dpn-parameters
-   |     |  |  |  +--ro vendor-parameters* [vendor-id vendor-type]
-   |     |  |  |     +--ro vendor-id      fpc:fpc-identity
-   |     |  |  |     +--ro vendor-type    identityref
-   |     |  |  |     +--ro (value)?
-   |     |  |  |        +--:(empty-type)
-   |     |  |  |           +--ro empty-type?    empty
-   |     |  |  +--ro dl {fpc:fpc-basic-agent}?
-   |     |  |  |  +--ro tunnel-local-address?         inet:ip-address
-   |     |  |  |  +--ro tunnel-remote-address?        inet:ip-address
-   |     |  |  |  +--ro mtu-size?                     uint32
-   |     |  |  |  +--ro mobility-tunnel-parameters
-   |     |  |  |  |  +--ro (profile-parameters)?
-   |     |  |  |  |     +--:(nothing)
-   |     |  |  |  |        +--ro none?   empty
-   |     |  |  |  +--ro nexthop
-   |     |  |  |  |  +--ro nexthop-type?   identityref
-   |     |  |  |  |  +--ro (nexthop-value)?
-   |     |  |  |  |     +--:(ip)
-   |     |  |  |  |     |  +--ro ip?             inet:ip-address
-   |     |  |  |  |     +--:(servicepath)
-   |     |  |  |  |        +--ro servicepath?    fpc:fpcp-service-path-id
-   |     |  |  |  +--ro qos-profile-parameters
-   |     |  |  |  |  +--ro qos-type?   identityref
-   |     |  |  |  |  +--ro (value)?
-   |     |  |  |  +--ro dpn-parameters
-   |     |  |  |  +--ro vendor-parameters* [vendor-id vendor-type]
-   |     |  |  |     +--ro vendor-id      fpc:fpc-identity
-   |     |  |  |     +--ro vendor-type    identityref
-   |     |  |  |     +--ro (value)?
-   |     |  |  |        +--:(empty-type)
-   |     |  |  |           +--ro empty-type?    empty
-   |     |  |  +--ro dpns* [dpn-id direction] {fpc:fpc-multi-dpn}?
-   |     |  |  |  +--ro dpn-id                        fpc:fpc-dpn-id
-   |     |  |  |  +--ro direction                     fpc:fpc-direction
-   |     |  |  |  +--ro tunnel-local-address?         inet:ip-address
-   |     |  |  |  +--ro tunnel-remote-address?        inet:ip-address
-   |     |  |  |  +--ro mtu-size?                     uint32
-   |     |  |  |  +--ro mobility-tunnel-parameters
-   |     |  |  |  |  +--ro (profile-parameters)?
-   |     |  |  |  |     +--:(nothing)
-   |     |  |  |  |        +--ro none?   empty
-   |     |  |  |  +--ro nexthop
-   |     |  |  |  |  +--ro nexthop-type?   identityref
-   |     |  |  |  |  +--ro (nexthop-value)?
-   |     |  |  |  |     +--:(ip)
-   |     |  |  |  |     |  +--ro ip?             inet:ip-address
-   |     |  |  |  |     +--:(servicepath)
-   |     |  |  |  |        +--ro servicepath?    fpc:fpcp-service-path-id
-   |     |  |  |  +--ro qos-profile-parameters
-   |     |  |  |  |  +--ro qos-type?   identityref
-   |     |  |  |  |  +--ro (value)?
-   |     |  |  |  +--ro dpn-parameters
-   |     |  |  |  +--ro vendor-parameters* [vendor-id vendor-type]
-   |     |  |  |     +--ro vendor-id      fpc:fpc-identity
-   |     |  |  |     +--ro vendor-type    identityref
-   |     |  |  |     +--ro (value)?
-   |     |  |  |        +--:(empty-type)
-   |     |  |  |           +--ro empty-type?    empty
-   |     |  |  +--ro parent-context?          fpc:fpc-context-id
-   |     |  +--ro vports* [vport-id]
-   |     |  |  +--ro vport-id         fpc:fpc-vport-id
-   |     |  |  +--ro policy-groups*   fpc:fpc-policy-group-id
-   |     |  +--ro monitors*
-   |     |     +--ro monitor-id?         fpc:fpc-identity
-   |     |     +--ro target?             fpc-identity
-   |     |     +--ro (event-config-value)?
-   |     |        +--:(periodic-config)
-   |     |        |  +--ro period?             uint32
-   |     |        +--:(threshold-config)
-   |     |        |  +--ro lo-thresh?          uint32
-   |     |        |  +--ro hi-thresh?          uint32
-   |     |        +--:(scheduled-config)
-   |     |        |  +--ro report-time?        uint32
-   |     |        +--:(events-config-ident)
-   |     |        |  +--ro event-identities*   identityref
-   |     |        +--:(events-config)
-   |     |           +--ro event-ids*          uint32
-   |     +--rw fpc-topology
-   |        +--rw domains* [domain-id]
-   |        |  +--rw domain-id           fpc:fpc-domain-id
-   |        |  +--rw domain-name?        string
-   |        |  +--rw domain-type?        string
-   |        |  +--rw domain-reference?   instance-identifier
-   |        |  +--rw basename?           fpc:fpc-identity {fpc:fpc-basename-registry}?
-   |        |  +--rw base-state?         string {fpc:fpc-basename-registry}?
-   |        |  +--rw base-checkpoint?    string {fpc:fpc-basename-registry}?
-   |        +--rw dpn-id?              fpc:fpc-dpn-id {fpc:fpc-basic-agent}?
-   |        +--rw control-protocols*   identityref {fpc:fpc-basic-agent}?
-   |        +--rw dpn-groups* [dpn-group-id] {fpc:fpc-multi-dpn}?
-   |        |  +--rw dpn-group-id        fpc:fpc-dpn-group-id
-   |        |  +--rw data-plane-role?    identityref
-   |        |  +--rw access-type?        identityref
-   |        |  +--rw mobility-profile?   identityref
-   |        |  +--rw dpn-group-peers* [remote-dpn-group-id]
-   |        |  |  +--rw remote-dpn-group-id        fpc:fpc-dpn-group-id
-   |        |  |  +--rw remote-mobility-profile?   identityref
-   |        |  |  +--rw remote-data-plane-role?    identityref
-   |        |  |  +--rw remote-endpoint-address?   inet:ip-address
-   |        |  |  +--rw local-endpoint-address?    inet:ip-address
-   |        |  |  +--rw mtu-size?                  uint32
-   |        |  +--rw domains* [domain-id]
-   |        |     +--rw domain-id           fpc:fpc-domain-id
-   |        |     +--rw domain-name?        string
-   |        |     +--rw domain-type?        string
-   |        |     +--rw domain-reference?   instance-identifier
-   |        |     +--rw basename?           fpc:fpc-identity {fpc:fpc-basename-registry}?
-   |        |     +--rw base-state?         string {fpc:fpc-basename-registry}?
-   |        |     +--rw base-checkpoint?    string {fpc:fpc-basename-registry}?
-   |        +--rw dpns* [dpn-id] {fpc:fpc-multi-dpn}?
-   |           +--rw dpn-id            fpc:fpc-dpn-id
-   |           +--rw dpn-name?         string
-   |           +--rw dpn-groups*       fpc:fpc-dpn-group-id
-   |           +--rw node-reference?   instance-identifier
-   +--rw fpc-agent-info
-      +--rw supported-features*      string
-      +--rw supported-events* [event]
-      |  +--rw event       identityref
-      |  +--rw event-id?   fpc:event-type-id
-      +--rw supported-error-types* [error-type]
-         +--rw error-type       identityref
-         +--rw error-type-id?   fpc:error-type-id
-rpcs...
+    +--rw tenants
+    |  +--rw tenant* [tenant-id]
+    |     +--rw tenant-id       fpc:fpc-identity
+    |     +--rw fpc-policy
+    |     |  +--rw policy-groups* [policy-group-id]
+    |     |  |  +--rw policy-group-id    fpc:fpc-policy-group-id
+    |     |  |  +--rw policies*          fpc:fpc-policy-id
+    |     |  +--rw policies* [policy-id]
+    |     |  |  +--rw policy-id    fpc:fpc-policy-id
+    |     |  |  +--rw rules* [order]
+    |     |  |     +--rw order          uint32
+    |     |  |     +--rw descriptors* [descriptor-id]
+    |     |  |     |  +--rw descriptor-id    fpc:fpc-identity
+    |     |  |     |  +--rw direction?       fpc:fpc-direction
+    |     |  |     +--rw actions* [action-id]
+    |     |  |        +--rw action-order?   uint32
+    |     |  |        +--rw action-id       fpc:fpc-action-id-type
+    |     |  +--rw descriptors* [descriptor-id]
+    |     |  |  +--rw descriptor-id      fpc:fpc-identity
+    |     |  |  +--rw descriptor-type    identityref
+    |     |  |  +--rw (descriptor-value)?
+    |     |  |     +--:(all-traffic)
+    |     |  |        +--rw all-traffic?       empty
+    |     |  +--rw actions* [action-id]
+    |     |     +--rw action-id      fpc:fpc-action-id-type
+    |     |     +--rw action-type    identityref
+    |     |     +--rw (action-value)?
+    |     |        +--:(drop)
+    |     |           +--rw drop?          empty
+    |     +--ro fpc-mobility
+    |     |  +--ro contexts* [context-id]
+    |     |  |  +--ro context-id               fpc:fpc-context-id
+    |     |  |  +--ro vports*                  fpc:fpc-vport-id
+    |     |  |  +--ro dpn-group?               fpc:fpc-dpn-group-id
+    |     |  |  +--ro delegated-ip-prefixes*   inet:ip-prefix
+    |     |  |  +--ro ul {fpc:fpc-basic-agent}?
+    |     |  |  |  +--ro tunnel-local-address?         inet:ip-address
+    |     |  |  |  +--ro tunnel-remote-address?        inet:ip-address
+    |     |  |  |  +--ro mtu-size?                     uint32
+    |     |  |  |  +--ro mobility-tunnel-parameters
+    |     |  |  |  |  +--ro (profile-parameters)?
+    |     |  |  |  |     +--:(nothing)
+    |     |  |  |  |        +--ro none?   empty
+    |     |  |  |  +--ro nexthop
+    |     |  |  |  |  +--ro nexthop-type?   identityref
+    |     |  |  |  |  +--ro (nexthop-value)?
+    |     |  |  |  |     +--:(ip-nexthop)
+    |     |  |  |  |     |  +--ro ip?             inet:ip-address
+    |     |  |  |  |     +--:(macaddress-nexthop)
+    |     |  |  |  |     |  +--ro macaddress?     ytypes:mac-address
+    |     |  |  |  |     +--:(servicepath-nexthop)
+    |     |  |  |  |     |  +--ro servicepath?    fpc:fpc-service-path-id
+    |     |  |  |  |     +--:(mplslabel-nexthop)
+    |     |  |  |  |     |  +--ro lsp?            fpc:fpc-mpls-label
+    |     |  |  |  |     +--:(if-nexthop)
+    |     |  |  |  |        +--ro if-index?       uint16
+    |     |  |  |  +--ro qos-profile-parameters
+    |     |  |  |  |  +--ro qos-type?   identityref
+    |     |  |  |  |  +--ro (value)?
+    |     |  |  |  +--ro dpn-parameters
+    |     |  |  |  +--ro vendor-parameters* [vendor-id vendor-type]
+    |     |  |  |     +--ro vendor-id      fpc:fpc-identity
+    |     |  |  |     +--ro vendor-type    identityref
+    |     |  |  |     +--ro (value)?
+    |     |  |  |        +--:(empty-type)
+    |     |  |  |           +--ro empty-type?    empty
+    |     |  |  +--ro dl {fpc:fpc-basic-agent}?
+    |     |  |  |  +--ro tunnel-local-address?         inet:ip-address
+    |     |  |  |  +--ro tunnel-remote-address?        inet:ip-address
+    |     |  |  |  +--ro mtu-size?                     uint32
+    |     |  |  |  +--ro mobility-tunnel-parameters
+    |     |  |  |  |  +--ro (profile-parameters)?
+    |     |  |  |  |     +--:(nothing)
+    |     |  |  |  |        +--ro none?   empty
+    |     |  |  |  +--ro nexthop
+    |     |  |  |  |  +--ro nexthop-type?   identityref
+    |     |  |  |  |  +--ro (nexthop-value)?
+    |     |  |  |  |     +--:(ip-nexthop)
+    |     |  |  |  |     |  +--ro ip?             inet:ip-address
+    |     |  |  |  |     +--:(macaddress-nexthop)
+    |     |  |  |  |     |  +--ro macaddress?     ytypes:mac-address
+    |     |  |  |  |     +--:(servicepath-nexthop)
+    |     |  |  |  |     |  +--ro servicepath?    fpc:fpc-service-path-id
+    |     |  |  |  |     +--:(mplslabel-nexthop)
+    |     |  |  |  |     |  +--ro lsp?            fpc:fpc-mpls-label
+    |     |  |  |  |     +--:(if-nexthop)
+    |     |  |  |  |        +--ro if-index?       uint16
+    |     |  |  |  +--ro qos-profile-parameters
+    |     |  |  |  |  +--ro qos-type?   identityref
+    |     |  |  |  |  +--ro (value)?
+    |     |  |  |  +--ro dpn-parameters
+    |     |  |  |  +--ro vendor-parameters* [vendor-id vendor-type]
+    |     |  |  |     +--ro vendor-id      fpc:fpc-identity
+    |     |  |  |     +--ro vendor-type    identityref
+    |     |  |  |     +--ro (value)?
+    |     |  |  |        +--:(empty-type)
+    |     |  |  |           +--ro empty-type?    empty
+    |     |  |  +--ro dpns* [dpn-id direction] {fpc:fpc-multi-dpn}?
+    |     |  |  |  +--ro dpn-id                        fpc:fpc-dpn-id
+    |     |  |  |  +--ro direction                     fpc:fpc-direction
+    |     |  |  |  +--ro tunnel-local-address?         inet:ip-address
+    |     |  |  |  +--ro tunnel-remote-address?        inet:ip-address
+    |     |  |  |  +--ro mtu-size?                     uint32
+    |     |  |  |  +--ro mobility-tunnel-parameters
+    |     |  |  |  |  +--ro (profile-parameters)?
+    |     |  |  |  |     +--:(nothing)
+    |     |  |  |  |        +--ro none?   empty
+    |     |  |  |  +--ro nexthop
+    |     |  |  |  |  +--ro nexthop-type?   identityref
+    |     |  |  |  |  +--ro (nexthop-value)?
+    |     |  |  |  |     +--:(ip-nexthop)
+    |     |  |  |  |     |  +--ro ip?             inet:ip-address
+    |     |  |  |  |     +--:(macaddress-nexthop)
+    |     |  |  |  |     |  +--ro macaddress?     ytypes:mac-address
+    |     |  |  |  |     +--:(servicepath-nexthop)
+    |     |  |  |  |     |  +--ro servicepath?    fpc:fpc-service-path-id
+    |     |  |  |  |     +--:(mplslabel-nexthop)
+    |     |  |  |  |     |  +--ro lsp?            fpc:fpc-mpls-label
+    |     |  |  |  |     +--:(if-nexthop)
+    |     |  |  |  |        +--ro if-index?       uint16
+    |     |  |  |  +--ro qos-profile-parameters
+    |     |  |  |  |  +--ro qos-type?   identityref
+    |     |  |  |  |  +--ro (value)?
+    |     |  |  |  +--ro dpn-parameters
+    |     |  |  |  +--ro vendor-parameters* [vendor-id vendor-type]
+    |     |  |  |     +--ro vendor-id      fpc:fpc-identity
+    |     |  |  |     +--ro vendor-type    identityref
+    |     |  |  |     +--ro (value)?
+    |     |  |  |        +--:(empty-type)
+    |     |  |  |           +--ro empty-type?    empty
+    |     |  |  +--ro parent-context?          fpc:fpc-context-id
+    |     |  +--ro vports* [vport-id]
+    |     |  |  +--ro vport-id         fpc:fpc-vport-id
+    |     |  |  +--ro policy-groups*   fpc:fpc-policy-group-id
+    |     |  +--ro monitors*
+    |     |     +--ro monitor-id?         fpc:fpc-identity
+    |     |     +--ro target?             fpc-identity
+    |     |     +--ro (event-config-value)?
+    |     |        +--:(periodic-config)
+    |     |        |  +--ro period?             uint32
+    |     |        +--:(threshold-config)
+    |     |        |  +--ro lo-thresh?          uint32
+    |     |        |  +--ro hi-thresh?          uint32
+    |     |        +--:(scheduled-config)
+    |     |        |  +--ro report-time?        uint32
+    |     |        +--:(events-config-ident)
+    |     |        |  +--ro event-identities*   identityref
+    |     |        +--:(events-config)
+    |     |           +--ro event-ids*          uint32
+    |     +--rw fpc-topology
+    |        +--rw domains* [domain-id]
+    |        |  +--rw domain-id           fpc:fpc-domain-id
+    |        |  +--rw domain-name?        string
+    |        |  +--rw domain-type?        string
+    |        |  +--rw domain-reference?   instance-identifier
+    |        |  +--rw basename?           fpc:fpc-identity
+    |        |  |       {fpc:fpc-basename-registry}?
+    |        |  +--rw base-state?         string
+    |        |  |       {fpc:fpc-basename-registry}?
+    |        |  +--rw base-checkpoint?    string
+    |        |          {fpc:fpc-basename-registry}?
+    |        +--rw dpn-id?              fpc:fpc-dpn-id
+    |        |       {fpc:fpc-basic-agent}?
+    |        +--rw control-protocols*   identityref
+    |        |       {fpc:fpc-basic-agent}?
+    |        +--rw dpn-groups* [dpn-group-id] {fpc:fpc-multi-dpn}?
+    |        |  +--rw dpn-group-id        fpc:fpc-dpn-group-id
+    |        |  +--rw data-plane-role?    identityref
+    |        |  +--rw access-type?        identityref
+    |        |  +--rw mobility-profile?   identityref
+    |        |  +--rw dpn-group-peers* [remote-dpn-group-id]
+    |        |  |  +--rw remote-dpn-group-id        fpc:fpc-dpn-group-id
+    |        |  |  +--rw remote-mobility-profile?   identityref
+    |        |  |  +--rw remote-data-plane-role?    identityref
+    |        |  |  +--rw remote-endpoint-address?   inet:ip-address
+    |        |  |  +--rw local-endpoint-address?    inet:ip-address
+    |        |  |  +--rw mtu-size?                  uint32
+    |        |  +--rw domains* [domain-id]
+    |        |     +--rw domain-id           fpc:fpc-domain-id
+    |        |     +--rw domain-name?        string
+    |        |     +--rw domain-type?        string
+    |        |     +--rw domain-reference?   instance-identifier
+    |        |     +--rw basename?           fpc:fpc-identity
+    |        |     |       {fpc:fpc-basename-registry}?
+    |        |     +--rw base-state?         string
+    |        |     |       {fpc:fpc-basename-registry}?
+    |        |     +--rw base-checkpoint?    string
+    |        |             {fpc:fpc-basename-registry}?
+    |        +--rw dpns* [dpn-id] {fpc:fpc-multi-dpn}?
+    |           +--rw dpn-id            fpc:fpc-dpn-id
+    |           +--rw dpn-name?         string
+    |           +--rw dpn-groups*       fpc:fpc-dpn-group-id
+    |           +--rw node-reference?   instance-identifier
+    +--rw fpc-agent-info
+       +--rw supported-features*      string
+       +--rw supported-events* [event]
+       |  +--rw event       identityref
+       |  +--rw event-id?   fpc:event-type-id
+       +--rw supported-error-types* [error-type]
+          +--rw error-type       identityref
+          +--rw error-type-id?   fpc:error-type-id
      ]]></artwork>
         <postamble></postamble>
       </figure>
