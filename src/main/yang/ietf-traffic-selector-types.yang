@@ -486,10 +486,14 @@ module ietf-traffic-selector-types {
   			description "Traffic Selector Format";
   		}
 		uses traffic-selector-base {
-			when "boolean(../ts-format/text() = 'ipv6-binary-selector-format') | boolean(../ts-format/text() = 'ipv4-binary-selector-format')";
+			when "boolean(../ts-format/text() ="
+			+ "'ipv6-binary-selector-format') |"
+			+ " boolean(../ts-format/text() ="
+			+ " 'ipv4-binary-selector-format')";
 		}
 		uses ipv4-binary-traffic-selector {
-			when "boolean(../ts-format/text() = 'ipv4-binary-selector-format')";
+			when "boolean(../ts-format/text() ="
+			+ " 'ipv4-binary-selector-format')";
 		}
 		uses ipv6-binary-traffic-selector {
 			when "boolean(../ts-format/text() = 'ipv6-binary-selector-format')";

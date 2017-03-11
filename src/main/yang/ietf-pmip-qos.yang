@@ -526,7 +526,8 @@ module ietf-pmip-qos {
                 description "Per-MN-Agg-Max-UL-Bit-Rate Case";
             }
             case per-session-agg-max-dl-case {
-                when "../attributetype = 'Per-Session-Agg-Max-DL-Bit-Rate-type'";
+                when "../attributetype = "
+                + "'Per-Session-Agg-Max-DL-Bit-Rate-type'";
                 container per-session-agg-max-dl {
                     uses qos-pmip:Per-Session-Agg-Max-Bit-Rate-Value;
                     description "Per-Session-Agg-Max-Bit-Rate Value";
@@ -534,7 +535,8 @@ module ietf-pmip-qos {
                 description "Per-Session-Agg-Max-Bit-Rate Case";
             }
             case per-session-agg-max-ul-case {
-                when "../attributetype = 'Per-Session-Agg-Max-UL-Bit-Rate-type'";
+                when "../attributetype = "
+                + "'Per-Session-Agg-Max-UL-Bit-Rate-type'";
                 container per-session-agg-max-ul {
                     uses qos-pmip:Per-Session-Agg-Max-Bit-Rate-Value;
                     description "Per-Session-Agg-Max-Bit-Rate Value";
