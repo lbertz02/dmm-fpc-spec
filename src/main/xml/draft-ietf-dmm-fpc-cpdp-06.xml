@@ -7621,189 +7621,208 @@ module ietf-dmm-fpc-policyext {
   </section>
 <!-- template for YANG model, end -->
   </section>
-  <section anchor="ietf-dmm-fpc-tree" title="FPC Information Model YANG Tree">
-    <t>This section only shows the YANG tree for the information model.</t>
+  <section anchor="ietf-dmm-fpc-tree" title="FPC YANG Data Model Structure">
+    <t>This section only shows the structure for FPC YANG model.</t>
 <t>
  <figure anchor="fig-ietf-dmm-fpc-tree"
               title="YANG FPC Agent Tree">
 <artwork align="center"><![CDATA[
 module: ietf-dmm-fpc
-   +--rw tenants
-   |  +--rw tenant* [tenant-id]
-   |     +--rw tenant-id       fpc:fpc-identity
-   |     +--rw fpc-policy
-   |     |  +--rw policy-groups* [policy-group-id]
-   |     |  |  +--rw policy-group-id    fpc:fpc-policy-group-id
-   |     |  |  +--rw policies*          fpc:fpc-policy-id
-   |     |  +--rw policies* [policy-id]
-   |     |  |  +--rw policy-id    fpc:fpc-policy-id
-   |     |  |  +--rw rules* [order]
-   |     |  |     +--rw order          uint32
-   |     |  |     +--rw descriptors* [descriptor-id]
-   |     |  |     |  +--rw descriptor-id    fpc:fpc-identity
-   |     |  |     |  +--rw direction?       fpc:fpc-direction
-   |     |  |     +--rw actions* [action-id]
-   |     |  |        +--rw action-order?   uint32
-   |     |  |        +--rw action-id       fpc:fpc-action-id-type
-   |     |  +--rw descriptors* [descriptor-id]
-   |     |  |  +--rw descriptor-id      fpc:fpc-identity
-   |     |  |  +--rw descriptor-type    identityref
-   |     |  |  +--rw (descriptor-value)?
-   |     |  |     +--:(all-traffic)
-   |     |  |        +--rw all-traffic?       empty
-   |     |  +--rw actions* [action-id]
-   |     |     +--rw action-id      fpc:fpc-action-id-type
-   |     |     +--rw action-type    identityref
-   |     |     +--rw (action-value)?
-   |     |        +--:(drop)
-   |     |           +--rw drop?          empty
-   |     +--ro fpc-mobility
-   |     |  +--ro contexts* [context-id]
-   |     |  |  +--ro context-id               fpc:fpc-context-id
-   |     |  |  +--ro vports*                  fpc:fpc-vport-id
-   |     |  |  +--ro dpn-group?               fpc:fpc-dpn-group-id
-   |     |  |  +--ro delegated-ip-prefixes*   inet:ip-prefix
-   |     |  |  +--ro ul {fpc:fpc-basic-agent}?
-   |     |  |  |  +--ro tunnel-local-address?         inet:ip-address
-   |     |  |  |  +--ro tunnel-remote-address?        inet:ip-address
-   |     |  |  |  +--ro mtu-size?                     uint32
-   |     |  |  |  +--ro mobility-tunnel-parameters
-   |     |  |  |  |  +--ro (profile-parameters)?
-   |     |  |  |  |     +--:(nothing)
-   |     |  |  |  |        +--ro none?   empty
-   |     |  |  |  +--ro nexthop
-   |     |  |  |  |  +--ro nexthop-type?   identityref
-   |     |  |  |  |  +--ro (nexthop-value)?
-   |     |  |  |  |     +--:(ip)
-   |     |  |  |  |     |  +--ro ip?             inet:ip-address
-   |     |  |  |  |     +--:(servicepath)
-   |     |  |  |  |        +--ro servicepath?    fpc:fpcp-service-path-id
-   |     |  |  |  +--ro qos-profile-parameters
-   |     |  |  |  |  +--ro qos-type?   identityref
-   |     |  |  |  |  +--ro (value)?
-   |     |  |  |  +--ro dpn-parameters
-   |     |  |  |  +--ro vendor-parameters* [vendor-id vendor-type]
-   |     |  |  |     +--ro vendor-id      fpc:fpc-identity
-   |     |  |  |     +--ro vendor-type    identityref
-   |     |  |  |     +--ro (value)?
-   |     |  |  |        +--:(empty-type)
-   |     |  |  |           +--ro empty-type?    empty
-   |     |  |  +--ro dl {fpc:fpc-basic-agent}?
-   |     |  |  |  +--ro tunnel-local-address?         inet:ip-address
-   |     |  |  |  +--ro tunnel-remote-address?        inet:ip-address
-   |     |  |  |  +--ro mtu-size?                     uint32
-   |     |  |  |  +--ro mobility-tunnel-parameters
-   |     |  |  |  |  +--ro (profile-parameters)?
-   |     |  |  |  |     +--:(nothing)
-   |     |  |  |  |        +--ro none?   empty
-   |     |  |  |  +--ro nexthop
-   |     |  |  |  |  +--ro nexthop-type?   identityref
-   |     |  |  |  |  +--ro (nexthop-value)?
-   |     |  |  |  |     +--:(ip)
-   |     |  |  |  |     |  +--ro ip?             inet:ip-address
-   |     |  |  |  |     +--:(servicepath)
-   |     |  |  |  |        +--ro servicepath?    fpc:fpcp-service-path-id
-   |     |  |  |  +--ro qos-profile-parameters
-   |     |  |  |  |  +--ro qos-type?   identityref
-   |     |  |  |  |  +--ro (value)?
-   |     |  |  |  +--ro dpn-parameters
-   |     |  |  |  +--ro vendor-parameters* [vendor-id vendor-type]
-   |     |  |  |     +--ro vendor-id      fpc:fpc-identity
-   |     |  |  |     +--ro vendor-type    identityref
-   |     |  |  |     +--ro (value)?
-   |     |  |  |        +--:(empty-type)
-   |     |  |  |           +--ro empty-type?    empty
-   |     |  |  +--ro dpns* [dpn-id direction] {fpc:fpc-multi-dpn}?
-   |     |  |  |  +--ro dpn-id                        fpc:fpc-dpn-id
-   |     |  |  |  +--ro direction                     fpc:fpc-direction
-   |     |  |  |  +--ro tunnel-local-address?         inet:ip-address
-   |     |  |  |  +--ro tunnel-remote-address?        inet:ip-address
-   |     |  |  |  +--ro mtu-size?                     uint32
-   |     |  |  |  +--ro mobility-tunnel-parameters
-   |     |  |  |  |  +--ro (profile-parameters)?
-   |     |  |  |  |     +--:(nothing)
-   |     |  |  |  |        +--ro none?   empty
-   |     |  |  |  +--ro nexthop
-   |     |  |  |  |  +--ro nexthop-type?   identityref
-   |     |  |  |  |  +--ro (nexthop-value)?
-   |     |  |  |  |     +--:(ip)
-   |     |  |  |  |     |  +--ro ip?             inet:ip-address
-   |     |  |  |  |     +--:(servicepath)
-   |     |  |  |  |        +--ro servicepath?    fpc:fpcp-service-path-id
-   |     |  |  |  +--ro qos-profile-parameters
-   |     |  |  |  |  +--ro qos-type?   identityref
-   |     |  |  |  |  +--ro (value)?
-   |     |  |  |  +--ro dpn-parameters
-   |     |  |  |  +--ro vendor-parameters* [vendor-id vendor-type]
-   |     |  |  |     +--ro vendor-id      fpc:fpc-identity
-   |     |  |  |     +--ro vendor-type    identityref
-   |     |  |  |     +--ro (value)?
-   |     |  |  |        +--:(empty-type)
-   |     |  |  |           +--ro empty-type?    empty
-   |     |  |  +--ro parent-context?          fpc:fpc-context-id
-   |     |  +--ro vports* [vport-id]
-   |     |  |  +--ro vport-id         fpc:fpc-vport-id
-   |     |  |  +--ro policy-groups*   fpc:fpc-policy-group-id
-   |     |  +--ro monitors*
-   |     |     +--ro monitor-id?         fpc:fpc-identity
-   |     |     +--ro target?             fpc-identity
-   |     |     +--ro (event-config-value)?
-   |     |        +--:(periodic-config)
-   |     |        |  +--ro period?             uint32
-   |     |        +--:(threshold-config)
-   |     |        |  +--ro lo-thresh?          uint32
-   |     |        |  +--ro hi-thresh?          uint32
-   |     |        +--:(scheduled-config)
-   |     |        |  +--ro report-time?        uint32
-   |     |        +--:(events-config-ident)
-   |     |        |  +--ro event-identities*   identityref
-   |     |        +--:(events-config)
-   |     |           +--ro event-ids*          uint32
-   |     +--rw fpc-topology
-   |        +--rw domains* [domain-id]
-   |        |  +--rw domain-id           fpc:fpc-domain-id
-   |        |  +--rw domain-name?        string
-   |        |  +--rw domain-type?        string
-   |        |  +--rw domain-reference?   instance-identifier
-   |        |  +--rw basename?           fpc:fpc-identity {fpc:fpc-basename-registry}?
-   |        |  +--rw base-state?         string {fpc:fpc-basename-registry}?
-   |        |  +--rw base-checkpoint?    string {fpc:fpc-basename-registry}?
-   |        +--rw dpn-id?              fpc:fpc-dpn-id {fpc:fpc-basic-agent}?
-   |        +--rw control-protocols*   identityref {fpc:fpc-basic-agent}?
-   |        +--rw dpn-groups* [dpn-group-id] {fpc:fpc-multi-dpn}?
-   |        |  +--rw dpn-group-id        fpc:fpc-dpn-group-id
-   |        |  +--rw data-plane-role?    identityref
-   |        |  +--rw access-type?        identityref
-   |        |  +--rw mobility-profile?   identityref
-   |        |  +--rw dpn-group-peers* [remote-dpn-group-id]
-   |        |  |  +--rw remote-dpn-group-id        fpc:fpc-dpn-group-id
-   |        |  |  +--rw remote-mobility-profile?   identityref
-   |        |  |  +--rw remote-data-plane-role?    identityref
-   |        |  |  +--rw remote-endpoint-address?   inet:ip-address
-   |        |  |  +--rw local-endpoint-address?    inet:ip-address
-   |        |  |  +--rw mtu-size?                  uint32
-   |        |  +--rw domains* [domain-id]
-   |        |     +--rw domain-id           fpc:fpc-domain-id
-   |        |     +--rw domain-name?        string
-   |        |     +--rw domain-type?        string
-   |        |     +--rw domain-reference?   instance-identifier
-   |        |     +--rw basename?           fpc:fpc-identity {fpc:fpc-basename-registry}?
-   |        |     +--rw base-state?         string {fpc:fpc-basename-registry}?
-   |        |     +--rw base-checkpoint?    string {fpc:fpc-basename-registry}?
-   |        +--rw dpns* [dpn-id] {fpc:fpc-multi-dpn}?
-   |           +--rw dpn-id            fpc:fpc-dpn-id
-   |           +--rw dpn-name?         string
-   |           +--rw dpn-groups*       fpc:fpc-dpn-group-id
-   |           +--rw node-reference?   instance-identifier
-   +--rw fpc-agent-info
-      +--rw supported-features*      string
-      +--rw supported-events* [event]
-      |  +--rw event       identityref
-      |  +--rw event-id?   fpc:event-type-id
-      +--rw supported-error-types* [error-type]
-         +--rw error-type       identityref
-         +--rw error-type-id?   fpc:error-type-id
-rpcs...
+    +--rw tenants
+    |  +--rw tenant* [tenant-id]
+    |     +--rw tenant-id       fpc:fpc-identity
+    |     +--rw fpc-policy
+    |     |  +--rw policy-groups* [policy-group-id]
+    |     |  |  +--rw policy-group-id    fpc:fpc-policy-group-id
+    |     |  |  +--rw policies*          fpc:fpc-policy-id
+    |     |  +--rw policies* [policy-id]
+    |     |  |  +--rw policy-id    fpc:fpc-policy-id
+    |     |  |  +--rw rules* [order]
+    |     |  |     +--rw order          uint32
+    |     |  |     +--rw descriptors* [descriptor-id]
+    |     |  |     |  +--rw descriptor-id    fpc:fpc-identity
+    |     |  |     |  +--rw direction?       fpc:fpc-direction
+    |     |  |     +--rw actions* [action-id]
+    |     |  |        +--rw action-order?   uint32
+    |     |  |        +--rw action-id       fpc:fpc-action-id-type
+    |     |  +--rw descriptors* [descriptor-id]
+    |     |  |  +--rw descriptor-id      fpc:fpc-identity
+    |     |  |  +--rw descriptor-type    identityref
+    |     |  |  +--rw (descriptor-value)?
+    |     |  |     +--:(all-traffic)
+    |     |  |        +--rw all-traffic?       empty
+    |     |  +--rw actions* [action-id]
+    |     |     +--rw action-id      fpc:fpc-action-id-type
+    |     |     +--rw action-type    identityref
+    |     |     +--rw (action-value)?
+    |     |        +--:(drop)
+    |     |           +--rw drop?          empty
+    |     +--ro fpc-mobility
+    |     |  +--ro contexts* [context-id]
+    |     |  |  +--ro context-id               fpc:fpc-context-id
+    |     |  |  +--ro vports*                  fpc:fpc-vport-id
+    |     |  |  +--ro dpn-group?               fpc:fpc-dpn-group-id
+    |     |  |  +--ro delegated-ip-prefixes*   inet:ip-prefix
+    |     |  |  +--ro ul {fpc:fpc-basic-agent}?
+    |     |  |  |  +--ro tunnel-local-address?         inet:ip-address
+    |     |  |  |  +--ro tunnel-remote-address?        inet:ip-address
+    |     |  |  |  +--ro mtu-size?                     uint32
+    |     |  |  |  +--ro mobility-tunnel-parameters
+    |     |  |  |  |  +--ro (profile-parameters)?
+    |     |  |  |  |     +--:(nothing)
+    |     |  |  |  |        +--ro none?   empty
+    |     |  |  |  +--ro nexthop
+    |     |  |  |  |  +--ro nexthop-type?   identityref
+    |     |  |  |  |  +--ro (nexthop-value)?
+    |     |  |  |  |     +--:(ip-nexthop)
+    |     |  |  |  |     |  +--ro ip?             inet:ip-address
+    |     |  |  |  |     +--:(macaddress-nexthop)
+    |     |  |  |  |     |  +--ro macaddress?     ytypes:mac-address
+    |     |  |  |  |     +--:(servicepath-nexthop)
+    |     |  |  |  |     |  +--ro servicepath?    fpc:fpc-service-path-id
+    |     |  |  |  |     +--:(mplslabel-nexthop)
+    |     |  |  |  |     |  +--ro lsp?            fpc:fpc-mpls-label
+    |     |  |  |  |     +--:(if-nexthop)
+    |     |  |  |  |        +--ro if-index?       uint16
+    |     |  |  |  +--ro qos-profile-parameters
+    |     |  |  |  |  +--ro qos-type?   identityref
+    |     |  |  |  |  +--ro (value)?
+    |     |  |  |  +--ro dpn-parameters
+    |     |  |  |  +--ro vendor-parameters* [vendor-id vendor-type]
+    |     |  |  |     +--ro vendor-id      fpc:fpc-identity
+    |     |  |  |     +--ro vendor-type    identityref
+    |     |  |  |     +--ro (value)?
+    |     |  |  |        +--:(empty-type)
+    |     |  |  |           +--ro empty-type?    empty
+    |     |  |  +--ro dl {fpc:fpc-basic-agent}?
+    |     |  |  |  +--ro tunnel-local-address?         inet:ip-address
+    |     |  |  |  +--ro tunnel-remote-address?        inet:ip-address
+    |     |  |  |  +--ro mtu-size?                     uint32
+    |     |  |  |  +--ro mobility-tunnel-parameters
+    |     |  |  |  |  +--ro (profile-parameters)?
+    |     |  |  |  |     +--:(nothing)
+    |     |  |  |  |        +--ro none?   empty
+    |     |  |  |  +--ro nexthop
+    |     |  |  |  |  +--ro nexthop-type?   identityref
+    |     |  |  |  |  +--ro (nexthop-value)?
+    |     |  |  |  |     +--:(ip-nexthop)
+    |     |  |  |  |     |  +--ro ip?             inet:ip-address
+    |     |  |  |  |     +--:(macaddress-nexthop)
+    |     |  |  |  |     |  +--ro macaddress?     ytypes:mac-address
+    |     |  |  |  |     +--:(servicepath-nexthop)
+    |     |  |  |  |     |  +--ro servicepath?    fpc:fpc-service-path-id
+    |     |  |  |  |     +--:(mplslabel-nexthop)
+    |     |  |  |  |     |  +--ro lsp?            fpc:fpc-mpls-label
+    |     |  |  |  |     +--:(if-nexthop)
+    |     |  |  |  |        +--ro if-index?       uint16
+    |     |  |  |  +--ro qos-profile-parameters
+    |     |  |  |  |  +--ro qos-type?   identityref
+    |     |  |  |  |  +--ro (value)?
+    |     |  |  |  +--ro dpn-parameters
+    |     |  |  |  +--ro vendor-parameters* [vendor-id vendor-type]
+    |     |  |  |     +--ro vendor-id      fpc:fpc-identity
+    |     |  |  |     +--ro vendor-type    identityref
+    |     |  |  |     +--ro (value)?
+    |     |  |  |        +--:(empty-type)
+    |     |  |  |           +--ro empty-type?    empty
+    |     |  |  +--ro dpns* [dpn-id direction] {fpc:fpc-multi-dpn}?
+    |     |  |  |  +--ro dpn-id                        fpc:fpc-dpn-id
+    |     |  |  |  +--ro direction                     fpc:fpc-direction
+    |     |  |  |  +--ro tunnel-local-address?         inet:ip-address
+    |     |  |  |  +--ro tunnel-remote-address?        inet:ip-address
+    |     |  |  |  +--ro mtu-size?                     uint32
+    |     |  |  |  +--ro mobility-tunnel-parameters
+    |     |  |  |  |  +--ro (profile-parameters)?
+    |     |  |  |  |     +--:(nothing)
+    |     |  |  |  |        +--ro none?   empty
+    |     |  |  |  +--ro nexthop
+    |     |  |  |  |  +--ro nexthop-type?   identityref
+    |     |  |  |  |  +--ro (nexthop-value)?
+    |     |  |  |  |     +--:(ip-nexthop)
+    |     |  |  |  |     |  +--ro ip?             inet:ip-address
+    |     |  |  |  |     +--:(macaddress-nexthop)
+    |     |  |  |  |     |  +--ro macaddress?     ytypes:mac-address
+    |     |  |  |  |     +--:(servicepath-nexthop)
+    |     |  |  |  |     |  +--ro servicepath?    fpc:fpc-service-path-id
+    |     |  |  |  |     +--:(mplslabel-nexthop)
+    |     |  |  |  |     |  +--ro lsp?            fpc:fpc-mpls-label
+    |     |  |  |  |     +--:(if-nexthop)
+    |     |  |  |  |        +--ro if-index?       uint16
+    |     |  |  |  +--ro qos-profile-parameters
+    |     |  |  |  |  +--ro qos-type?   identityref
+    |     |  |  |  |  +--ro (value)?
+    |     |  |  |  +--ro dpn-parameters
+    |     |  |  |  +--ro vendor-parameters* [vendor-id vendor-type]
+    |     |  |  |     +--ro vendor-id      fpc:fpc-identity
+    |     |  |  |     +--ro vendor-type    identityref
+    |     |  |  |     +--ro (value)?
+    |     |  |  |        +--:(empty-type)
+    |     |  |  |           +--ro empty-type?    empty
+    |     |  |  +--ro parent-context?          fpc:fpc-context-id
+    |     |  +--ro vports* [vport-id]
+    |     |  |  +--ro vport-id         fpc:fpc-vport-id
+    |     |  |  +--ro policy-groups*   fpc:fpc-policy-group-id
+    |     |  +--ro monitors*
+    |     |     +--ro monitor-id?         fpc:fpc-identity
+    |     |     +--ro target?             fpc-identity
+    |     |     +--ro (event-config-value)?
+    |     |        +--:(periodic-config)
+    |     |        |  +--ro period?             uint32
+    |     |        +--:(threshold-config)
+    |     |        |  +--ro lo-thresh?          uint32
+    |     |        |  +--ro hi-thresh?          uint32
+    |     |        +--:(scheduled-config)
+    |     |        |  +--ro report-time?        uint32
+    |     |        +--:(events-config-ident)
+    |     |        |  +--ro event-identities*   identityref
+    |     |        +--:(events-config)
+    |     |           +--ro event-ids*          uint32
+    |     +--rw fpc-topology
+    |        +--rw domains* [domain-id]
+    |        |  +--rw domain-id           fpc:fpc-domain-id
+    |        |  +--rw domain-name?        string
+    |        |  +--rw domain-type?        string
+    |        |  +--rw domain-reference?   instance-identifier
+    |        |  +--rw basename?           fpc:fpc-identity
+    |        |  |       {fpc:fpc-basename-registry}?
+    |        |  +--rw base-state?         string {fpc:fpc-basename-registry}?
+    |        |  +--rw base-checkpoint?    string {fpc:fpc-basename-registry}?
+    |        +--rw dpn-id?              fpc:fpc-dpn-id {fpc:fpc-basic-agent}?
+    |        +--rw control-protocols*   identityref {fpc:fpc-basic-agent}?
+    |        +--rw dpn-groups* [dpn-group-id] {fpc:fpc-multi-dpn}?
+    |        |  +--rw dpn-group-id        fpc:fpc-dpn-group-id
+    |        |  +--rw data-plane-role?    identityref
+    |        |  +--rw access-type?        identityref
+    |        |  +--rw mobility-profile?   identityref
+    |        |  +--rw dpn-group-peers* [remote-dpn-group-id]
+    |        |  |  +--rw remote-dpn-group-id        fpc:fpc-dpn-group-id
+    |        |  |  +--rw remote-mobility-profile?   identityref
+    |        |  |  +--rw remote-data-plane-role?    identityref
+    |        |  |  +--rw remote-endpoint-address?   inet:ip-address
+    |        |  |  +--rw local-endpoint-address?    inet:ip-address
+    |        |  |  +--rw mtu-size?                  uint32
+    |        |  +--rw domains* [domain-id]
+    |        |     +--rw domain-id           fpc:fpc-domain-id
+    |        |     +--rw domain-name?        string
+    |        |     +--rw domain-type?        string
+    |        |     +--rw domain-reference?   instance-identifier
+    |        |     +--rw basename?           fpc:fpc-identity
+    |        |     |       {fpc:fpc-basename-registry}?
+    |        |     +--rw base-state?         string {fpc:fpc-basename-registry}?
+    |        |     +--rw base-checkpoint?    string {fpc:fpc-basename-registry}?
+    |        +--rw dpns* [dpn-id] {fpc:fpc-multi-dpn}?
+    |           +--rw dpn-id            fpc:fpc-dpn-id
+    |           +--rw dpn-name?         string
+    |           +--rw dpn-groups*       fpc:fpc-dpn-group-id
+    |           +--rw node-reference?   instance-identifier
+    +--rw fpc-agent-info
+       +--rw supported-features*      string
+       +--rw supported-events* [event]
+       |  +--rw event       identityref
+       |  +--rw event-id?   fpc:event-type-id
+       +--rw supported-error-types* [error-type]
+          +--rw error-type       identityref
+          +--rw error-type-id?   fpc:error-type-id
      ]]></artwork>
         <postamble></postamble>
       </figure>
