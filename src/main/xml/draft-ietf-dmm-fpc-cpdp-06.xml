@@ -7785,10 +7785,14 @@ module: ietf-dmm-fpc
     |        |  +--rw domain-reference?   instance-identifier
     |        |  +--rw basename?           fpc:fpc-identity
     |        |  |       {fpc:fpc-basename-registry}?
-    |        |  +--rw base-state?         string {fpc:fpc-basename-registry}?
-    |        |  +--rw base-checkpoint?    string {fpc:fpc-basename-registry}?
-    |        +--rw dpn-id?              fpc:fpc-dpn-id {fpc:fpc-basic-agent}?
-    |        +--rw control-protocols*   identityref {fpc:fpc-basic-agent}?
+    |        |  +--rw base-state?         string
+    |        |  |       {fpc:fpc-basename-registry}?
+    |        |  +--rw base-checkpoint?    string
+    |        |          {fpc:fpc-basename-registry}?
+    |        +--rw dpn-id?              fpc:fpc-dpn-id
+    |        |       {fpc:fpc-basic-agent}?
+    |        +--rw control-protocols*   identityref
+    |        |       {fpc:fpc-basic-agent}?
     |        +--rw dpn-groups* [dpn-group-id] {fpc:fpc-multi-dpn}?
     |        |  +--rw dpn-group-id        fpc:fpc-dpn-group-id
     |        |  +--rw data-plane-role?    identityref
@@ -7808,8 +7812,10 @@ module: ietf-dmm-fpc
     |        |     +--rw domain-reference?   instance-identifier
     |        |     +--rw basename?           fpc:fpc-identity
     |        |     |       {fpc:fpc-basename-registry}?
-    |        |     +--rw base-state?         string {fpc:fpc-basename-registry}?
-    |        |     +--rw base-checkpoint?    string {fpc:fpc-basename-registry}?
+    |        |     +--rw base-state?         string
+    |        |     |       {fpc:fpc-basename-registry}?
+    |        |     +--rw base-checkpoint?    string
+    |        |             {fpc:fpc-basename-registry}?
     |        +--rw dpns* [dpn-id] {fpc:fpc-multi-dpn}?
     |           +--rw dpn-id            fpc:fpc-dpn-id
     |           +--rw dpn-name?         string
