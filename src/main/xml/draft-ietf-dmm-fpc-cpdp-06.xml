@@ -1011,12 +1011,11 @@ DPN         |                 DPN        |
 
     <section anchor="portscontext" title="FPC for Mobility Management">
 
-    <t> FPC for Mobility Management (FPC Mobility) requires the creation
-        of a Vport and a Context. A mobility session is abstracted as a
-        Context with its associated runtime concrete attributes, such as
-        tunnel endpoints, tunnel identifiers, delegated prefix(es) and
-        routing information, etc. A Vport abstracts a set of policies
-        applied to the Context.</t>
+    <t> The FPC-Mobility consists of Vports and Contexts. A mobility
+        session is abstracted as a Context with its associated runtime
+        concrete attributes, such as tunnel endpoints, tunnel identifiers,
+        delegated prefix(es) and routing information, etc. A Vport
+        abstracts a set of policies applied to the Context.</t>
 
         <section anchor="port" title="Vport">
 
