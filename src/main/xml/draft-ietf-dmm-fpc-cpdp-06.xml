@@ -5193,8 +5193,8 @@ module ietf-pmip-qos {
     prefix "qos-pmip";
 
     import ietf-inet-types {
-    	prefix inet;
-    	revision-date 2013-07-15;
+        prefix inet;
+        revision-date 2013-07-15;
     }
     import ietf-traffic-selector-types { prefix traffic-selectors; }
 
@@ -5243,10 +5243,10 @@ module ietf-pmip-qos {
     // Type Definitions
 
     // QoS Option Field Type Definitions
-	typedef sr-id {
-		type uint8;
-	    description
-	     "An 8-bit unsigned integer used]
+    typedef sr-id {
+        type uint8;
+        description
+         "An 8-bit unsigned integer used]
         for identifying the QoS Service Request.  Its uniqueness is
         within the scope of a mobility session.  The local mobility
         anchor always allocates the Service Request Identifier.
@@ -5260,11 +5260,11 @@ module ietf-pmip-qos {
     }
 
     typedef traffic-class {
-    	type inet:dscp;
-    	description
+        type inet:dscp;
+        description
         "Traffic Class consists of a 6-bit DSCP field followed by a
          2-bit reserved field.";
-	   reference
+       reference
          "RFC 3289: Management Information Base for the Differentiated
                     Services Architecture
           RFC 2474: Definition of the Differentiated Services Field
@@ -5274,36 +5274,36 @@ module ietf-pmip-qos {
     }
 
     typedef operational-code {
-    	type enumeration {
-    		enum RESPONSE {
+        type enumeration {
+            enum RESPONSE {
           value 0;
           description "Response to a QoS request";
         }
-    		enum ALLOCATE {
+            enum ALLOCATE {
           value 1;
           description "Request to allocate QoS resources";
         }
-    		enum DE-ALLOCATE {
+            enum DE-ALLOCATE {
           value 2;
           description "Request to de-Allocate QoS resources";
         }
-    		enum MODIFY {
+            enum MODIFY {
           value 3;
           description "Request to modify QoS parameters for a
               previously negotiated QoS Service Request";
         }
-    		enum QUERY {
+            enum QUERY {
           value 4;
           description "Query to list the previously negotiated QoS
               Service Requests that are still active";
         }
-    		enum NEGOTIATE {
+            enum NEGOTIATE {
           value 5;
           description "Response to a QoS Service Request with a
             counter QoS proposal";
         }
-    	}
-    	description
+        }
+        description
        "1-octet Operational code indicates the type of QoS request.
            Reserved values:   (6) to (255)
                 Currently not used.  Receiver MUST ignore the option
@@ -5315,12 +5315,12 @@ module ietf-pmip-qos {
     //The enumeration value for mapping - don't confuse with the
     //  identities
     typedef qos-attrubite-type-enum {
-    	type enumeration {
-    		enum Reserved {
+        type enumeration {
+            enum Reserved {
           value 0;
           description "This value is reserved and cannot be used";
         }
-    		enum Per-MN-Agg-Max-DL-Bit-Rate {
+            enum Per-MN-Agg-Max-DL-Bit-Rate {
           value 1;
           description "Per-Mobile-Node Aggregate Maximum Downlink
               Bit Rate.";
@@ -5368,60 +5368,60 @@ module ietf-pmip-qos {
           value 11;
           description "QoS Vendor-Specific Attribute.";
         }
-    	}
- 		description
-		"8-bit unsigned integer indicating the type of the QoS
-	      attribute.  This specification reserves the following
+        }
+        description
+        "8-bit unsigned integer indicating the type of the QoS
+          attribute.  This specification reserves the following
         reserved values.
- 	      (12) to (254) -  Reserved
- 	         These values are reserved for future allocation.
+          (12) to (254) -  Reserved
+             These values are reserved for future allocation.
 
- 	      (255)  Reserved
- 	         This value is reserved and cannot be used.";
+          (255)  Reserved
+             This value is reserved and cannot be used.";
     }
 
     // Attribute Type as Identities
     // Added for convenience of inclusion and extension in
     //    other YANG modules.
     identity qos-attribute-type {
-    	description
-    		"Base type for Quality of Service Attributes";
+        description
+            "Base type for Quality of Service Attributes";
     }
 
     identity Per-MN-Agg-Max-DL-Bit-Rate-type {
-    	base qos-attribute-type;
-    	description
-    		"Per-Mobile-Node Aggregate Maximum Downlink Bit Rate.";
-	  }
+        base qos-attribute-type;
+        description
+            "Per-Mobile-Node Aggregate Maximum Downlink Bit Rate.";
+      }
 
- 	identity Per-MN-Agg-Max-UL-Bit-Rate-type {
-    	base qos-attribute-type;
-    	description
-    		"Per-Mobile-Node Aggregate Maximum Uplink Bit Rate";
- 	}
+    identity Per-MN-Agg-Max-UL-Bit-Rate-type {
+        base qos-attribute-type;
+        description
+            "Per-Mobile-Node Aggregate Maximum Uplink Bit Rate";
+    }
 
- 	identity Per-Session-Agg-Max-DL-Bit-Rate-type {
-    	base qos-attribute-type;
-    	description
+    identity Per-Session-Agg-Max-DL-Bit-Rate-type {
+        base qos-attribute-type;
+        description
        "Per-Mobility-Session Aggregate Maximum Downlink Bit Rate.";
   }
 
- 	identity Per-Session-Agg-Max-UL-Bit-Rate-type {
-    	base qos-attribute-type;
-    	description
+    identity Per-Session-Agg-Max-UL-Bit-Rate-type {
+        base qos-attribute-type;
+        description
        "Per-Mobility-Session Aggregate Maximum Uplink Bit Rate.";
- 	}
+    }
 
- 	identity Allocation-Retention-Priority-type {
-    	base qos-attribute-type;
-    	description
-    		"Allocation and Retention Priority.";
- 	}
+    identity Allocation-Retention-Priority-type {
+        base qos-attribute-type;
+        description
+            "Allocation and Retention Priority.";
+    }
 
- 	identity Aggregate-Max-DL-Bit-Rate-type {
-	  	base qos-attribute-type;
-	  	description "Aggregate Maximum Downlink Bit Rate.";
- 	}
+    identity Aggregate-Max-DL-Bit-Rate-type {
+        base qos-attribute-type;
+        description "Aggregate Maximum Downlink Bit Rate.";
+    }
 
   identity Aggregate-Max-UL-Bit-Rate-type {
       base qos-attribute-type;
@@ -5457,34 +5457,34 @@ module ietf-pmip-qos {
           requested/allocated for all the mobile node's IP flows.
           The measurement units for Per-MN-Agg-Max-DL-Bit-Rate are
           bits per second.";
-	}
+    }
 
- 	typedef Per-MN-Agg-Max-UL-Bit-Rate-Value {
-    	type uint32;
-    	description
-    		"This is a 32-bit unsigned integer that
-    	      indicates the aggregate maximum uplink bit rate that is
+    typedef Per-MN-Agg-Max-UL-Bit-Rate-Value {
+        type uint32;
+        description
+            "This is a 32-bit unsigned integer that
+              indicates the aggregate maximum uplink bit rate that is
             requested/allocated for the mobile node's IP flows.  The
             measurement units for Per-MN-Agg-Max-UL-Bit-Rate are bits
             per second.";
- 	}
+    }
 
- 	// Generic Structure for the uplink and downlink
- 	grouping Per-Session-Agg-Max-Bit-Rate-Value {
- 		leaf max-rate {
- 			type uint32;
- 			mandatory true;
- 			description
+    // Generic Structure for the uplink and downlink
+    grouping Per-Session-Agg-Max-Bit-Rate-Value {
+        leaf max-rate {
+            type uint32;
+            mandatory true;
+            description
        "This is a 32-bit unsigned integer
         that indicates the aggregate maximum bit rate that is
         requested/allocated for all the IP flows associated with
         that mobility session.  The measurement units for
         Per-Session-Agg-Max-UL/DL-Bit-Rate are bits per second.";
- 		}
- 		leaf service-flag {
-			type boolean;
-			mandatory true;
-			description
+        }
+        leaf service-flag {
+            type boolean;
+            mandatory true;
+            description
        "This flag is used for extending the scope of the
             target flows for Per-Session-Agg-Max-UL/DL-Bit-Rate
             from(UL)/to(DL) the mobile node's other mobility sessions
@@ -5506,15 +5506,15 @@ module ietf-pmip-qos {
             -  The (S) flag MUST NOT be set to a value of (1) when there
                is no Service Identifier associated with the mobility
                session.";
-			reference
+            reference
         "RFC 5149 - Service Selection mobility option";
- 		}
- 		leaf exclude-flag {
- 			type boolean;
- 			mandatory true;
- 			description
+        }
+        leaf exclude-flag {
+            type boolean;
+            mandatory true;
+            description
         "This flag is used to request that the uplink/downlink
- 			      flows for which the network is providing
+                  flows for which the network is providing
             Guaranteed-Bit-Rate service be excluded from the
             target IP flows for which
             Per-Session-Agg-Max-UL/DL-Bit-Rate is measured.
@@ -5523,7 +5523,7 @@ module ietf-pmip-qos {
                request is to exclude the IP flows for which
                Guaranteed-UL/DL-Bit-Rate is negotiated from the flows
                for which Per-Session-Agg-Max-UL/DL-Bit-Rate
- 				       is measured.
+                   is measured.
 
             -  When the (E) flag is set to a value of (0), then the
                request is not to exclude any IP flows from the target
@@ -5535,17 +5535,17 @@ module ietf-pmip-qos {
                sharing the Service Identifier associated with this
                mobility session from the target flows for which
                Per-Session-Agg-Max-UL/DL-Bit-Rate is measured.";
- 		}
+        }
     description "Per-Session-Agg-Max-Bit-Rate Value";
- 	}
+    }
 
- 	grouping Allocation-Retention-Priority-Value {
- 		leaf prioirty-level {
- 			type uint8 {
- 				range "0..15";
- 			}
- 			mandatory true;
- 			description
+    grouping Allocation-Retention-Priority-Value {
+        leaf prioirty-level {
+            type uint8 {
+            range "0..15";
+            }
+            mandatory true;
+            description
         "This is a 4-bit unsigned integer value.  It is used to decide
         whether a mobility session establishment or modification
         request can be accepted; this is typically used for
@@ -5563,28 +5563,28 @@ module ietf-pmip-qos {
         operator domain.  Values 9 to 15 may be assigned to resources
         that are authorized by the home network and thus applicable
         when a mobile node is roaming.";
- 		}
- 		leaf premption-capability {
- 			type enumeration {
-				enum enabled {
+        }
+        leaf premption-capability {
+            type enumeration {
+            enum enabled {
           value 0;
           description "enabled";
         }
-				enum disabled {
+            enum disabled {
           value 1;
           description "disabled";
         }
-				enum reserved1 {
+            enum reserved1 {
           value 2;
           description "reserved1";
         }
-				enum reserved2 {
+            enum reserved2 {
           value 3;
           description "reserved2";
         }
- 			}
- 			mandatory true;
- 			description
+            }
+            mandatory true;
+            description
        "This is a 2-bit unsigned integer value.  It defines whether a
         service data flow can get resources that were already
         assigned to another service data flow with a lower priority
@@ -5598,28 +5598,28 @@ module ietf-pmip-qos {
          is not allowed to get resources that were already assigned to
          another IP data flow with a lower priority level.  The values
          (2) and (3) are reserved.";
- 		}
- 		leaf premption-vulnerability {
- 			type enumeration {
-				enum enabled {
+        }
+        leaf premption-vulnerability {
+            type enumeration {
+            enum enabled {
           value 0;
           description "enabled";
         }
-				enum disabled {
+            enum disabled {
           value 1;
           description "disabled";
         }
-				enum reserved1 {
+            enum reserved1 {
           value 2;
           description "reserved1";
         }
-				enum reserved2 {
+            enum reserved2 {
           value 3;
           description "reserved2";
         }
- 			}
- 			mandatory true;
- 			description
+            }
+            mandatory true;
+            description
        "This is a 2-bit unsigned integer value.  It defines whether a
          service data flow can lose the resources assigned to it in
          order to admit a service data flow with a higher priority
@@ -5634,77 +5634,77 @@ module ietf-pmip-qos {
            assigned to the IP data flow shall not be preempted and
            allocated to a service data flow with a higher priority
            level.  The values (2) and (3) are reserved.";
- 		}
+        }
     description "Allocation-Retention-Priority Value";
- 	}
+    }
 
- 	typedef Aggregate-Max-DL-Bit-Rate-Value {
-	  	type uint32;
-	  	description
-	  		"This is a 32-bit unsigned integer that
+    typedef Aggregate-Max-DL-Bit-Rate-Value {
+        type uint32;
+        description
+            "This is a 32-bit unsigned integer that
          indicates the aggregate maximum downlink bit rate that is
          requested/allocated for downlink IP flows.  The measurement
          units for Aggregate-Max-DL-Bit-Rate are bits per second.";
- 	}
+    }
 
-  	typedef Aggregate-Max-UL-Bit-Rate-Value {
-    	type uint32;
-    	description
-    		"This is a 32-bit unsigned integer that
+    typedef Aggregate-Max-UL-Bit-Rate-Value {
+        type uint32;
+        description
+            "This is a 32-bit unsigned integer that
          indicates the aggregate maximum downlink bit rate that is
          requested/allocated for downlink IP flows.  The measurement
          units for Aggregate-Max-DL-Bit-Rate are bits per second.";
-  	}
+    }
 
-  	typedef Guaranteed-DL-Bit-Rate-Value {
-	  	type uint32;
-	  	description
-	  		"This is a 32-bit unsigned integer that
+    typedef Guaranteed-DL-Bit-Rate-Value {
+        type uint32;
+        description
+            "This is a 32-bit unsigned integer that
          indicates the guaranteed bandwidth in bits per second for
          downlink IP flows.  The measurement units for
          Guaranteed-DL-Bit-Rate are bits per second.";
-  	}
+    }
 
-  	typedef Guaranteed-UL-Bit-Rate-Value {
-    	type uint32;
-    	description
-    		"This is a 32-bit unsigned integer that
+    typedef Guaranteed-UL-Bit-Rate-Value {
+        type uint32;
+        description
+            "This is a 32-bit unsigned integer that
          indicates the guaranteed bandwidth in bits per second
          for uplink IP flows.  The measurement units for
          Guaranteed-UL-Bit-Rate are bits per second.";
-  	}
+    }
 
-  	grouping QoS-Vendor-Specific-Attribute-Value-Base {
-  		leaf vendorid {
-  			type uint32;
-  			mandatory true;
-  			description
+    grouping QoS-Vendor-Specific-Attribute-Value-Base {
+        leaf vendorid {
+            type uint32;
+            mandatory true;
+            description
          "The Vendor ID is the SMI (Structure of Management
           Information) Network Management Private Enterprise Code of
           the IANA-maintained 'Private Enterprise Numbers'
           registry.";
-  			reference
+            reference
           "'PRIVATE ENTERPRISE NUMBERS', SMI Network Management
             Private Enterprise Codes, April 2014,
              <http://www.iana.org/assignments/enterprise-numbers>";
-  		}
-  		leaf subtype {
-  			type uint8;
-  			mandatory true;
-  			description
+        }
+        leaf subtype {
+            type uint8;
+            mandatory true;
+            description
           "An 8-bit field indicating the type of vendor-specific
            information carried in the option.  The namespace for this
            sub-type is managed by the vendor identified by the
            Vendor ID field.";
-  		}
-    	description
+        }
+        description
         "QoS Vendor-Specific Attribute.";
-  	}
+    }
 
     //NOTE - We do NOT add the Status Codes or other changes in
     // PMIP in this module
 
-  	//Primary Structures (groupings)
+    //Primary Structures (groupings)
     grouping qosattribute {
         leaf attributetype {
             type identityref {
@@ -5714,7 +5714,7 @@ module ietf-pmip-qos {
             description "the attribute type";
         }
 
-  		  //All of the sub-types by constraint
+          //All of the sub-types by constraint
         choice attribute-choice {
             case per-mn-agg-max-dl-case {
                 when "../attributetype = "
@@ -5805,7 +5805,7 @@ module ietf-pmip-qos {
         description "PMIP QoS Attribute";
     }
 
-  	grouping qosoption {
+    grouping qosoption {
         leaf srid {
             type sr-id;
             mandatory true;
@@ -5828,7 +5828,7 @@ module ietf-pmip-qos {
             description "Attributes";
         }
         description "PMIP QoS Option";
-  	}
+    }
 }
 
 <CODE ENDS>]]></artwork>
@@ -5849,8 +5849,8 @@ module ietf-traffic-selector-types {
  prefix "traffic-selectors";
 
  import ietf-inet-types {
- 	prefix inet;
- 	revision-date 2013-07-15;
+    prefix inet;
+    revision-date 2013-07-15;
  }
 
  organization "IETF Distributed Mobility Management (DMM)
@@ -5890,59 +5890,59 @@ module ietf-traffic-selector-types {
  without warranty as described in the Simplified BSD License.";
 
  revision 2016-01-14 {
- 	description "Updated for IETF-PACKET-FIELDS module alignment";
- 	reference
- 		"draft-ietf-netmod-acl-model-06";
+    description "Updated for IETF-PACKET-FIELDS module alignment";
+    reference
+        "draft-ietf-netmod-acl-model-06";
  }
 
  revision 2016-01-12 {
  description "Initial revision";
  reference
- 	"RFC 6088: Traffic Selectors for Flow Bindings";
+    "RFC 6088: Traffic Selectors for Flow Bindings";
  }
 
  // Identities
- 	identity traffic-selector-format {
- 		description
- 		 "The base type for Traffic-Selector Formats";
- 	}
+    identity traffic-selector-format {
+        description
+         "The base type for Traffic-Selector Formats";
+    }
 
- 	identity ipv4-binary-selector-format {
- 		base traffic-selector-format;
- 		description
- 			"IPv4 Binary Traffic Selector Format";
- 	}
+    identity ipv4-binary-selector-format {
+        base traffic-selector-format;
+        description
+            "IPv4 Binary Traffic Selector Format";
+    }
 
- 	identity ipv6-binary-selector-format {
- 		base traffic-selector-format;
- 		description
- 			"IPv6 Binary Traffic Selector Format";
- 	}
+    identity ipv6-binary-selector-format {
+        base traffic-selector-format;
+        description
+            "IPv6 Binary Traffic Selector Format";
+    }
 
- 	// Type definitions and groupings
- 	typedef ipsec-spi {
- 		type uint32;
- 		description
- 			"This type defines the first 32-bit IPsec
- 			 Security Parameter Index (SPI) value on data
- 			 packets sent from a corresponding node to the
+    // Type definitions and groupings
+    typedef ipsec-spi {
+        type uint32;
+        description
+            "This type defines the first 32-bit IPsec
+             Security Parameter Index (SPI) value on data
+             packets sent from a corresponding node to the
        mobile node as seen by the home agent. This field
        is defined in [RFC4303].";
- 			reference
- 			 "RFC 4303: IP Encapsulating Security
- 			 Payload (ESP)";
- 	}
+            reference
+             "RFC 4303: IP Encapsulating Security
+             Payload (ESP)";
+    }
 
- 	grouping traffic-selector-base {
- 		description "A grouping of the commen leaves between the
+    grouping traffic-selector-base {
+        description "A grouping of the commen leaves between the
        v4 and v6 Traffic Selectors";
- 	  container ipsec-spi-range {
- 	    presence "Enables setting ipsec spi range";
- 	    description
+      container ipsec-spi-range {
+        presence "Enables setting ipsec spi range";
+        description
        "Inclusive range representing IPSec Security Parameter
        Indices to be used. When only start-spi is present, it
        represents a single spi.";
-	 	  leaf start-spi {
+          leaf start-spi {
        type ipsec-spi;
        mandatory true;
        description
@@ -5951,14 +5951,14 @@ module ietf-traffic-selector-types {
          packets sent from a corresponding node to the mobile
          node as seen by the home agent.
          This field is defined in [RFC4303].";
-	 		}
-	 		leaf end-spi {
-	 		  type ipsec-spi;
-	 		  must ". >= ../start-spi" {
-	 		    error-message
-	 		      "The end-spi must be greater than or equal
-	 		       to start-spi";
-	 		}
+            }
+            leaf end-spi {
+              type ipsec-spi;
+              must ". >= ../start-spi" {
+                error-message
+                  "The end-spi must be greater than or equal
+                   to start-spi";
+            }
       description
         "If more than one contiguous SPI value needs to be matched,
         then this field can be used to indicate the end value of
@@ -5970,32 +5970,32 @@ module ietf-traffic-selector-types {
         When this field is included, the receiver will match all
         of the SPI values between fields start-spi and end-spi,
         inclusive of start-spi and end-spi.";
-	 		}
- 	 }
- 	 container source-port-range {
- 	   presence "Enables setting source port range";
- 	   description
+            }
+     }
+     container source-port-range {
+       presence "Enables setting source port range";
+       description
        "Inclusive range representing source ports to be used.
         When only start-port is present, it represents a single
-	 		  port.";
-	 	 leaf start-port {
-	 			type inet:port-number;
-	 			mandatory true;
-	 			description
+              port.";
+         leaf start-port {
+            type inet:port-number;
+            mandatory true;
+            description
          "This field identifies the first 16-bit source port number,
          from the range of port numbers to be matched, on data
          packets sent from a corresponding node to the mobile node
          as seen by the home agent.
          This is from the range of port numbers defined by IANA
-	 		   (http://www.iana.org).";
-	 	 }
-	 	 leaf end-port {
-	 			type inet:port-number;
-	 			must ". >= ../start-port" {
-	 	    error-message
+               (http://www.iana.org).";
+         }
+         leaf end-port {
+            type inet:port-number;
+            must ". >= ../start-port" {
+            error-message
           "The end-port must be greater than or equal to start-port";
-	 	   }
-	 	   description
+           }
+           description
          "If more than one contiguous source port number needs to be
           matched, then this field can be used to indicate the end
           value of a range starting from the value of the Start
@@ -6006,31 +6006,31 @@ module ietf-traffic-selector-types {
           When this field is included, the receiver will match
           all of the port numbers between fields start-port and
           end-port, inclusive of start-port and end-port.";
-	 		}
- 	 }
- 	 container destination-port-range {
- 	   presence "Enables setting destination port range";
- 	   description
+            }
+     }
+     container destination-port-range {
+       presence "Enables setting destination port range";
+       description
        "Inclusive range representing destination ports to be used.
        When only start-port is present, it represents a single
        port.";
-	 		 leaf start-port {
-	 			 type inet:port-number;
-	 			 mandatory true;
-	 			 description
+             leaf start-port {
+             type inet:port-number;
+             mandatory true;
+             description
           "This field identifies the first 16-bit destination port
           number, from the range of port numbers to be matched, on
           data packets sent from a corresponding node to the mobile
           node as seen by the home agent.";
-	 		}
-	 		leaf end-port {
-	 			type inet:port-number;
-	 	    must ". >= ../start-port" {
-	 	    error-message
-	 	      "The end-port must be greater than or equal to
+            }
+            leaf end-port {
+            type inet:port-number;
+            must ". >= ../start-port" {
+            error-message
+              "The end-port must be greater than or equal to
           start-port";
-	 	   }
-	 	   description
+           }
+           description
         "If more than one contiguous destination port number needs
         to be matched, then this field can be used to indicate
         the end value of a range starting from the value of the
@@ -6041,30 +6041,30 @@ module ietf-traffic-selector-types {
         When this field is included, the receiver will match
         all of the port numbers between fields start-port and
         end-port, inclusive of start-port and end-port.";
-	 	}
- 	}
+        }
+    }
  }
 
  grouping ipv4-binary-traffic-selector {
-	 container source-address-range-v4 {
- 	   presence "Enables setting source IPv4 address range";
- 	   description
+     container source-address-range-v4 {
+       presence "Enables setting source IPv4 address range";
+       description
        "Inclusive range representing IPv4 addresses to be used. When
        only start-address is present, it represents a single
        address.";
-	 	 leaf start-address {
-	 		 type inet:ipv4-address;
-	 		 mandatory true;
-	 		description
+         leaf start-address {
+             type inet:ipv4-address;
+             mandatory true;
+            description
         "This field identifies the first source address, from the range
         of 32-bit IPv4 addresses to be matched, on data packets sent
         from a corresponding node to the mobile node as seen by the
         home agent. In other words, this is one of the addresses of
         the correspondent node.";
-	 	 }
-	 	 leaf end-address {
-	 		 type inet:ipv4-address;
-	 		 description
+         }
+         leaf end-address {
+             type inet:ipv4-address;
+             description
          "If more than one contiguous source address needs to be
          matched, then this field can be used to indicate the end
          value of a range starting from the value of the Start
@@ -6073,27 +6073,27 @@ module ietf-traffic-selector-types {
          included, the receiver will match all of the addresses
          between fields start-address and end-address, inclusive of
          start-address and end-address.";
-	 		}
-	 }
-	 container destination-address-range-v4 {
- 	   presence "Enables setting destination IPv4 address range";
- 	   description
- 	     "Inclusive range representing IPv4 addresses to be used.
+            }
+     }
+     container destination-address-range-v4 {
+       presence "Enables setting destination IPv4 address range";
+       description
+         "Inclusive range representing IPv4 addresses to be used.
         When only start-address is present, it represents a
         single address.";
-	 	 leaf start-address {
-	 		 type inet:ipv4-address;
-	 		 mandatory true;
-	 		 description
+         leaf start-address {
+             type inet:ipv4-address;
+             mandatory true;
+             description
          "This field identifies the first destination address, from the
          range of 32-bit IPv4 addresses to be matched, on data packets
          sent from a corresponding node to the mobile node as seen by
          the home agent. In other words, this is one of the registered
          home addresses of the mobile node.";
-	 	 }
-	 	 leaf end-address {
-	 	   type inet:ipv4-address;
-	 		 description
+         }
+         leaf end-address {
+           type inet:ipv4-address;
+             description
          "If more than one contiguous destination address needs to be
          matched, then this field can be used to indicate the end
          value of a range starting from the value of the Start
@@ -6102,18 +6102,18 @@ module ietf-traffic-selector-types {
          is included, the receiver will match all of the addresses
          between fields start-address and end-address, inclusive of
          start-address and end-address.";
-	 	 }
-	 }
-	 container ds-range {
- 	   presence "Enables setting dscp range";
- 	   description
+         }
+     }
+     container ds-range {
+       presence "Enables setting dscp range";
+       description
        "Inclusive range representing DiffServ Codepoints to be used.
        When only start-ds is present, it represents a single
        Codepoint.";
- 	   leaf start-ds {
- 		   type inet:dscp;
- 		   mandatory true;
- 		   description
+       leaf start-ds {
+           type inet:dscp;
+           mandatory true;
+           description
          "This field identifies the first differential service value,
          from the range of differential services values to be
          matched, on data packets sent from a corresponding node to
@@ -6142,9 +6142,9 @@ module ietf-traffic-selector-types {
        start-ds. When this field is included, the receiver will match
        all of the values between fields start-ds and end-ds, inclusive
        of start-ds and end-ds.";
-	 }
+     }
   }
-	container protocol-range {
+    container protocol-range {
     presence "Enables setting protocol range";
     description
       "Inclusive range representing IP protocol(s) to be used. When
@@ -6158,15 +6158,15 @@ module ietf-traffic-selector-types {
          range of protocol values to be matched, on data packets sent
          from a corresponding node to the mobile node as seen by the
          home agent.";
- 		}
- 		leaf end-protocol {
- 			type uint8;
- 	    must ". >= ../start-protocol" {
- 	      error-message
- 	        "The end-protocol must be greater than or equal to
+        }
+        leaf end-protocol {
+            type uint8;
+        must ". >= ../start-protocol" {
+          error-message
+            "The end-protocol must be greater than or equal to
           start-protocol";
- 	    }
- 			description
+        }
+            description
        "If more than one contiguous protocol value needs to be matched,
        then this field can be used to indicate the end value of a range
        starting from the value of the Start Protocol field. This field
@@ -6174,22 +6174,22 @@ module ietf-traffic-selector-types {
        included. When this field is included, the receiver will match
        all of the values between fields start-protocol and
        end-protocol, inclusive of start-protocol and end-protocol.";
- 		}
-	 }
+        }
+     }
    description "ipv4 binary traffic selector";
  }
 
-	grouping ipv6-binary-traffic-selector {
-	 container source-address-range-v6 {
+    grouping ipv6-binary-traffic-selector {
+     container source-address-range-v6 {
      presence "Enables setting source IPv6 address range";
- 	   description
+       description
        "Inclusive range representing IPv6 addresses to be used.
        When only start-address is present, it represents a
        single address.";
-	 	 leaf start-address {
-	 		 type inet:ipv6-address;
-	 		 mandatory true;
-	 		 description
+         leaf start-address {
+             type inet:ipv6-address;
+             mandatory true;
+             description
         "This field identifies the first source address, from the
         range of 128-bit IPv6 addresses to be matched, on data
         packets sent from a corresponding node to the mobile node as
@@ -6277,7 +6277,7 @@ module ietf-traffic-selector-types {
          field is included, it MUST be coded the same way as defined
          for end-flow-label.";
     }
- 	}
+    }
   container traffic-class-range {
     presence "Enables setting the traffic class range";
     description
@@ -6358,47 +6358,47 @@ module ietf-traffic-selector-types {
   description "ipv6 binary traffic selector";
 }
 
-	grouping traffic-selector {
-		leaf ts-format {
- 			type identityref {
- 				base traffic-selector-format;
- 			}
- 			description "Traffic Selector Format";
- 		}
-		uses traffic-selector-base {
-			when "boolean(../ts-format/text() ="
-			+ "'ipv6-binary-selector-format') |"
-			+ " boolean(../ts-format/text() ="
-			+ " 'ipv4-binary-selector-format')";
-		}
-		uses ipv4-binary-traffic-selector {
-			when "boolean(../ts-format/text() ="
-			+ " 'ipv4-binary-selector-format')";
-		}
-		uses ipv6-binary-traffic-selector {
-			when "boolean(../ts-format/text() = "
+    grouping traffic-selector {
+        leaf ts-format {
+            type identityref {
+            base traffic-selector-format;
+            }
+            description "Traffic Selector Format";
+        }
+        uses traffic-selector-base {
+            when "boolean(../ts-format/text() ="
+            + "'ipv6-binary-selector-format') |"
+            + " boolean(../ts-format/text() ="
+            + " 'ipv4-binary-selector-format')";
+        }
+        uses ipv4-binary-traffic-selector {
+            when "boolean(../ts-format/text() ="
+            + " 'ipv4-binary-selector-format')";
+        }
+        uses ipv6-binary-traffic-selector {
+            when "boolean(../ts-format/text() = "
         + "'ipv6-binary-selector-format')";
-		}
+        }
     description
      "The traffic selector includes the parameters used to match
-			 packets for a specific flow binding.";
-		reference
+             packets for a specific flow binding.";
+        reference
      "RFC 6089: Flow Bindings in Mobile IPv6 and Network
        Mobility (NEMO) Basic Support";
   }
 
-	grouping ts-list {
-		list selectors {
-			key index;
-			leaf index {
-				type uint64;
+    grouping ts-list {
+        list selectors {
+            key index;
+            leaf index {
+            type uint64;
         description "index";
-			}
-			uses traffic-selector;
+            }
+            uses traffic-selector;
       description "traffic selectors";
-		}
+        }
     description "traffic selector list";
-	}
+    }
 }
 
 
