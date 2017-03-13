@@ -4,8 +4,10 @@ module ietf-dmm-threegpp {
 
     import ietf-inet-types { prefix inet; revision-date 2013-07-15; }
     import ietf-dmm-fpc { prefix fpc; revision-date 2017-03-08; }
-    import ietf-traffic-selector-types { prefix traffic-selectors; revision-date 2016-01-14; }
-    import ietf-pmip-qos { prefix pmipqos; revision-date 2016-02-10; }
+    import ietf-traffic-selector-types { prefix traffic-selectors;
+      revision-date 2016-01-14; }
+    import ietf-pmip-qos { prefix pmipqos;
+        revision-date 2016-02-10; }
 
     organization "IETF Distributed Mobility Management (DMM)
       Working Group";
@@ -171,7 +173,8 @@ module ietf-dmm-threegpp {
             }
             enum protocolNextHeader {
               value 48;
-              description "Protocol (IPv4) or NextHeader (IPv6) value";
+              description "Protocol (IPv4) or NextHeader (IPv6)
+                value";
             }
             enum localPort {
               value 64;
@@ -365,8 +368,9 @@ module ietf-dmm-threegpp {
 
     typedef imsi-type {
         type uint64;
-        description 
-            "International Mobile Subscriber Identity (IMSI) Value Type";
+        description
+            "International Mobile Subscriber Identity (IMSI)
+              Value Type";
     }
 
     typedef threegpp-instr {
@@ -450,7 +454,8 @@ module ietf-dmm-threegpp {
     }
     augment "/fpc:configure-bundles/fpc:input/fpc:bundles/fpc:"
         + "op_body/fpc:create_or_update/fpc:contexts/fpc:"
-        + "ul/fpc:mobility-tunnel-parameters/fpc:profile-parameters" {
+        + "ul/fpc:mobility-tunnel-parameters/fpc:"
+        + "profile-parameters" {
       case threegpp-tunnel {
           uses threegpp:threegpp-tunnel-info;
       }
@@ -458,15 +463,16 @@ module ietf-dmm-threegpp {
     }
     augment "/fpc:configure/fpc:output/fpc:result-type/fpc:"
         + "create-or-update-success/fpc:contexts/fpc:"
-        + "ul/fpc:mobility-tunnel-parameters/fpc:profile-parameters" {
+        + "ul/fpc:mobility-tunnel-parameters/fpc:"
+        + "profile-parameters" {
       case threegpp-tunnel {
           uses threegpp:threegpp-tunnel-info;
       }
       description "Create Context UL Tunnel Response";
     }
     augment "/fpc:configure-bundles/fpc:output/fpc:bundles/fpc:"
-        + "result-type/fpc:create-or-update-success/fpc:contexts/fpc:"
-        + "ul/fpc:mobility-tunnel-parameters/fpc:profile-parameters" {
+       + "result-type/fpc:create-or-update-success/fpc:contexts/fpc:"
+       + "ul/fpc:mobility-tunnel-parameters/fpc:profile-parameters" {
       case threegpp-tunnel {
           uses threegpp:threegpp-tunnel-info;
       }
@@ -517,9 +523,10 @@ module ietf-dmm-threegpp {
     }
 
 
-    // Contexts Update -  Contexts / dpns / mobility-tunnel-parameters
-    augment "/fpc:tenants/fpc:tenant/fpc:fpc-mobility/fpc:contexts/fpc:"
-        + "dpns/fpc:mobility-tunnel-parameters/fpc:"
+    // Contexts Update -  Contexts / dpns /
+    //   mobility-tunnel-parameters
+    augment "/fpc:tenants/fpc:tenant/fpc:fpc-mobility/fpc:
+        + "contexts/fpc:dpns/fpc:mobility-tunnel-parameters/fpc:"
         + "profile-parameters" {
       case threegpp-tunnel {
           uses threegpp:threegpp-tunnel-info;
@@ -542,7 +549,8 @@ module ietf-dmm-threegpp {
       case threegpp-tunnel {
           uses threegpp:threegpp-tunnel-info;
       }
-      description "Configure Bundles 3GPP TFT and Tunnel Information";
+      description "Configure Bundles 3GPP TFT and Tunnel
+        Information";
     }
     augment "/fpc:configure/fpc:output/fpc:result-type/fpc:"
         + "create-or-update-success/fpc:contexts/fpc:"
@@ -551,7 +559,8 @@ module ietf-dmm-threegpp {
       case threegpp-tunnel {
           uses threegpp:threegpp-tunnel-info;
       }
-      description "Configure 3GPP TFT and Tunnel Information Response";
+      description "Configure 3GPP TFT and Tunnel Information
+        Response";
     }
     augment "/fpc:configure-bundles/fpc:output/fpc:bundles/fpc:"
         + "result-type/fpc:create-or-update-success/fpc:"
@@ -560,7 +569,8 @@ module ietf-dmm-threegpp {
       case threegpp-tunnel {
           uses threegpp:threegpp-tunnel-info;
       }
-      description "Configure Bundles 3GPP TFT and Tunnel Information Response";
+      description "Configure Bundles 3GPP TFT and Tunnel Information
+        Response";
     }
 
 
@@ -607,7 +617,8 @@ module ietf-dmm-threegpp {
           uses threegpp:threeGPP-QoS;
           description "3GPP QoS Values";
       }
-      description "Configure Bundles Context UL 3GPP QoS Values Response";
+      description "Configure Bundles Context UL 3GPP QoS Values
+        Response";
     }
 
     // QoS Updates -  Context / DL / QoS Profile
@@ -653,7 +664,8 @@ module ietf-dmm-threegpp {
           uses threegpp:threeGPP-QoS;
           description "3GPP QoS Values";
       }
-      description "Configure Bundles Context DL 3GPP QoS Values Response";
+      description "Configure Bundles Context DL 3GPP QoS Values
+        Response";
     }
 
     grouping threegpp-properties {
@@ -705,7 +717,8 @@ module ietf-dmm-threegpp {
       description "3GPP Instructions";
     }
 
-    augment "/fpc:configure/fpc:input/fpc:instructions/fpc:instr-type" {
+    augment "/fpc:configure/fpc:input/fpc:instructions/fpc:"
+        + "instr-type" {
       case instr-3gpp-mob {
         uses threegpp:threegpp-commandset;
         description "3GPP Instructions";
@@ -713,7 +726,8 @@ module ietf-dmm-threegpp {
       description "Configure 3GPP Instructions";
     }
     augment "/fpc:configure/fpc:input/fpc:op_body/fpc:"
-        + "create_or_update/fpc:contexts/fpc:instructions/fpc:instr-type" {
+        + "create_or_update/fpc:contexts/fpc:instructions/fpc:"
+        + "instr-type" {
       case instr-3gpp-mob {
         uses threegpp:threegpp-commandset;
         description "3GPP Instructions";
@@ -755,6 +769,7 @@ module ietf-dmm-threegpp {
         uses threegpp:threegpp-commandset;
         description "3GPP Instructions";
       }
-      description "Configure Bundles 3GPP Context Instructions Response";
+      description "Configure Bundles 3GPP Context Instructions
+          Response";
     }
 }

@@ -90,7 +90,8 @@ module ietf-dmm-fpc-policyext {
 
     identity copy-forward {
       base "fpc:fpc-descriptor-type";
-      description "Copies a packet then forwards to a specific destination";
+      description "Copies a packet then forwards to a specific
+        destination";
     }
     grouping copy-forward {
       container destination {
@@ -116,7 +117,8 @@ module ietf-dmm-fpc-policyext {
       description "Copy Then Forward to Port/Context Action";
     }
 
-    augment "/fpc:tenants/fpc:tenant/fpc:fpc-policy/fpc:actions/fpc:action-value" {
+    augment "/fpc:tenants/fpc:tenant/fpc:fpc-policy/fpc:actions/fpc:"
+        + "action-value" {
       case simple-nat {
           uses fpcpolicyext:simple-nat;
           description "Simple NAT value";
@@ -147,7 +149,8 @@ module ietf-dmm-fpc-policyext {
          source/destination as IP prefixes";
     }
 
-    augment "/fpc:tenants/fpc:tenant/fpc:fpc-policy/fpc:descriptors/fpc:descriptor-value" {
+    augment "/fpc:tenants/fpc:tenant/fpc:fpc-policy/fpc:"
+        + "descriptors/fpc:descriptor-value" {
       case prefix-descriptor {
           uses fpcpolicyext:prefix-traffic-descriptor;
           description "traffic descriptor value";

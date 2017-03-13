@@ -55,28 +55,33 @@ module ietf-dmm-fpc {
       description "An ability to support cloning in the RPC.";
     }
     feature fpc-basename-registry {
-      description "Ability to track Base Names already provisioned on the Agent";
+      description "Ability to track Base Names already provisioned
+        on the Agent";
     }
     feature fpc-bundles {
-      description "Ability for Client to send multiple bundles of actions to
-        an Agent";
+      description "Ability for Client to send multiple bundles of
+        actions to an Agent";
     }
     feature fpc-client-binding {
-      description "Allows a FPC Client to bind a DPN to an Topology Object";
+      description "Allows a FPC Client to bind a DPN to an Topology
+        Object";
     }
     feature fpc-auto-binding {
-      description "Allows a FPC Agent to advertise Topology Objects that could be DPNs";
+      description "Allows a FPC Agent to advertise Topology Objects
+        that could be DPNs";
     }
     feature instruction-bitset {
-      description "Allows the expression of instructions (bit sets) over FPC.";
+      description "Allows the expression of instructions (bit sets)
+        over FPC.";
     }
     feature operation-ref-scope {
-      description "Provides the scope of refeneces in an operation.  Used to optmize
-        the Agent processing.";
+      description "Provides the scope of refeneces in an operation.
+        Used to optmize the Agent processing.";
     }
     feature policy-rpc-provisioning {
-      description "Enables the ability to send policy elements (Policy Groups, Policies,
-        Descriptors and Actions) to be sent in CONF or CONF_BUNDLES operations.";
+      description "Enables the ability to send policy elements
+        (Policy Groups, Policies, Descriptors and Actions) to be sent
+        in CONF or CONF_BUNDLE operations.";
     }
 
     typedef agent-identifier {
@@ -337,22 +342,26 @@ module ietf-dmm-fpc {
         }
         enum op {
           value 1;
-          description "op - All references are contained in the operation body (intra-op)";
+          description "op - All references are contained in the
+            operation body (intra-op)";
         }
         enum bundle {
           value 2;
-          description "bundle - All references in exist in bundle (inter-operation/intra-bundle).
-          NOTE - If this value comes in CONFIG call it is equivalen to 'op'.";
+          description "bundle - All references in exist in bundle
+            (inter-operation/intra-bundle).
+            NOTE - If this value comes in CONFIG call it is
+              equivalent to 'op'.";
         }
         enum storage {
           value 3;
-          description "storage - One or more references exist outside of the operation and bundle.
-          A lookup to a cache / storage is required.";
+          description "storage - One or more references exist outside
+            of the operation and bundle. A lookup to a cache /
+            storage is required.";
         }
         enum unknown {
           value 4;
-          description " unknown - the location of the references are unknown.  This is treated as
-          a 'storage' type.";
+          description " unknown - the location of the references are
+            unknown.  This is treated as a 'storage' type.";
         }
       }
       description "Search scope for references in the operation.";
@@ -523,7 +532,8 @@ module ietf-dmm-fpc {
       description "Base Error Type";
     }
     identity name-already-exists {
-      description "Notification that an entity of the same name already exists";
+      description "Notification that an entity of the same name
+        already exists";
     }
 
     typedef error-type-id {
@@ -681,7 +691,8 @@ module ietf-dmm-fpc {
     }
 
     rpc event_deregister {
-      description "Used to de-register monitoring of parameters/events";
+      description "Used to de-register monitoring of
+          parameters/events";
         input {
           list monitors {
             uses fpc:monitor-id;
@@ -746,17 +757,20 @@ module ietf-dmm-fpc {
                 case monitoring-suspension {
                   leaf monitoring-suspended {
                     type empty;
-                    description "Indicates that monitoring has suspended";
+                    description "Indicates that monitoring has
+                      uspended";
                   }
                   leaf suspension-note {
                     type string;
-                    description "Indicates the monitoring suspension reason";
+                    description "Indicates the monitoring
+                      suspension reason";
                   }
                 }
                 case monitoring-resumption {
                   leaf monitoring-resumed {
                     type empty;
-                    description "Indicates that monitoring has resumed";
+                    description "Indicates that monitoring
+                      has resumed";
                   }
                 }
                 case simple-monitor {

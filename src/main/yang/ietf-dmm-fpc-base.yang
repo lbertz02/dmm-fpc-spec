@@ -4,7 +4,8 @@ submodule ietf-dmm-fpc-base {
     }
 
     import ietf-inet-types { prefix inet; revision-date 2013-07-15; }
-    import ietf-yang-types { prefix ytypes; revision-date 2013-07-15; }
+    import ietf-yang-types { prefix ytypes;
+        revision-date 2013-07-15; }
 
 
     organization "IETF Distributed Mobility Management (DMM)
@@ -54,9 +55,9 @@ submodule ietf-dmm-fpc-base {
     }
 
     feature fpc-basic-agent {
-        description "This is an agent co-located with a DPN.  In this case
-        only DPN Peer Groups, the DPN Id and Control Protocols are exposed
-        along with the core structures.";
+        description "This is an agent co-located with a DPN.  In this
+        case only DPN Peer Groups, the DPN Id and Control Protocols
+        are exposed along with the core structures.";
     }
     feature fpc-multi-dpn {
         description "The agent supports multiple DPNs.";
@@ -189,7 +190,8 @@ submodule ietf-dmm-fpc-base {
         }
         description
           "FPC Rule.  When no actions are present the action is DROP.
-          When no Descriptors are empty the default is 'all traffic'.";
+          When no Descriptors are empty the default is
+          'all traffic'.";
     }
 
     // Policy Structures
@@ -257,11 +259,13 @@ submodule ietf-dmm-fpc-base {
     grouping fpc-context-profile {
         leaf tunnel-local-address {
             type inet:ip-address;
-            description "lylebe551144 endpoint address of the DPN which agent exists.";
+            description "endpoint address of the DPN which a
+              gent exists.";
         }
         leaf tunnel-remote-address {
             type inet:ip-address;
-            description "lylebe551144 endpoint address of the DPN which agent exists.";
+            description "endpoint address of the DPN which
+              agent exists.";
         }
         leaf mtu-size {
             type uint32;
@@ -270,9 +274,11 @@ submodule ietf-dmm-fpc-base {
         container mobility-tunnel-parameters {
             uses fpc:mobility-info;
             description
-            "Specifies profile specific lylebe551144 tunnel parameters to the DPN
-            which the agent exists. The profiles includes GTP/TEID for 3gpp profile,
-            GRE/Key for ietf-pmip profile, or new profile if anyone will define it.";
+            "Specifies profile specific lylebe551144 tunnel
+            parameters to the DPN which the agent exists. The
+            profiles includes GTP/TEID for 3gpp profile, GRE/Key for
+            ietf-pmip profile, or new profile if anyone will define
+            it.";
         }
         container nexthop {
             uses fpc:fpc-nexthop;
@@ -458,7 +464,8 @@ submodule ietf-dmm-fpc-base {
 
     // QoS Information
     identity fpc-qos-type {
-        description "Base identity from which specific uses of QoS types are derived.";
+        description "Base identity from which specific uses of QoS
+          types are derived.";
     }
     grouping fpc-qos-profile {
         leaf qos-type {

@@ -131,8 +131,10 @@ module ietf-dmm-fpc-pmip {
       description "Instruction Set for PMIP";
     }
 
-    // Descriptors update - goes to Entities, Configure and Configure Bundles
-    augment "/fpc:tenants/fpc:tenant/fpc:fpc-policy/fpc:descriptors/fpc:descriptor-value" {
+    // Descriptors update - goes to Entities, Configure and
+    // Configure Bundles
+    augment "/fpc:tenants/fpc:tenant/fpc:fpc-policy/"
+      + "fpc:descriptors/fpc:descriptor-value" {
       case pmip-selector {
           uses traffic-selectors:traffic-selector;
           description "PMIP Selector";
@@ -157,10 +159,11 @@ module ietf-dmm-fpc-pmip {
         description "PMIP Tunnel Information";
     }
 
-    // Contexts Update - Contexts / UL / mob-profile, Contexts / DL / 
-    //     mob-profile and Contexts / dpns / mobility-tunnel-parameters
-    augment "/fpc:tenants/fpc:tenant/fpc:fpc-mobility/fpc:contexts/fpc:"
-        + "ul/fpc:mobility-tunnel-parameters/fpc:profile-parameters" {
+    // Contexts Update - Contexts/UL/mob-profile, Contexts/DL/
+    //   mob-profile and Contexts/dpns/mobility-tunnel-parameters
+    augment "/fpc:tenants/fpc:tenant/fpc:fpc-mobility/fpc:"
+        + "contexts/fpc:ul/fpc:mobility-tunnel-parameters/fpc:"
+        + "profile-parameters" {
       case pmip-tunnel {
         uses fpc-pmip:pmip-tunnel-info;
       }
@@ -238,7 +241,8 @@ module ietf-dmm-fpc-pmip {
       description "CONF_BUNDLES Context DPN Mobility";
     }
 
-    // QoS Updates - Context / UL / qosprofile, Context / DL / QoS Profile
+    // QoS Updates - Context / UL / qosprofile, Context / DL /
+    // QoS Profile
     augment "/fpc:tenants/fpc:tenant/fpc:fpc-mobility/fpc:"
         + "contexts/fpc:ul/fpc:qos-profile-parameters/fpc:value" {
       case qos-pmip {
@@ -302,7 +306,8 @@ module ietf-dmm-fpc-pmip {
     }
 
     // Instructions Update - OP BODY, Context, Port
-    augment "/fpc:configure/fpc:input/fpc:instructions/fpc:instr-type" {
+    augment "/fpc:configure/fpc:input/fpc:instructions/fpc:"
+        + "instr-type" {
       case pmip-instr {
         uses fpc-pmip:pmip-commandset;
         description "PMIP Commandset";
@@ -310,7 +315,8 @@ module ietf-dmm-fpc-pmip {
       description "CONF Instructions";
     }
     augment "/fpc:configure/fpc:input/fpc:op_body/fpc:"
-        + "create_or_update/fpc:contexts/fpc:instructions/fpc:instr-type" {
+        + "create_or_update/fpc:contexts/fpc:instructions/fpc:"
+        + "instr-type" {
       case pmip-instr {
         uses fpc-pmip:pmip-commandset;
         description "PMIP Commandset";
