@@ -531,7 +531,7 @@ module ietf-pmip-qos {
   		  //All of the sub-types by constraint
         choice attribute-choice {
             case per-mn-agg-max-dl-case {
-                when "../attributetype = "
+                when "./attributetype = "
                    + "'Per-MN-Agg-Max-DL-Bit-Rate-type'";
                 leaf per-mn-agg-max-dl {
                     type qos-pmip:Per-MN-Agg-Max-DL-Bit-Rate-Value;
@@ -540,7 +540,7 @@ module ietf-pmip-qos {
                 description "Per-MN-Agg-Max-DL-Bit-Rate Case";
             }
             case per-mn-agg-max-ul-case {
-                when "../attributetype = "
+                when "./attributetype = "
                   + "'Per-MN-Agg-Max-UL-Bit-Rate-type'";
                 leaf per-mn-agg-max-ul {
                     type qos-pmip:Per-MN-Agg-Max-UL-Bit-Rate-Value;
@@ -549,7 +549,7 @@ module ietf-pmip-qos {
                 description "Per-MN-Agg-Max-UL-Bit-Rate Case";
             }
             case per-session-agg-max-dl-case {
-                when "../attributetype = "
+                when "./attributetype = "
                 + "'Per-Session-Agg-Max-DL-Bit-Rate-type'";
                 container per-session-agg-max-dl {
                     uses qos-pmip:Per-Session-Agg-Max-Bit-Rate-Value;
@@ -558,7 +558,7 @@ module ietf-pmip-qos {
                 description "Per-Session-Agg-Max-Bit-Rate Case";
             }
             case per-session-agg-max-ul-case {
-                when "../attributetype = "
+                when "./attributetype = "
                 + "'Per-Session-Agg-Max-UL-Bit-Rate-type'";
                 container per-session-agg-max-ul {
                     uses qos-pmip:Per-Session-Agg-Max-Bit-Rate-Value;
@@ -567,13 +567,13 @@ module ietf-pmip-qos {
                 description "Per-Session-Agg-Max-Bit-Rate Case";
             }
             case allocation-retention-priority-case {
-                when "../attributetype = "
+                when "./attributetype = "
                    + "'Allocation-Retention-Priority-type'";
                 uses qos-pmip:Allocation-Retention-Priority-Value;
                 description "Allocation-Retention-Priority Case";
             }
             case agg-max-dl-case {
-                when "../attributetype = "
+                when "./attributetype = "
                   + "'Aggregate-Max-DL-Bit-Rate-type'";
                 leaf agg-max-dl {
                     type qos-pmip:Aggregate-Max-DL-Bit-Rate-Value;
@@ -582,7 +582,7 @@ module ietf-pmip-qos {
                 description "Aggregate-Max-DL-Bit-Rate Case";
             }
             case agg-max-ul-case {
-                when "../attributetype = "
+                when "./attributetype = "
                   + "'Aggregate-Max-UL-Bit-Rate-type'";
                 leaf agg-max-ul {
                     type qos-pmip:Aggregate-Max-UL-Bit-Rate-Value;
@@ -591,7 +591,7 @@ module ietf-pmip-qos {
                 description "Aggregate-Max-UL-Bit-Rate Case";
             }
             case gbr-dl-case {
-                when "../attributetype = 'Guaranteed-DL-Bit-Rate-type'";
+                when "./attributetype = 'Guaranteed-DL-Bit-Rate-type'";
                 leaf gbr-dl {
                     type qos-pmip:Guaranteed-DL-Bit-Rate-Value;
                     description "Guaranteed-DL-Bit-Rate Value";
@@ -599,7 +599,7 @@ module ietf-pmip-qos {
                 description "Guaranteed-DL-Bit-Rate Case";
             }
             case gbr-ul-case {
-                when "../attributetype = 'Guaranteed-UL-Bit-Rate-type'";
+                when "./attributetype = 'Guaranteed-UL-Bit-Rate-type'";
                 leaf gbr-ul {
                     type qos-pmip:Guaranteed-UL-Bit-Rate-Value;
                     description "Guaranteed-UL-Bit-Rate Value";
@@ -607,7 +607,7 @@ module ietf-pmip-qos {
                 description "Guaranteed-UL-Bit-Rate Case";
             }
             case traffic-selector-case {
-                when "../attributetype = 'QoS-Traffic-Selector-type'";
+                when "./attributetype = 'QoS-Traffic-Selector-type'";
                 container traffic-selector {
                     uses traffic-selectors:traffic-selector;
                     description "traffic selector";
