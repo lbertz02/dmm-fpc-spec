@@ -60,8 +60,8 @@ module ietf-pmip-qos {
 	typedef sr-id {
 		type uint8;
 	    description
-	     "An 8-bit unsigned integer used
-	      for identifying the QoS Service Request.  Its uniqueness is
+	     "An 8-bit unsigned integer used]
+        for identifying the QoS Service Request.  Its uniqueness is
         within the scope of a mobility session.  The local mobility
         anchor always allocates the Service Request Identifier.
         When a new QoS Service Request is initiated by a mobile
@@ -70,21 +70,21 @@ module ietf-pmip-qos {
         mobility anchor allocates a Service Request Identifier and
         includes it in the response.  For any new QoS Service
         Requests initiated by a local mobility anchor, the
-	      Service Request Identifier is set to the allocated value.";
-	  }
+        Service Request Identifier is set to the allocated value.";
+    }
 
     typedef traffic-class {
     	type inet:dscp;
     	description
-    		"Traffic Class consists of a 6-bit DSCP field followed by a
-          2-bit reserved field.";
+        "Traffic Class consists of a 6-bit DSCP field followed by a
+         2-bit reserved field.";
 	   reference
-		     "RFC 3289: Management Information Base for the Differentiated
-		                Services Architecture
-		      RFC 2474: Definition of the Differentiated Services Field
-		                (DS Field) in the IPv4 and IPv6 Headers
-		      RFC 2780: IANA Allocation Guidelines For Values In
-		                the Internet Protocol and Related Headers";
+         "RFC 3289: Management Information Base for the Differentiated
+                    Services Architecture
+          RFC 2474: Definition of the Differentiated Services Field
+                    (DS Field) in the IPv4 and IPv6 Headers
+          RFC 2780: IANA Allocation Guidelines For Values In
+                    the Internet Protocol and Related Headers";
     }
 
     typedef operational-code {
@@ -118,8 +118,8 @@ module ietf-pmip-qos {
         }
     	}
     	description
-    		"1-octet Operational code indicates the type of QoS request.
-    	      Reserved values:   (6) to (255)
+       "1-octet Operational code indicates the type of QoS request.
+           Reserved values:   (6) to (255)
                 Currently not used.  Receiver MUST ignore the option
                 received with any value in this range.";
     }
@@ -142,17 +142,17 @@ module ietf-pmip-qos {
         enum Per-MN-Agg-Max-UL-Bit-Rate {
           value 2;
           description "Per-Mobile-Node Aggregate Maximum Uplink Bit
-              Rate.";
+            Rate.";
         }
         enum Per-Session-Agg-Max-DL-Bit-Rate {
           value 3;
           description "Per-Mobility-Session Aggregate Maximum
-              Downlink Bit Rate.";
+            Downlink Bit Rate.";
         }
         enum Per-Session-Agg-Max-UL-Bit-Rate {
           value 4;
           description "Per-Mobility-Session Aggregate Maximum
-              Uplink Bit Rate.";
+             Uplink Bit Rate.";
         }
         enum Allocation-Retention-Priority {
           value 5;
@@ -217,13 +217,13 @@ module ietf-pmip-qos {
  	identity Per-Session-Agg-Max-DL-Bit-Rate-type {
     	base qos-attribute-type;
     	description
-    		"Per-Mobility-Session Aggregate Maximum Downlink Bit Rate.";
- 	}
+       "Per-Mobility-Session Aggregate Maximum Downlink Bit Rate.";
+  }
 
  	identity Per-Session-Agg-Max-UL-Bit-Rate-type {
     	base qos-attribute-type;
     	description
-    		"Per-Mobility-Session Aggregate Maximum Uplink Bit Rate.";
+       "Per-Mobility-Session Aggregate Maximum Uplink Bit Rate.";
  	}
 
  	identity Allocation-Retention-Priority-type {
@@ -289,62 +289,62 @@ module ietf-pmip-qos {
  			type uint32;
  			mandatory true;
  			description
- 				"This is a 32-bit unsigned integer
- 			      that indicates the aggregate maximum bit rate that is
-            requested/allocated for all the IP flows associated with
-            that mobility session.  The measurement units for
-            Per-Session-Agg-Max-UL/DL-Bit-Rate are bits per second.";
+       "This is a 32-bit unsigned integer
+        that indicates the aggregate maximum bit rate that is
+        requested/allocated for all the IP flows associated with
+        that mobility session.  The measurement units for
+        Per-Session-Agg-Max-UL/DL-Bit-Rate are bits per second.";
  		}
  		leaf service-flag {
 			type boolean;
 			mandatory true;
 			description
-				"This flag is used for extending the scope of the
-			      target flows for Per-Session-Agg-Max-UL/DL-Bit-Rate
+       "This flag is used for extending the scope of the
+            target flows for Per-Session-Agg-Max-UL/DL-Bit-Rate
             from(UL)/to(DL) the mobile node's other mobility sessions
             sharing the same Service Identifier. 3GPP Access Point Name
             (APN) is an example of a Service Identifier, and that
             identifier is carried using the Service Selection mobility
             option [RFC5149].
 
-			      *  When the (S) flag is set to a value of (1), then the Per-
-			         Session-Agg-Max-Bit-Rate is measured as an aggregate
-               across all the mobile node's other mobility sessions
-               sharing the same Service Identifier associated with
-               this mobility session.
+            -  When the (S) flag is set to a value of (1), then the
+               Per-Session-Agg-Max-Bit-Rate is measured as an
+               aggregate across all the mobile node's other mobility
+               sessions sharing the same Service Identifier associated
+               with this mobility session.
 
-			      *  When the (S) flag is set to a value of (0), then the
+            -  When the (S) flag is set to a value of (0), then the
                target flows are limited to the current mobility
                session.
 
-			      *  The (S) flag MUST NOT be set to a value of (1) when there
+            -  The (S) flag MUST NOT be set to a value of (1) when there
                is no Service Identifier associated with the mobility
                session.";
 			reference
-				"RFC 5149 - Service Selection mobility option";
+        "RFC 5149 - Service Selection mobility option";
  		}
  		leaf exclude-flag {
  			type boolean;
  			mandatory true;
  			description
- 				"This flag is used to request that the uplink/downlink
+        "This flag is used to request that the uplink/downlink
  			      flows for which the network is providing
             Guaranteed-Bit-Rate service be excluded from the
             target IP flows for which
             Per-Session-Agg-Max-UL/DL-Bit-Rate is measured.
 
- 			      *  When the (E) flag is set to a value of (1), then the
+            -  When the (E) flag is set to a value of (1), then the
                request is to exclude the IP flows for which
                Guaranteed-UL/DL-Bit-Rate is negotiated from the flows
                for which Per-Session-Agg-Max-UL/DL-Bit-Rate
  				       is measured.
 
- 			      *  When the (E) flag is set to a value of (0), then the
+            -  When the (E) flag is set to a value of (0), then the
                request is not to exclude any IP flows from the target
                IP flows for which Per-Session-Agg-Max-UL/DL-Bit-Rate
                is measured.
 
- 			      *  When the (S) flag and (E) flag are both set to a value
+            -  When the (S) flag and (E) flag are both set to a value
                of (1), then the request is to exclude all the IP flows
                sharing the Service Identifier associated with this
                mobility session from the target flows for which
@@ -360,7 +360,7 @@ module ietf-pmip-qos {
  			}
  			mandatory true;
  			description
- 				"This is a 4-bit unsigned integer value.  It is used to decide
+        "This is a 4-bit unsigned integer value.  It is used to decide
         whether a mobility session establishment or modification
         request can be accepted; this is typically used for
         admission control of Guaranteed Bit Rate traffic in case of
@@ -399,19 +399,19 @@ module ietf-pmip-qos {
  			}
  			mandatory true;
  			description
- 				"This is a 2-bit unsigned integer value.  It defines whether a
+       "This is a 2-bit unsigned integer value.  It defines whether a
         service data flow can get resources that were already
         assigned to another service data flow with a lower priority
         level.  The following values are defined:
 
- 			    Enabled (0): This value indicates that the service data flow
-          is allowed to get resources that were already assigned to
-          another IP data flow with a lower priority level.
+         Enabled (0): This value indicates that the service data flow
+         is allowed to get resources that were already assigned to
+         another IP data flow with a lower priority level.
 
- 			    Disabled (1): This value indicates that the service data flow
- 			    is not allowed to get resources that were already assigned to
- 			    another IP data flow with a lower priority level.  The values
- 			    (2) and (3) are reserved.";
+         Disabled (1): This value indicates that the service data flow
+         is not allowed to get resources that were already assigned to
+         another IP data flow with a lower priority level.  The values
+         (2) and (3) are reserved.";
  		}
  		leaf premption-vulnerability {
  			type enumeration {
@@ -434,17 +434,17 @@ module ietf-pmip-qos {
  			}
  			mandatory true;
  			description
-				"This is a 2-bit unsigned integer value.  It defines whether a
+       "This is a 2-bit unsigned integer value.  It defines whether a
          service data flow can lose the resources assigned to it in
          order to admit a service data flow with a higher priority
          level.  The following values are defined:
 
- 			     Enabled (0): This value indicates that the resources
+           Enabled (0): This value indicates that the resources
            assigned to the IP data flow can be preempted and
            allocated to a service data flow with a higher
            priority level.
 
- 			     Disabled (1): This value indicates that the resources
+           Disabled (1): This value indicates that the resources
            assigned to the IP data flow shall not be preempted and
            allocated to a service data flow with a higher priority
            level.  The values (2) and (3) are reserved.";
@@ -456,36 +456,36 @@ module ietf-pmip-qos {
 	  	type uint32;
 	  	description
 	  		"This is a 32-bit unsigned integer that
-	        indicates the aggregate maximum downlink bit rate that is
-	        requested/allocated for downlink IP flows.  The measurement
-          units for Aggregate-Max-DL-Bit-Rate are bits per second.";
+         indicates the aggregate maximum downlink bit rate that is
+         requested/allocated for downlink IP flows.  The measurement
+         units for Aggregate-Max-DL-Bit-Rate are bits per second.";
  	}
 
   	typedef Aggregate-Max-UL-Bit-Rate-Value {
     	type uint32;
     	description
     		"This is a 32-bit unsigned integer that
-    	     indicates the aggregate maximum downlink bit rate that is
-    	     requested/allocated for downlink IP flows.  The measurement
-          units for Aggregate-Max-DL-Bit-Rate are bits per second.";
+         indicates the aggregate maximum downlink bit rate that is
+         requested/allocated for downlink IP flows.  The measurement
+         units for Aggregate-Max-DL-Bit-Rate are bits per second.";
   	}
 
   	typedef Guaranteed-DL-Bit-Rate-Value {
 	  	type uint32;
 	  	description
 	  		"This is a 32-bit unsigned integer that
-	        indicates the guaranteed bandwidth in bits per second for
-          downlink IP flows.  The measurement units for
-          Guaranteed-DL-Bit-Rate are bits per second.";
+         indicates the guaranteed bandwidth in bits per second for
+         downlink IP flows.  The measurement units for
+         Guaranteed-DL-Bit-Rate are bits per second.";
   	}
 
   	typedef Guaranteed-UL-Bit-Rate-Value {
     	type uint32;
     	description
     		"This is a 32-bit unsigned integer that
-    	      indicates the guaranteed bandwidth in bits per second
-            for uplink IP flows.  The measurement units for
-            Guaranteed-UL-Bit-Rate are bits per second.";
+         indicates the guaranteed bandwidth in bits per second
+         for uplink IP flows.  The measurement units for
+         Guaranteed-UL-Bit-Rate are bits per second.";
   	}
 
   	grouping QoS-Vendor-Specific-Attribute-Value-Base {
@@ -493,26 +493,26 @@ module ietf-pmip-qos {
   			type uint32;
   			mandatory true;
   			description
-  				"The Vendor ID is the SMI (Structure of Management
-  		      Information) Network Management Private Enterprise Code of
-            the IANA-maintained 'Private Enterprise Numbers'
-            registry.";
+         "The Vendor ID is the SMI (Structure of Management
+          Information) Network Management Private Enterprise Code of
+          the IANA-maintained 'Private Enterprise Numbers'
+          registry.";
   			reference
-  				"'PRIVATE ENTERPRISE NUMBERS', SMI Network Management
-                Private Enterprise Codes, April 2014,
-                <http://www.iana.org/assignments/enterprise-numbers>";
+          "'PRIVATE ENTERPRISE NUMBERS', SMI Network Management
+            Private Enterprise Codes, April 2014,
+             <http://www.iana.org/assignments/enterprise-numbers>";
   		}
   		leaf subtype {
   			type uint8;
   			mandatory true;
   			description
-  				"An 8-bit field indicating the type of vendor-specific
-  		      information carried in the option.  The namespace for this
-            sub-type is managed by the vendor identified by the
-            Vendor ID field.";
+          "An 8-bit field indicating the type of vendor-specific
+           information carried in the option.  The namespace for this
+           sub-type is managed by the vendor identified by the
+           Vendor ID field.";
   		}
     	description
-    		"QoS Vendor-Specific Attribute.";
+        "QoS Vendor-Specific Attribute.";
   	}
 
     //NOTE - We do NOT add the Status Codes or other changes in
@@ -531,7 +531,8 @@ module ietf-pmip-qos {
   		  //All of the sub-types by constraint
         choice attribute-choice {
             case per-mn-agg-max-dl-case {
-                when "../attributetype = 'Per-MN-Agg-Max-DL-Bit-Rate-type'";
+                when "../attributetype = "
+                   + "'Per-MN-Agg-Max-DL-Bit-Rate-type'";
                 leaf per-mn-agg-max-dl {
                     type qos-pmip:Per-MN-Agg-Max-DL-Bit-Rate-Value;
                     description "Per-MN-Agg-Max-DL-Bit-Rate Value";
@@ -539,7 +540,8 @@ module ietf-pmip-qos {
                 description "Per-MN-Agg-Max-DL-Bit-Rate Case";
             }
             case per-mn-agg-max-ul-case {
-                when "../attributetype = 'Per-MN-Agg-Max-UL-Bit-Rate-type'";
+                when "../attributetype = "
+                  + "'Per-MN-Agg-Max-UL-Bit-Rate-type'";
                 leaf per-mn-agg-max-ul {
                     type qos-pmip:Per-MN-Agg-Max-UL-Bit-Rate-Value;
                     description "Per-MN-Agg-Max-UL-Bit-Rate Value";
@@ -565,12 +567,14 @@ module ietf-pmip-qos {
                 description "Per-Session-Agg-Max-Bit-Rate Case";
             }
             case allocation-retention-priority-case {
-                when "../attributetype = 'Allocation-Retention-Priority-type'";
+                when "../attributetype = "
+                   + "'Allocation-Retention-Priority-type'";
                 uses qos-pmip:Allocation-Retention-Priority-Value;
                 description "Allocation-Retention-Priority Case";
             }
             case agg-max-dl-case {
-                when "../attributetype = 'Aggregate-Max-DL-Bit-Rate-type'";
+                when "../attributetype = "
+                  + "'Aggregate-Max-DL-Bit-Rate-type'";
                 leaf agg-max-dl {
                     type qos-pmip:Aggregate-Max-DL-Bit-Rate-Value;
                     description "Aggregate-Max-DL-Bit-Rate Value";
@@ -578,7 +582,8 @@ module ietf-pmip-qos {
                 description "Aggregate-Max-DL-Bit-Rate Case";
             }
             case agg-max-ul-case {
-                when "../attributetype = 'Aggregate-Max-UL-Bit-Rate-type'";
+                when "../attributetype = "
+                  + "'Aggregate-Max-UL-Bit-Rate-type'";
                 leaf agg-max-ul {
                     type qos-pmip:Aggregate-Max-UL-Bit-Rate-Value;
                     description "Aggregate-Max-UL-Bit-Rate Value";

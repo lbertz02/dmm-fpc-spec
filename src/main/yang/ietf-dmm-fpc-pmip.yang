@@ -3,7 +3,8 @@ module ietf-dmm-fpc-pmip {
     prefix fpc-pmip;
 
     import ietf-dmm-fpc { prefix fpc; revision-date 2017-03-08; }
-    import ietf-pmip-qos { prefix qos-pmip; }
+    import ietf-pmip-qos { prefix qos-pmip;
+      revision-date 2016-02-10; }
     import ietf-traffic-selector-types { prefix traffic-selectors; }
 
     organization "IETF Distributed Mobility Management (DMM)

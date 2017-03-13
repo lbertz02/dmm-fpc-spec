@@ -525,7 +525,7 @@ module ietf-dmm-threegpp {
 
     // Contexts Update -  Contexts / dpns /
     //   mobility-tunnel-parameters
-    augment "/fpc:tenants/fpc:tenant/fpc:fpc-mobility/fpc:
+    augment "/fpc:tenants/fpc:tenant/fpc:fpc-mobility/fpc:"
         + "contexts/fpc:dpns/fpc:mobility-tunnel-parameters/fpc:"
         + "profile-parameters" {
       case threegpp-tunnel {
