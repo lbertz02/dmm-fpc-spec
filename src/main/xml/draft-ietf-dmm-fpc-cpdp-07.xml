@@ -56,7 +56,7 @@
     "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-spring-segment-routing-mpls.xml">
 ]>
 
-<rfc category="std" docName="draft-ietf-dmm-fpc-cpdp-07.txt"
+<rfc category="std" docName="draft-ietf-dmm-fpc-cpdp-07"
      ipr="trust200902">
   <?xml-stylesheet type='text/xsl' href='rfc2629.xslt' ?>
 
@@ -583,7 +583,7 @@ DPN         |                 DPN        |
                <t hangText="DPN-groups:"> The list of DPN-groups
                    to which the DPN belongs.</t>
 
-               <t hangText="Node-reference:"> Indicates a physical node, or
+        Parent-Policy-Id       <t hangText="Node-reference:"> Indicates a physical node, or
                    a platform of virtualization, to which the DPN is bound
                    by the Agent. The Agent SHOULD maintain that node's
                    information, including IP address of management and

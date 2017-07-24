@@ -123,22 +123,22 @@ module ietf-dmm-fpc {
             }
 
             container fpc-policy {
-              list policy-groups {
-                  key "policy-group-id";
-                  uses fpc:fpc-policy-group;
-                  description "Policy Groups";
-              }
-              list policies {
+              list policy-list {
                   key "policy-id";
                   uses fpc:fpc-policy;
                   description "Policies";
               }
-              list descriptors {
+              list rule-list {
+                  key "rule-id";
+                  uses fpc:fpc-rule;
+                  description "Rules";
+              }
+              list descriptor-list {
                 key descriptor-id;
                 uses fpc:fpc-descriptor;
                 description "Descriptors";
               }
-              list actions {
+              list action-lists {
                   key action-id;
                   uses fpc:fpc-action;
                   description "Actions";
@@ -146,24 +146,26 @@ module ietf-dmm-fpc {
               description "Policy";
             }
 
-            container fpc-mobility {
+            list configured-policy-list {
               config false;
-              list contexts {
-                  key context-id;
-                  uses fpc:fpc-context;
-                  description "Contexts";
-              }
-              list vports {
-                  key vport-id;
-                  uses fpc:fpc-vport;
-                  description "Ports";
-              }
-              list monitors {
-                  uses fpc:monitor-config;
-                  description "Monitors";
-              }
-              description "Mobility";
+              key configured-policy-id;
+              uses fpc:fpc-configured-policy;
+              description "Configured Policy List";
             }
+
+            list dynamic-policy-list {
+              config false;
+              key "dynamic-policy-id";
+              uses fpc:fpc-dynamic-policy;
+              description "Dynamic Policy List";
+            }
+
+            list monitor-liss {
+              config false;
+              uses fpc:monitor-config;
+              description "Monitors";
+            }
+
             container fpc-topology {
               // Basic Agent Topology Structures
               list domains {
@@ -173,33 +175,18 @@ module ietf-dmm-fpc {
                 description "Domains";
               }
 
-              leaf dpn-id {
-                if-feature fpc:fpc-basic-agent;
-                type fpc:fpc-dpn-id;
-                description "DPN ID";
-              }
-              leaf-list control-protocols {
-                if-feature fpc:fpc-basic-agent;
-                type identityref {
-                  base "fpc:fpc-dpn-control-protocol";
-                }
-                description "Control Protocols";
+              list dpn-type-set {
+                key "access-technology role";
+                uses fpc:fpc-dpn-type;
+                description "DPN Types";
               }
 
-              list dpn-groups {
-                  if-feature fpc:fpc-multi-dpn;
+              list dpn-group-list {
                   key dpn-group-id;
                   uses fpc:fpc-dpn-group;
-                  list domains {
-                    key domain-id;
-                    uses fpc:fpc-domain;
-                    uses fpc:basename-info;
-                    description "Domains";
-                  }
                   description "DPN Groups";
               }
-              list dpns {
-                  if-feature fpc:fpc-multi-dpn;
+              list dpn-list {
                   key dpn-id;
                   uses fpc:fpc-dpn;
                   description "DPNs";
@@ -250,40 +237,6 @@ module ietf-dmm-fpc {
       }
       description "General Agent Information";
     }
-
-
-    // Multi-DPN Agent Structures
-    grouping fpc-dpn-group {
-        leaf dpn-group-id {
-            type fpc:fpc-dpn-group-id;
-            description "DPN Group ID";
-        }
-        leaf data-plane-role {
-            type identityref {
-                base "fpc:fpc-data-plane-role";
-            }
-            description "Dataplane Role";
-        }
-        leaf access-type {
-            type identityref {
-                base "fpc:fpc-access-type";
-            }
-            description "Access Type";
-        }
-        leaf mobility-profile {
-            type identityref {
-                base "fpc:fpc-mobility-profile-type";
-            }
-            description "Mobility Profile";
-        }
-        list dpn-group-peers {
-            key "remote-dpn-group-id";
-            uses fpc:fpc-dpn-peer-group;
-            description "Peer DPN Groups";
-        }
-        description "FPC DPN Group";
-    }
-
 
     // RPC
     // RPC Specific Structures
@@ -442,40 +395,40 @@ module ietf-dmm-fpc {
     }
 
     grouping context-operation {
-      uses fpc:fpc-context;
+      uses fpc:fpc-dynamic-policy;
       uses fpc:instructions;
       description "Context Operation";
     }
 
     // Output Structure
     grouping payload {
-      list ports {
-        uses fpc:fpc-vport;
-        description "Ports";
+      list configured-policy-list {
+        uses fpc:fpc-configured-policy;
+        description "Configured Policies";
       }
-      list contexts {
+      list dynamic-policy-list {
         uses fpc:context-operation;
-        description "Contexts";
+        description "Dynamic Policies";
       }
-      list policy-groups {
+      list rule-list {
         if-feature fpc:policy-rpc-provisioning;
-        key "policy-group-id";
-        uses fpc:fpc-policy-group;
-        description "Policy Groups";
+        key "rule-id";
+        uses fpc:fpc-rule;
+        description "Rules";
       }
-      list policies {
+      list policy-list {
         if-feature fpc:policy-rpc-provisioning;
         key "policy-id";
         uses fpc:fpc-policy;
         description "Policies";
       }
-      list descriptors {
+      list descriptor-list {
         if-feature fpc:policy-rpc-provisioning;
         key descriptor-id;
         uses fpc:fpc-descriptor;
         description "Descriptors";
       }
-      list actions {
+      list action-list {
         if-feature fpc:policy-rpc-provisioning;
         key action-id;
         uses fpc:fpc-action;
@@ -723,6 +676,19 @@ module ietf-dmm-fpc {
         }
     }
 
+    grouping supported-role-entry {
+        uses fpc:fpc-access-technology-value {
+            refine access-technology {
+                mandatory true;
+            }
+        }
+        uses fpc:fpc-role-value {
+            refine role {
+                mandatory true;
+            }
+        }
+    }
+
     notification notify {
         uses fpc:notification-header;
         choice value {
@@ -732,23 +698,10 @@ module ietf-dmm-fpc {
                 type inet:uri;
                 description "Topology URI";
               }
-              leaf-list access-types {
-                type identityref {
-                  base "fpc:fpc-access-type";
-                }
-                description "Access Types";
-              }
-              leaf-list mobility-profiles {
-                type identityref {
-                  base "fpc:fpc-mobility-profile-type";
-                }
-                description "Mobility Profiles";
-              }
-              leaf-list forwarding-plane-roles {
-                type identityref {
-                  base "fpc:fpc-data-plane-role";
-                }
-                description "Forwarding Plane Role";
+
+              list supported-interface-list {
+                  key "access-technology role";
+                  uses fpc:supported-role-entry;
               }
               description "DPN Candidate Availability";
             }
