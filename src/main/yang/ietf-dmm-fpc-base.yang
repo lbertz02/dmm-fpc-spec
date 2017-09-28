@@ -43,31 +43,25 @@ submodule ietf-dmm-fpc-base {
      document must include Simplified BSD License text as described
      in Section 4.e of the Trust Legal Provisions and are provided
      without warranty as described in the Simplified BSD License.";
-
+    
+    revision 2017-09-27 {
+    		description "Version 10 updates.";
+    		reference "draft-ietf-dmm-fpc-cpdp-10";
+    }
     revision 2017-07-22 {
         description "Version 08 updates.";
         reference "draft-ietf-dmm-fpc-cpdp-08";
     }
-
     revision 2017-03-08 {
         description "Version 06 updates.";
         reference "draft-ietf-dmm-fpc-cpdp-06";
     }
-
     revision 2016-08-03 {
         description "Initial Revision.";
         reference "draft-ietf-dmm-fpc-cpdp-05";
     }
 
-    feature fpc-basic-agent {
-        description "This is an agent co-located with a DPN.  In this
-        case only DPN Peer Groups, the DPN Id and Control Protocols
-        are exposed along with the core structures.";
-    }
-    feature fpc-multi-dpn {
-        description "The agent supports multiple DPNs.";
-    }
-
+	//General Structures
     typedef fpc-identity {
         type union {
             type uint32;
@@ -76,7 +70,6 @@ submodule ietf-dmm-fpc-base {
         }
         description "FPC Identity";
     }
-
     grouping target-value {
       leaf target {
           type fpc-identity;
@@ -84,55 +77,247 @@ submodule ietf-dmm-fpc-base {
       }
       description "FPC Target Value";
     }
-
-    typedef fpc-dpn-id-type {
+	typedef display-name {
+		type string;
+		description "A human readable string";
+	}
+	// Topology Types
+	//Topology - Typedefs
+    typedef fpc-dpn-id {
       type fpc:fpc-identity;
       description "DPN Identifier Type";
     }
-    grouping fpc-dpn-id {
-      leaf dpn-id {
-        type fpc:fpc-dpn-id-type;
-        description "DPN Id";
-      }
-      description "FPC DPN Id";
-    }
-
-    typedef fpc-dpn-group-id-type {
+	typedef fpc-interface-id {
         type fpc:fpc-identity;
-        description "DPN Group Identifier";
+        description "DPN interface Identifier";
+	}
+    typedef fpc-domain-id {
+        type fpc:fpc-identity;
+        description "Domain Identifier Type";
     }
-    grouping fpc-dpn-group-id {
-      leaf dpn-group-id {
-        type fpc:fpc-dpn-group-id-type;
-        description "DPN Group Id";
-      }
-      description "FPC DPN Group Id";
+    typedef fpc-dpn-group-id {
+      type fpc:fpc-identity;
+      description "DPN Group Identifier Type";
     }
-
-    grouping targets-value {
-      list targets {
-          key "target";
-          leaf target {
-            type fpc-identity;
-            description "Target Id";
-          }
-          leaf dpn-id {
-                type fpc:fpc-dpn-id-type;
-                description "DPN Id";
-          }
-          description "List of Targets";
-      }
-      description "Targets Value";
+    typedef fpc-domain-reference {
+        type fpc:fpc-identity;
+        description "Domain reference Type";
     }
-
+	typedef fpc-displayname {
+		type string;
+		description "Human readable name";
+	}
+    // Topology - Identities
+    identity access-technology {
+    		description "The technology used in the access network";
+    }
+    identity role {
+    		description "The access-technology function of the DPN";
+    }
+    identity interface-protocols {
+    		description "Protocol supported by the interface";
+    }
+    identity features {
+    		description "Protocol features";
+    }
+	
+	// Settings
+	grouping settings {
+		container settings-list {
+			uses fpc:fpc-settings;
+			description "Settings";
+		}
+		description "Settings container";
+	}
+	//Topology - Groupings
+	grouping interface-settings {
+		container interface-settings-list {
+			description "Interface settings";
+		}
+		description "Generic interface settings container";
+	}
+	grouping access-technology-key {
+		leaf access-technology {
+			mandatory true;
+			type identityref {
+				base "access-technology";
+			}
+			description "Access Technology";
+		}
+		description "Access Technology key";
+	}
+	grouping access-role-key {
+		leaf role {
+			mandatory true;
+			type identityref {
+				base "role";
+			}
+			description "Access Technology Role";
+		}
+		description "Access Technology Role key";
+	}
+	grouping interface-id-key {
+		leaf interface-id {
+			type fpc:fpc-interface-id;
+			mandatory true;
+			description "interface identifier";
+		}
+		description "Interface Identifier key";
+	}
+	grouping dpn-identifier {
+		leaf dpn-id {
+			type fpc:fpc-dpn-id;
+		}
+	}
+	grouping dpn-interface {
+		uses fpc:interface-id-key;
+		leaf-list interface-protocol-set {
+			type identityref {
+				base "interface-protocols";
+			}
+			description "Supported protocols";
+		}
+		leaf-list feature-set {
+			type identityref {
+				base "interface-protocols";
+			}
+			description "Supported features";
+		}
+		uses fpc:interface-settings;
+		description "A DPN interface";
+	}
+	grouping dpn-interface-reference {
+		uses fpc:access-technology-key;
+		uses fpc:access-role-key;
+		uses fpc:interface-id-key;
+		description "A reference to a DPN interface";
+	}
+	grouping dpn-type {
+		uses fpc:access-technology-key;
+		leaf access-technology-displayname {
+			type fpc:fpc-displayname;
+			description "Access Technology displayname";
+		}
+		uses fpc:access-role-key;
+		leaf access-role-displayname {
+			type fpc:fpc-displayname;
+			description "Access Technology Role displayname";
+		}
+		list interface-list {
+			key interface-id;
+			uses fpc:dpn-interface;
+			description "A list of interfaces";
+		}
+		description "Describes a type of DPN";
+	}
+	grouping dpn-group-peer {
+		leaf remote-dpn-group-id {
+			mandatory true;
+			type fpc:fpc-dpn-group-id;
+			description "Remote DPN Group identifier";
+		}
+		uses fpc:interface-settings;
+		description "Locally applied settings used for 
+			the referenced DPN-Group (peer group).";
+	}
+	grouping referenced-dpn {
+		uses fpc:dpn-interface-reference;
+		leaf-list dpn-id-set {
+			type fpc:fpc-interface-id;
+			description "List of DPN interfaces";
+		}
+		list dpn-group-peer-set {
+			key remote-dpn-group-id;
+			uses fpc:dpn-group-peer;
+		}
+		description "A list of DPNs supporting a group";
+	}
+	grouping dpn-group {
+		leaf dpn-group-id {
+			mandatory true;
+			type fpc:fpc-dpn-id;
+			description "DPN Group Identifier";
+		}
+		list referenced-dpn-set {
+			key "access-technology role interface-id";
+			uses fpc:referenced-dpn;
+		}
+		leaf domain-id {
+			type fpc:fpc-domain-id;
+			description "Domain Identiifer";
+		}
+		description "DPN Group";
+	}
+	grouping domain {
+		leaf domain-id {
+			mandatory true;
+			type fpc:fpc-domain-id;
+			description "Domain Identifier";
+		}
+		leaf domain-displayname {
+			type fpc:fpc-displayname;
+			description "Domain displayname";
+		}
+		leaf domain-reference {
+			type string;
+			description "Reference to domain resources";
+		}
+		description "Domain";
+	}
+	grouping dpn {
+		leaf dpn-id {
+			mandatory true;
+			type fpc:fpc-dpn-id;
+		}
+		list interfaces {
+			key "access-technology role interface-id";
+			uses fpc:dpn-interface-reference;
+			container additional-settings-list {
+				description "Additional settings";
+			}
+			description "DPN interfaces";
+		}
+		leaf dpn-displayname {
+			type fpc:fpc-displayname;
+			description "DPN displayname";
+		}
+		leaf dpn-reference {
+			type string;
+			description "Reference to underlying DPN resources";
+		}
+	}
+	// Topology Grouping
+	grouping fpc-topology {
+		list dpn-type-set {
+			key "access-technology role";	
+			uses fpc:dpn-type;
+			description "Set of DPN types";
+		}
+		list dpn-group-list {
+			key "dpn-group-id";
+			uses fpc:dpn-group;
+			description "List of DPN groups";
+		}
+		list domain-list {
+			key domain-id;
+			uses fpc:domain;
+			description "List of Domains";
+		}
+		list dpn-list {
+			key dpn-id;
+			uses fpc:dpn;
+			description "List of DPNs";
+		}
+	}
+	// Policy Structures
     // Descriptor Structure
-    typedef fpc-descriptor-id-type {
+    typedef fpc-descriptor-id {
         type fpc:fpc-identity;
         description "Descriptor-Id";
     }
-    grouping fpc-descriptor-id {
+    grouping descriptor-identifier {
       leaf descriptor-id {
-        type fpc:fpc-descriptor-id-type;
+        type fpc:fpc-descriptor-id;
         description "Descriptor Id";
       }
       description "FPC Descriptor ID value";
@@ -140,13 +325,13 @@ submodule ietf-dmm-fpc-base {
     identity fpc-descriptor-type {
         description "A traffic descriptor";
     }
-    grouping fpc-descriptor-type-value {
+    grouping descriptor-type-value {
         leaf descriptor-type {
           type identityref {
             base "fpc-descriptor-type";
           }
           mandatory true;
-          description "Descriptor Type";
+          description "Descriptor Type Value";
         }
     }
     grouping fpc-descriptor-value {
@@ -168,21 +353,20 @@ submodule ietf-dmm-fpc-base {
           description "Descriptor Value";
       }
     }
-    grouping fpc-descriptor {
-        uses fpc:fpc-descriptor-id;
-        uses fpc:fpc-descriptor-type-value;
+    grouping descriptor {
+        uses fpc:descriptor-identifier;
+        uses fpc:descriptor-type-value;
         uses fpc:fpc-descriptor-value;
         description "FPC Descriptor";
     }
-
     // Action Structure
-    typedef fpc-action-id-type {
+    typedef fpc-action-id {
         type fpc:fpc-identity;
         description "Action-Id";
     }
-    grouping fpc-action-id {
+    grouping action-identifier {
       leaf action-id {
-        type fpc:fpc-action-id-type;
+        type fpc:fpc-action-id;
         description "Action Identifier";
       }
       description "FPC Action ID value";
@@ -190,7 +374,7 @@ submodule ietf-dmm-fpc-base {
     identity fpc-action-type {
         description "Action Type";
     }
-    grouping fpc-action-type-value {
+    grouping action-type-value {
         leaf action-type {
           type identityref {
             base "fpc-action-type";
@@ -212,27 +396,26 @@ submodule ietf-dmm-fpc-base {
       }
       description "Action Value";
     }
-    grouping fpc-action {
-        uses fpc:fpc-action-id;
-        uses fpc:fpc-action-type-value;
+    grouping action {
+        uses fpc:action-identifier;
+        uses fpc:action-type-value;
         uses fpc:fpc-action-value;
         description "FPC Action";
     }
-
     // Rule Structure
-    typedef fpc-rule-id-type {
+    typedef fpc-rule-id {
         type fpc:fpc-identity;
         description "Rule-Id";
     }
-    grouping fpc-rule-id {
+    grouping rule-identifier {
       leaf rule-id {
-        type fpc:fpc-rule-id-type;
+        type fpc:fpc-rule-id;
         description "Rule Identifier";
       }
       description "FPC Rule ID value";
     }
-    grouping fpc-order {
-      leaf order {
+    grouping order {
+      leaf action-order {
         type uint32;
         description "Action Execution Order";
       }
@@ -257,36 +440,36 @@ submodule ietf-dmm-fpc-base {
         description "Direction";
       }
     }
-    grouping fpc-rule {
-        uses fpc:fpc-rule-id;
+    grouping rule {
+        uses fpc:rule-identifier;
         list descriptor-entry-set {
           key "descriptor-id";
-          uses fpc:fpc-descriptor-id;
+          uses fpc:descriptor-identifier;
           uses fpc:fpc-direction;
           description "A set of Descriptor references";
         }
         list action-entry-set {
-          key "order";
-          uses fpc:fpc-order;
-          uses fpc:fpc-action-id;
+          key "action-order";
+          uses fpc:order;
+          uses fpc:action-identifier;
           description "A set of Action references";
         }
         description
           "FPC Rule.  When no actions are present the action is DROP.
-          When no Descriptors are present 'all traffic' (permit any) is permitted.";
+          When no Descriptors are present 'all traffic' (permit any) 
+		  is permitted.";
     }
-
     // Policy Structures
-    typedef fpc-policy-id-type {
+    typedef fpc-policy-id {
         type fpc:fpc-identity;
         description "Policy Identifier";
     }
-    grouping fpc-policy-id {
+    grouping policy-identifier {
       leaf policy-id {
-        type fpc:fpc-policy-id-type;
+        type fpc:fpc-policy-id;
         description "Policy Identifier";
       }
-      description "FPC Policy ID value";
+      description "FPC Policy Id value";
     }
     grouping fpc-precedence {
       leaf precedence {
@@ -295,30 +478,76 @@ submodule ietf-dmm-fpc-base {
       }
       description "FPC Rule Precedence";
     }
-    grouping fpc-policy {
-        uses fpc:fpc-policy-id;
+    grouping policy {
+        uses fpc:policy-identifier;
         list rule-set {
             key "precedence";
             unique "rule-id";
             uses fpc:fpc-precedence;
-            uses fpc:fpc-rule-id;
+            uses fpc:rule-identifier;
             description "Rule Entry";
         }
         description "FPC Policy";
     }
-
+    // FPC Policy
+	grouping fpc-policy {
+		list action-list {
+			key action-id;
+			uses fpc:action;
+			description "List of Actions";
+		}
+		list descriptor-list {
+			key descriptor-id;
+			uses fpc:descriptor;
+			description "List of Descriptors";
+		}
+		list rule-list {
+			key rule-id;
+			uses fpc:rule;
+			description "List of Rules";
+		}
+		list policy-list {
+			key policy-id;
+			uses fpc:policy;
+			description "List of Policies";
+		}
+		description "FPC Policy Structures";
+	}
     // Mobility Structures
+	// Installed DPN Policy
+	grouping installed-dpn-policy {
+		leaf installed-dpn-policy-id {
+			type fpc:fpc-policy-id;
+			description "Installed Policy identifier";
+		}
+		leaf policy-template-id {
+			type fpc:fpc-policy-id;
+			description "Policy Template identifier";
+		}
+		uses fpc:settings;
+		description "Policy installed upon a DPN";
+	}
+	grouping installed-dpn-policies {
+		uses fpc:dpn-identifier;
+		uses fpc:settings;
+		list installed-policy-list {
+			key installed-dpn-policy-id;
+			uses fpc:installed-dpn-policy;
+			description "List of DPN policies";
+		}
+		description "List of installed DPN policies and settings";
+	}
     // Embedded Rule - basis for FPC dynamic policy
     grouping fpc-embeddedable-rule {
         uses fpc:fpc-precedence;
-        uses fpc:fpc-rule-id;
+        uses fpc:rule-identifier;
         list descriptor-entry-set {
           key descriptor-id;
-          uses fpc:fpc-descriptor-id;
+          uses fpc:descriptor-identifier;
           choice desc_val_or_ref {
             default reference;
             case value {
-              uses fpc:fpc-descriptor-type-value;
+              uses fpc:descriptor-type-value;
               uses fpc:fpc-descriptor-value;
               description "A Descriptor value";
             }
@@ -337,23 +566,22 @@ submodule ietf-dmm-fpc-base {
           }
         }
         list action-entry-set {
-          key order;
-          uses fpc:fpc-order;
+          key action-order;
+          uses fpc:order;
           choice action_val_or_ref {
             case value {
-              uses fpc:fpc-action-type-value;
+              uses fpc:action-type-value;
               uses fpc:fpc-action-value;
               description "action value";
             }
             case action-reference {
-              uses fpc:fpc-action-id;
+              uses fpc:action-identifier;
               description "action reference";
             }
           }
           description "A set of Action references";
         }
-        description
-          "FPC Embedded Rule.";
+        description "FPC Embedded Rule.";
     }
     grouping fpc-embeddable-rule-list {
         list embeddedable-rule-list {
@@ -362,25 +590,186 @@ submodule ietf-dmm-fpc-base {
             uses fpc:fpc-embeddedable-rule;
             description "Embeddable Rule List";
         }
+		description "List of Embeddable Rules";
     }
     grouping fpc-referenced-policy-list {
         leaf-list referenced-policy-list {
-            type fpc:fpc-policy-id-type;
-            description "List of Policy References (Policy Identifiers).";
+            type fpc:fpc-policy-id;
+            description "List of Policy References.";
         }
+		description "List of Policy references";
+    }
+    // Dynamic Policy
+    grouping dpn-policy {
+        uses fpc:dpn-identifier;
+        uses fpc:fpc-direction;
+        uses fpc:settings;
+        uses fpc:interface-id-key;
+        leaf-list parent-referenced-policy-list {
+            type fpc:fpc-policy-id;
+            description "Policies assigned to this DPN policy.";
+        }
+        leaf-list parent-embedded-rule-list {
+            type fpc:fpc-rule-id;
+            description "Rules assigned to this DPN Policy.";
+        }
+        uses fpc:fpc-referenced-policy-list;
+        uses fpc:fpc-embeddable-rule-list;
+        description "DPN Policy";
+    }
+    grouping fpc-dynamic-policy {
+        leaf dynamic-policy-id {
+            type fpc:fpc-identity;
+            description "Dynamic Policy ID";
+        }
+		leaf dpn-group-id {
+			type fpc:fpc-dpn-group-id;
+			description "DPN Group used during DPN selection";
+		}
+        leaf-list delegated-ip-prefixes {
+            type inet:ip-prefix;
+            description "Delegated Prefix(es)";
+        }
+        leaf parent-policy-id {
+            type fpc:fpc-identity;
+            description "Parent Dynamic Policy";
+        }
+        list dpn-list {
+            key "dpn-id direction";
+            uses fpc:dpn-policy;
+        }
+        uses fpc:fpc-embeddable-rule-list;
+        uses fpc:fpc-referenced-policy-list;
+		uses fpc:settings;
+        description "FCP Dynamic Policy";
+    }
+    // Events, Probes & Notifications
+    identity event-type {
+        description "Base Event Type";
+    }
+    typedef event-type-id {
+        type uint32;
+        description "Event ID Type";
+    }
+    grouping monitor-id {
+      leaf monitor-id {
+        type fpc:fpc-identity;
+        description "Monitor Identifier";
+      }
+      description "Monitor ID";
+    }
+    identity report-type {
+      description "Type of Report";
+    }
+    identity periodic-report {
+      base "fpc:report-type";
+      description "Periodic Report";
+    }
+    identity threshold-report {
+      base "fpc:report-type";
+      description "Threshold Report";
+    }
+    identity scheduled-report {
+      base "fpc:report-type";
+      description "Scheduled Report";
+    }
+    identity events-report {
+      base "fpc:report-type";
+      description "Events Report";
+    }
+    grouping report-config {
+      choice event-config-value {
+        case periodic-config {
+            leaf period {
+              type uint32;
+              description "Period";
+            }
+            description "Periodic Config Case";
+        }
+        case threshold-config {
+            leaf lo-thresh {
+              type uint32;
+              description "lo threshold";
+            }
+            leaf hi-thresh {
+              type uint32;
+              description "hi threshold";
+            }
+            description "Threshold Config Case";
+        }
+        case scheduled-config {
+            leaf report-time {
+              type uint32;
+              description "Reporting Time";
+            }
+            description "Scheduled Config Case";
+        }
+        case events-config-ident {
+            leaf-list event-identities {
+              type identityref {
+                base "fpc:event-type";
+              }
+              description "Event Identities";
+            }
+            description "Events Config Identities Case";
+        }
+        case events-config {
+            leaf-list event-ids {
+              type uint32;
+              description "Event IDs";
+            }
+            description "Events Config Case";
+        }
+        description "Event Config Value";
+      }
+      description "Report Configuration";
+    }
+    grouping monitor-config {
+      uses fpc:monitor-id;
+      leaf deterrable {
+          type boolean;
+          description "Indicates reports related to this
+            config can be delayed.";
+      }
+      uses fpc:target-value;
+      uses fpc:report-config;
+      description "Monitor Configuration";
+    }
+    grouping report {
+      uses fpc:monitor-config;
+      choice report-value {
+        leaf trigger {
+          type fpc:event-type-id;
+          description "Trigger Identifier";
+        }
+        case simple-empty {
+          leaf nothing {
+            type empty;
+            description "Empty Value";
+          }
+          description "Empty Case";
+        }
+        case simple-val32 {
+          leaf val32 {
+            type uint32;
+            description "Unsigned 32 bit value";
+          }
+          description "Simple Value Case";
+        }
+        description "Report Value";
+      }
+      description "Monitor Report";
     }
 
     // Settings
     grouping fpc-settings {
         leaf tunnel-local-address {
             type inet:ip-address;
-            description "endpoint address of the DPN which a
-              gent exists.";
+            description "local tunnel address";
         }
         leaf tunnel-remote-address {
             type inet:ip-address;
-            description "endpoint address of the DPN which
-              agent exists.";
+            description "remote tunnel address";
         }
         leaf mtu-size {
             type uint32;
@@ -389,11 +778,7 @@ submodule ietf-dmm-fpc-base {
         container mobility-tunnel-parameters {
             uses fpc:mobility-info;
             description
-            "Specifies profile specific lylebe551144 tunnel
-            parameters to the DPN which the agent exists. The
-            profiles includes GTP/TEID for 3gpp profile, GRE/Key for
-            ietf-pmip profile, or new profile if anyone will define
-            it.";
+            "Profile specific tunnel parameters";
         }
         container nexthop {
             uses fpc:fpc-nexthop;
@@ -403,20 +788,13 @@ submodule ietf-dmm-fpc-base {
             uses fpc:fpc-qos-profile;
             description "QoS Parameters";
         }
-        container dpn-parameters {
-            description "DPN Parameters";
-        }
         list vendor-parameters {
             key "vendor-id vendor-type";
             uses fpc:vendor-attributes;
             description "Vendor Parameters";
         }
-        description "A profile that applies to a specific direction";
+        description "A collection of settings";
     }
-    grouping fpc-additional-settings {
-        uses fpc:fpc-settings;
-    }
-
     // Mobility (Tunnel) Information
     grouping mobility-info {
         choice profile-parameters {
@@ -431,7 +809,6 @@ submodule ietf-dmm-fpc-base {
         }
         description "Mobility Information";
     }
-
     // Next Hop Structures
     typedef fpc-service-path-id {
         type uint32 {
@@ -445,7 +822,6 @@ submodule ietf-dmm-fpc-base {
         }
         description "MPLS label";
     }
-
     identity fpc-nexthop-type {
         description "Next Hop Type";
     }
@@ -515,7 +891,6 @@ submodule ietf-dmm-fpc-base {
         }
         description "Nexthop Value";
     }
-
     // QoS Information
     identity fpc-qos-type {
         description "Base identity from which specific uses of QoS
@@ -533,7 +908,6 @@ submodule ietf-dmm-fpc-base {
         }
         description "QoS Profile";
     }
-
     // Vendor Specific Attributes
     identity vendor-specific-type {
         description "Vendor Specific Attribute Type";
@@ -560,395 +934,5 @@ submodule ietf-dmm-fpc-base {
             description "Atttribute Value";
         }
         description "Vendor Specific Attributes";
-    }
-
-    // Configured Policy
-    typedef fpc-configured-policy-id-type {
-        type fpc:fpc-identity;
-        description "Configured Policy Identifier";
-    }
-    grouping fpc-configured-policy-id {
-      leaf configured-policy-id {
-        type fpc:fpc-policy-id-type;
-        description "Configured Policy Identifier";
-      }
-      description "FPC Configured Policy ID value";
-    }
-    grouping fpc-configured-policy {
-        uses fpc:fpc-configured-policy-id;
-        uses fpc:fpc-dpn-id;
-        uses fpc:fpc-policy-id;
-        description "FPC Configured Policy";
-    }
-
-    // Dynamic Policy
-    grouping fpc-dpn-policy {
-        uses fpc:fpc-dpn-id;  // Should we apply a default?
-        uses fpc:fpc-direction; // Should we apply a default?
-        uses fpc:fpc-additional-settings;
-        uses fpc:fpc-interface-id;
-        leaf-list parent-referenced-policy-list {
-            type fpc:fpc-policy-id-type;
-            description "List of parent (dynamic policy) Policy References
-              (Policy Identifiers) assigned to this DPN policy entry.";
-        }
-        leaf-list parent-embedded-rule-list {
-            type fpc:fpc-rule-id-type;
-            description "List of parent (dynamic policy) Embedded Rules
-              (Rule Identifiers) assigned to this DPN Policy entry.";
-        }
-        uses fpc:fpc-embeddable-rule-list;
-        uses fpc:fpc-referenced-policy-list;
-        description "DPN Policy";
-    }
-
-    typedef fpc-dynamic-policy-id-type {
-        type fpc:fpc-identity;
-        description "FPC Configured Policy Identifier";
-    }
-    grouping fpc-dynamic-policy-id {
-        leaf dynamic-policy-id {
-            type fpc:fpc-dynamic-policy-id-type;
-            description "Dynamic Policy ID";
-        }
-    }
-    grouping fpc-dynamic-policy {
-        uses fpc:fpc-dynamic-policy-id;
-        uses fpc:fpc-dpn-group-id {
-          refine dpn-group-id {
-              description "DPN Group used during selection of the DPN";
-          }
-        }
-        leaf-list delegated-ip-prefixes {
-            type inet:ip-prefix;
-            description "Delegated Prefix(es)";
-        }
-        leaf parent-dynamic-policy {
-            type fpc:fpc-dynamic-policy-id-type;
-            description "Parent Dynamice Policy";
-        }
-        list dpns {
-            key "dpn-id direction";
-            uses fpc:fpc-dpn-policy;
-        }
-        uses fpc:fpc-additional-settings;
-        uses fpc:fpc-embeddable-rule-list;
-        uses fpc:fpc-referenced-policy-list;
-        description "FCP Dynamic Policy";
-    }
-
-    // Topology
-    typedef fpc-domain-id {
-        type fpc:fpc-identity;
-        description "Domain Identifier";
-    }
-    grouping fpc-domain {
-      leaf domain-id {
-        type fpc:fpc-domain-id;
-        description "Domain ID";
-      }
-      leaf domain-name {
-        type string;
-        description "Domain Name";
-      }
-      leaf domain-type {
-        type string;
-        description "Domain Type";
-      }
-      leaf domain-reference {
-        type instance-identifier;
-        description "Indicates a set of resources for the domain";
-      }
-      description "FPC Domain";
-    }
-
-    identity fpc-access-technology {
-        description "Access Technoology";
-    }
-    grouping fpc-access-technology-value {
-        leaf access-technology {
-            type identityref {
-              base "fpc:fpc-access-technology";
-            }
-            description "Access Technology";
-        }
-    }
-    identity fpc-role {
-        description "Role/Function of the DPN";
-    }
-    grouping fpc-role-value {
-        leaf role {
-            type identityref {
-              base "fpc:fpc-role";
-            }
-            description "Role/Function of the DPN";
-        }
-    }
-    identity fpc-interface-protocol {
-        description "Interface Protocol";
-    }
-    grouping fpc-interface-protocol-value {
-        leaf interface-protocol {
-            type identityref {
-              base "fpc:fpc-interface-protocol";
-            }
-            description "Interface Protocol";
-        }
-    }
-    identity fpc-features {
-        description "Interface Features";
-    }
-
-    typedef fpc-interface-id-type {
-        type fpc:fpc-identity;
-        description "Interface Identifier";
-    }
-    grouping fpc-interface-id {
-        leaf interface-id {
-            type fpc:fpc-interface-id-type;
-            description "Interface Id";
-        }
-    }
-    grouping fpc-interface {
-        uses fpc:fpc-interface-id {
-            refine interface-id {
-                mandatory true;
-            }
-        }
-        uses fpc:fpc-interface-protocol-value {
-            refine interface-protocol {
-                mandatory true;
-            }
-        }
-        leaf-list features {
-            type identityref {
-              base "fpc:fpc-features";
-            }
-            description "Interface Features";
-        }
-        uses fpc:fpc-settings;
-        description "Interface description";
-    }
-
-    grouping fpc-dpn-type {
-        uses fpc:fpc-access-technology-value {
-            refine access-technology {
-                mandatory true;
-            }
-        }
-        leaf access-technology-displayname {
-            type string;
-            description "Access Technology readable name.";
-        }
-        uses fpc:fpc-role-value {
-            refine role {
-                mandatory true;
-            }
-        }
-        leaf role-displayname {
-            type string;
-            description "Role readable name.";
-        }
-        list interface-list {
-            key "interface-id";
-            uses fpc:fpc-interface;
-        }
-        description "Describes the types of reference points.";
-    }
-
-    grouping fpc-interface-reference {
-        uses fpc:fpc-access-technology-value {
-            refine access-technology {
-                mandatory true;
-            }
-        }
-        uses fpc:fpc-role-value {
-            refine role {
-                mandatory true;
-            }
-        }
-        uses fpc:fpc-interface-id {
-            refine interface-id {
-                mandatory true;
-            }
-        }
-        description "Reference to a FPC Interface";
-    }
-
-    grouping fpc-dpn {
-        uses fpc:fpc-dpn-id;
-        leaf dpn-displayname {
-          type string;
-          description "DPN Name";
-        }
-        list interface-set {
-          key "interface-id";
-          uses fpc:fpc-interface-reference;
-          uses fpc:fpc-additional-settings;
-        }
-        leaf node-reference {
-          type instance-identifier;
-          description "DPN => Node (Topology) Mapping";
-        }
-        description "FPC DPN";
-    }
-
-    grouping fpc-dpn-peer-group {
-        uses fpc:fpc-dpn-group-id {
-          refine dpn-group-id {
-            mandatory true;
-            description "DPN Peer group ID";
-          }
-        }
-        container interface-settings {
-          uses fpc:fpc-settings;
-        }
-        description "FPC DPN Peer Group";
-    }
-    grouping fpc-dpn-group {
-        uses fpc:fpc-dpn-group-id {
-          refine dpn-group-id {
-              mandatory true;
-          }
-        }
-        list referenced-dpns-set {
-            key "access-technology role interface-id";
-            uses fpc:fpc-interface-reference;
-            leaf-list dpn-id-set {
-                type fpc:fpc-dpn-id-type;
-                description "DPNs in the group that support the referenced
-                  interface in this entry.";
-            }
-        }
-        list dpn-peergroup-set {
-            key "dpn-group-id";
-            uses fpc:fpc-dpn-peer-group;
-            description "Set of DPN Peer groups";
-        }
-        description "DPN Group - used to logically organize groups of DPN
-          interfaces for various purposes";
-    }
-
-    // Events, Probes & Notifications
-    identity event-type {
-        description "Base Event Type";
-    }
-    typedef event-type-id {
-        type uint32;
-        description "Event ID Type";
-    }
-
-    grouping monitor-id {
-      leaf monitor-id {
-        type fpc:fpc-identity;
-        description "Monitor Identifier";
-      }
-      description "Monitor ID";
-    }
-
-    identity report-type {
-      description "Type of Report";
-    }
-    identity periodic-report {
-      base "fpc:report-type";
-      description "Periodic Report";
-    }
-    identity threshold-report {
-      base "fpc:report-type";
-      description "Threshold Report";
-    }
-    identity scheduled-report {
-      base "fpc:report-type";
-      description "Scheduled Report";
-    }
-    identity events-report {
-      base "fpc:report-type";
-      description "Events Report";
-    }
-
-    grouping report-config {
-      choice event-config-value {
-        case periodic-config {
-            leaf period {
-              type uint32;
-              description "Period";
-            }
-            description "Periodic Config Case";
-        }
-        case threshold-config {
-            leaf lo-thresh {
-              type uint32;
-              description "lo threshold";
-            }
-            leaf hi-thresh {
-              type uint32;
-              description "hi threshold";
-            }
-            description "Threshold Config Case";
-        }
-        case scheduled-config {
-            leaf report-time {
-              type uint32;
-              description "Reporting Time";
-            }
-            description "Scheduled Config Case";
-        }
-        case events-config-ident {
-            leaf-list event-identities {
-              type identityref {
-                base "fpc:event-type";
-              }
-              description "Event Identities";
-            }
-            description "Events Config Identities Case";
-        }
-        case events-config {
-            leaf-list event-ids {
-              type uint32;
-              description "Event IDs";
-            }
-            description "Events Config Case";
-        }
-        description "Event Config Value";
-      }
-      description "Report Configuration";
-    }
-
-    grouping monitor-config {
-      uses fpc:monitor-id;
-      leaf delayable {
-          type boolean;
-          description "Indicates reports related to this
-            config can be delayed.";
-      }
-      uses fpc:target-value;
-      uses fpc:report-config;
-      description "Monitor Configuration";
-    }
-
-    grouping report {
-      uses fpc:monitor-config;
-      choice report-value {
-        leaf trigger {
-          type fpc:event-type-id;
-          description "Trigger Identifier";
-        }
-        case simple-empty {
-          leaf nothing {
-            type empty;
-            description "Empty Value";
-          }
-          description "Empty Case";
-        }
-        case simple-val32 {
-          leaf val32 {
-            type uint32;
-            description "Unsigned 32 bit value";
-          }
-          description "Simple Value Case";
-        }
-        description "Report Value";
-      }
-      description "Monitor Report";
     }
 }

@@ -42,11 +42,14 @@ module ietf-dmm-fpc {
      in Section 4.e of the Trust Legal Provisions and are provided
      without warranty as described in the Simplified BSD License.";
 
+    revision 2017-09-27 {
+		description "Version 10 updates.";
+		reference "draft-ietf-dmm-fpc-cpdp-10";
+	}
     revision 2017-03-08 {
         description "Version 06 updates.";
         reference "draft-ietf-dmm-fpc-cpdp-06";
     }
-
     revision 2016-08-03 {
         description "Initial Revision.";
         reference "draft-ietf-dmm-fpc-cpdp-05";
@@ -88,7 +91,6 @@ module ietf-dmm-fpc {
         type fpc:fpc-identity;
         description "Agent Identifier";
     }
-
     typedef client-identifier {
         type fpc:fpc-identity;
         description "Client Identifier";
@@ -112,99 +114,51 @@ module ietf-dmm-fpc {
           }
           description "Basename Information";
     }
-
     // Top Level Structures
-    container tenants {
-        list tenant {
-            key "tenant-id";
-            leaf tenant-id {
-                type fpc:fpc-identity;
-                description "Tenant ID";
-            }
-
-            container fpc-policy {
-              list policy-list {
-                  key "policy-id";
-                  uses fpc:fpc-policy;
-                  description "Policies";
-              }
-              list rule-list {
-                  key "rule-id";
-                  uses fpc:fpc-rule;
-                  description "Rules";
-              }
-              list descriptor-list {
-                key descriptor-id;
-                uses fpc:fpc-descriptor;
-                description "Descriptors";
-              }
-              list action-lists {
-                  key action-id;
-                  uses fpc:fpc-action;
-                  description "Actions";
-              }
-              description "Policy";
-            }
-
-            list configured-policy-list {
-              config false;
-              key configured-policy-id;
-              uses fpc:fpc-configured-policy;
-              description "Configured Policy List";
-            }
-
-            list dynamic-policy-list {
-              config false;
-              key "dynamic-policy-id";
-              uses fpc:fpc-dynamic-policy;
-              description "Dynamic Policy List";
-            }
-
-            list monitor-liss {
-              config false;
-              uses fpc:monitor-config;
-              description "Monitors";
-            }
-
-            container fpc-topology {
-              // Basic Agent Topology Structures
-              list domains {
-                key domain-id;
-                uses fpc:fpc-domain;
-                uses fpc:basename-info;
-                description "Domains";
-              }
-
-              list dpn-type-set {
-                key "access-technology role";
-                uses fpc:fpc-dpn-type;
-                description "DPN Types";
-              }
-
-              list dpn-group-list {
-                  key dpn-group-id;
-                  uses fpc:fpc-dpn-group;
-                  description "DPN Groups";
-              }
-              list dpn-list {
-                  key dpn-id;
-                  uses fpc:fpc-dpn;
-                  description "DPNs";
-              }
-              description "Topology";
-            }
-          description "Tenant";
-        }
-        description "Tenant List";
-    }
-
+	container tenants {
+		list tenant {
+			key "tenant-id";
+			leaf tenant-id {
+			    type fpc:fpc-identity;
+			    description "Tenant ID";
+			}
+	 		container fpc-topology {
+				config false;
+				uses fpc:fpc-topology;
+				description "Topology";
+ 			}
+	 		container fpc-policy {
+	 			config false;
+	 			uses fpc:fpc-policy;
+	 			description "Policy";
+	 		}
+			list installed-dpn-policy-list {
+			  config false;
+			  key dpn-id;
+			  uses fpc:installed-dpn-policies;
+			  description "Configured Policy List";
+			}
+			list dynamic-policy-list {
+			  config false;
+			  key "dynamic-policy-id";
+			  uses fpc:fpc-dynamic-policy;
+			  description "Dynamic Policy List";
+			}
+			list monitor-liss {
+				config false;
+				uses fpc:monitor-config;
+				description "Monitors";
+			}
+			description "Tenant";
+		}
+		description "Tenant List";
+	}
     container fpc-agent-info {
       // General Agent Structures
       leaf-list supported-features {
         type string;
         description "Agent Features";
       }
-
       // Common Agent Info
       list supported-events {
         key event;
@@ -220,7 +174,6 @@ module ietf-dmm-fpc {
         }
         description "Supported Events";
       }
-
       list supported-error-types {
         key error-type;
         leaf error-type {
@@ -258,7 +211,6 @@ module ietf-dmm-fpc {
         }
         description "Adminstrative Status";
     }
-
     typedef session-status {
         type enumeration {
             enum complete {
@@ -276,17 +228,14 @@ module ietf-dmm-fpc {
         }
         description "Session Status";
     }
-
     typedef op-delay {
         type uint32;
         description "Operation Delay (ms)";
     }
-
     typedef op-identifier {
         type uint64;
         description "Operation Identifier";
     }
-
     typedef ref-scope {
       type enumeration {
         enum none {
@@ -295,31 +244,23 @@ module ietf-dmm-fpc {
         }
         enum op {
           value 1;
-          description "op - All references are contained in the
-            operation body (intra-op)";
+          description "All references are intra-operation";
         }
         enum bundle {
           value 2;
-          description "bundle - All references in exist in bundle
-            (inter-operation/intra-bundle).
-            NOTE - If this value comes in CONFIG call it is
-              equivalent to 'op'.";
+          description "All references in exist in bundle";
         }
         enum storage {
           value 3;
-          description "storage - One or more references exist outside
-            of the operation and bundle. A lookup to a cache /
-            storage is required.";
+          description "One or more references exist in storage.";
         }
         enum unknown {
           value 4;
-          description " unknown - the location of the references are
-            unknown.  This is treated as a 'storage' type.";
+          description "The location of the references are unknown.";
         }
       }
       description "Search scope for references in the operation.";
     }
-
     grouping instructions {
       container instructions {
         if-feature instruction-bitset;
@@ -330,7 +271,6 @@ module ietf-dmm-fpc {
       }
       description "Instructions Value";
     }
-
     grouping op-header {
       leaf client-id {
         type fpc:client-identifier;
@@ -377,7 +317,6 @@ module ietf-dmm-fpc {
       uses fpc:instructions;
       description "Operation Header";
     }
-
     grouping clone-ref {
       leaf entity {
         type fpc:fpc-identity;
@@ -389,21 +328,18 @@ module ietf-dmm-fpc {
       }
       description "Clone Reference";
     }
-
     identity command-set {
       description "protocol specific commands";
     }
-
     grouping context-operation {
       uses fpc:fpc-dynamic-policy;
       uses fpc:instructions;
       description "Context Operation";
     }
-
     // Output Structure
     grouping payload {
-      list configured-policy-list {
-        uses fpc:fpc-configured-policy;
+      list installed-dpn-policy-list {
+        uses fpc:installed-dpn-policies ;
         description "Configured Policies";
       }
       list dynamic-policy-list {
@@ -413,25 +349,25 @@ module ietf-dmm-fpc {
       list rule-list {
         if-feature fpc:policy-rpc-provisioning;
         key "rule-id";
-        uses fpc:fpc-rule;
+        uses fpc:rule;
         description "Rules";
       }
       list policy-list {
         if-feature fpc:policy-rpc-provisioning;
         key "policy-id";
-        uses fpc:fpc-policy;
+        uses fpc:policy-identifier;
         description "Policies";
       }
       list descriptor-list {
         if-feature fpc:policy-rpc-provisioning;
         key descriptor-id;
-        uses fpc:fpc-descriptor;
+        uses fpc:descriptor;
         description "Descriptors";
       }
       list action-list {
         if-feature fpc:policy-rpc-provisioning;
         key action-id;
-        uses fpc:fpc-action;
+        uses fpc:action;
         description "Actions";
       }
       description "Payload";
@@ -455,7 +391,7 @@ module ietf-dmm-fpc {
           description "Create/Update input";
         }
         case delete_or_query {
-          uses fpc:targets-value;
+          uses fpc:target-value;
           description "Delete/Query input";
         }
         description "Opeartion Input value";
@@ -540,7 +476,7 @@ module ietf-dmm-fpc {
           description "Create/Update Success";
         }
         case delete_or_query-success {
-          uses fpc:targets-value;
+          uses fpc:target-value;
           description "Delete/Query Success";
         }
         case empty-case {
@@ -665,7 +601,7 @@ module ietf-dmm-fpc {
     rpc probe {
         description "Probe the status of a registered monitor";
         input {
-          uses fpc:targets-value;
+          uses fpc:target-value;
         }
         output {
           leaf monitor-result {
@@ -677,16 +613,8 @@ module ietf-dmm-fpc {
     }
 
     grouping supported-role-entry {
-        uses fpc:fpc-access-technology-value {
-            refine access-technology {
-                mandatory true;
-            }
-        }
-        uses fpc:fpc-role-value {
-            refine role {
-                mandatory true;
-            }
-        }
+        uses fpc:access-technology-key;
+        uses fpc:access-role-key;
     }
 
     notification notify {
