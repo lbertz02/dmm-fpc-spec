@@ -123,31 +123,38 @@ module ietf-dmm-fpc {
 			    description "Tenant ID";
 			}
 	 		container fpc-topology {
-				config false;
 				uses fpc:fpc-topology;
 				description "Topology";
  			}
 	 		container fpc-policy {
-	 			config false;
 	 			uses fpc:fpc-policy;
 	 			description "Policy";
 	 		}
+			list monitor-liss {
+				key monitor-id;
+				uses fpc:monitor-config;
+				description "Monitors";
+			}
 			list installed-dpn-policy-list {
-			  config false;
-			  key dpn-id;
-			  uses fpc:installed-dpn-policies;
-			  description "Configured Policy List";
+				config false;
+				key dpn-id;
+				uses fpc:installed-dpn-policies;
+				description "Configured Policy List";
+			}
+			list installed-dpn-monitors-list {
+				config false;
+				key dpn-id;
+				uses fpc:dpn-identifier;
+		      	leaf-list monitors {
+		          type fpc:fpc-identity;
+		          description "Monitor Identifier";
+		        }
 			}
 			list dynamic-policy-list {
 			  config false;
 			  key "dynamic-policy-id";
 			  uses fpc:fpc-dynamic-policy;
 			  description "Dynamic Policy List";
-			}
-			list monitor-liss {
-				config false;
-				uses fpc:monitor-config;
-				description "Monitors";
 			}
 			description "Tenant";
 		}
