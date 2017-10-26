@@ -95,20 +95,16 @@ module ietf-dmm-fpc {
         type fpc:fpc-identity;
         description "Client Identifier";
     }
-
     grouping basename-info {
           leaf basename {
-            if-feature fpc:fpc-basename-registry;
             type fpc:fpc-identity;
             description "Rules Basename";
           }
           leaf base-state {
-            if-feature fpc:fpc-basename-registry;
             type string;
             description "Current State";
           }
           leaf base-checkpoint {
-            if-feature fpc:fpc-basename-registry;
             type string;
             description "Checkpoint";
           }
@@ -122,82 +118,39 @@ module ietf-dmm-fpc {
 			    type fpc:fpc-identity;
 			    description "Tenant ID";
 			}
-	 		container fpc-topology {
-				uses fpc:fpc-topology;
-				description "Topology";
- 			}
-	 		container fpc-policy {
-	 			uses fpc:fpc-policy;
-	 			description "Policy";
-	 		}
-			list monitor-liss {
-				key monitor-id;
-				uses fpc:monitor-config;
-				description "Monitors";
-			}
-			list installed-dpn-policy-list {
-				config false;
-				key dpn-id;
-				uses fpc:installed-dpn-policies;
-				description "Configured Policy List";
-			}
-			list installed-dpn-monitors-list {
-				config false;
-				key dpn-id;
-				uses fpc:dpn-identifier;
-		      	leaf-list monitors {
-		          type fpc:fpc-identity;
-		          description "Monitor Identifier";
-		        }
-			}
-			list dynamic-policy-list {
-			  config false;
-			  key "dynamic-policy-id";
-			  uses fpc:fpc-dynamic-policy;
-			  description "Dynamic Policy List";
-			}
+		    	container mobility {
+		     	container topology {
+		    			uses fpc:fpc-topology;
+	     			uses fpc:basename-info {
+	     				if-feature fpc:fpc-basename-registry;
+	     			}
+		    			description "Topology";
+		    		}
+	     		container policy-definitions {
+	     			uses fpc:fpc-policy;
+	     			uses fpc:basename-info {
+	     				if-feature fpc:fpc-basename-registry;
+	     			}
+	     			description "Policy";
+	     		}
+		    		uses fpc:configurable-policy-set;
+		    		list mobility-context-set {
+		    			  config false;
+		    			  key "mobility-context-id";
+		    			  uses fpc:mobility-context;
+		    			  description "Mobility Context Set";
+		    		}
+		    		list monitor-set {
+		    			key monitor-id;
+		    			uses fpc:monitor-config;
+		    			description "Monitor Configurations";
+		    		}
+		    		description "Mobility Elements";
+		    	}
 			description "Tenant";
 		}
 		description "Tenant List";
 	}
-    container fpc-agent-info {
-      // General Agent Structures
-      leaf-list supported-features {
-        type string;
-        description "Agent Features";
-      }
-      // Common Agent Info
-      list supported-events {
-        key event;
-        leaf event {
-          type identityref {
-            base "fpc:event-type";
-          }
-          description "Event Types";
-        }
-        leaf event-id {
-          type fpc:event-type-id;
-          description "Event ID";
-        }
-        description "Supported Events";
-      }
-      list supported-error-types {
-        key error-type;
-        leaf error-type {
-          type identityref {
-            base "fpc:error-type";
-          }
-          description "Error Type";
-        }
-        leaf error-type-id {
-          type fpc:error-type-id;
-          description "Error Type ID";
-        }
-        description "Supported Error Types";
-      }
-      description "General Agent Information";
-    }
-
     // RPC
     // RPC Specific Structures
     //Input Structures
@@ -339,47 +292,23 @@ module ietf-dmm-fpc {
       description "protocol specific commands";
     }
     grouping context-operation {
-      uses fpc:fpc-dynamic-policy;
+      uses fpc:mobility-context;
       uses fpc:instructions;
       description "Context Operation";
     }
     // Output Structure
     grouping payload {
-      list installed-dpn-policy-list {
-        uses fpc:installed-dpn-policies ;
-        description "Configured Policies";
-      }
-      list dynamic-policy-list {
-        uses fpc:context-operation;
-        description "Dynamic Policies";
-      }
-      list rule-list {
-        if-feature fpc:policy-rpc-provisioning;
-        key "rule-id";
-        uses fpc:rule;
-        description "Rules";
-      }
-      list policy-list {
-        if-feature fpc:policy-rpc-provisioning;
-        key "policy-id";
-        uses fpc:policy-identifier;
-        description "Policies";
-      }
-      list descriptor-list {
-        if-feature fpc:policy-rpc-provisioning;
-        key descriptor-id;
-        uses fpc:descriptor;
-        description "Descriptors";
-      }
-      list action-list {
-        if-feature fpc:policy-rpc-provisioning;
-        key action-id;
-        uses fpc:action;
-        description "Actions";
-      }
-      description "Payload";
-    }
-
+    		uses fpc:configurable-policy-set;
+		list mobility-context-set {
+			  key "mobility-context-id";
+			  uses fpc:mobility-context;
+			  description "Mobility Context Set";
+		}
+		uses fpc:fpc-policy {
+			if-feature fpc:policy-rpc-provisioning;
+		}
+		description "Payload";
+	}
     grouping op-input {
       uses fpc:op-header;
       leaf op-id {
@@ -405,7 +334,6 @@ module ietf-dmm-fpc {
       }
       description "Operation Input";
     }
-
     typedef result {
       type enumeration {
         enum ok {
@@ -423,7 +351,6 @@ module ietf-dmm-fpc {
       }
       description "Result Status";
     }
-
     identity error-type {
       description "Base Error Type";
     }
@@ -431,12 +358,10 @@ module ietf-dmm-fpc {
       description "Notification that an entity of the same name
         already exists";
     }
-
     typedef error-type-id {
       type uint32;
       description "Integer form of the Error Type";
     }
-
     grouping op-status-value {
       leaf op-status {
         type enumeration {
@@ -453,7 +378,6 @@ module ietf-dmm-fpc {
       }
       description "Operation Status Value";
     }
-
     grouping error-info {
           leaf error-type-id {
             type fpc:error-type-id;
@@ -467,7 +391,6 @@ module ietf-dmm-fpc {
           }
           description "Error Information";
     }
-
     grouping result-body {
       leaf op-id {
         type op-identifier;
@@ -493,7 +416,6 @@ module ietf-dmm-fpc {
       }
       description "Result Body";
     }
-
     // Common RPCs
     rpc configure {
       description "CONF message";
@@ -508,7 +430,6 @@ module ietf-dmm-fpc {
         uses fpc:result-body;
       }
     }
-
     rpc configure-bundles {
       if-feature fpc:fpc-bundles;
       description "CONF_BUNDLES message";
@@ -532,7 +453,6 @@ module ietf-dmm-fpc {
         }
       }
     }
-
     // Notification Messages & Structures
     typedef notification-id {
       type uint32;
@@ -550,7 +470,6 @@ module ietf-dmm-fpc {
       }
       description "Notification Header";
     }
-
     notification config-result-notification {
       uses fpc:notification-header;
       choice value {
@@ -571,7 +490,6 @@ module ietf-dmm-fpc {
       }
       description "CONF/CONF_BUNDLES Async Result";
     }
-
     rpc event_register {
       description "Used to register monitoring of parameters/events";
         input {
@@ -585,7 +503,6 @@ module ietf-dmm-fpc {
           uses fpc:error-info;
         }
     }
-
     rpc event_deregister {
       description "Used to de-register monitoring of
           parameters/events";
@@ -604,7 +521,6 @@ module ietf-dmm-fpc {
         }
 
     }
-
     rpc probe {
         description "Probe the status of a registered monitor";
         input {
@@ -618,12 +534,10 @@ module ietf-dmm-fpc {
           uses fpc:error-info;
         }
     }
-
     grouping supported-role-entry {
         uses fpc:access-technology-key;
-        uses fpc:access-role-key;
+        uses fpc:role-key;
     }
-
     notification notify {
         uses fpc:notification-header;
         choice value {
@@ -633,7 +547,6 @@ module ietf-dmm-fpc {
                 type inet:uri;
                 description "Topology URI";
               }
-
               list supported-interface-list {
                   key "access-technology role";
                   uses fpc:supported-role-entry;
