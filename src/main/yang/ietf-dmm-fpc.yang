@@ -3,6 +3,7 @@ module ietf-dmm-fpc {
     prefix fpc;
 
     import ietf-inet-types { prefix inet; revision-date 2013-07-15; }
+    //import ietf-restconf { prefix restconf; revision-date 2017-01-26; }
 
     include ietf-dmm-fpc-base;
 
@@ -53,9 +54,6 @@ module ietf-dmm-fpc {
     revision 2016-08-03 {
         description "Initial Revision.";
         reference "draft-ietf-dmm-fpc-cpdp-05";
-    }
-    feature fpc-cloning {
-      description "An ability to support cloning in the RPC.";
     }
     feature fpc-basename-registry {
       description "Ability to track Base Names already provisioned
@@ -154,44 +152,6 @@ module ietf-dmm-fpc {
     // RPC
     // RPC Specific Structures
     //Input Structures
-    typedef admin-status {
-        type enumeration {
-            enum enabled {
-              value 0;
-              description "enabled";
-            }
-            enum disabled {
-              value 1;
-              description "disabled";
-            }
-            enum virtual {
-              value 2;
-              description "virtual";
-            }
-        }
-        description "Adminstrative Status";
-    }
-    typedef session-status {
-        type enumeration {
-            enum complete {
-              value 0;
-              description "complete";
-            }
-            enum incomplete {
-              value 1;
-              description "incomplete";
-            }
-            enum outdated {
-              value 2;
-              description "outdated";
-            }
-        }
-        description "Session Status";
-    }
-    typedef op-delay {
-        type uint32;
-        description "Operation Delay (ms)";
-    }
     typedef op-identifier {
         type uint64;
         description "Operation Identifier";
@@ -232,64 +192,8 @@ module ietf-dmm-fpc {
       description "Instructions Value";
     }
     grouping op-header {
-      leaf client-id {
-        type fpc:client-identifier;
-        description "Client ID";
-      }
-      leaf delay {
-        type op-delay;
-        description "Delay";
-      }
-      leaf session-state {
-        type session-status;
-        description "Session State";
-      }
-      leaf admin-state {
-        type admin-status;
-        description "Admin State";
-      }
-      leaf op-type {
-        type enumeration {
-          enum create {
-            value 0;
-            description "create";
-          }
-          enum update {
-            value 1;
-            description "update";
-          }
-          enum query {
-            value 2;
-            description "query";
-          }
-          enum delete {
-            value 3;
-            description "delete";
-          }
-        }
-        description "Type";
-      }
-      leaf op-ref-scope {
-          if-feature operation-ref-scope;
-          type fpc:ref-scope;
-          description "Reference Scope";
-      }
-      uses fpc:instructions;
+
       description "Operation Header";
-    }
-    grouping clone-ref {
-      leaf entity {
-        type fpc:fpc-identity;
-        description "Clone ID";
-      }
-      leaf source {
-        type fpc:fpc-identity;
-        description "Source";
-      }
-      description "Clone Reference";
-    }
-    identity command-set {
-      description "protocol specific commands";
     }
     grouping context-operation {
       uses fpc:mobility-context;
@@ -309,288 +213,272 @@ module ietf-dmm-fpc {
 		}
 		description "Payload";
 	}
-    grouping op-input {
-      uses fpc:op-header;
-      leaf op-id {
-        type op-identifier;
-        description "Operation ID";
-      }
-      choice op_body {
-        case create_or_update {
-          list clones {
-            if-feature fpc-cloning;
-            key entity;
-            uses fpc:clone-ref;
-            description "Clones";
-          }
-          uses fpc:payload;
-          description "Create/Update input";
-        }
-        case delete_or_query {
-          uses fpc:target-value;
-          description "Delete/Query input";
-        }
-        description "Opeartion Input value";
-      }
-      description "Operation Input";
-    }
-    typedef result {
-      type enumeration {
-        enum ok {
-          value 0;
-          description "OK";
-        }
-        enum err {
-          value 1;
-          description "Error";
-        }
-        enum ok-notify-follows {
-          value 2;
-          description "OK with NOTIFY following";
-        }
-      }
-      description "Result Status";
-    }
-    identity error-type {
-      description "Base Error Type";
-    }
-    identity name-already-exists {
-      description "Notification that an entity of the same name
-        already exists";
-    }
-    typedef error-type-id {
-      type uint32;
-      description "Integer form of the Error Type";
-    }
-    grouping op-status-value {
-      leaf op-status {
-        type enumeration {
-          enum ok {
-            value 0;
-            description "OK";
-          }
-          enum err {
-            value 1;
-            description "Error";
-          }
-        }
-        description "Operation Status";
-      }
-      description "Operation Status Value";
-    }
-    grouping error-info {
-          leaf error-type-id {
-            type fpc:error-type-id;
-            description "Error ID";
-          }
-          leaf error-info {
-            type string {
-              length "1..1024";
-            }
-            description "Error Detail";
-          }
-          description "Error Information";
-    }
-    grouping result-body {
-      leaf op-id {
-        type op-identifier;
-        description "Operation Identifier";
-      }
-      choice result-type {
-        case err {
-          uses fpc:error-info;
-          description "Error Information";
-        }
-        case create-or-update-success {
-          uses fpc:payload;
-          description "Create/Update Success";
-        }
-        case delete_or_query-success {
-          uses fpc:target-value;
-          description "Delete/Query Success";
-        }
-        case empty-case {
-          description "Empty Case";
-        }
-        description "Result Value";
-      }
-      description "Result Body";
-    }
-    // Common RPCs
-    rpc configure {
-      description "CONF message";
-      input {
-        uses fpc:op-input;
-      }
-      output {
-        leaf result {
-          type result;
-          description "Result";
-        }
-        uses fpc:result-body;
-      }
-    }
-    rpc configure-bundles {
-      if-feature fpc:fpc-bundles;
-      description "CONF_BUNDLES message";
-      input {
-        leaf highest-op-ref-scope {
-            if-feature operation-ref-scope;
-            type fpc:ref-scope;
-            description "Highest Op-Ref used in the input";
-        }
-        list bundles {
-          key op-id;
-          uses fpc:op-input;
-          description "List of operations";
-        }
-      }
-      output {
-        list bundles {
-          key op-id;
-          uses fpc:result-body;
-          description "Operation Identifier";
-        }
-      }
-    }
-    // Notification Messages & Structures
-    typedef notification-id {
-      type uint32;
-      description "Notification Identifier";
-    }
-
-    grouping notification-header {
-      leaf notification-id {
-          type fpc:notification-id;
-          description "Notification ID";
-      }
-      leaf timestamp {
-          type uint32;
-          description "timestamp";
-      }
-      description "Notification Header";
-    }
-    notification config-result-notification {
-      uses fpc:notification-header;
-      choice value {
-        case config-result {
-          uses fpc:op-status-value;
-          uses fpc:result-body;
-          description "CONF Result";
-        }
-        case config-bundle-result {
-          list bundles {
-            uses fpc:op-status-value;
-            uses fpc:result-body;
-            description "Operation Results";
-          }
-          description "CONF_BUNDLES Result";
-        }
-        description "Config Result value";
-      }
-      description "CONF/CONF_BUNDLES Async Result";
-    }
-    rpc event_register {
-      description "Used to register monitoring of parameters/events";
-        input {
-          uses fpc:monitor-config;
-        }
-        output {
-          leaf monitor-result {
-            type fpc:result;
-            description "Result";
-          }
-          uses fpc:error-info;
-        }
-    }
-    rpc event_deregister {
-      description "Used to de-register monitoring of
-          parameters/events";
-        input {
-          list monitors {
-            uses fpc:monitor-id;
-            description "Monitor ID";
-          }
-        }
-        output {
-          leaf monitor-result {
-            type fpc:result;
-            description "Result";
-          }
-          uses fpc:error-info;
-        }
-
-    }
-    rpc probe {
-        description "Probe the status of a registered monitor";
-        input {
-          uses fpc:target-value;
-        }
-        output {
-          leaf monitor-result {
-            type fpc:result;
-            description "Result";
-          }
-          uses fpc:error-info;
-        }
-    }
-    grouping supported-role-entry {
-        uses fpc:access-technology-key;
-        uses fpc:role-key;
-    }
-    notification notify {
-        uses fpc:notification-header;
-        choice value {
-            case dpn-candidate-available {
-              if-feature fpc:fpc-auto-binding;
-              leaf node-id {
-                type inet:uri;
-                description "Topology URI";
-              }
-              list supported-interface-list {
-                  key "access-technology role";
-                  uses fpc:supported-role-entry;
-              }
-              description "DPN Candidate Availability";
-            }
-            case monitor-notification {
-              choice monitor-notification-value {
-                case monitoring-suspension {
-                  leaf monitoring-suspended {
-                    type empty;
-                    description "Indicates that monitoring has
-                      uspended";
-                  }
-                  leaf suspension-note {
-                    type string;
-                    description "Indicates the monitoring
-                      suspension reason";
-                  }
-                }
-                case monitoring-resumption {
-                  leaf monitoring-resumed {
-                    type empty;
-                    description "Indicates that monitoring
-                      has resumed";
-                  }
-                }
-                case simple-monitor {
-                  uses fpc:report;
-                  description "Report";
-                }
-                case bulk-monitors {
-                  list reports {
-                    uses fpc:report;
-                    description "Reports";
-                  }
-                  description "Bulk Monitor Response";
-                }
-                description "Monitor Notification value";
-              }
-              description "Monitor Notification";
-            }
-            description "Notify Value";
-        }
-        description "Notify Message";
-    }
+	grouping op-input {
+		leaf client-id {
+			type fpc:client-identifier;
+			description "Client ID";
+		}
+		leaf delay {
+			type uint32;
+			description "Operation Delay (ms)";
+		}
+		leaf op-type {
+			type enumeration {
+				enum create {
+					value 0;
+					description "create";
+				}
+				enum update {
+					value 1;
+					description "update";
+				}
+				enum query {
+					value 2;
+					description "query";
+				}
+				enum delete {
+					value 3;
+					description "delete";
+				}
+			}
+			description "Type";
+		}
+		leaf op-ref-scope {
+			if-feature operation-ref-scope;
+			type fpc:ref-scope;
+			description "Reference Scope";
+		}
+		uses fpc:instructions;
+		leaf op-id {
+			type op-identifier;
+			description "Operation ID";
+		}
+		choice op_body {
+			case create_or_update {
+				uses fpc:payload;
+				description "Create/Update input";
+			}
+			case delete_or_query {
+				uses fpc:target-value;
+				description "Delete/Query input";
+			}
+			description "Opeartion Input value";
+		}
+		description "Operation Input";
+	}
+	typedef result-status {
+		type enumeration {
+			enum ok {
+				value 0;
+				description "OK";
+			}
+			enum err {
+				value 1;
+				description "Error";
+			}
+		}
+		description "Result Status";
+	}
+	grouping status-value {
+		leaf status {
+			type result-status;
+			description "Status";
+		}		
+	}
+	grouping result-base {
+		uses fpc:status-value;
+		leaf notify-follows {
+			type boolean;
+			description "Indicates that a notification will 
+				follow regarding this result";
+		}
+		description "Common Result member grouping";
+	}
+	grouping result-body {
+		leaf op-id {
+			type op-identifier;
+			description "Operation Identifier";
+		}
+		choice result-type {
+			case err {
+				//uses restconf:errors;
+				leaf placeholder1 {
+					type empty;
+				}
+				description "Error Information";
+			}
+			case create-or-update-success {
+				uses fpc:payload;
+				description "Create/Update Success";
+			}
+			case delete_or_query-success {
+				uses fpc:target-value;
+				description "Delete/Query Success";
+			}
+			case empty-case {
+				description "Empty Case";
+			}
+			description "Result Value";
+		}
+		description "Result Body";
+	}
+	// Common RPCs
+	rpc configure {
+		description "CONF message";
+		input {
+			uses fpc:op-input;
+		}
+		output {
+			uses fpc:result-base;
+			uses fpc:result-body;
+		}
+	}
+	rpc configure-bundles {
+		if-feature fpc:fpc-bundles;
+		description "CONF_BUNDLES message";
+		input {
+			leaf highest-op-ref-scope {
+				if-feature operation-ref-scope;
+				type fpc:ref-scope;
+				description "Highest Op-Ref used in the input";
+			}
+			list bundles {
+				key op-id;
+				uses fpc:op-input;
+				description "List of operations";
+			}
+		}
+		output {
+			list bundles {
+				key op-id;
+				uses fpc:result-base;
+				uses fpc:result-body;
+				description "Operation Identifier";
+			}
+		}
+	}
+	// Notification Messages & Structures
+	grouping notification-header {
+		leaf notification-id {
+			type uint32;
+			description "Notification Identifier";
+		}
+		leaf timestamp {
+			type uint32;
+			description "timestamp";
+		}
+		description "Notification Header";
+	}
+	notification config-result-notification {
+		uses fpc:notification-header;
+		choice value {
+			case config-result {
+				uses fpc:status-value;
+				uses fpc:result-body;
+				description "CONF Result";
+			}
+			case config-bundle-result {
+				list bundles {
+					uses fpc:status-value;
+					uses fpc:result-body;
+					description "Operation Results";
+				}
+				description "CONF_BUNDLES Result";
+			}
+			description "Config Result value";
+		}
+		description "CONF/CONF_BUNDLES Async Result";
+	}
+	rpc event_register {
+		description "Used to register monitoring of parameters/events";
+		input {
+			uses fpc:monitor-config;
+		}
+		output {
+			uses fpc:status-value;
+			//uses restconf:errors;
+		}
+	}
+	rpc event_deregister {
+		description "Used to de-register monitoring of
+		  parameters/events";
+		input {
+			leaf-list monitors {
+				type fpc:fpc-identity;
+				description "Monitor Identifier";
+			}
+		}
+		output {
+			uses fpc:status-value;
+			//uses restconf:errors;
+		}
+	}
+	rpc probe {
+		description "Probe the status of a registered monitor";
+		input {
+			uses fpc:target-value;
+		}
+		output {
+			uses fpc:status-value;
+			//uses restconf:errors;
+		}
+	}
+	identity notification-cause {
+		description "Notification Cause";
+	}
+	identity dpn-availabilty-change {
+		base "notification-cause";
+		description "DPN Candidate/Exisitng DPN Availablity Change";
+	}
+	identity monitoring-suspension {
+		base "notification-cause";
+		description "Indicates monitoring suspension";
+	}
+	identity monitoring-resumption {
+		base "notification-cause";
+		description "Indicates that monitoring has resumed";
+	}
+	identity monitor-notification {
+		base "notification-cause";
+		description "Indicates 1+ monitor reports";
+	}
+	notification notify {
+		uses fpc:notification-header;
+		leaf cause {
+			type identityref {
+				base "notification-cause";
+			}
+		}
+		choice value {
+			case dpn-candidate-available {
+				if-feature fpc:fpc-auto-binding;
+				leaf node-id {
+					type inet:uri;
+					description "Topology URI";
+				}
+				list supported-interface-list {
+					key "access-technology role";
+					uses fpc:access-technology-key;
+					uses fpc:role-key;
+				}
+				description "DPN Candidate Information";
+			}
+			case dpn-unavailable {
+				leaf dpn-id {
+					type fpc:fpc-identity;
+					description "DPN Identifier";
+				}
+				description "DPN Unavailable";
+			}
+			case monitor-notification {
+				list reports {
+					uses fpc:report;
+					description "Reports";
+				}
+				description "Monitor Notification";
+			}
+			description "Notify Value";
+		}
+		description "Notify Message";
+	}
 }
