@@ -63,10 +63,6 @@ module ietf-dmm-fpc {
       description "Ability for Client to send multiple bundles of
         actions to an Agent";
     }
-    feature fpc-client-binding {
-      description "Allows a FPC Client to bind a DPN to an Topology
-        Object";
-    }
     feature fpc-auto-binding {
       description "Allows a FPC Agent to advertise Topology Objects
         that could be DPNs";
@@ -190,10 +186,6 @@ module ietf-dmm-fpc {
         description "Instructions";
       }
       description "Instructions Value";
-    }
-    grouping op-header {
-
-      description "Operation Header";
     }
     grouping context-operation {
       uses fpc:mobility-context;
