@@ -1,11 +1,13 @@
 module ietf-dmm-fpc {
+	yang-version 1.1;
     namespace "urn:ietf:params:xml:ns:yang:ietf-dmm-fpc";
     prefix fpc;
 
     import ietf-inet-types { prefix inet; revision-date 2013-07-15; }
-    //import ietf-restconf { prefix restconf; revision-date 2017-01-26; }
+    import ietf-restconf { prefix restconf; revision-date 2017-01-26; }
 
     include ietf-dmm-fpc-base;
+    include ietf-dmm-fpc-settingsext;
 
     organization "IETF Distributed Mobility Management (DMM)
       Working Group";
@@ -129,8 +131,8 @@ module ietf-dmm-fpc {
 	     		}
 		    		uses fpc:configurable-policy-set;
 		    		list mobility-context-set {
-		    			  config false;
 		    			  key "mobility-context-id";
+		    			  config false;
 		    			  uses fpc:mobility-context;
 		    			  description "Mobility Context Set";
 		    		}
@@ -205,8 +207,8 @@ module ietf-dmm-fpc {
 	}
     grouping op-header {
 		leaf client-id {
-			mandatory true;
 			type fpc:client-identifier;
+			mandatory true;
 			description "Client ID";
 		}
 		leaf delay {
@@ -214,15 +216,14 @@ module ietf-dmm-fpc {
 			description "Operation Delay (ms)";
 		}
 		leaf op-id {
-			mandatory true;
 			type op-identifier;
+			mandatory true;
 			description "Operation Identifier";
 		}
 		description "Common Operation header";
     }
 	grouping fpc-op-type {
 		leaf op-type {
-			mandatory true;
 			type enumeration {
 				enum create {
 					value 0;
@@ -241,8 +242,10 @@ module ietf-dmm-fpc {
 					description "delete";
 				}
 			}
+			mandatory true;
 			description "Type";
 		}
+		description "FPC Operation Type";
 	}
 	grouping fpc-op-ref-scope {
 		leaf op-ref-scope {
@@ -250,6 +253,7 @@ module ietf-dmm-fpc {
 			type fpc:ref-scope;
 			description "Reference Scope";
 		}
+		description "FPC OP-REF Scope";
 	}
 	grouping op-input {
 		uses fpc:fpc-op-ref-scope;
@@ -282,18 +286,23 @@ module ietf-dmm-fpc {
 	}
 	grouping status-value {
 		leaf op-id {
-			mandatory true;
 			type op-identifier;
+			mandatory true;
 			description "Operation Identifier";
 		}
 		leaf status {
-			mandatory true;
 			type result-status;
+			mandatory true;
 			description "Status";
 		}		
+		description "Status value for all messages";
 	}
 	grouping result {
 		uses fpc:status-value;
+		uses fpc:result-body;
+		description "General Result grouping";
+	}
+	grouping result-body {
 		leaf notify-follows {
 			type boolean;
 			description "Indicates that a notification will 
@@ -301,14 +310,11 @@ module ietf-dmm-fpc {
 		}
 		choice result-type {
 			case err {
-				//uses restconf:errors;
-				leaf placeholder1 {
-					type empty;
-				}
+				uses restconf:errors;
 				description "Error Information";
 			}
 			case create-or-update-success {
-				//uses fpc:payload;
+				uses fpc:payload;
 				description "Create/Update Success";
 			}
 			case delete_or_query-success {
@@ -320,7 +326,7 @@ module ietf-dmm-fpc {
 			}
 			description "Result Value";
 		}
-		description "Common Result member grouping";
+		description "Common Result member body";
 	}
 	// Common RPCs
 	rpc configure {
@@ -344,8 +350,8 @@ module ietf-dmm-fpc {
 			list bundles {
 				key op-id;
 				leaf op-id {
-					mandatory true;
 					type op-identifier;
+					mandatory true;
 					description "Operation Identifier";
 				}
 				uses fpc:op-input;
@@ -369,7 +375,7 @@ module ietf-dmm-fpc {
 		}
 		output {
 			uses fpc:status-value;
-			//uses restconf:errors;
+			uses restconf:errors;
 		}
 	}
 	rpc event_deregister {
@@ -378,14 +384,14 @@ module ietf-dmm-fpc {
 		input {
 			uses fpc:op-header;
 			leaf-list monitors {
-				min-elements 1;
 				type fpc:fpc-identity;
+				min-elements 1;
 				description "Monitor Identifier";
 			}
 		}
 		output {
 			uses fpc:status-value;
-			//uses restconf:errors;
+			uses restconf:errors;
 		}
 	}
 	rpc probe {
@@ -396,7 +402,7 @@ module ietf-dmm-fpc {
 		}
 		output {
 			uses fpc:status-value;
-			//uses restconf:errors;
+			uses restconf:errors;
 		}
 	}
 	// Notification Messages & Structures
@@ -413,14 +419,15 @@ module ietf-dmm-fpc {
 	}
 	notification config-result-notification {
 		uses fpc:notification-header;
+		uses fpc:status-value;
 		choice value {
 			case config-result {
-				uses fpc:result;
+				uses result-body;
 				description "CONF Result";
 			}
 			case config-bundle-result {
-				uses fpc:status-value;
 				list bundles {
+					key op-id;
 					uses fpc:result;
 					description "Operation Identifier";
 				}
@@ -455,6 +462,7 @@ module ietf-dmm-fpc {
 			type identityref {
 				base "notification-cause";
 			}
+			description "Notification Cause";
 		}
 		choice value {
 			case dpn-candidate-available {
@@ -467,6 +475,7 @@ module ietf-dmm-fpc {
 					key "access-technology role";
 					uses fpc:access-technology-key;
 					uses fpc:role-key;
+					description "Support Intefaces";
 				}
 				description "DPN Candidate Information";
 			}

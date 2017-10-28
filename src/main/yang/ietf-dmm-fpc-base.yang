@@ -1,11 +1,10 @@
 submodule ietf-dmm-fpc-base {
+	yang-version 1.1;
     belongs-to ietf-dmm-fpc {
        prefix fpc;
     }
 
-    import ietf-inet-types { prefix inet; revision-date 2013-07-15; }
-    import ietf-yang-types { prefix ytypes;
-        revision-date 2013-07-15; }
+	include ietf-dmm-fpc-settingsext;
 
     organization "IETF Distributed Mobility Management (DMM)
       Working Group";
@@ -71,9 +70,9 @@ submodule ietf-dmm-fpc-base {
     }
     grouping target-value {
       leaf target {
-		  mandatory true;
           type fpc-identity;
-          description "Target Identity";
+		  mandatory true;
+		  description "Target Identity";
       }
       description "FPC Target Value";
     }
@@ -111,20 +110,20 @@ submodule ietf-dmm-fpc-base {
 	}
 	grouping access-technology-key {
 		leaf access-technology {
-			mandatory true;
 			type identityref {
 				base "access-technology";
 			}
+			mandatory true;
 			description "Access Technology";
 		}
 		description "Access Technology key";
 	}
 	grouping role-key {
 		leaf role {
-			mandatory true;
 			type identityref {
 				base "role";
 			}
+			mandatory true;
 			description "Access Technology Role";
 		}
 		description "Access Technology Role key";
@@ -139,10 +138,11 @@ submodule ietf-dmm-fpc-base {
 	}
 	grouping dpn-identifier-key {
 		leaf dpn-id {
-			mandatory true;
 			type fpc:fpc-identity;
+			mandatory true;
 			description "DPN Identifier Type";
 		}
+		description "DPN Identifier key";
 	}
 	grouping dpn-interface-reference {
 		uses fpc:access-technology-key;
@@ -210,8 +210,8 @@ submodule ietf-dmm-fpc-base {
 		list dpn-group-set {
 			key "dpn-group-id";
 			leaf dpn-group-id {
-				mandatory true;
 				type fpc:fpc-identity;
+				mandatory true;
 				description "DPN Group Identifier";
 			}
 			list referenced-dpns-set {
@@ -219,6 +219,7 @@ submodule ietf-dmm-fpc-base {
 				uses fpc:dpn-interface-reference;
 				leaf-list supporting-dpn-id-set {
 					type fpc:fpc-identity;
+					description "DPNs that suppport this group";
 				}
 				leaf-list dpn-group-peer-id-set {
 					type fpc:fpc-identity;
@@ -230,8 +231,8 @@ submodule ietf-dmm-fpc-base {
 			list dpn-group-peer-set {
 				key remote-dpn-group-id;
 				leaf remote-dpn-group-id {
-					mandatory true;
 					type fpc:fpc-identity;
+					mandatory true;
 					description "Remote DPN Group identifier";
 				}
 				uses fpc:interface-settings;
@@ -247,8 +248,8 @@ submodule ietf-dmm-fpc-base {
 		list domain-set {
 			key domain-id;
 			leaf domain-id {
-				mandatory true;
 				type fpc:fpc-identity;
+				mandatory true;
 				description "Domain Identifier";
 			}
 			leaf domain-name {
@@ -261,6 +262,7 @@ submodule ietf-dmm-fpc-base {
 			}
 			description "List of Domains";
 		}
+		description "FPC Topology grouping";
 	}
 	// Policy Structures
     // Descriptor Structure
@@ -348,10 +350,10 @@ submodule ietf-dmm-fpc-base {
 			mandatory true;
 			description "Rule Identifier";
 		}
+		description "FPC Rule-Id key";
     }
     grouping match-type {
         leaf descriptor-match-type {
-	    		mandatory true;
 	    		type enumeration {
 	    			enum or { 
 	    				value 0;
@@ -362,9 +364,11 @@ submodule ietf-dmm-fpc-base {
 	    				description "AND logic";
 	    			}
 	    		}
+	    		mandatory true;
 	    		description "Type of Match (OR or AND) applied to the 
 	    			descriptor-reference-set.";
 	    }
+        description "Map Type Grouping";
     }
     grouping fpc-action-order {
         leaf action-order {
@@ -372,6 +376,7 @@ submodule ietf-dmm-fpc-base {
             mandatory true;
             description "Action Execution Order";
         }
+        description "Action Order Leaf";
     }
     grouping rule-definition {
     		uses fpc:fpc-rule-id;
@@ -393,8 +398,8 @@ submodule ietf-dmm-fpc-base {
           key "action-order";
 		  uses fpc:fpc-action-order;
           leaf action-id-reference {
-			mandatory true;
 			type fpc:fpc-identity;
+			mandatory true;
 			description "Action Identifier Reference";
           }
           description "A set of Action references";
@@ -543,6 +548,7 @@ submodule ietf-dmm-fpc-base {
 				description "List of Policies request to be enforced for 
 					this Mobility Context";
 			}
+			description "DPN List";
 		}
 		
 		leaf-list requested-policy-reference-set {
@@ -554,6 +560,7 @@ submodule ietf-dmm-fpc-base {
 			uses fpc:fpc-settings;
 			description "Context Settings";
 		}
+		description "Mobility Context";
     }
     // Events, Probes & Notifications
 	identity event-type {
@@ -565,10 +572,11 @@ submodule ietf-dmm-fpc-base {
 	}
 	grouping monitor-id {
 		leaf monitor-id {
-			mandatory true;
 			type fpc:fpc-identity;
+			mandatory true;
 			description "Monitor Identifier";
 		}
+		description "Monitor Id";
 	}
     grouping monitor-config {
     		uses fpc:monitor-id;
@@ -660,148 +668,5 @@ submodule ietf-dmm-fpc-base {
         description "Report Value";
       }
       description "Monitor Report";
-    }
-    // Settings
-    grouping fpc-settings {
-        leaf-list delegated-ip-prefixes {
-            type inet:ip-prefix;
-            description "Delegated Prefix(es)";
-        }
-        leaf tunnel-local-address {
-            type inet:ip-address;
-            description "local tunnel address";
-        }
-        leaf tunnel-remote-address {
-            type inet:ip-address;
-            description "remote tunnel address";
-        }
-        leaf mtu-size {
-            type uint32;
-            description "MTU size";
-        }
-        container mobility-tunnel-parameters {
-            choice profile-parameters {
-                case nothing {
-                  leaf none {
-                    type empty;
-                    description "Empty Value";
-                  }
-                  description "No Parameters Case";
-                }
-                description "Mobility Profile Parameters";
-            }
-            description
-            "Profile specific tunnel parameters";
-        }
-        container nexthop {
-            uses fpc:fpc-nexthop;
-            description "Next Hop";
-        }
-        container qos-profile-parameters {
-            uses fpc:fpc-qos-profile;
-            description "QoS Parameters";
-        }
-        description "A collection of settings";
-    }
-    // Next Hop Structures
-    typedef fpc-service-path-id {
-        type uint32 {
-            range "0..33554431";
-        }
-        description "SERVICE_PATH_ID";
-    }
-    typedef fpc-mpls-label {
-        type uint32 {
-          range "0..1048575";
-        }
-        description "MPLS label";
-    }
-    identity fpc-nexthop-type {
-        description "Next Hop Type";
-    }
-    identity fpc-nexthop-ip {
-        base "fpc:fpc-nexthop-type";
-        description "Nexthop IP";
-    }
-    identity fpc-nexthop-servicepath {
-        base "fpc:fpc-nexthop-type";
-        description "Nexthop Service Path";
-    }
-    identity fpc-nexthop-mac {
-        base "fpc:fpc-nexthop-type";
-        description "Nexthop MAC-Address";
-    }
-    identity fpc-nexthop-mpls {
-        base "fpc:fpc-nexthop-type";
-        description "Nexthop MPLS";
-    }
-    identity fpc-nexthop-if {
-        base "fpc:fpc-nexthop-type";
-        description "Nexthop If index";
-    }
-    grouping fpc-nexthop {
-        leaf nexthop-type {
-            mandatory true;
-            type identityref {
-              base "fpc:fpc-nexthop-type";
-            }
-            description "Nexthop Type";
-        }
-        choice nexthop-value {
-        	    mandatory true;
-            case ip-nexthop {
-                leaf ip {
-                  type inet:ip-address;
-                  description "IP Value";
-                }
-                description "IP Case";
-            }
-            case macaddress-nexthop {
-                leaf macaddress {
-                  type ytypes:mac-address;
-                  description "MAC Address Value";
-                }
-            }
-            case servicepath-nexthop {
-                leaf servicepath {
-                    type fpc:fpc-service-path-id;
-                    description "Service Path Value";
-                }
-                description "Service Path Case";
-            }
-            case mplslabel-nexthop {
-                leaf lsp {
-                    type fpc:fpc-mpls-label;
-                    description "MPLS Value";
-                }
-                description "Service Path Case";
-            }
-            case if-nexthop {
-                leaf if-index {
-                    type uint16;
-                    description "If (interface) Value";
-                }
-                description "Service Path Case";
-            }
-            description "Value";
-        }
-        description "Nexthop Value";
-    }
-    // QoS Information
-    identity fpc-qos-type {
-        description "Base identity from which specific uses of QoS
-          types are derived.";
-    }
-    grouping fpc-qos-profile {
-        leaf qos-type {
-            type identityref {
-                base fpc:fpc-qos-type;
-            }
-            description "the profile type";
-        }
-        choice value {
-            description "QoS Value";
-        }
-        description "QoS Profile";
     }
 }

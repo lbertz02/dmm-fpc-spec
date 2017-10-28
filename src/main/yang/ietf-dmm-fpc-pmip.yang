@@ -1,4 +1,5 @@
 module ietf-dmm-fpc-pmip {
+	yang-version 1.1;
     namespace "urn:ietf:params:xml:ns:yang:ietf-dmm-fpc-pmip";
     prefix fpc-pmip;
 
@@ -128,8 +129,8 @@ module ietf-dmm-fpc-pmip {
     }
 
     // Descriptors update 
-    augment "/fpc:tenants/fpc:tenant/fpc:fpc-policy/"
-      + "fpc:descriptor-list/fpc:descriptor-value" {
+    augment "/fpc:tenants/fpc:tenant/fpc:mobility/fpc:policy/fpc:"
+		+ "action-definition-set/fpc:action-value" {
       case pmip-selector {
           uses traffic-selectors:traffic-selector;
           description "PMIP Selector";
@@ -155,56 +156,84 @@ module ietf-dmm-fpc-pmip {
     }
 
     // Dynamic Policy Tunnel Info Updates
-    augment "/fpc:tenants/fpc:tenant/fpc:dynamic-policy-list/fpc:"
-        + "dpn-list/fpc:settings-list/fpc:"
-        + "mobility-tunnel-parameters/fpc:profile-parameters" {
+    // Dynamic Policy Level
+    augment "/fpc:tenants/fpc:tenant/fpc:mobility/fpc:"
+		+ "mobility-context-set/fpc:context-settings-complementary/"
+		+ "fpc:mobility-tunnel-parameters/fpc:profile-parameters" {
       case pmip-tunnel {
         uses fpc-pmip:pmip-tunnel-info;
       }
       description "DPN PMIP tunnel parameters";
     }
+	//  Dynamic Policy / Referenced DPN Level
+    augment "/fpc:tenants/fpc:tenant/fpc:mobility/fpc:"
+		+ "mobility-context-set/fpc:dpn-reference-list/fpc:"
+		+ "dpn-settings-complementary/fpc:"
+		+ "mobility-tunnel-parameters/fpc:profile-parameters" {
+      case pmip-tunnel {
+        uses fpc-pmip:pmip-tunnel-info;
+      }
+      description "DPN PMIP tunnel parameters";
+    }
+    // Configure input / Referenced DPN Level
     augment "/fpc:configure/fpc:input/fpc:op_body/fpc:"
-        + "create_or_update/fpc:dynamic-policy-list/fpc:dpn-list/fpc:"
-        + "settings-list/fpc:mobility-tunnel-parameters/fpc:"
-        + "profile-parameters" {
+        + "create_or_update/fpc:mobility-context-set/fpc:"
+    		+ "dpn-reference-list/fpc:dpn-settings-complementary/fpc:"
+		+ "mobility-tunnel-parameters/fpc:profile-parameters"  {
       case pmip-tunnel {
         uses fpc-pmip:pmip-tunnel-info;
       }
       description "CONF DPN PMIP tunnel parameters";
     }
-    augment "/fpc:configure-bundles/fpc:input/fpc:bundles/fpc:"
-        + "op_body/fpc:create_or_update/fpc:"
-        + "dynamic-policy-list/fpc:dpn-list/fpc:"
-        + "settings-list/fpc:mobility-tunnel-parameters/fpc:"
-        + "profile-parameters" {
+    // Configure Bundles input / Referenced DPN Level
+    	augment "/fpc:configure-bundles/fpc:input/fpc:bundles/fpc:"
+    		+ "op_body/fpc:"
+        + "create_or_update/fpc:mobility-context-set/fpc:"
+        	+ "dpn-reference-list/fpc:dpn-settings-complementary/fpc:"
+    		+ "mobility-tunnel-parameters/fpc:profile-parameters"  {
       case pmip-tunnel {
         uses fpc-pmip:pmip-tunnel-info;
       }
       description "CONF_BUNDLES DPN PMIP tunnel parameters";
     }
+    // Configure Output / Referenced DPN Level
     augment "/fpc:configure/fpc:output/fpc:result-type/fpc:"
- 		+ "create-or-update-success/fpc:dynamic-policy-list/fpc:"
- 		+ "dpn-list/fpc:settings-list/fpc:"
- 		+ "mobility-tunnel-parameters/fpc:profile-parameters" {
+    	  + "create-or-update-success/fpc:mobility-context-set/fpc:"
+    	  + "dpn-reference-list/fpc:dpn-settings-complementary/fpc:"
+    	  + "mobility-tunnel-parameters/fpc:profile-parameters"  {
         case pmip-tunnel {
             uses fpc-pmip:pmip-tunnel-info;
         }
         description "CONF DPN responses";
      }
+     // Configure Bundles / Referenced DPN Level
      augment "/fpc:configure-bundles/fpc:output/fpc:bundles/fpc:"
- 		+ "result-type/fpc:create-or-update-success/fpc:"
- 		+ "dynamic-policy-list/fpc:dpn-list/fpc:settings-list/fpc:"
- 		+ "mobility-tunnel-parameters/fpc:profile-parameters" {
-    	 case pmip-tunnel {
+ 		+ "result-type/fpc:"
+        + "create-or-update-success/fpc:mobility-context-set/fpc:"
+    		+ "dpn-reference-list/fpc:dpn-settings-complementary/fpc:"
+		+ "mobility-tunnel-parameters/fpc:profile-parameters"  {
+    	   case pmip-tunnel {
              uses fpc-pmip:pmip-tunnel-info;
            }
        description "Bundles Create Context Tunnel Response";
      }
 
     // QoS Updates
-    augment "/fpc:tenants/fpc:tenant/fpc:dynamic-policy-list/fpc:"
-        + "dpn-list/fpc:settings-list/fpc:"
-        + "qos-profile-parameters/fpc:value" {
+     // Dynamic Policy Level
+     augment "/fpc:tenants/fpc:tenant/fpc:mobility/fpc:"
+ 		+ "mobility-context-set/fpc:context-settings-complementary/"
+ 		+ "fpc:qos-profile-parameters/fpc:value"{
+         case qos-pmip {
+             uses qos-pmip:qosattribute;
+             description "PMIP QoS Information";
+         }
+       description "DPN PMIP tunnel parameters";
+     }
+ 	//  Dynamic Policy / Referenced DPN Level
+     augment "/fpc:tenants/fpc:tenant/fpc:mobility/fpc:"
+ 		+ "mobility-context-set/fpc:dpn-reference-list/fpc:"
+ 		+ "dpn-settings-complementary/fpc:qos-profile-parameters/"
+ 		+ "fpc:value" {
       case qos-pmip {
           uses qos-pmip:qosattribute;
           description "PMIP QoS Information";

@@ -1,0 +1,334 @@
+submodule ietf-dmm-fpc-settingsext {
+	yang-version 1.1;
+    belongs-to ietf-dmm-fpc {
+       prefix fpc;
+    }
+
+    import ietf-inet-types { prefix inet; revision-date 2013-07-15; }
+    import ietf-yang-types { prefix ytypes;
+        revision-date 2013-07-15; }
+
+    organization "IETF Distributed Mobility Management (DMM)
+      Working Group";
+
+    contact
+       "WG Web:   <http://tools.ietf.org/wg/netmod/>
+        WG List:  <mailto:netmod@ietf.org>
+
+        WG Chair: Dapeng Liu
+                  <mailto:maxpassion@gmail.com>
+
+        WG Chair: Jouni Korhonen
+                  <mailto:jouni.nospam@gmail.com>
+
+        Editor:   Satoru Matsushima
+                  <mailto:satoru.matsushima@g.softbank.co.jp>
+
+        Editor:   Lyle Bertz
+                  <mailto:lylebe551144@gmail.com>";
+
+    description
+    "This module contains YANG definition for
+     Forwarding Policy Configuration Protocol(FPCP).
+
+    	It contains Settings defintions as well as Descriptor and 
+    	Action extensions.
+    	
+     Copyright (c) 2016 IETF Trust and the persons identified as the
+     document authors. All rights reserved.
+
+     This document is subject to BCP 78 and the IETF Trust's Legal
+     Provisions Relating to IETF Documents
+     (http://trustee.ietf.org/license-info) in effect on the date of
+     publication of this document. Please review these documents
+     carefully, as they describe your rights and restrictions with
+     respect to this document. Code Components extracted from this
+     document must include Simplified BSD License text as described
+     in Section 4.e of the Trust Legal Provisions and are provided
+     without warranty as described in the Simplified BSD License.";
+    
+    revision 2017-09-27 {
+    		description "Version 10 updates.";
+    		reference "draft-ietf-dmm-fpc-cpdp-10";
+    }
+
+    // Next Hop Structures - SETTING
+    typedef fpc-service-path-id {
+        type uint32 {
+            range "0..33554431";
+        }
+        description "SERVICE_PATH_ID";
+    }
+    typedef fpc-mpls-label {
+        type uint32 {
+          range "0..1048575";
+        }
+        description "MPLS label";
+    }
+    identity fpc-nexthop-type {
+        description "Next Hop Type";
+    }
+    identity fpc-nexthop-ip {
+        base "fpc:fpc-nexthop-type";
+        description "Nexthop IP";
+    }
+    identity fpc-nexthop-servicepath {
+        base "fpc:fpc-nexthop-type";
+        description "Nexthop Service Path";
+    }
+    identity fpc-nexthop-mac {
+        base "fpc:fpc-nexthop-type";
+        description "Nexthop MAC-Address";
+    }
+    identity fpc-nexthop-mpls {
+        base "fpc:fpc-nexthop-type";
+        description "Nexthop MPLS";
+    }
+    identity fpc-nexthop-if {
+        base "fpc:fpc-nexthop-type";
+        description "Nexthop If index";
+    }
+    grouping fpc-nexthop {
+        leaf nexthop-type {
+            type identityref {
+              base "fpc:fpc-nexthop-type";
+            }
+            mandatory true;
+            description "Nexthop Type";
+        }
+        choice nexthop-value {
+        	    mandatory true;
+            case ip-nexthop {
+                leaf ip {
+                  type inet:ip-address;
+                  description "IP Value";
+                }
+                description "IP Case";
+            }
+            case macaddress-nexthop {
+                leaf macaddress {
+                  type ytypes:mac-address;
+                  description "MAC Address Value";
+                }
+            }
+            case servicepath-nexthop {
+                leaf servicepath {
+                    type fpc:fpc-service-path-id;
+                    description "Service Path Value";
+                }
+                description "Service Path Case";
+            }
+            case mplslabel-nexthop {
+                leaf lsp {
+                    type fpc:fpc-mpls-label;
+                    description "MPLS Value";
+                }
+                description "Service Path Case";
+            }
+            case if-nexthop {
+                leaf if-index {
+                    type uint16;
+                    description "If (interface) Value";
+                }
+                description "Service Path Case";
+            }
+            description "Value";
+        }
+        description "Nexthop Value";
+    }
+
+    // QoS Information - SETTING
+    identity fpc-qos-type {
+        description "Base identity from which specific uses of QoS
+          types are derived.";
+    }
+    grouping fpc-qos-profile {
+        leaf qos-type {
+            type identityref {
+                base fpc:fpc-qos-type;
+            }
+            description "the profile type";
+        }
+        choice value {
+            description "QoS Value";
+        }
+        description "QoS Profile";
+    }
+    
+    // Address Translation - ACTION
+    identity service-function {
+        base "fpc:fpc-descriptor-type";
+        description "Base Identifier for Service Functions.";
+    }
+    identity napt-service {
+        base "service-function";
+        description "NAPT Service";
+    }
+    grouping simple-nat {
+      leaf outbound-nat-address {
+        type inet:ip-address;
+        description "Outbound NAT Address";
+      }
+      description "Simple NAT value";
+    }
+    identity nat-service {
+        base "service-function";
+        description "NAT Service";
+    }
+    
+    grouping simple-napt {
+      leaf source-port {
+        type inet:port-number;
+        description "Source Port";
+      }
+      leaf outbound-napt-address {
+        type inet:ip-address;
+        description "Outbound NAPT Address";
+      }
+      leaf destination-port {
+        type inet:port-number;
+        description "Destination Port";
+      }
+      description "Simple NAPT Configuration";
+    }
+
+    // COPY FORWARD - ACTION
+    identity copy-forward {
+      base "fpc:fpc-descriptor-type";
+      description "Copies a packet then forwards to a specific
+        destination";
+    }
+    grouping copy-forward {
+      container destination {
+        choice value {
+          case nexthop-case {
+			container nexthop {
+	            uses fpc:fpc-nexthop;
+	            description "Next Hop";
+	        }
+            description "Port Forward Case";
+          }
+          description "Copy Forward Value";
+        }
+        description "destination";
+      }
+      description "Copy Then Forward to Port/Context Action";
+    }
+
+    // PREFIX - DESCRIPTORS
+    grouping prefix-traffic-descriptor {
+        leaf destination-ip {
+            type inet:ip-prefix;
+            description "Rule of destination IP";
+        }
+        leaf source-ip {
+            type inet:ip-prefix;
+            description "Rule of source IP";
+        }
+        description
+        "Traffic descriptor group collects parameters to
+         identify target traffic flow.  It represents
+         source/destination as IP prefixes";
+    }
+    
+    // ACTION VALUE AUGMENTS
+    augment "/fpc:tenants/fpc:tenant/fpc:mobility/fpc:policy/fpc:"
+		+ "action-definition-set/fpc:action-value" {
+      case simple-nat {
+          uses fpc:simple-nat;
+          description "Simple NAT value";
+      }
+      case simple-napt {
+          uses fpc:simple-napt;
+          description "Simple NAPT Value";
+      }
+      case copy-forward {
+          uses fpc:copy-forward;
+          description "Copy Forward Value";
+      }
+      description "Policy Actions Augmentations";
+    }
+    
+    augment "/fpc:tenants/fpc:tenant/fpc:mobility/fpc:"
+		+ "mobility-context-set/fpc:dpn-reference-list/fpc:"
+		+ "embedded-rule-set/fpc:"
+		+ "action-definition-set/fpc:action-value" {
+      case simple-nat {
+          uses fpc:simple-nat;
+          description "Simple NAT value";
+      }
+      case simple-napt {
+          uses fpc:simple-napt;
+          description "Simple NAPT Value";
+      }
+      case copy-forward {
+          uses fpc:copy-forward;
+          description "Copy Forward Value";
+      }
+      description "Policy Actions Augmentations";
+    }
+    
+    // DESCRIPTOR DEFINITIONS
+    augment "/fpc:tenants/fpc:tenant/fpc:mobility/fpc:policy/fpc:"
+    + "descriptor-definition-set/fpc:descriptor-value" {
+	    case prefix-descriptor {
+	        uses fpc:prefix-traffic-descriptor;
+	        description "traffic descriptor value";
+	    }
+	    description "Descriptor Augments";
+	  }
+	  
+	  augment "/fpc:tenants/fpc:tenant/fpc:mobility/fpc:"
+			+ "mobility-context-set/fpc:dpn-reference-list/fpc:"
+			+ "embedded-rule-set/fpc:"
+			+ "descriptor-definition-set/fpc:descriptor-value" {
+			case prefix-descriptor {
+				uses fpc:prefix-traffic-descriptor;
+				description "traffic descriptor value";
+			}
+			description "Descriptor Augments";
+	}
+    
+    //SETTINGS DEFINITIONS
+    grouping fpc-settings {
+        leaf-list delegated-ip-prefixes {
+            type inet:ip-prefix;
+            description "Delegated Prefix(es)";
+        }
+        leaf tunnel-local-address {
+            type inet:ip-address;
+            description "local tunnel address";
+        }
+        leaf tunnel-remote-address {
+            type inet:ip-address;
+            description "remote tunnel address";
+        }
+        leaf mtu-size {
+            type uint32;
+            description "MTU size";
+        }
+        container mobility-tunnel-parameters {
+            choice profile-parameters {
+                case nothing {
+                  leaf none {
+                    type empty;
+                    description "Empty Value";
+                  }
+                  description "No Parameters Case";
+                }
+                description "Mobility Profile Parameters";
+            }
+            description
+            "Profile specific tunnel parameters";
+        }
+        container nexthop {
+            uses fpc:fpc-nexthop;
+            description "Next Hop";
+        }
+        container qos-profile-parameters {
+            uses fpc:fpc-qos-profile;
+            description "QoS Parameters";
+        }
+        description "A collection of settings";
+    }
+}
