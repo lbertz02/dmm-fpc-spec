@@ -322,31 +322,6 @@ module ietf-dmm-fpc {
 		}
 		description "Common Result member grouping";
 	}
-	container output_examples {
-		container configure-input {
-			uses fpc:result;
-		}
-		container configure-bundles-input {
-			uses fpc:status-value;
-			list bundles {
-				key op-id;
-				uses fpc:result;
-				description "Operation Identifier";
-			}
-		}
-		container  event_register {
-			uses fpc:status-value;
-			//uses restconf:errors;
-		}
-		container  event_deregister {
-			uses fpc:status-value;
-			//uses restconf:errors;
-		}
-		container  probe {
-			uses fpc:status-value;
-			//uses restconf:errors;
-		}
-	}
 	// Common RPCs
 	rpc configure {
 		description "CONF message";
