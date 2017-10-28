@@ -120,7 +120,7 @@ module ietf-dmm-fpc {
 	     			}
 		    			description "Topology";
 		    		}
-	     		container policy-definitions {
+	     		container policy {
 	     			uses fpc:fpc-policy;
 	     			uses fpc:basename-info {
 	     				if-feature fpc:fpc-basename-registry;
@@ -147,7 +147,6 @@ module ietf-dmm-fpc {
 	}
     // RPC
     // RPC Specific Structures
-    //Input Structures
     typedef op-identifier {
         type uint64;
         description "Operation Identifier";
@@ -192,7 +191,6 @@ module ietf-dmm-fpc {
       uses fpc:instructions;
       description "Context Operation";
     }
-    // Output Structure
     grouping payload {
     		uses fpc:configurable-policy-set;
 		list mobility-context-set {
@@ -205,8 +203,9 @@ module ietf-dmm-fpc {
 		}
 		description "Payload";
 	}
-	grouping op-input {
+    grouping op-header {
 		leaf client-id {
+			mandatory true;
 			type fpc:client-identifier;
 			description "Client ID";
 		}
@@ -214,7 +213,16 @@ module ietf-dmm-fpc {
 			type uint32;
 			description "Operation Delay (ms)";
 		}
+		leaf op-id {
+			mandatory true;
+			type op-identifier;
+			description "Operation Identifier";
+		}
+		description "Common Operation header";
+    }
+	grouping fpc-op-type {
 		leaf op-type {
+			mandatory true;
 			type enumeration {
 				enum create {
 					value 0;
@@ -235,16 +243,17 @@ module ietf-dmm-fpc {
 			}
 			description "Type";
 		}
+	}
+	grouping fpc-op-ref-scope {
 		leaf op-ref-scope {
 			if-feature operation-ref-scope;
 			type fpc:ref-scope;
 			description "Reference Scope";
 		}
+	}
+	grouping op-input {
+		uses fpc:fpc-op-ref-scope;
 		uses fpc:instructions;
-		leaf op-id {
-			type op-identifier;
-			description "Operation ID";
-		}
 		choice op_body {
 			case create_or_update {
 				uses fpc:payload;
@@ -272,24 +281,23 @@ module ietf-dmm-fpc {
 		description "Result Status";
 	}
 	grouping status-value {
+		leaf op-id {
+			mandatory true;
+			type op-identifier;
+			description "Operation Identifier";
+		}
 		leaf status {
+			mandatory true;
 			type result-status;
 			description "Status";
 		}		
 	}
-	grouping result-base {
+	grouping result {
 		uses fpc:status-value;
 		leaf notify-follows {
 			type boolean;
 			description "Indicates that a notification will 
 				follow regarding this result";
-		}
-		description "Common Result member grouping";
-	}
-	grouping result-body {
-		leaf op-id {
-			type op-identifier;
-			description "Operation Identifier";
 		}
 		choice result-type {
 			case err {
@@ -300,7 +308,7 @@ module ietf-dmm-fpc {
 				description "Error Information";
 			}
 			case create-or-update-success {
-				uses fpc:payload;
+				//uses fpc:payload;
 				description "Create/Update Success";
 			}
 			case delete_or_query-success {
@@ -312,41 +320,108 @@ module ietf-dmm-fpc {
 			}
 			description "Result Value";
 		}
-		description "Result Body";
+		description "Common Result member grouping";
+	}
+	container output_examples {
+		container configure-input {
+			uses fpc:result;
+		}
+		container configure-bundles-input {
+			uses fpc:status-value;
+			list bundles {
+				key op-id;
+				uses fpc:result;
+				description "Operation Identifier";
+			}
+		}
+		container  event_register {
+			uses fpc:status-value;
+			//uses restconf:errors;
+		}
+		container  event_deregister {
+			uses fpc:status-value;
+			//uses restconf:errors;
+		}
+		container  probe {
+			uses fpc:status-value;
+			//uses restconf:errors;
+		}
 	}
 	// Common RPCs
 	rpc configure {
 		description "CONF message";
 		input {
+			uses fpc:op-header;
+			uses fpc:fpc-op-type;
 			uses fpc:op-input;
 		}
 		output {
-			uses fpc:result-base;
-			uses fpc:result-body;
+			uses fpc:result;
 		}
 	}
 	rpc configure-bundles {
 		if-feature fpc:fpc-bundles;
 		description "CONF_BUNDLES message";
 		input {
-			leaf highest-op-ref-scope {
-				if-feature operation-ref-scope;
-				type fpc:ref-scope;
-				description "Highest Op-Ref used in the input";
-			}
+			uses fpc:op-header;
+			uses fpc:fpc-op-type;
+			uses fpc:fpc-op-ref-scope;
 			list bundles {
 				key op-id;
+				leaf op-id {
+					mandatory true;
+					type op-identifier;
+					description "Operation Identifier";
+				}
 				uses fpc:op-input;
 				description "List of operations";
 			}
 		}
 		output {
+			uses fpc:status-value;
 			list bundles {
 				key op-id;
-				uses fpc:result-base;
-				uses fpc:result-body;
+				uses fpc:result;
 				description "Operation Identifier";
 			}
+		}
+	}
+	rpc event_register {
+		description "Used to register monitoring of parameters/events";
+		input {
+			uses fpc:op-header;
+			uses fpc:monitor-config;
+		}
+		output {
+			uses fpc:status-value;
+			//uses restconf:errors;
+		}
+	}
+	rpc event_deregister {
+		description "Used to de-register monitoring of
+		  parameters/events";
+		input {
+			uses fpc:op-header;
+			leaf-list monitors {
+				min-elements 1;
+				type fpc:fpc-identity;
+				description "Monitor Identifier";
+			}
+		}
+		output {
+			uses fpc:status-value;
+			//uses restconf:errors;
+		}
+	}
+	rpc probe {
+		description "Probe the status of a registered monitor";
+		input {
+			uses fpc:op-header;
+			uses fpc:target-value;
+		}
+		output {
+			uses fpc:status-value;
+			//uses restconf:errors;
 		}
 	}
 	// Notification Messages & Structures
@@ -365,55 +440,20 @@ module ietf-dmm-fpc {
 		uses fpc:notification-header;
 		choice value {
 			case config-result {
-				uses fpc:status-value;
-				uses fpc:result-body;
+				uses fpc:result;
 				description "CONF Result";
 			}
 			case config-bundle-result {
+				uses fpc:status-value;
 				list bundles {
-					uses fpc:status-value;
-					uses fpc:result-body;
-					description "Operation Results";
+					uses fpc:result;
+					description "Operation Identifier";
 				}
 				description "CONF_BUNDLES Result";
 			}
 			description "Config Result value";
 		}
 		description "CONF/CONF_BUNDLES Async Result";
-	}
-	rpc event_register {
-		description "Used to register monitoring of parameters/events";
-		input {
-			uses fpc:monitor-config;
-		}
-		output {
-			uses fpc:status-value;
-			//uses restconf:errors;
-		}
-	}
-	rpc event_deregister {
-		description "Used to de-register monitoring of
-		  parameters/events";
-		input {
-			leaf-list monitors {
-				type fpc:fpc-identity;
-				description "Monitor Identifier";
-			}
-		}
-		output {
-			uses fpc:status-value;
-			//uses restconf:errors;
-		}
-	}
-	rpc probe {
-		description "Probe the status of a registered monitor";
-		input {
-			uses fpc:target-value;
-		}
-		output {
-			uses fpc:status-value;
-			//uses restconf:errors;
-		}
 	}
 	identity notification-cause {
 		description "Notification Cause";

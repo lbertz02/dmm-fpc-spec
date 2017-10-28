@@ -71,6 +71,7 @@ submodule ietf-dmm-fpc-base {
     }
     grouping target-value {
       leaf target {
+		  mandatory true;
           type fpc-identity;
           description "Target Identity";
       }
@@ -95,7 +96,7 @@ submodule ietf-dmm-fpc-base {
     }
 	// Settings
 	grouping settings {
-		container settings-list {
+		container settings-set {
 			uses fpc:fpc-settings;
 			description "Settings";
 		}
@@ -151,6 +152,25 @@ submodule ietf-dmm-fpc-base {
 	}
 	// Topology Grouping
 	grouping fpc-topology {
+		list dpn-set {
+			key dpn-id;
+			uses fpc:dpn-identifier-key;
+			leaf dpn-name {
+				type string;
+				description "DPN name";
+			}
+			leaf dpn-resource-mapping-reference {
+				type string;
+				description "Reference to underlying DPN resource(s)";
+			}
+			list interface-set {
+				key "access-technology role interface-id";
+				uses fpc:dpn-interface-reference;
+				uses fpc:interface-settings;
+				description "DPN interfaces";
+			}
+			description "Set of DPNs";
+		}
 		list dpn-type-set {
 			key "access-technology role";	
 			uses fpc:access-technology-key;
@@ -187,7 +207,7 @@ submodule ietf-dmm-fpc-base {
 			}
 			description "Set of DPN types";
 		}
-		list dpn-group-list {
+		list dpn-group-set {
 			key "dpn-group-id";
 			leaf dpn-group-id {
 				mandatory true;
@@ -200,19 +220,23 @@ submodule ietf-dmm-fpc-base {
 				leaf-list supporting-dpn-id-set {
 					type fpc:fpc-identity;
 				}
-				list dpn-group-peer-set {
-					key remote-dpn-group-id;
-					leaf remote-dpn-group-id {
-						mandatory true;
-						type fpc:fpc-identity;
-						description "Remote DPN Group identifier";
-					}
-					uses fpc:interface-settings;
-					description "Locally applied settings used for 
-						the referenced DPN-Group (peer group).";
+				leaf-list dpn-group-peer-id-set {
+					type fpc:fpc-identity;
+					description "DPN Peer Groups reference";
 				}
 				description "A list of DPNs supporting a group 
 					by DPN Type";
+			}
+			list dpn-group-peer-set {
+				key remote-dpn-group-id;
+				leaf remote-dpn-group-id {
+					mandatory true;
+					type fpc:fpc-identity;
+					description "Remote DPN Group identifier";
+				}
+				uses fpc:interface-settings;
+				description "Locally applied settings used for 
+					the referenced DPN-Group (peer group).";
 			}
 			leaf domain-id {
 				type fpc:fpc-identity;
@@ -220,14 +244,14 @@ submodule ietf-dmm-fpc-base {
 			}
 			description "List of DPN groups";
 		}
-		list domain-list {
+		list domain-set {
 			key domain-id;
 			leaf domain-id {
 				mandatory true;
 				type fpc:fpc-identity;
 				description "Domain Identifier";
 			}
-			leaf domain-displayname {
+			leaf domain-name {
 				type string;
 				description "Domain displayname";
 			}
@@ -236,25 +260,6 @@ submodule ietf-dmm-fpc-base {
 				description "Reference to domain resources";
 			}
 			description "List of Domains";
-		}
-		list dpn-list {
-			key dpn-id;
-			uses fpc:dpn-identifier-key;
-			leaf dpn-displayname {
-				type string;
-				description "DPN name";
-			}
-			list interfaces {
-				key "access-technology role interface-id";
-				uses fpc:dpn-interface-reference;
-				uses fpc:interface-settings;
-				description "DPN interfaces";
-			}
-			leaf dpn-resource-mapping-reference {
-				type string;
-				description "Reference to underlying DPN resource(s)";
-			}
-			description "Set of DPNs";
 		}
 	}
 	// Policy Structures
@@ -337,12 +342,40 @@ submodule ietf-dmm-fpc-base {
        }
        description "FPC Direction";
     }
-    grouping rule-definition {
-        leaf rule-id {
-            type fpc:fpc-identity;
+    grouping fpc-rule-id {
+		leaf rule-id {
+			type fpc:fpc-identity;
+			mandatory true;
+			description "Rule Identifier";
+		}
+    }
+    grouping match-type {
+        leaf descriptor-match-type {
+	    		mandatory true;
+	    		type enumeration {
+	    			enum or { 
+	    				value 0;
+	    				description "OR logic";
+	    			}
+	    			enum and {
+	    				value 1;
+	    				description "AND logic";
+	    			}
+	    		}
+	    		description "Type of Match (OR or AND) applied to the 
+	    			descriptor-reference-set.";
+	    }
+    }
+    grouping fpc-action-order {
+        leaf action-order {
+            type uint32;
             mandatory true;
-            description "Rule Identifier";
+            description "Action Execution Order";
         }
+    }
+    grouping rule-definition {
+    		uses fpc:fpc-rule-id;
+		uses fpc:match-type;
         list descriptor-reference-set {
           key "descriptor-id-reference";
           leaf descriptor-id-reference {
@@ -358,13 +391,11 @@ submodule ietf-dmm-fpc-base {
         }
         list action-reference-set {
           key "action-order";
-          leaf action-order {
-              type uint32;
-              description "Action Execution Order";
-          }
+		  uses fpc:fpc-action-order;
           leaf action-id-reference {
-              type fpc:fpc-identity;
-              description "Action Identifier Reference";
+			mandatory true;
+			type fpc:fpc-identity;
+			description "Action Identifier Reference";
           }
           description "A set of Action references";
         }
@@ -373,8 +404,12 @@ submodule ietf-dmm-fpc-base {
     }
     // Policy Structures
     grouping fpc-precedence {
-
-      description "FPC Rule Precedence";
+		leaf precedence {
+			type uint32;
+			mandatory true;
+			description "Rule Precedence";
+		}
+		description "FPC Rule Precedence";
     }
     grouping policy {
         leaf policy-id {
@@ -384,11 +419,7 @@ submodule ietf-dmm-fpc-base {
         list rule-set {
             key "precedence";
             unique "rule-id-reference";
-            leaf precedence {
-                type uint32;
-                mandatory true;
-                description "Rule Precedence";
-            }
+            uses fpc:fpc-precedence;
             leaf rule-id-reference {
                 type fpc:fpc-identity;
                 mandatory true;
@@ -447,6 +478,7 @@ submodule ietf-dmm-fpc-base {
 				description "Policy installed upon a DPN";
 			}
 			description "Configurable Policy";
+			uses fpc:settings;
 		}
 		description "List of installed DPN policies and settings";
 	}
@@ -487,21 +519,15 @@ submodule ietf-dmm-fpc-base {
 				mandatory true;
 				description "referenced interface";
 			}
-			list embeddedable-rule-set {
+			list embedded-rule-set {
 				key "precedence";
 				unique "rule-id";
-				leaf rule-id {
-					type fpc:fpc-identity;
-					mandatory true;
-					description "Rule Identifier";
-				}
-				leaf precedence {
-					type uint32;
-					mandatory true;
-					description "Rule Precedence";
-				}
+				uses fpc:fpc-rule-id;
+				uses fpc:match-type;
+				uses fpc:fpc-precedence;
 				list action-definition-set {
-					key action-id;
+					key "action-order";
+					uses fpc:fpc-action-order;
 					uses fpc:action-definition;
 					description "List of Actions";
 				}
@@ -519,12 +545,12 @@ submodule ietf-dmm-fpc-base {
 			}
 		}
 		
-		leaf-list requested-policy-reference-list {
+		leaf-list requested-policy-reference-set {
 			type fpc:fpc-identity;
 			description "List of Policies request to be enforced for 
 				this Mobility Context";
 		}
-		container context-settings {
+		container context-settings-complementary {
 			uses fpc:fpc-settings;
 			description "Context Settings";
 		}
@@ -539,6 +565,7 @@ submodule ietf-dmm-fpc-base {
 	}
 	grouping monitor-id {
 		leaf monitor-id {
+			mandatory true;
 			type fpc:fpc-identity;
 			description "Monitor Identifier";
 		}
@@ -550,8 +577,13 @@ submodule ietf-dmm-fpc-base {
 			description "Indicates reports related to this
 				config can be delayed.";
 		}
+		container binding-information {
+			description "Placeholder for information helpful
+				to binding the monitor ot the correct target";
+		}
 		uses fpc:target-value;
-		choice event-config-value {
+		choice configuration {
+			mandatory true;
 			case periodic-config {
 				leaf period {
 					type uint32;
@@ -669,11 +701,6 @@ submodule ietf-dmm-fpc-base {
             uses fpc:fpc-qos-profile;
             description "QoS Parameters";
         }
-        list vendor-parameters {
-            key "vendor-id vendor-type";
-            uses fpc:vendor-attributes;
-            description "Vendor Parameters";
-        }
         description "A collection of settings";
     }
     // Next Hop Structures
@@ -714,12 +741,14 @@ submodule ietf-dmm-fpc-base {
     }
     grouping fpc-nexthop {
         leaf nexthop-type {
+            mandatory true;
             type identityref {
               base "fpc:fpc-nexthop-type";
             }
             description "Nexthop Type";
         }
         choice nexthop-value {
+        	    mandatory true;
             case ip-nexthop {
                 leaf ip {
                   type inet:ip-address;
@@ -774,32 +803,5 @@ submodule ietf-dmm-fpc-base {
             description "QoS Value";
         }
         description "QoS Profile";
-    }
-    // Vendor Specific Attributes
-    identity vendor-specific-type {
-        description "Vendor Specific Attribute Type";
-    }
-    grouping vendor-attributes {
-        leaf vendor-id {
-            type fpc:fpc-identity;
-            description "Vendor ID";
-        }
-        leaf vendor-type {
-            type identityref {
-                base "fpc:vendor-specific-type";
-            }
-            description "Attribute Type";
-        }
-        choice value {
-            case empty-type {
-                leaf empty-type {
-                    type empty;
-                    description "Empty Value";
-                }
-                description "Empty Case";
-            }
-            description "Atttribute Value";
-        }
-        description "Vendor Specific Attributes";
     }
 }
