@@ -1,11 +1,12 @@
-submodule ietf-dmm-fpc-settingsext {
+module ietf-dmm-fpc-settingsext {
 	yang-version 1.1;
-    belongs-to ietf-dmm-fpc {
-       prefix fpc;
-    }
-
-    import ietf-inet-types { prefix inet; revision-date 2013-07-15; }
-    import ietf-traffic-selector-types { prefix traffic-selectors; }
+	namespace "urn:ietf:params:xml:ns:yang:ietf-dmm-fpc-settingsext";
+	prefix fpcbase;
+	
+    import ietf-inet-types { prefix inet; 
+    		revision-date 2013-07-15; }
+    import ietf-trafficselector-types { prefix traffic-selectors; 
+    		revision-date 2017-10-29; }
     import ietf-yang-types { prefix ytypes;
         revision-date 2013-07-15; }
     import ietf-pmip-qos { prefix pmipqos;
@@ -51,9 +52,21 @@ submodule ietf-dmm-fpc-settingsext {
      without warranty as described in the Simplified BSD License.";
     
     revision 2017-09-27 {
-    		description "Version 10 updates.";
-    		reference "draft-ietf-dmm-fpc-cpdp-10";
-    }
+		description "Version 10 updates.";
+		reference "draft-ietf-dmm-fpc-cpdp-10";
+}
+revision 2017-07-22 {
+    description "Version 08 updates.";
+    reference "draft-ietf-dmm-fpc-cpdp-08";
+}
+revision 2017-03-08 {
+    description "Version 06 updates.";
+    reference "draft-ietf-dmm-fpc-cpdp-06";
+}
+revision 2016-08-03 {
+    description "Initial Revision.";
+    reference "draft-ietf-dmm-fpc-cpdp-05";
+}
 
     // Next Hop Structures - SETTING
     typedef fpc-service-path-id {
@@ -75,7 +88,7 @@ submodule ietf-dmm-fpc-settingsext {
     grouping fpc-nexthop {
         leaf nexthop-type {
             type identityref {
-              base "fpc:fpc-nexthop-type";
+              base "fpcbase:fpc-nexthop-type";
             }
             mandatory true;
             description "Nexthop Type";
@@ -97,14 +110,14 @@ submodule ietf-dmm-fpc-settingsext {
             }
             case servicepath-nexthop {
                 leaf servicepath {
-                    type fpc:fpc-service-path-id;
+                    type fpcbase:fpc-service-path-id;
                     description "Service Path Value";
                 }
                 description "Service Path Case";
             }
             case mplslabel-nexthop {
                 leaf lsp {
-                    type fpc:fpc-mpls-label;
+                    type fpcbase:fpc-mpls-label;
                     description "MPLS Value";
                 }
                 description "Service Path Case";
@@ -151,7 +164,7 @@ submodule ietf-dmm-fpc-settingsext {
         choice value {
           case nexthop-case {
 			container nexthop {
-	            uses fpc:fpc-nexthop;
+	            uses fpcbase:fpc-nexthop;
 	            description "Next Hop";
 	        }
             description "Port Forward Case";
@@ -232,11 +245,11 @@ submodule ietf-dmm-fpc-settingsext {
           description "3GPP Base Tunnel Type";
       }
       identity gtpv1 {
-          base "fpc:threeGPP-tunnel-type";
+          base "fpcbase:threeGPP-tunnel-type";
           description "GTP version 1 Tunnel";
       }
       identity gtpv2 {
-          base "fpc:threeGPP-tunnel-type";
+          base "fpcbase:threeGPP-tunnel-type";
           description "GTP version 2 Tunnel";
       }
       // QoS Profile
@@ -369,7 +382,7 @@ submodule ietf-dmm-fpc-settingsext {
       }
       grouping packet-filter {
         leaf direction {
-            type fpc:packet-filter-direction;
+            type fpcbase:packet-filter-direction;
             description "Filter Direction";
         }
         leaf identifier {
@@ -386,7 +399,7 @@ submodule ietf-dmm-fpc-settingsext {
           key component-type-identifier;
           description "Filter Contents";
           leaf component-type-identifier {
-              type fpc:component-type-id;
+              type fpcbase:component-type-id;
               description "Component Type";
           }
           choice value {
@@ -488,7 +501,7 @@ submodule ietf-dmm-fpc-settingsext {
       grouping tft {
         list packet-filters {
             key identifier;
-            uses fpc:packet-filter;
+            uses fpcbase:packet-filter;
             description "List of Packet Filters";
         }
         description "Packet Filter List";
@@ -536,7 +549,7 @@ submodule ietf-dmm-fpc-settingsext {
       grouping threegpp-tunnel-info {
           leaf tunnel-type {
               type identityref  {
-                base "fpc:threeGPP-tunnel-type";
+                base "fpcbase:threeGPP-tunnel-type";
               }
               description "3GPP Tunnel Subtype";
           }
@@ -546,7 +559,7 @@ submodule ietf-dmm-fpc-settingsext {
           }
           choice tft-or-ref {
             case defined-tft {
-              uses fpc:tft;
+              uses fpcbase:tft;
             }
             description "TFT Value";
           }
@@ -555,15 +568,15 @@ submodule ietf-dmm-fpc-settingsext {
       
       grouping threegpp-properties {
           leaf imsi {
-            type fpc:imsi-type;
+            type fpcbase:imsi-type;
             description "IMSI";
           }
           leaf ebi {
-            type fpc:ebi-type;
+            type fpcbase:ebi-type;
             description "EUTRAN Bearere Identifier (EBI)";
           }
           leaf lbi {
-            type fpc:ebi-type;
+            type fpcbase:ebi-type;
             description "Linked Bearer Identifier (LBI)";
           }
           description "3GPP Mobility Session Properties";
@@ -580,15 +593,15 @@ submodule ietf-dmm-fpc-settingsext {
               }
             }
             case simple-nat {
-                uses fpc:simple-nat;
+                uses fpcbase:simple-nat;
                 description "Simple NAT value";
             }
             case simple-napt {
-                uses fpc:simple-napt;
+                uses fpcbase:simple-napt;
                 description "Simple NAPT Value";
             }
             case copy-forward {
-                uses fpc:copy-forward;
+                uses fpcbase:copy-forward;
                 description "Copy Forward Value";
             }
             case pmip-selector {
@@ -634,7 +647,7 @@ submodule ietf-dmm-fpc-settingsext {
 				description "PMIP Selector";
 			}
 			case threegpp-tft {
-					uses fpc:tft;
+					uses fpcbase:tft;
 					description "3GPP TFT";
 			}
 			description "Descriptor Value";
@@ -682,7 +695,7 @@ submodule ietf-dmm-fpc-settingsext {
             "Profile specific tunnel parameters";
         }
         container nexthop {
-            uses fpc:fpc-nexthop;
+            uses fpcbase:fpc-nexthop;
             description "Next Hop";
         }
         container qos-profile-parameters {
@@ -696,12 +709,15 @@ submodule ietf-dmm-fpc-settingsext {
     identity access-technology {
 		description "The technology used in the access network";
 	}
+    identity role {
+		description "The access-technology function of the DPN";
+}
 	identity ietf-pmip-access-type {
-		base "fpc:access-technology";
+		base "fpcbase:access-technology";
 		description "PMIP Access";
 	}
 	identity threeGPP-access-type {
-		base "fpc:access-technology";
+		base "fpcbase:access-technology";
 		description "3GPP Access Type";
 	}
  	// Instructions
@@ -710,7 +726,7 @@ submodule ietf-dmm-fpc-settingsext {
 			choice instr-type {
 				case threegpp-instr {
 					leaf instr-3gpp-mob {
-						type fpc:threegpp-instr;
+						type fpcbase:threegpp-instr;
 						description "3GPP GTP Mobility Instructions";
 					}
 				}
