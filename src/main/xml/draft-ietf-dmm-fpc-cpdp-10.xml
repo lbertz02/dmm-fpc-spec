@@ -527,7 +527,7 @@ DPN         |                 DPN        |
      |          |
      :          +-[Topology]
                 |
-                +-[Policy] <Set>
+                +-[Policy]
                 |	
                 +-[Mobility-Context] <Set>
                 |
@@ -570,9 +570,10 @@ DPN         |                 DPN        |
             <artwork align="center"><![CDATA[
         |
         +-[Topology]
-        |          +-[DPN] <List>
+        |          +-[DPN] <Set>
         |          +-[DPN-Type] <Set>
-                   +-[DPN-Group] <List>
+                  +-[DPN-Group] <Set>
+	   
     ]]></artwork>
             <postamble></postamble>
           </figure>
@@ -776,8 +777,8 @@ DPN         |                 DPN        |
        OR or AND. The identified conjunction applies to all Descriptor-Definitions in the given Rule-Definition.</t>
     <t hangText="Descriptor-Reference: ">Assigns a set of descriptors to the rule by reference to the associated Descriptor-Definition.</t>
     <t hangText="Descriptor-ID-Reference: ">Identifies the referred Descriptor-Definition</t>
-    <t hangText="Direction: ">Indicates if a rule applies unidirectional or bi-directional. Bi-directionality can be indicated
-       using this attribute and allows omitting a separate entry for each direction.</t>
+    <t hangText="Direction: ">Indicates if a rule applies to uplink traffic, to downlink traffic, or to both, uplink- and downlink traffic.
+       Applying a rule to both, uplink- and downlink traffic, in case of symmetric rules, allows omitting a separate entry for each direction.</t>
     <t hangText="Action-Reference: ">Assigns a set of actions to the rule by reference to the associated Action-Definition.</t>
     <t hangText="Action-ID-Reference: ">Identifies the referred Action-Definition.</t>
     <t hangText="Action-Order: ">Defines the order how actions are executed in case the rule applies per match of the associated traffic descriptor.</t>
@@ -855,7 +856,7 @@ DPN         |                 DPN        |
       +-[Mobility-Context] <Set>
       |                  +-[Mobility-Context-ID] <U-Key>
       |                  +-[DPN-Group-ID-Reference] (O)
-      |                  +-[Parent-Dynamic-Policy-ID-Reference] (O)
+      |                  +-[Parent-Mobility-Context-ID-Reference] (O)
       |                  +-[DPN-References] <List>
       |                  |                +-[DPN-ID-Reference] 
       |                  |                +-[Direction] 
@@ -863,8 +864,8 @@ DPN         |                 DPN        |
       |                  |                +-[Interface-ID-Reference] 
       |                  |                +-[Embedded-Rule] set <concrete>
       |                  |                +-[Assigned-Policy-Reference] <Set> 
-      |                  +-[Requested-Policy-Reference] <List>
-      |                  +-[Policy-Settings-Complementary]
+      |                  +-[Requested-Policy-Reference] <Set>
+      |                  +-[Context-Settings-Complementary]
     ]]></artwork>
             <postamble></postamble>
           </figure>
@@ -874,12 +875,12 @@ DPN         |                 DPN        |
     <list style="hanging">
     <t hangText="Mobility-Context-ID: ">Identifies a Mobility-Context</t>
     <t hangText="DPN-Group-ID-Reference: ">Assigns a DPN-Group, which groups DPN that are used during the DPN selection procedure, by reference.</t>
-    <t hangText="Parent-Dynamic-Policy-ID-Reference: ">Assigns a parent Mobility-Context to aquire settings as required.</t>
+    <t hangText="Parent-Mobility-Context-ID-Reference: ">Assigns a parent Mobility-Context to aquire settings as required.</t>
     <t hangText="DPN-References: ">Holds a list of DPNs with the associated concrete policies that apply to the DPN.
     <list>
     <t hangText="DPN-ID-Reference: ">Assigns a DPN, to which the policy applies, by reference.</t>
-    <t hangText="Direction: ">Directionality of the rule. Can be uni-directional or bi-directional. Identified bi-directionality allows
-       derive and applying a symmetric rule for both directions and safes one redundant entry compared to two separate uni-directional rules.</t>
+    <t hangText="Direction: ">Indicates if a rule applies to uplink or downlink traffic, or to both, uplink- and downlink traffic. Applying a
+       rule to both, uplink- and downlink traffic, in case of symmetric rules, allows omitting a separate entry for each direction.</t>
     <t hangText="DPN-Settings-Complementary: ">Complementary seeings that apply to the DPN for the given Mobility-Context.</t>
     <t hangText="Interface-ID-Reference: ">Assigns the selected interface of the DPN my reference.</t>
     <t hangText="Embedded-Rule: ">Rule that applies to the DPN for this Mobility-Context. This rule is embedded and not refereced in the
@@ -888,7 +889,7 @@ DPN         |                 DPN        |
     </list></t>
     <t hangText="Requested-Policy-Reference: ">Assigns a list of policies in Policy-Definitions that can apply to any DPN per this Mobility-Context.
       DPN-Reference entries can select from this list of policy references to apply to the associated DPN.</t>
-    <t hangText="Policy-Settings-Complementary: ">Complementary settings that apply to the referenced policies per this Mobility-Context.</t>
+    <t hangText="Context-Settings-Complementary: ">Complementary settings that apply to the referenced policies per this Mobility-Context.</t>
     </list></t>
 
     </section> <!-- End mobility context -->
@@ -920,20 +921,24 @@ DPN         |                 DPN        |
 
 <t>The Embedded-Rule template holds the following entries:
     <list style="hanging">
-    <t hangText="Rule-ID: ">TEXT</t>
-    <t hangText="Precedence: ">TEXT</t>
-    <t hangText="Descriptor-Match-Type: ">TEXT</t>
-    <t hangText="Descriptor-Definition: ">TEXT
+    <t hangText="Rule-ID: ">Identifies a rule definition</t>
+    <t hangText="Precedence: ">Defines the order with which the rules must be applied</t>
+    <t hangText="Descriptor-Match-Type: ">Conjuction of Descriptor-Values to apply as match to DPN traffic,
+                                          which can be either OR or AND. The identified conjunction applies
+                                          to all Descriptor-Definitions in the given Rule-Definition</t>
+    <t hangText="Descriptor-Definition: ">A set of descriptor definitions, each being identified by a key (Descriptor-ID)
     <list>
-    <t hangText="Descriptor-ID: ">TEXT</t>
-    <t hangText="Descriptor-Type: ">TEXT</t>
-    <t hangText="Descriptor-Value: ">TEXT</t>
+    <t hangText="Descriptor-ID: ">Identifies a Descriptor-Definition</t>
+    <t hangText="Descriptor-Type: ">Identifies the type of descriptor, e.g. an IPv6 traffic selector per [RFC 6088], for
+                                    unambiguous 2 interpretation of a Descriptor-Value</t>
+    <t hangText="Descriptor-Value: ">Defines all required attribute-value pairs per the traffic descriptor type identified
+                                     in Descriptor-Type.</t>
     </list></t>
-    <t hangText="Action-Definition: ">TEXT
+    <t hangText="Action-Definition: ">A set of action definitions.
     <list>
-    <t hangText="Action-ID: ">TEXT</t>
-    <t hangText="Action-Type: ">TEXT</t>
-    <t hangText="Action-Value: ">TEXT</t>
+    <t hangText="Action-ID: ">Identifies an action definition.</t>
+    <t hangText="Action-Type: ">Identifies the type of an action for unambiguous interpretation of an Action-Value entry.</t>
+    <t hangText="Action-Value: ">Defines all required attribute-value pairs per the action type identified in Action-Type.</t>
     </list></t>
     </list></t>
 
@@ -962,6 +967,7 @@ DPN         |                 DPN        |
        +-[Monitor] <List>
        |         +-[Monitor-ID] <U-Key>
        |         +-[Target]
+       |         +-[Binding-Information] (O)
        |         +-[Deterrable]
        |         +-[Configuration]
               ]]></artwork>
@@ -973,7 +979,9 @@ DPN         |                 DPN        |
         <t hangText="Monitor-id:"> Name of the Monitor. The ID format MUST conform to <xref target="naming"></xref>.</t>
         <t hangText="Target:"> Description of what is to be monitored. This can be an Event, a Dynamic Policy, an installed DPN Policy,
               or values of a Dynamic-Policy attribute. When the type is an attribute of Mobility-Context, the target name
-              is a concatenation of the Context-Id and the relative path (separated by '/') to the attribute(s) to be monitored </t>
+              is a concatenation of the Context-Id and the relative path (separated by '/') to the attribute(s) to be monitored. 
+              Target must provide unambiguously identify the monitored attribute and the location (DPN).</t>
+        <t hangText="Binding-Information:"> Complements (ambigous) Target information to define the Monitor in an unambigous way.</t>
         <t hangText="Deterrable: "> Indicates that a monitoring report can be delayed in a defined delay budget for possible bundling with other reports</t>
         <t hangText="Configuration:"> Determined by the Monitor subtype. The recipient of a notification as monitor report is specified
               in the Configuration. Four reporting types are defined:
