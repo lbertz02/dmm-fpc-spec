@@ -929,7 +929,7 @@ revision 2016-08-03 {
 			}
 		}
 	}
-	rpc event_register {
+	rpc reg_monitor {
 		description "Used to register monitoring of parameters/events";
 		input {
 			uses fpc:op-header;
@@ -940,15 +940,20 @@ revision 2016-08-03 {
 			uses restconf:errors;
 		}
 	}
-	rpc event_deregister {
+	rpc dereg_monitor {
 		description "Used to de-register monitoring of
 		  parameters/events";
 		input {
 			uses fpc:op-header;
-			leaf-list monitors {
+			leaf-list monitor-set {
 				type fpc:fpc-identity;
 				min-elements 1;
 				description "Monitor Identifier";
+			}
+			leaf send_data {
+				type boolean;
+				descritption "Indicates if NOTIFY with final data 
+					is desired upon deregistration";
 			}
 		}
 		output {
@@ -960,7 +965,7 @@ revision 2016-08-03 {
 		description "Probe the status of a registered monitor";
 		input {
 			uses fpc:op-header;
-			uses fpc:target-value;
+			uses fpc:monitor-id;
 		}
 		output {
 			uses fpc:status-value;
