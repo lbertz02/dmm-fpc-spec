@@ -178,16 +178,6 @@ module ietf-dmm-fpc {
       }
       description "Search scope for references in the operation.";
     }
-    grouping instructions {
-      container instructions {
-        if-feature instruction-bitset;
-        choice instr-type {
-          description "Instruction Value Choice";
-        }
-        description "Instructions";
-      }
-      description "Instructions Value";
-    }
     grouping context-operation {
       uses fpc:mobility-context;
       uses fpc:instructions;

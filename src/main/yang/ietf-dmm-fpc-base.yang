@@ -81,9 +81,6 @@ submodule ietf-dmm-fpc-base {
         type fpc:fpc-identity;
         description "DPN interface Identifier";
 	}
-    identity access-technology {
-    		description "The technology used in the access network";
-    }
     identity role {
     		description "The access-technology function of the DPN";
     }
@@ -279,26 +276,9 @@ submodule ietf-dmm-fpc-base {
             type identityref {
               base "fpc-descriptor-type";
             }
-            mandatory true;
             description "Descriptor Type Value";
         }
-        choice descriptor-value {
-            mandatory true;
-            //default no-traffic; - barred by YANG
-            case all-traffic {
-              leaf all-traffic {
-                type empty;
-                description "admit any";
-              }
-            }
-            case no-traffic {
-              leaf no-traffic {
-                type empty;
-                description "deny any";
-              }
-            }
-            description "Descriptor Value";
-        }
+		uses fpc:fpc-descriptor-value;
         description "FPC Descriptor Definition";
     }
     // Action Structure
@@ -314,19 +294,9 @@ submodule ietf-dmm-fpc-base {
             type identityref {
               base "fpc-action-type";
             }
-            mandatory true;
             description "Action Type";
         }
-        choice action-value {
-            mandatory true;
-            case drop {
-              leaf drop {
-                type empty;
-                description "Drop Traffic";
-              }
-            }
-            description "Action Value";
-        }
+        uses fpc:fpc-action-value;
         description "FPC Action Definition";
     }
     // Rule Structure
