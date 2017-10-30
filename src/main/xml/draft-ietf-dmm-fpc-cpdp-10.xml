@@ -2714,11 +2714,6 @@ activation system:
    XML: N/A, the requested URI is an XML namespace.</artwork></figure></t>
 
   <t><figure><artwork>
-   URI: urn:ietf:params:xml:ns:yang:ietf-dmm-threegpp
-   Registrant Contact: The DMM WG of the IETF.
-   XML: N/A, the requested URI is an XML namespace.</artwork></figure></t>
-
-  <t><figure><artwork>
    URI: urn:ietf:params:xml:ns:yang:ietf-dmm-pmip-qos
    Registrant Contact: The DMM WG of the IETF.
    XML: N/A, the requested URI is an XML namespace.</artwork></figure></t>
@@ -2729,12 +2724,7 @@ activation system:
    XML: N/A, the requested URI is an XML namespace.</artwork></figure></t>
 
   <t><figure><artwork>
-   URI: urn:ietf:params:xml:ns:yang:ietf-dmm-fpc-policyext
-   Registrant Contact: The DMM WG of the IETF.
-   XML: N/A, the requested URI is an XML namespace.</artwork></figure></t>
-
-  <t><figure><artwork>
-   URI: urn:ietf:params:xml:ns:yang:ietf-dmm-fpc-pmip
+   URI: urn:ietf:params:xml:ns:yang:ietf-dmm-fpc-settingsext
    Registrant Contact: The DMM WG of the IETF.
    XML: N/A, the requested URI is an XML namespace.</artwork></figure></t>
 
@@ -2748,44 +2738,23 @@ activation system:
   reference:    TBD1
   </artwork></figure></t>
   <t><figure><artwork>
-  name:         ietf-dmm-threegpp
-  namespace:    urn:ietf:params:xml:ns:yang:ietf-dmm-threegpp
-  prefix:       threegpp
-  reference:    TBD1
-  </artwork></figure></t>
-  <t><figure><artwork>
   name:         ietf-dmm-pmip-qos
   namespace:    urn:ietf:params:xml:ns:yang:ietf-dmm-pmip-qos
   prefix:       qos-pmip
-  reference:    TBD1
+  reference:    TBD2
   </artwork></figure></t>
   <t><figure><artwork>
   name:         ietf-dmm-traffic-selector-types
   namespace:    urn:ietf:params:xml:ns:yang:
     ietf-dmm-traffic-selector-types
   prefix:       traffic-selectors
-  reference:    TBD1
+  reference:    TBD3
   </artwork></figure></t>
   <t><figure><artwork>
-  name:         ietf-dmm-traffic-selector-types
-  namespace:    urn:ietf:params:xml:ns:yang:ietf-dmm-fpc-policyext
-  prefix:       fpcpolicyext
-  reference:    TBD1
-  </artwork></figure></t>
-  <t><figure><artwork>
-  name:         ietf-dmm-traffic-selector-types
-  namespace:    urn:ietf:params:xml:ns:yang:ietf-dmm-fpc-pmip
-  prefix:       fpc-pmip
-  reference:    TBD1
-  </artwork></figure></t>
-
-
-  <t>The document registers the following YANG submodules in the "YANG
-   Module Names" registry [RFC6020].</t>
-  <t><figure><artwork>
-        name:         ietf-dmm-fpc-base
-        parent:       ietf-dmm-fpc
-        reference:    TBD1
+  name:         ietf-dmm-fpc-settingsext
+  namespace:    urn:ietf:params:xml:ns:yang:ietf-dmm-fpc-settingsext
+  prefix:       fpcbase
+  reference:    TBD4
   </artwork></figure></t>
 </section>
 
@@ -2869,7 +2838,7 @@ Four modules are defined:</t>
 are likely to be extended in FPC.</t>
 
 <t>ietf-pmip-qos (pmip-qos) - Defines proxy mobile IPv6 QoS parameters per RFC 7222</t>
-<t>ietf-traffic-selectors-types (traffic-selectors) - Defines Traffic Selectors per RFC 6088</t>
+<t>ietf-trafficselectors-types (traffic-selectors) - Defines Traffic Selectors per RFC 6088</t>
 
 </list></t>
 
@@ -2881,7 +2850,1073 @@ are likely to be extended in FPC.</t>
         <figure>
           <artwork><![CDATA[
 <CODE BEGINS> file "ietf-dmm-fpc@2017-09-27.yang"
+module ietf-dmm-fpc {
+  yang-version 1.1;
+    namespace "urn:ietf:params:xml:ns:yang:ietf-dmm-fpc";
+    prefix fpc;
 
+    import ietf-inet-types { prefix inet; 
+        revision-date 2013-07-15; }
+    import ietf-restconf { prefix restconf; 
+        revision-date 2017-01-26; }
+    import ietf-dmm-fpc-settingsext { prefix fpcbase; 
+    revision-date 2017-09-27;
+  }
+
+    organization "IETF Distributed Mobility Management (DMM)
+      Working Group";
+
+    contact
+       "WG Web:   <http://tools.ietf.org/wg/netmod/>
+        WG List:  <mailto:netmod@ietf.org>
+
+        WG Chair: Dapeng Liu
+                  <mailto:maxpassion@gmail.com>
+
+        WG Chair: Jouni Korhonen
+                  <mailto:jouni.nospam@gmail.com>
+
+        Editor:   Satoru Matsushima
+                  <mailto:satoru.matsushima@g.softbank.co.jp>
+
+        Editor:   Lyle Bertz
+                  <mailto:lylebe551144@gmail.com>";
+
+    description
+    "This module contains YANG definition for
+     Forwarding Policy Configuration Protocol (FPCP).
+
+     Copyright (c) 2016 IETF Trust and the persons identified as the
+     document authors. All rights reserved.
+
+     This document is subject to BCP 78 and the IETF Trust's Legal
+     Provisions Relating to IETF Documents
+     (http://trustee.ietf.org/license-info) in effect on the date of
+     publication of this document. Please review these documents
+     carefully, as they describe your rights and restrictions with
+     respect to this document. Code Components extracted from this
+     document must include Simplified BSD License text as described
+     in Section 4.e of the Trust Legal Provisions and are provided
+     without warranty as described in the Simplified BSD License.";
+
+    revision 2017-09-27 {
+    description "Version 10 updates.";
+    reference "draft-ietf-dmm-fpc-cpdp-10";
+  }
+revision 2017-07-22 {
+    description "Version 08 updates.";
+    reference "draft-ietf-dmm-fpc-cpdp-08";
+}
+revision 2017-03-08 {
+    description "Version 06 updates.";
+    reference "draft-ietf-dmm-fpc-cpdp-06";
+}
+revision 2016-08-03 {
+    description "Initial Revision.";
+    reference "draft-ietf-dmm-fpc-cpdp-05";
+}
+    feature fpc-basename-registry {
+      description "Ability to track Base Names already provisioned
+        on the Agent";
+    }
+    feature fpc-bundles {
+      description "Ability for Client to send multiple bundles of
+        actions to an Agent";
+    }
+    feature fpc-auto-binding {
+      description "Allows a FPC Agent to advertise Topology Objects
+        that could be DPNs";
+    }
+    feature operation-ref-scope {
+      description "Provides the scope of refeneces in an operation.
+        Used to optmize the Agent processing.";
+    }
+    
+  //General Structures
+    typedef fpc-identity {
+        type union {
+            type uint32;
+            type string;
+            type instance-identifier;
+        }
+        description "FPC Identity";
+    }
+    grouping target-value {
+      leaf target {
+          type fpc-identity;
+      mandatory true;
+      description "Target Identity";
+      }
+      description "FPC Target Value";
+    }
+  // Topology 
+  typedef fpc-interface-id {
+        type fpc:fpc-identity;
+        description "DPN interface Identifier";
+  }
+    identity interface-protocols {
+        description "Protocol supported by the interface";
+    }
+    identity features {
+        description "Protocol features";
+    }
+  // Settings
+  grouping settings {
+    container settings-set {
+      uses fpcbase:fpc-settings;
+      description "Settings";
+    }
+    description "Settings container";
+  }
+  //Topology - Groupings
+  grouping interface-settings {
+    container interface-settings-set {
+      description "Interface settings";
+    }
+    description "Generic interface settings container";
+  }
+  grouping access-technology-key {
+    leaf access-technology {
+      type identityref {
+        base "fpcbase:access-technology";
+      }
+      mandatory true;
+      description "Access Technology";
+    }
+    description "Access Technology key";
+  }
+  grouping role-key {
+    leaf role {
+      type identityref {
+        base "fpcbase:role";
+      }
+      mandatory true;
+      description "Access Technology Role";
+    }
+    description "Access Technology Role key";
+  }
+  grouping interface-id-key {
+    leaf interface-id {
+      type fpc:fpc-interface-id;
+      mandatory true;
+      description "interface identifier";
+    }
+    description "Interface Identifier key";
+  }
+  grouping dpn-identifier-key {
+    leaf dpn-id {
+      type fpc:fpc-identity;
+      mandatory true;
+      description "DPN Identifier Type";
+    }
+    description "DPN Identifier key";
+  }
+  grouping dpn-interface-reference {
+    uses fpc:access-technology-key;
+    uses fpc:role-key;
+    uses fpc:interface-id-key;
+    description "A reference to a DPN interface";
+  }
+  // Topology Grouping
+  grouping fpc-topology {
+    list dpn-set {
+      key dpn-id;
+      uses fpc:dpn-identifier-key;
+      leaf dpn-name {
+        type string;
+        description "DPN name";
+      }
+      leaf dpn-resource-mapping-reference {
+        type string;
+        description "Reference to underlying DPN resource(s)";
+      }
+      list interface-set {
+        key "access-technology role interface-id";
+        uses fpc:dpn-interface-reference;
+        uses fpc:interface-settings;
+        description "DPN interfaces";
+      }
+      description "Set of DPNs";
+    }
+    list dpn-type-set {
+      key "access-technology role";  
+      uses fpc:access-technology-key;
+      leaf access-technology-name {
+        type string;
+        description "Access Technology Name";
+      }
+      uses fpc:role-key;
+      leaf role-name {
+        type string;
+        description "Access Technology Role Name";
+      }
+      list interface-set {
+        key interface-id;
+        uses fpc:interface-id-key;
+        leaf interface-name {
+          type string;
+          description "DPN-Type Interface Name";
+        }
+        leaf-list interface-protocol-set {
+          type identityref {
+            base "interface-protocols";
+          }
+          description "Supported protocols";
+        }
+        leaf-list feature-set {
+          type identityref {
+            base "interface-protocols";
+          }
+          description "Supported features";
+        }
+        uses fpc:interface-settings;
+        description "A DPN interface types";
+      }
+      description "Set of DPN types";
+    }
+    list dpn-group-set {
+      key "dpn-group-id";
+      leaf dpn-group-id {
+        type fpc:fpc-identity;
+        mandatory true;
+        description "DPN Group Identifier";
+      }
+      list referenced-dpns-set {
+        key "access-technology role interface-id";
+        uses fpc:dpn-interface-reference;
+        leaf-list supporting-dpn-id-set {
+          type fpc:fpc-identity;
+          description "DPNs that suppport this group";
+        }
+        leaf-list dpn-group-peer-id-set {
+          type fpc:fpc-identity;
+          description "DPN Peer Groups reference";
+        }
+        description "A list of DPNs supporting a group 
+          by DPN Type";
+      }
+      list dpn-group-peer-set {
+        key remote-dpn-group-id;
+        leaf remote-dpn-group-id {
+          type fpc:fpc-identity;
+          mandatory true;
+          description "Remote DPN Group identifier";
+        }
+        uses fpc:interface-settings;
+        description "Locally applied settings used for 
+          the referenced DPN-Group (peer group).";
+      }
+      leaf domain-id {
+        type fpc:fpc-identity;
+        description "Domain Identiifer";
+      }
+      description "List of DPN groups";
+    }
+    list domain-set {
+      key domain-id;
+      leaf domain-id {
+        type fpc:fpc-identity;
+        mandatory true;
+        description "Domain Identifier";
+      }
+      leaf domain-name {
+        type string;
+        description "Domain displayname";
+      }
+      leaf domain-reference {
+        type string;
+        description "Reference to domain resources";
+      }
+      description "List of Domains";
+    }
+    description "FPC Topology grouping";
+  }
+  // Policy Structures
+    // Descriptor Structure
+    identity fpc-descriptor-type {
+        description "A traffic descriptor";
+    }
+    grouping descriptor-definition {
+        leaf descriptor-id {
+            type fpc:fpc-identity;
+            mandatory true;
+            description "Descriptor Id";
+        }
+        leaf descriptor-type {
+            type identityref {
+              base "fpc-descriptor-type";
+            }
+            description "Descriptor Type Value";
+        }
+    uses fpcbase:fpc-descriptor-value;
+        description "FPC Descriptor Definition";
+    }
+    // Action Structure
+    identity fpc-action-type {
+        description "Action Type";
+    }
+    grouping action-definition {
+        leaf action-id {
+            type fpc:fpc-identity;
+            description "Action Identifier";
+        }
+        leaf action-type {
+            type identityref {
+              base "fpc-action-type";
+            }
+            description "Action Type";
+        }
+        uses fpcbase:fpc-action-value;
+        description "FPC Action Definition";
+    }
+    // Rule Structure
+    typedef fpc-direction-type {
+       type enumeration {
+         enum uplink {
+           description "uplink";
+         }
+         enum downlink {
+           description "Downlink";
+         }
+         enum both {
+           description "Both";
+        }
+       }
+       description "FPC Direction";
+    }
+    grouping fpc-rule-id {
+    leaf rule-id {
+      type fpc:fpc-identity;
+      mandatory true;
+      description "Rule Identifier";
+    }
+    description "FPC Rule-Id key";
+    }
+    grouping match-type {
+        leaf descriptor-match-type {
+          type enumeration {
+            enum or { 
+              value 0;
+              description "OR logic";
+            }
+            enum and {
+              value 1;
+              description "AND logic";
+            }
+          }
+          mandatory true;
+          description "Type of Match (OR or AND) applied to the 
+            descriptor-reference-set.";
+      }
+        description "Map Type Grouping";
+    }
+    grouping fpc-action-order {
+        leaf action-order {
+            type uint32;
+            mandatory true;
+            description "Action Execution Order";
+        }
+        description "Action Order Leaf";
+    }
+    grouping rule-definition {
+        uses fpc:fpc-rule-id;
+    uses fpc:match-type;
+        list descriptor-reference-set {
+          key "descriptor-id-reference";
+          leaf descriptor-id-reference {
+              type fpc:fpc-identity;
+              mandatory true;
+              description "Descriptor Id Reference";
+          }
+          leaf direction {
+              type fpc:fpc-direction-type;
+              description "Direction";
+          }
+          description "A set of Descriptor references";
+        }
+        list action-reference-set {
+          key "action-order";
+      uses fpc:fpc-action-order;
+          leaf action-id-reference {
+      type fpc:fpc-identity;
+      mandatory true;
+      description "Action Identifier Reference";
+          }
+          description "A set of Action references";
+        }
+        description
+          "Rule.Definition";
+    }
+    // Policy Structures
+    grouping fpc-precedence {
+    leaf precedence {
+      type uint32;
+      mandatory true;
+      description "Rule Precedence";
+    }
+    description "FPC Rule Precedence";
+    }
+    grouping policy {
+        leaf policy-id {
+            type fpc:fpc-identity;
+            description "Policy Identifier";
+        }
+        list rule-set {
+            key "precedence";
+            unique "rule-id-reference";
+            uses fpc:fpc-precedence;
+            leaf rule-id-reference {
+                type fpc:fpc-identity;
+                mandatory true;
+                description "Rule Identifier";
+            }
+            description "Rule Entry";
+        }
+        description "FPC Policy";
+    }
+    // FPC Policy
+  grouping fpc-policy {
+    list action-definition-set {
+      key action-id;
+      uses fpc:action-definition;
+      description "List of Actions";
+    }
+    list descriptor-definition-set {
+      key descriptor-id;
+      uses fpc:descriptor-definition;
+      description "List of Descriptors";
+    }
+    list rule-definition-set {
+      key rule-id;
+      uses fpc:rule-definition;
+      description "List of Rules";
+    }
+    list policy-definition-set {
+      key policy-id;
+      uses fpc:policy;
+      description "List of Policies";
+    }
+    description "FPC Policy Structures";
+  }
+    // Mobility Structures
+  grouping configurable-policy-set {
+    list installed-policy-list {
+      key dpn-id-reference;
+      leaf dpn-id-reference {
+        type fpc:fpc-identity;
+        description "Installed Policy identifier";
+      }
+      list installed-policy-set {
+        key installed-policy-id;
+        leaf installed-policy-id {
+          type fpc:fpc-identity;
+          description "Installed Policy Identifier";
+        }
+        leaf policy-id-reference {
+          type fpc:fpc-identity;
+          description "Installed Policy Identifier";
+        }
+        container policy-settings {
+          uses fpcbase:fpc-settings;
+          description "Policy Settings";
+        }
+        description "Policy installed upon a DPN";
+      }
+      description "Configurable Policy";
+      uses fpc:settings;
+    }
+    description "List of installed DPN policies and settings";
+  }
+    // Dynamic Policy
+    grouping mobility-context {
+    leaf mobility-context-id {
+      type fpc:fpc-identity;
+      mandatory true;
+      description "Mobility Context Identifier";
+    }
+    leaf dpn-group-id-reference {
+      type fpc:fpc-identity;
+      description "Group ID used when DPN selecitons were 
+        made";
+    }
+    leaf parent-mobility-context-id-reference {
+      type fpc:fpc-identity;
+      description "Parent Mobility Context";
+    }
+    list dpn-reference-list {
+      key "dpn-id-reference direction";
+      leaf dpn-id-reference {
+        type fpc:fpc-identity;
+        mandatory true;
+        description "DPN Id reference";
+      }
+      leaf direction {
+        type fpc:fpc-direction-type;
+        mandatory true;
+        description "Direction of DPN assignment";
+      }
+      container dpn-settings-complementary {
+        uses fpcbase:fpc-settings;
+        description "Complentary Settings";
+      }
+      leaf interface-id-reference {
+        type fpc:fpc-interface-id;
+        mandatory true;
+        description "referenced interface";
+      }
+      list embedded-rule-set {
+        key "precedence";
+        unique "rule-id";
+        uses fpc:fpc-rule-id;
+        uses fpc:match-type;
+        uses fpc:fpc-precedence;
+        list action-definition-set {
+          key "action-order";
+          uses fpc:fpc-action-order;
+          uses fpc:action-definition;
+          description "List of Actions";
+        }
+        list descriptor-definition-set {
+          key descriptor-id;
+          uses fpc:descriptor-definition;
+          description "List of Descriptors";
+        }
+        description "List of FPC Embedded Rule Definitions";
+      }
+      leaf-list assigned-policy-reference-set {
+        type fpc:fpc-identity;
+        description "List of Policies request to be enforced for 
+          this Mobility Context";
+      }
+      description "DPN List";
+    }
+    
+    leaf-list requested-policy-reference-set {
+      type fpc:fpc-identity;
+      description "List of Policies request to be enforced for 
+        this Mobility Context";
+    }
+    container context-settings-complementary {
+      uses fpcbase:fpc-settings;
+      description "Context Settings";
+    }
+    description "Mobility Context";
+    }
+    // Events, Probes & Notifications
+  identity event-type {
+    description "Base Event Type";
+  }
+  typedef event-type-id {
+    type uint32;
+    description "Event ID Type";
+  }
+  grouping monitor-id {
+    leaf monitor-id {
+      type fpc:fpc-identity;
+      mandatory true;
+      description "Monitor Identifier";
+    }
+    description "Monitor Id";
+  }
+    grouping monitor-config {
+        uses fpc:monitor-id;
+    leaf deterrable {
+      type boolean;
+      description "Indicates reports related to this
+        config can be delayed.";
+    }
+    container binding-information {
+      description "Placeholder for information helpful
+        to binding the monitor ot the correct target";
+    }
+    uses fpc:target-value;
+    choice configuration {
+      mandatory true;
+      case periodic-config {
+        leaf period {
+          type uint32;
+          description "Period";
+        }
+        description "Periodic Config Case";
+      }
+      case threshold-config {
+        leaf lo-thresh {
+          type uint32;
+          description "lo threshold";
+        }
+        leaf hi-thresh {
+          type uint32;
+          description "hi threshold";
+        }
+        description "Threshold Config Case";
+      }
+      case scheduled-config {
+        leaf report-time {
+          type uint32;
+          description "Reporting Time";
+        }
+        description "Scheduled Config Case";
+      }
+      case events-config-ident {
+        leaf-list event-identities {
+          type identityref {
+            base "fpc:event-type";
+          }
+          description "Event Identities";
+        }
+        description "Events Config Identities Case";
+      }
+      case events-config {
+        leaf-list event-ids {
+          type uint32;
+            description "Event IDs";
+        }
+        description "Events Config Case";
+      }
+      description "Event Config Value";
+    }
+    description "Monitor Configuration";
+  }
+    grouping report {
+      uses fpc:monitor-config;
+      choice report-value {
+        leaf trigger {
+          type fpc:event-type-id;
+          description "Trigger Identifier";
+        }
+        case simple-empty {
+          leaf nothing {
+            type empty;
+            description "Empty Value";
+          }
+          description "Empty Case";
+        }
+        case simple-val32 {
+          leaf val32 {
+            type uint32;
+            description "Unsigned 32 bit value";
+          }
+          description "Simple Value Case";
+        }
+        case list-simple-val32 {
+            leaf-list  val32-list {
+              type uint32;
+              description "Unsigned 32 bit value";
+            }
+            description "Simple Value Case";
+          }
+        description "Report Value";
+      }
+      description "Monitor Report";
+    }
+    typedef agent-identifier {
+        type fpc:fpc-identity;
+        description "Agent Identifier";
+    }
+    typedef client-identifier {
+        type fpc:fpc-identity;
+        description "Client Identifier";
+    }
+    grouping basename-info {
+          leaf basename {
+            type fpc:fpc-identity;
+            description "Rules Basename";
+          }
+          leaf base-state {
+            type string;
+            description "Current State";
+          }
+          leaf base-checkpoint {
+            type string;
+            description "Checkpoint";
+          }
+          description "Basename Information";
+    }
+    // Top Level Structures
+  container tenants {
+    list tenant {
+      key "tenant-id";
+      leaf tenant-id {
+          type fpc:fpc-identity;
+          description "Tenant ID";
+      }
+          container mobility {
+           container topology {
+              uses fpc:fpc-topology;
+             uses fpc:basename-info {
+               if-feature fpc:fpc-basename-registry;
+             }
+              description "Topology";
+            }
+           container policy {
+             uses fpc:fpc-policy;
+             uses fpc:basename-info {
+               if-feature fpc:fpc-basename-registry;
+             }
+             description "Policy";
+           }
+            uses fpc:configurable-policy-set;
+            list mobility-context-set {
+                key "mobility-context-id";
+                config false;
+                uses fpc:mobility-context;
+                description "Mobility Context Set";
+            }
+            list monitor-set {
+              key monitor-id;
+              uses fpc:monitor-config;
+              description "Monitor Configurations";
+            }
+            description "Mobility Elements";
+          }
+      description "Tenant";
+    }
+    description "Tenant List";
+  }
+    // RPC
+    // RPC Specific Structures
+    typedef op-identifier {
+        type uint64;
+        description "Operation Identifier";
+    }
+    typedef ref-scope {
+      type enumeration {
+        enum none {
+          value 0;
+          description "no references";
+        }
+        enum op {
+          value 1;
+          description "All references are intra-operation";
+        }
+        enum bundle {
+          value 2;
+          description "All references in exist in bundle";
+        }
+        enum storage {
+          value 3;
+          description "One or more references exist in storage.";
+        }
+        enum unknown {
+          value 4;
+          description "The location of the references are unknown.";
+        }
+      }
+      description "Search scope for references in the operation.";
+    }
+    grouping context-operation {
+      uses fpc:mobility-context;
+      uses fpcbase:instructions;
+      description "Context Operation";
+    }
+    grouping payload {
+        uses fpc:configurable-policy-set;
+    list mobility-context-set {
+        key "mobility-context-id";
+        uses fpc:mobility-context;
+        description "Mobility Context Set";
+    }
+    uses fpc:fpc-policy;
+    description "Payload";
+  }
+    grouping op-header {
+    leaf client-id {
+      type fpc:client-identifier;
+      mandatory true;
+      description "Client ID";
+    }
+    leaf delay {
+      type uint32;
+      description "Operation Delay (ms)";
+    }
+    leaf op-id {
+      type op-identifier;
+      mandatory true;
+      description "Operation Identifier";
+    }
+    description "Common Operation header";
+    }
+  grouping fpc-op-type {
+    leaf op-type {
+      type enumeration {
+        enum create {
+          value 0;
+          description "create";
+        }
+        enum update {
+          value 1;
+          description "update";
+        }
+        enum query {
+          value 2;
+          description "query";
+        }
+        enum delete {
+          value 3;
+          description "delete";
+        }
+      }
+      mandatory true;
+      description "Type";
+    }
+    description "FPC Operation Type";
+  }
+  grouping fpc-op-ref-scope {
+    leaf op-ref-scope {
+      if-feature operation-ref-scope;
+      type fpc:ref-scope;
+      description "Reference Scope";
+    }
+    description "FPC OP-REF Scope";
+  }
+  grouping op-input {
+    uses fpc:fpc-op-ref-scope;
+    uses fpcbase:instructions;
+    choice op_body {
+      case create_or_update {
+        uses fpc:payload;
+        description "Create/Update input";
+      }
+      case delete_or_query {
+        uses fpc:target-value;
+        description "Delete/Query input";
+      }
+      description "Opeartion Input value";
+    }
+    description "Operation Input";
+  }
+  typedef result-status {
+    type enumeration {
+      enum ok {
+        value 0;
+        description "OK";
+      }
+      enum err {
+        value 1;
+        description "Error";
+      }
+    }
+    description "Result Status";
+  }
+  grouping status-value {
+    leaf op-id {
+      type op-identifier;
+      mandatory true;
+      description "Operation Identifier";
+    }
+    leaf status {
+      type result-status;
+      mandatory true;
+      description "Status";
+    }    
+    description "Status value for all messages";
+  }
+  grouping result {
+    uses fpc:status-value;
+    uses fpc:result-body;
+    description "General Result grouping";
+  }
+  grouping result-body {
+    leaf notify-follows {
+      type boolean;
+      description "Indicates that a notification will 
+        follow regarding this result";
+    }
+    choice result-type {
+      case err {
+        uses restconf:errors;
+        description "Error Information";
+      }
+      case create-or-update-success {
+        uses fpc:payload;
+        description "Create/Update Success";
+      }
+      case delete_or_query-success {
+        uses fpc:target-value;
+        description "Delete/Query Success";
+      }
+      case empty-case {
+        description "Empty Case";
+      }
+      description "Result Value";
+    }
+    description "Common Result member body";
+  }
+  // Common RPCs
+  rpc configure {
+    description "CONF message";
+    input {
+      uses fpc:op-header;
+      uses fpc:fpc-op-type;
+      uses fpc:op-input;
+    }
+    output {
+      uses fpc:result;
+    }
+  }
+  rpc configure-bundles {
+    if-feature fpc:fpc-bundles;
+    description "CONF_BUNDLES message";
+    input {
+      uses fpc:op-header;
+      uses fpc:fpc-op-type;
+      uses fpc:fpc-op-ref-scope;
+      list bundles {
+        key op-id;
+        leaf op-id {
+          type op-identifier;
+          mandatory true;
+          description "Operation Identifier";
+        }
+        uses fpc:op-input;
+        description "List of operations";
+      }
+    }
+    output {
+      uses fpc:status-value;
+      list bundles {
+        key op-id;
+        uses fpc:result;
+        description "Operation Identifier";
+      }
+    }
+  }
+  rpc reg_monitor {
+    description "Used to register monitoring of parameters/events";
+    input {
+      uses fpc:op-header;
+      uses fpc:monitor-config;
+    }
+    output {
+      uses fpc:status-value;
+      uses restconf:errors;
+    }
+  }
+  rpc dereg_monitor {
+    description "Used to de-register monitoring of
+      parameters/events";
+    input {
+      uses fpc:op-header;
+      leaf-list monitor-set {
+        type fpc:fpc-identity;
+        min-elements 1;
+        description "Monitor Identifier";
+      }
+      leaf send_data {
+        type boolean;
+        description "Indicates if NOTIFY with final data 
+          is desired upon deregistration";
+      }
+    }
+    output {
+      uses fpc:status-value;
+      uses restconf:errors;
+    }
+  }
+  rpc probe {
+    description "Probe the status of a registered monitor";
+    input {
+      uses fpc:op-header;
+      uses fpc:monitor-id;
+    }
+    output {
+      uses fpc:status-value;
+      uses restconf:errors;
+    }
+  }
+  // Notification Messages & Structures
+  grouping notification-header {
+    leaf notification-id {
+      type uint32;
+      description "Notification Identifier";
+    }
+    leaf timestamp {
+      type uint32;
+      description "timestamp";
+    }
+    description "Notification Header";
+  }
+  notification config-result-notification {
+    uses fpc:notification-header;
+    uses fpc:status-value;
+    choice value {
+      case config-result {
+        uses result-body;
+        description "CONF Result";
+      }
+      case config-bundle-result {
+        list bundles {
+          key op-id;
+          uses fpc:result;
+          description "Operation Identifier";
+        }
+        description "CONF_BUNDLES Result";
+      }
+      description "Config Result value";
+    }
+    description "CONF/CONF_BUNDLES Async Result";
+  }
+  identity notification-cause {
+    description "Notification Cause";
+  }
+  identity dpn-availabilty-change {
+    base "notification-cause";
+    description "DPN Candidate/Exisitng DPN Availablity Change";
+  }
+  identity monitoring-suspension {
+    base "notification-cause";
+    description "Indicates monitoring suspension";
+  }
+  identity monitoring-resumption {
+    base "notification-cause";
+    description "Indicates that monitoring has resumed";
+  }
+  identity monitor-notification {
+    base "notification-cause";
+    description "Indicates 1+ monitor reports";
+  }
+  notification notify {
+    uses fpc:notification-header;
+    leaf cause {
+      type identityref {
+        base "notification-cause";
+      }
+      description "Notification Cause";
+    }
+    choice value {
+      case dpn-candidate-available {
+        if-feature fpc:fpc-auto-binding;
+        leaf node-id {
+          type inet:uri;
+          description "Topology URI";
+        }
+        list supported-interface-list {
+          key "access-technology role";
+          uses fpc:access-technology-key;
+          uses fpc:role-key;
+          description "Support Intefaces";
+        }
+        description "DPN Candidate Information";
+      }
+      case dpn-unavailable {
+        leaf dpn-id {
+          type fpc:fpc-identity;
+          description "DPN Identifier";
+        }
+        description "DPN Unavailable";
+      }
+      case monitor-notification {
+        list reports {
+          uses fpc:report;
+          description "Reports";
+        }
+        description "Monitor Notification";
+      }
+      description "Notify Value";
+    }
+    description "Notify Message";
+  }
+}
 <CODE ENDS>]]></artwork>
         </figure>
   </section>
@@ -2893,7 +3928,751 @@ are likely to be extended in FPC.</t>
         <figure>
           <artwork><![CDATA[
 <CODE BEGINS> file "ietf-dmm-fpc-settingsext@2017-09-27.yang"
+module ietf-dmm-fpc-settingsext {
+  yang-version 1.1;
+  namespace "urn:ietf:params:xml:ns:yang:ietf-dmm-fpc-settingsext";
+  prefix fpcbase;
+  
+    import ietf-inet-types { prefix inet; 
+        revision-date 2013-07-15; }
+    import ietf-trafficselector-types { prefix traffic-selectors; 
+        revision-date 2017-10-29; }
+    import ietf-yang-types { prefix ytypes;
+        revision-date 2013-07-15; }
+    import ietf-pmip-qos { prefix pmipqos;
+        revision-date 2016-02-10; }
 
+    organization "IETF Distributed Mobility Management (DMM)
+      Working Group";
+
+    contact
+       "WG Web:   <http://tools.ietf.org/wg/netmod/>
+        WG List:  <mailto:netmod@ietf.org>
+
+        WG Chair: Dapeng Liu
+                  <mailto:maxpassion@gmail.com>
+
+        WG Chair: Jouni Korhonen
+                  <mailto:jouni.nospam@gmail.com>
+
+        Editor:   Satoru Matsushima
+                  <mailto:satoru.matsushima@g.softbank.co.jp>
+
+        Editor:   Lyle Bertz
+                  <mailto:lylebe551144@gmail.com>";
+
+    description
+    "This module contains YANG definition for
+     Forwarding Policy Configuration Protocol(FPCP).
+
+      It contains Settings defintions as well as Descriptor and 
+      Action extensions.
+      
+     Copyright (c) 2016 IETF Trust and the persons identified as the
+     document authors. All rights reserved.
+
+     This document is subject to BCP 78 and the IETF Trust's Legal
+     Provisions Relating to IETF Documents
+     (http://trustee.ietf.org/license-info) in effect on the date of
+     publication of this document. Please review these documents
+     carefully, as they describe your rights and restrictions with
+     respect to this document. Code Components extracted from this
+     document must include Simplified BSD License text as described
+     in Section 4.e of the Trust Legal Provisions and are provided
+     without warranty as described in the Simplified BSD License.";
+    
+    revision 2017-09-27 {
+    description "Version 10 updates.";
+    reference "draft-ietf-dmm-fpc-cpdp-10";
+}
+revision 2017-07-22 {
+    description "Version 08 updates.";
+    reference "draft-ietf-dmm-fpc-cpdp-08";
+}
+revision 2017-03-08 {
+    description "Version 06 updates.";
+    reference "draft-ietf-dmm-fpc-cpdp-06";
+}
+revision 2016-08-03 {
+    description "Initial Revision.";
+    reference "draft-ietf-dmm-fpc-cpdp-05";
+}
+
+    // Next Hop Structures - SETTING
+    typedef fpc-service-path-id {
+        type uint32 {
+            range "0..33554431";
+        }
+        description "SERVICE_PATH_ID";
+    }
+    typedef fpc-mpls-label {
+        type uint32 {
+          range "0..1048575";
+        }
+        description "MPLS label";
+    }
+    identity fpc-nexthop-type {
+        description "NAT Service";
+    }
+    
+    grouping fpc-nexthop {
+        leaf nexthop-type {
+            type identityref {
+              base "fpcbase:fpc-nexthop-type";
+            }
+            mandatory true;
+            description "Nexthop Type";
+        }
+        choice nexthop-value {
+              mandatory true;
+            case ip-nexthop {
+                leaf ip {
+                  type inet:ip-address;
+                  description "IP Value";
+                }
+                description "IP Case";
+            }
+            case macaddress-nexthop {
+                leaf macaddress {
+                  type ytypes:mac-address;
+                  description "MAC Address Value";
+                }
+            }
+            case servicepath-nexthop {
+                leaf servicepath {
+                    type fpcbase:fpc-service-path-id;
+                    description "Service Path Value";
+                }
+                description "Service Path Case";
+            }
+            case mplslabel-nexthop {
+                leaf lsp {
+                    type fpcbase:fpc-mpls-label;
+                    description "MPLS Value";
+                }
+                description "Service Path Case";
+            }
+            case if-nexthop {
+                leaf if-index {
+                    type uint16;
+                    description "If (interface) Value";
+                }
+                description "Service Path Case";
+            }
+            description "Value";
+        }
+        description "Nexthop Value";
+    }
+
+    // Address Translation - ACTION
+    grouping simple-nat {
+      leaf outbound-nat-address {
+        type inet:ip-address;
+        description "Outbound NAT Address";
+      }
+      description "Simple NAT value";
+    }
+    grouping simple-napt {
+      leaf source-port {
+        type inet:port-number;
+        description "Source Port";
+      }
+      leaf outbound-napt-address {
+        type inet:ip-address;
+        description "Outbound NAPT Address";
+      }
+      leaf destination-port {
+        type inet:port-number;
+        description "Destination Port";
+      }
+      description "Simple NAPT Configuration";
+    }
+
+    // COPY FORWARD - ACTION
+    grouping copy-forward {
+      container destination {
+        choice value {
+          case nexthop-case {
+      container nexthop {
+              uses fpcbase:fpc-nexthop;
+              description "Next Hop";
+          }
+            description "Port Forward Case";
+          }
+          description "Copy Forward Value";
+        }
+        description "destination";
+      }
+      description "Copy Then Forward to Port/Context Action";
+    }
+
+    //////////////////////////////
+    // PMIP Integration         //
+      identity pmip-tunnel-type {
+          description "PMIP Tunnel Type";
+      }
+      identity grev1 {
+          base "pmip-tunnel-type";
+          description "GRE v1";
+      }
+      identity grev2 {
+          base "pmip-tunnel-type";
+          description "GRE v2";
+      }
+      identity ipinip {
+          base "pmip-tunnel-type";
+          description "IP in IP";
+      }
+      grouping pmip-tunnel-info {
+          leaf pmip-tunnel-type {
+              type identityref {
+                  base "pmip-tunnel-type";
+              }
+              description "PMIP Mobility";
+          }
+          choice pmip-tunnel-value {
+              case gre {
+                  leaf gre-key {
+                      type uint32;
+                      description "GRE_KEY";
+                  }
+                  description "GRE Value";
+              }
+              description "PMIP Mobility value";
+          }
+          uses traffic-selectors:traffic-selector;
+          description "PMIP Tunnel Information";
+      }
+      typedef pmip-commandset {
+            type bits {
+                bit assign-ip {
+                  position 0;
+                  description "Assign IP";
+                }
+                bit assign-dpn {
+                  position 1;
+                  description "Assign DPN";
+                }
+                bit session {
+                  position 2;
+                  description "Session Level";
+                }
+                bit uplink {
+                  position 3;
+                  description "Uplink";
+                }
+                bit downlink {
+                  position 4;
+                  description "Downlink";
+                }
+            }
+            description "PMIP Instructions";
+        }
+    ///////////////////////////////
+    // 3GPP Integration         //
+  //    Tunnel Types
+      identity threeGPP-tunnel-type {
+          description "3GPP Base Tunnel Type";
+      }
+      identity gtpv1 {
+          base "fpcbase:threeGPP-tunnel-type";
+          description "GTP version 1 Tunnel";
+      }
+      identity gtpv2 {
+          base "fpcbase:threeGPP-tunnel-type";
+          description "GTP version 2 Tunnel";
+      }
+      // QoS Profile
+      typedef fpc-qos-class-identifier {
+          type uint8 {
+              range "1..9";
+          }
+          description "QoS Class Identifier (QCI)";
+      }
+      grouping threeGPP-QoS {
+          description "3GPP QoS Attributes";
+          leaf qci {
+              type fpc-qos-class-identifier;
+              description "QCI";
+          }
+          leaf gbr {
+              type uint32;
+              description "Guaranteed Bit Rate";
+          }
+          leaf mbr {
+              type uint32;
+              description "Maximum Bit Rate";
+          }
+          leaf apn-ambr {
+              type uint32;
+              description "Access Point Name Aggregate Max Bit Rate";
+          }
+          leaf ue-ambr {
+              type uint32;
+              description "User Equipment Aggregate Max Bit Rate";
+          }
+          container arp {
+              uses pmipqos:Allocation-Retention-Priority-Value;
+              description "Allocation Retention Priority";
+          }
+      }
+      typedef ebi-type {
+        type uint8 {
+          range "0..15";
+        }
+        description "EUTRAN Bearere Identifier (EBI) Type";
+      }
+
+     // From 3GPP TS 24.008 version 13.5.0 Release 13
+     typedef component-type-enum {
+          type enumeration {
+              enum ipv4RemoteAddress {
+                value 16;
+                description "IPv4 Remote Address";
+              }
+              enum ipv4LocalAddress  {
+                value 17;
+                description "IPv4 Local Address";
+              }
+              enum ipv6RemoteAddress {
+                value 32;
+                description "IPv6 Remote Address";
+              }
+              enum ipv6RemoteAddressPrefix {
+                value 33;
+                description "IPv6 Remote Address Prefix";
+              }
+              enum ipv6LocalAddressPrefix {
+                value 35;
+                description "IPv6 Local Address Prefix";
+              }
+              enum protocolNextHeader {
+                value 48;
+                description "Protocol (IPv4) or NextHeader (IPv6)
+                  value";
+              }
+              enum localPort {
+                value 64;
+                description "Local Port";
+              }
+              enum localPortRange {
+                value 65;
+                description "Local Port Range";
+              }
+              enum reomotePort {
+                value 80;
+                description "Remote Port";
+              }
+              enum remotePortRange {
+                value 81;
+                description "Remote Port Range";
+              }
+              enum secParamIndex {
+                value 96;
+                description "Security Parameter Index (SPI)";
+              }
+              enum tosTraffClass {
+                value 112;
+                description "TOS Traffic Class";
+              }
+              enum flowLabel {
+                value 128;
+                description "Flow Label";
+              }
+          }
+          description "TFT Component Type";
+      }
+      typedef packet-filter-direction {
+          type enumeration {
+            enum preRel7Tft {
+              value 0;
+              description "Pre-Release 7 TFT";
+            }
+            enum uplink {
+              value 1;
+              description "uplink";
+            }
+            enum downlink {
+              value 2;
+              description "downlink";
+            }
+            enum bidirectional {
+              value 3;
+              description "bi-direcitonal";
+            }
+          }
+          description "Packet Filter Direction";
+      }
+      typedef component-type-id {
+          type uint8 {
+            range "16 | 17 | 32 | 33 | 35 | 48 | 64 | 65 |"
+            + " 80 | 81 | 96 | 112 | 128";
+          }
+          description "Specifies the Component Type";
+      }
+      grouping packet-filter {
+        leaf direction {
+            type fpcbase:packet-filter-direction;
+            description "Filter Direction";
+        }
+        leaf identifier {
+            type uint8 {
+              range "1..15";
+            }
+            description "Filter Identifier";
+        }
+        leaf evaluation-precedence {
+            type uint8;
+            description "Evaluation Precedence";
+        }
+        list contents {
+          key component-type-identifier;
+          description "Filter Contents";
+          leaf component-type-identifier {
+              type fpcbase:component-type-id;
+              description "Component Type";
+          }
+          choice value {
+            case ipv4-local {
+              leaf ipv4-local {
+                type inet:ipv4-address;
+                description "IPv4 Local Address";
+              }
+            }
+            case ipv6-prefix-local {
+              leaf ipv6-prefix-local {
+                type inet:ipv6-prefix;
+                description "IPv6 Local Prefix";
+              }
+            }
+            case ipv4-ipv6-remote {
+              leaf ipv4-ipv6-remote {
+                type inet:ip-address;
+                description "Ipv4 Ipv6 remote address";
+              }
+            }
+            case ipv6-prefix-remote {
+              leaf ipv6-prefix-remote {
+                type inet:ipv6-prefix;
+                description "IPv6 Remote Prefix";
+              }
+            }
+            case next-header {
+              leaf next-header {
+                type uint8;
+                description "Next Header";
+              }
+            }
+            case local-port {
+              leaf local-port {
+                type inet:port-number;
+                description "Local Port";
+              }
+            }
+            case local-port-range {
+              leaf local-port-lo {
+                type inet:port-number;
+                description "Local Port Min Value";
+              }
+              leaf local-port-hi {
+                type inet:port-number;
+                description "Local Port Max Value";
+              }
+            }
+            case remote-port {
+              leaf remote-port {
+                type inet:port-number;
+                description "Remote Port";
+              }
+            }
+            case remote-port-range {
+              leaf remote-port-lo {
+                type inet:port-number;
+                description "Remote Por Min Value";
+              }
+              leaf remote-port-hi {
+                type inet:port-number;
+                description "Remote Port Max Value";
+              }
+            }
+            case ipsec-index {
+              leaf ipsec-index {
+                type traffic-selectors:ipsec-spi;
+                description "IPSec Index";
+              }
+            }
+            case traffic-class {
+              leaf traffic-class {
+                type inet:dscp;
+                description "Traffic Class";
+              }
+            }
+            case traffic-class-range {
+                leaf traffic-class-lo {
+                  type inet:dscp;
+                  description "Traffic Class Min Value";
+                }
+                leaf traffic-class-hi {
+                  type inet:dscp;
+                  description "Traffic Class Max Value";
+                }
+            }
+            case flow-label-type {
+              leaf-list flow-label {
+                type inet:ipv6-flow-label;
+                description "Flow Label";
+              }
+            }
+            description "Component Value";
+          }
+        }
+        description "Packet Filter";
+      }
+      grouping tft {
+        list packet-filters {
+            key identifier;
+            uses fpcbase:packet-filter;
+            description "List of Packet Filters";
+        }
+        description "Packet Filter List";
+      }
+      typedef imsi-type {
+          type uint64;
+          description
+              "International Mobile Subscriber Identity (IMSI)
+                Value Type";
+      }
+      typedef threegpp-instr {
+        type bits {
+          bit assign-ip {
+            position 0;
+            description "Assign IP Address/Prefix";
+          }
+          bit assign-fteid-ip {
+            position 1;
+            description "Assign FTEID-IP";
+          }
+          bit assign-fteid-teid {
+            position 2;
+            description "Assign FTEID-TEID";
+          }
+          bit session {
+            position 3;
+            description "Commands apply to the Session Level";
+          }
+          bit uplink {
+            position 4;
+            description "Commands apply to the Uplink";
+          }
+          bit downlink {
+            position 5;
+            description "Commands apply to the Downlink";
+          }
+          bit assign-dpn {
+            position 6;
+            description "Assign DPN";
+          }
+        }
+        description "Instruction Set for 3GPP R11";
+      }
+      
+      grouping threegpp-tunnel-info {
+          leaf tunnel-type {
+              type identityref  {
+                base "fpcbase:threeGPP-tunnel-type";
+              }
+              description "3GPP Tunnel Subtype";
+          }
+          leaf tunnel-identifier {
+              type uint32;
+              description "Tunnel Endpoint IDentifier (TEID)";
+          }
+          choice tft-or-ref {
+            case defined-tft {
+              uses fpcbase:tft;
+            }
+            description "TFT Value";
+          }
+          description "3GPP TFT and Tunnel Information";
+        }
+      
+      grouping threegpp-properties {
+          leaf imsi {
+            type fpcbase:imsi-type;
+            description "IMSI";
+          }
+          leaf ebi {
+            type fpcbase:ebi-type;
+            description "EUTRAN Bearere Identifier (EBI)";
+          }
+          leaf lbi {
+            type fpcbase:ebi-type;
+            description "Linked Bearer Identifier (LBI)";
+          }
+          description "3GPP Mobility Session Properties";
+        }
+    //////////////////////////////
+    // ACTION VALUE AUGMENTS
+    grouping fpc-action-value {
+        choice action-value {
+            mandatory true;
+            case drop {
+              leaf drop {
+                type empty;
+                description "Drop Traffic";
+              }
+            }
+            case simple-nat {
+                uses fpcbase:simple-nat;
+                description "Simple NAT value";
+            }
+            case simple-napt {
+                uses fpcbase:simple-napt;
+                description "Simple NAPT Value";
+            }
+            case copy-forward {
+                uses fpcbase:copy-forward;
+                description "Copy Forward Value";
+            }
+            case pmip-selector {
+                uses traffic-selectors:traffic-selector;
+                description "PMIP Selector";
+            }
+            description "Action Value";
+        }
+        description "FPC Action Value";
+    }
+
+    //////////////////////////////
+    // DESCRIPTOR DEFINITIONS
+  grouping fpc-descriptor-value {
+    choice descriptor-value {
+      mandatory true;
+      case all-traffic {
+        leaf all-traffic {
+          type empty;
+          description "admit any";
+        }
+      }
+      case no-traffic {
+        leaf no-traffic {
+          type empty;
+          description "deny any";
+        }
+      }
+      case prefix-descriptor {
+        leaf destination-ip {
+          type inet:ip-prefix;
+          description "Rule of destination IP";
+        }
+        leaf source-ip {
+          type inet:ip-prefix;
+          description "Rule of source IP";
+        }
+        description "Traffic descriptor based upon source/
+          destination as IP prefixes";
+      }
+      case pmip-selector {
+        uses traffic-selectors:traffic-selector;
+        description "PMIP Selector";
+      }
+      case threegpp-tft {
+          uses fpcbase:tft;
+          description "3GPP TFT";
+      }
+      description "Descriptor Value";
+    }
+    description "FPC Descriptor Values";
+  }
+    
+    //SETTINGS DEFINITIONS
+    grouping fpc-settings {
+        leaf-list delegated-ip-prefixes {
+            type inet:ip-prefix;
+            description "Delegated Prefix(es)";
+        }
+        leaf tunnel-local-address {
+            type inet:ip-address;
+            description "local tunnel address";
+        }
+        leaf tunnel-remote-address {
+            type inet:ip-address;
+            description "remote tunnel address";
+        }
+        leaf mtu-size {
+            type uint32;
+            description "MTU size";
+        }
+        container mobility-tunnel-parameters {
+            choice profile-parameters {
+                case nothing {
+                  leaf none {
+                    type empty;
+                    description "Empty Value";
+                  }
+                  description "No Parameters Case";
+                }
+        case pmip {
+          uses pmip-tunnel-info;
+        }
+        case threegpp {
+          uses threegpp-tunnel-info;
+          uses threegpp-properties;
+        }
+                description "Mobility Profile Parameters";
+            }
+            description
+            "Profile specific tunnel parameters";
+        }
+        container nexthop {
+            uses fpcbase:fpc-nexthop;
+            description "Next Hop";
+        }
+        container qos-profile-parameters {
+            choice value {
+                description "QoS Value";
+            }
+            description "QoS Parameters";
+        }
+        description "A collection of settings";
+    }
+    identity access-technology {
+    description "The technology used in the access network";
+  }
+    identity role {
+    description "The access-technology function of the DPN";
+}
+  identity ietf-pmip-access-type {
+    base "fpcbase:access-technology";
+    description "PMIP Access";
+  }
+  identity threeGPP-access-type {
+    base "fpcbase:access-technology";
+    description "3GPP Access Type";
+  }
+   // Instructions
+  grouping instructions {
+    container instructions {
+      choice instr-type {
+        case threegpp-instr {
+          leaf instr-3gpp-mob {
+            type fpcbase:threegpp-instr;
+            description "3GPP GTP Mobility Instructions";
+          }
+        }
+        case pmip-instr {
+          leaf instr-pmip {
+            type pmip-commandset;
+            description "PMIP Instructions";
+          }
+        }
+        description "Instruction Value Choice";
+      }
+      description "Instructions";
+    }
+    description "Instructions Value";
+  }
+}
 <CODE ENDS>]]></artwork>
         </figure>
 </section>
@@ -2904,16 +4683,961 @@ are likely to be extended in FPC.</t>
         <figure>
           <artwork><![CDATA[
 <CODE BEGINS> file "ietf-pmip-qos@2017-10-29.yang"
+module ietf-pmip-qos {
+    yang-version 1.1;
 
+    namespace
+      "urn:ietf:params:xml:ns:yang:ietf-pmip-qos";
+
+    prefix "qos-pmip";
+
+    import ietf-inet-types {
+      prefix inet;
+      revision-date 2013-07-15;
+    }
+    import ietf-trafficselector-types { prefix traffic-selectors; }
+
+    organization "IETF Distributed Mobility Management (DMM)
+      Working Group";
+
+    contact
+       "WG Web:   <http://tools.ietf.org/wg/netmod/>
+        WG List:  <mailto:netmod@ietf.org>
+
+        WG Chair: Dapeng Liu
+                  <mailto:maxpassion@gmail.com>
+
+        WG Chair: Jouni Korhonen
+                  <mailto:jouni.nospam@gmail.com>
+
+        Editor:   Satoru Matsushima
+                  <mailto:satoru.matsushima@g.softbank.co.jp>
+
+        Editor:   Lyle Bertz
+                  <mailto:lylebe551144@gmail.com>";
+
+    description
+      "This module contains a collection of YANG definitions for
+     quality of service paramaters used in Proxy Mobile IPv6.
+
+     Copyright (c) 2016 IETF Trust and the persons identified as the
+     document authors. All rights reserved.
+
+     This document is subject to BCP 78 and the IETF Trust's Legal
+     Provisions Relating to IETF Documents
+     (http://trustee.ietf.org/license-info) in effect on the date of
+     publication of this document. Please review these documents
+     carefully, as they describe your rights and restrictions with
+     respect to this document. Code Components extracted from this
+     document must include Simplified BSD License text as described
+     in Section 4.e of the Trust Legal Provisions and are provided
+     without warranty as described in the Simplified BSD License.";
+
+  revision 2017-10-29 {
+     description "Base Version";
+      reference
+        "RFC 6088: Traffic Selectors for Flow Bindings";
+   }
+
+    // Type Definitions
+
+    // QoS Option Field Type Definitions
+  typedef sr-id {
+    type uint8;
+      description
+       "An 8-bit unsigned integer used for identifying the QoS 
+        Service Request.";
+    }
+
+    typedef traffic-class {
+      type inet:dscp;
+      description
+        "Traffic Class consists of a 6-bit DSCP field followed by a
+         2-bit reserved field.";
+     reference
+         "RFC 3289: Management Information Base for the Differentiated
+                    Services Architecture
+          RFC 2474: Definition of the Differentiated Services Field
+                    (DS Field) in the IPv4 and IPv6 Headers
+          RFC 2780: IANA Allocation Guidelines For Values In
+                    the Internet Protocol and Related Headers";
+    }
+
+    typedef operational-code {
+      type enumeration {
+        enum RESPONSE {
+          value 0;
+          description "Response to a QoS request";
+        }
+        enum ALLOCATE {
+          value 1;
+          description "Request to allocate QoS resources";
+        }
+        enum DE-ALLOCATE {
+          value 2;
+          description "Request to de-Allocate QoS resources";
+        }
+        enum MODIFY {
+          value 3;
+          description "Request to modify QoS parameters for a
+              previously negotiated QoS Service Request";
+        }
+        enum QUERY {
+          value 4;
+          description "Query to list the previously negotiated QoS
+              Service Requests that are still active";
+        }
+        enum NEGOTIATE {
+          value 5;
+          description "Response to a QoS Service Request with a
+            counter QoS proposal";
+        }
+      }
+      description
+       "The type of QoS request. Reserved values:   (6) to (255)
+                Currently not used.  Receiver MUST ignore the option
+                received with any value in this range.";
+    }
+
+    // QoS Attribute Types
+
+    //The enumeration value for mapping - don't confuse with the
+    //  identities
+    typedef qos-attrubite-type-enum {
+      type enumeration {
+        enum Reserved {
+          value 0;
+          description "This value is reserved and cannot be used";
+        }
+        enum Per-MN-Agg-Max-DL-Bit-Rate {
+          value 1;
+          description "Per-Mobile-Node Aggregate Maximum Downlink
+              Bit Rate.";
+        }
+        enum Per-MN-Agg-Max-UL-Bit-Rate {
+          value 2;
+          description "Per-Mobile-Node Aggregate Maximum Uplink Bit
+            Rate.";
+        }
+        enum Per-Session-Agg-Max-DL-Bit-Rate {
+          value 3;
+          description "Per-Mobility-Session Aggregate Maximum
+            Downlink Bit Rate.";
+        }
+        enum Per-Session-Agg-Max-UL-Bit-Rate {
+          value 4;
+          description "Per-Mobility-Session Aggregate Maximum
+             Uplink Bit Rate.";
+        }
+        enum Allocation-Retention-Priority {
+          value 5;
+          description "Allocation and Retention Priority.";
+        }
+        enum Aggregate-Max-DL-Bit-Rate {
+          value 6;
+          description "Aggregate Maximum Downlink Bit Rate.";
+        }
+        enum Aggregate-Max-UL-Bit-Rate {
+          value 7;
+          description "Aggregate Maximum Uplink Bit Rate.";
+        }
+        enum Guaranteed-DL-Bit-Rate {
+          value 8;
+          description "Guaranteed Downlink Bit Rate.";
+        }
+        enum Guaranteed-UL-Bit-Rate {
+          value 9;
+          description "Guaranteed Uplink Bit Rate.";
+        }
+        enum QoS-Traffic-Selector {
+          value 10;
+          description "QoS Traffic Selector.";
+        }
+        enum QoS-Vendor-Specific-Attribute {
+          value 11;
+          description "QoS Vendor-Specific Attribute.";
+        }
+      }
+     description
+    "The type of the QoS attribute.  This specification reserves 
+       the following reserved values.
+         (12) to (254) -  Reserved
+            These values are reserved for future allocation.
+
+         (255)  Reserved
+            This value is reserved and cannot be used.";
+    }
+
+    // Attribute Type as Identities
+    // Added for convenience of inclusion and extension in
+    //    other YANG modules.
+    identity qos-attribute-type {
+      description
+        "Base type for Quality of Service Attributes";
+    }
+
+    identity Per-MN-Agg-Max-DL-Bit-Rate-type {
+      base qos-attribute-type;
+      description
+        "Per-Mobile-Node Aggregate Maximum Downlink Bit Rate.";
+    }
+
+   identity Per-MN-Agg-Max-UL-Bit-Rate-type {
+      base qos-attribute-type;
+      description
+        "Per-Mobile-Node Aggregate Maximum Uplink Bit Rate";
+   }
+
+   identity Per-Session-Agg-Max-DL-Bit-Rate-type {
+      base qos-attribute-type;
+      description
+       "Per-Mobility-Session Aggregate Maximum Downlink Bit Rate.";
+  }
+
+   identity Per-Session-Agg-Max-UL-Bit-Rate-type {
+      base qos-attribute-type;
+      description
+       "Per-Mobility-Session Aggregate Maximum Uplink Bit Rate.";
+   }
+
+   identity Allocation-Retention-Priority-type {
+      base qos-attribute-type;
+      description
+        "Allocation and Retention Priority.";
+   }
+
+   identity Aggregate-Max-DL-Bit-Rate-type {
+      base qos-attribute-type;
+      description "Aggregate Maximum Downlink Bit Rate.";
+   }
+
+  identity Aggregate-Max-UL-Bit-Rate-type {
+      base qos-attribute-type;
+      description "Aggregate Maximum Uplink Bit Rate.";
+  }
+
+  identity Guaranteed-DL-Bit-Rate-type {
+      base qos-attribute-type;
+      description "Guaranteed Downlink Bit Rate.";
+  }
+
+  identity Guaranteed-UL-Bit-Rate-type {
+      base qos-attribute-type;
+      description "Guaranteed Uplink Bit Rate.";
+  }
+
+  identity QoS-Traffic-Selector-type {
+      base qos-attribute-type;
+      description "QoS Traffic Selector.";
+  }
+
+  identity QoS-Vendor-Specific-Attribute-type {
+      base qos-attribute-type;
+      description "QoS Vendor-Specific Attribute.";
+  }
+
+  //value definitions
+  typedef Per-MN-Agg-Max-DL-Bit-Rate-Value {
+      type uint32;
+      description
+          "The aggregate maximum downlink bit rate that is
+          requested/allocated for all the mobile node's IP flows.
+          The measurement units are bits per second.";
+  }
+
+   typedef Per-MN-Agg-Max-UL-Bit-Rate-Value {
+      type uint32;
+      description
+        "The aggregate maximum uplink bit rate that is
+            requested/allocated for the mobile node's IP flows.  The
+            measurement units are bits per second.";
+   }
+
+   // Generic Structure for the uplink and downlink
+   grouping Per-Session-Agg-Max-Bit-Rate-Value {
+     leaf max-rate {
+       type uint32;
+       mandatory true;
+       description
+       "The aggregate maximum bit rate that is requested/allocated 
+     for all the IP flows associated with that mobility session.  
+     The measurement units are bits per second.";
+     }
+     leaf service-flag {
+      type boolean;
+      mandatory true;
+      description
+       "This flag is used for extending the scope of the
+        target flows for Per-Session-Agg-Max-UL/DL-Bit-Rate
+        from(UL)/to(DL) the mobile node's other mobility sessions
+        sharing the same Service Identifier.";
+      reference
+        "RFC 5149 - Service Selection mobility option";
+     }
+     leaf exclude-flag {
+       type boolean;
+       mandatory true;
+       description
+        "This flag is used to request that the uplink/downlink
+       flows for which the network is providing
+            Guaranteed-Bit-Rate service be excluded from the
+            target IP flows for which
+            Per-Session-Agg-Max-UL/DL-Bit-Rate is measured.";
+     }
+    description "Per-Session-Agg-Max-Bit-Rate Value";
+   }
+
+   grouping Allocation-Retention-Priority-Value {
+     leaf prioirty-level {
+       type uint8 {
+         range "0..15";
+       }
+       mandatory true;
+       description
+        "This is a 4-bit unsigned integer value.  It is used to decide
+        whether a mobility session establishment or modification
+        request can be accepted; this is typically used for
+        admission control of Guaranteed Bit Rate traffic in case of
+        resource limitations.";
+     }
+     leaf premption-capability {
+       type enumeration {
+        enum enabled {
+          value 0;
+          description "enabled";
+        }
+        enum disabled {
+          value 1;
+          description "disabled";
+        }
+        enum reserved1 {
+          value 2;
+          description "reserved1";
+        }
+        enum reserved2 {
+          value 3;
+          description "reserved2";
+        }
+       }
+       mandatory true;
+       description
+       "This is a 2-bit unsigned integer value.  It defines whether a
+        service data flow can get resources that were already
+        assigned to another service data flow with a lower priority
+        level.";
+     }
+     leaf premption-vulnerability {
+       type enumeration {
+        enum enabled {
+          value 0;
+          description "enabled";
+        }
+        enum disabled {
+          value 1;
+          description "disabled";
+        }
+        enum reserved1 {
+          value 2;
+          description "reserved1";
+        }
+        enum reserved2 {
+          value 3;
+          description "reserved2";
+        }
+       }
+       mandatory true;
+       description
+       "This is a 2-bit unsigned integer value.  It defines whether a
+         service data flow can lose the resources assigned to it in
+         order to admit a service data flow with a higher priority
+         level.";
+     }
+    description "Allocation-Retention-Priority Value";
+   }
+
+   typedef Aggregate-Max-DL-Bit-Rate-Value {
+      type uint32;
+      description
+        "The aggregate maximum downlink bit rate that is
+         requested/allocated for downlink IP flows.  The measurement
+         units are bits per second.";
+   }
+
+    typedef Aggregate-Max-UL-Bit-Rate-Value {
+      type uint32;
+      description
+        "The aggregate maximum downlink bit rate that is
+         requested/allocated for downlink IP flows.  The measurement
+         units are bits per second.";
+    }
+
+    typedef Guaranteed-DL-Bit-Rate-Value {
+      type uint32;
+      description
+      "The guaranteed bandwidth in bits per second for downlink
+        IP flows.  The measurement units are bits per second.";
+    }
+
+    typedef Guaranteed-UL-Bit-Rate-Value {
+      type uint32;
+      description
+        "The guaranteed bandwidth in bits per second for uplink 
+         IP flows.  The measurement units are bits per second.";
+    }
+
+    grouping QoS-Vendor-Specific-Attribute-Value-Base {
+      leaf vendorid {
+        type uint32;
+        mandatory true;
+        description
+         "The Vendor ID is the SMI (Structure of Management
+          Information) Network Management Private Enterprise Code of
+          the IANA-maintained 'Private Enterprise Numbers'
+          registry.";
+        reference
+          "'PRIVATE ENTERPRISE NUMBERS', SMI Network Management
+            Private Enterprise Codes, April 2014,
+             <http://www.iana.org/assignments/enterprise-numbers>";
+      }
+      leaf subtype {
+        type uint8;
+        mandatory true;
+        description
+          "An 8-bit field indicating the type of vendor-specific
+           information carried in the option.  The namespace for this
+           sub-type is managed by the vendor identified by the
+           Vendor ID field.";
+      }
+      description
+        "QoS Vendor-Specific Attribute.";
+    }
+
+    //NOTE - We do NOT add the Status Codes or other changes in
+    // PMIP in this module
+
+    //Primary Structures (groupings)
+    grouping qosattribute {
+        leaf attributetype {
+            type identityref {
+                base qos-attribute-type;
+            }
+            mandatory true;
+            description "the attribute type";
+        }
+
+        //All of the sub-types by constraint
+        choice attribute-choice {
+            case per-mn-agg-max-dl-case {
+                when "./attributetype = "
+                   + "'Per-MN-Agg-Max-DL-Bit-Rate-type'";
+                leaf per-mn-agg-max-dl {
+                    type qos-pmip:Per-MN-Agg-Max-DL-Bit-Rate-Value;
+                    description "Per-MN-Agg-Max-DL-Bit-Rate Value";
+                }
+                description "Per-MN-Agg-Max-DL-Bit-Rate Case";
+            }
+            case per-mn-agg-max-ul-case {
+                when "./attributetype = "
+                  + "'Per-MN-Agg-Max-UL-Bit-Rate-type'";
+                leaf per-mn-agg-max-ul {
+                    type qos-pmip:Per-MN-Agg-Max-UL-Bit-Rate-Value;
+                    description "Per-MN-Agg-Max-UL-Bit-Rate Value";
+                }
+                description "Per-MN-Agg-Max-UL-Bit-Rate Case";
+            }
+            case per-session-agg-max-dl-case {
+                when "./attributetype = "
+                + "'Per-Session-Agg-Max-DL-Bit-Rate-type'";
+                container per-session-agg-max-dl {
+                    uses qos-pmip:Per-Session-Agg-Max-Bit-Rate-Value;
+                    description "Per-Session-Agg-Max-Bit-Rate Value";
+                }
+                description "Per-Session-Agg-Max-Bit-Rate Case";
+            }
+            case per-session-agg-max-ul-case {
+                when "./attributetype = "
+                + "'Per-Session-Agg-Max-UL-Bit-Rate-type'";
+                container per-session-agg-max-ul {
+                    uses qos-pmip:Per-Session-Agg-Max-Bit-Rate-Value;
+                    description "Per-Session-Agg-Max-Bit-Rate Value";
+                }
+                description "Per-Session-Agg-Max-Bit-Rate Case";
+            }
+            case allocation-retention-priority-case {
+                when "./attributetype = "
+                   + "'Allocation-Retention-Priority-type'";
+                uses qos-pmip:Allocation-Retention-Priority-Value;
+                description "Allocation-Retention-Priority Case";
+            }
+            case agg-max-dl-case {
+                when "./attributetype = "
+                  + "'Aggregate-Max-DL-Bit-Rate-type'";
+                leaf agg-max-dl {
+                    type qos-pmip:Aggregate-Max-DL-Bit-Rate-Value;
+                    description "Aggregate-Max-DL-Bit-Rate Value";
+                }
+                description "Aggregate-Max-DL-Bit-Rate Case";
+            }
+            case agg-max-ul-case {
+                when "./attributetype = "
+                  + "'Aggregate-Max-UL-Bit-Rate-type'";
+                leaf agg-max-ul {
+                    type qos-pmip:Aggregate-Max-UL-Bit-Rate-Value;
+                    description "Aggregate-Max-UL-Bit-Rate Value";
+                }
+                description "Aggregate-Max-UL-Bit-Rate Case";
+            }
+            case gbr-dl-case {
+                when "./attributetype = 'Guaranteed-DL-Bit-Rate-type'";
+                leaf gbr-dl {
+                    type qos-pmip:Guaranteed-DL-Bit-Rate-Value;
+                    description "Guaranteed-DL-Bit-Rate Value";
+                }
+                description "Guaranteed-DL-Bit-Rate Case";
+            }
+            case gbr-ul-case {
+                when "./attributetype = 'Guaranteed-UL-Bit-Rate-type'";
+                leaf gbr-ul {
+                    type qos-pmip:Guaranteed-UL-Bit-Rate-Value;
+                    description "Guaranteed-UL-Bit-Rate Value";
+                }
+                description "Guaranteed-UL-Bit-Rate Case";
+            }
+            case traffic-selector-case {
+                when "./attributetype = 'QoS-Traffic-Selector-type'";
+                container traffic-selector {
+                    uses traffic-selectors:traffic-selector;
+                    description "traffic selector";
+                }
+                description "traffic selector Case";
+            }
+            description "Attribute Value";
+        }
+        description "PMIP QoS Attribute";
+    }
+
+    grouping qosoption {
+        leaf srid {
+            type sr-id;
+            mandatory true;
+            description "Service Request Identifier";
+        }
+        leaf trafficclass {
+            type traffic-class;
+            mandatory true;
+            description "Traffic Class";
+        }
+        leaf operationcode {
+            type operational-code;
+            mandatory true;
+            description "Operation Code";
+        }
+        list attributes {
+            unique "attributetype";
+            uses qosattribute;
+            min-elements 1;
+            description "Attributes";
+        }
+        description "PMIP QoS Option";
+    }
+}
 <CODE ENDS>]]></artwork>
         </figure>
   </section>
-  <section anchor="ietf-traffic-selectors-types" title="Traffic Selectors YANG Model">
+  <section anchor="ietf-trafficselectors-types" title="Traffic Selectors YANG Model">
 <t>This module defines traffic selector types commonly used in Proxy Mobile IP (PMIP).</t>
     <t>This module references <xref target="RFC6991"/>.</t>
     <figure>
          <artwork><![CDATA[
-<CODE BEGINS> file "ietf-traffic-selector-types@2017-10-29.yang"
+<CODE BEGINS> file "ietf-trafficselector-types@2017-10-29.yang"
+module ietf-trafficselector-types {
+ yang-version 1.1;
+
+ namespace
+ "urn:ietf:params:xml:ns:yang:ietf-trafficselector-types";
+
+ prefix "traffic-selectors";
+
+ import ietf-inet-types {
+   prefix inet;
+   revision-date 2013-07-15;
+ }
+
+ organization "IETF Distributed Mobility Management (DMM)
+ Working Group";
+
+ contact
+ "WG Web: <http://tools.ietf.org/wg/netmod/>
+ WG List: <mailto:netmod@ietf.org>
+
+ WG Chair: Dapeng Liu
+ <mailto:maxpassion@gmail.com>
+
+ WG Chair: Jouni Korhonen
+ <mailto:jouni.nospam@gmail.com>
+
+ Editor: Satoru Matsushima
+ <mailto:satoru.matsushima@g.softbank.co.jp>
+
+ Editor: Lyle Bertz
+ <mailto:lylebe551144@gmail.com>";
+
+ description
+ "This module contains a collection of YANG definitions for
+ traffic selectors for flow bindings.
+
+ Copyright (c) 2016 IETF Trust and the persons identified as the
+ document authors. All rights reserved.
+
+ This document is subject to BCP 78 and the IETF Trust's Legal
+ Provisions Relating to IETF Documents
+ (http://trustee.ietf.org/license-info) in effect on the date of
+ publication of this document. Please review these documents
+ carefully, as they describe your rights and restrictions with
+ respect to this document. Code Components extracted from this
+ document must include Simplified BSD License text as described
+ in Section 4.e of the Trust Legal Provisions and are provided
+ without warranty as described in the Simplified BSD License.";
+
+
+  revision 2017-10-29 {
+     description "Base Version";
+      reference
+        "RFC 6088: Traffic Selectors for Flow Bindings";
+   }
+
+ // Identities
+   identity traffic-selector-format {
+     description
+     "The base type for Traffic-Selector Formats";
+   }
+
+   identity ipv4-binary-selector-format {
+     base traffic-selector-format;
+     description
+       "IPv4 Binary Traffic Selector Format";
+   }
+
+   identity ipv6-binary-selector-format {
+     base traffic-selector-format;
+     description
+       "IPv6 Binary Traffic Selector Format";
+   }
+
+   // Type definitions and groupings
+   typedef ipsec-spi {
+     type uint32;
+     description
+      "The first 32-bit IPsec Security Parameter Index (SPI)
+      value on data. This field is defined in [RFC4303].";
+       reference
+       "RFC 4303: IP Encapsulating Security
+       Payload (ESP)";
+   }
+
+   grouping traffic-selector-base {
+     description "A grouping of the commen leaves between the
+       v4 and v6 Traffic Selectors";
+     container ipsec-spi-range {
+       presence "Enables setting ipsec spi range";
+       description
+       "Inclusive range representing IPSec Security Parameter
+       Indices to be used. When only start-spi is present, it
+       represents a single spi.";
+   leaf start-spi {
+       type ipsec-spi;
+       mandatory true;
+       description
+         "The first 32-bit IPsec SPI value on data.";
+       }
+   leaf end-spi {
+         type ipsec-spi;
+         must ". >= ../start-spi" {
+           error-message
+             "The end-spi must be greater than or equal
+              to start-spi";
+       }
+      description
+        "If more than one contiguous SPI value needs to be matched,
+        then this field indicates the end value of a range.";
+       }
+    }
+    container source-port-range {
+      presence "Enables setting source port range";
+      description
+       "Inclusive range representing source ports to be used.
+        When only start-port is present, it represents a single
+     port. These value(s) are from the range of port numbers 
+        defined by IANA (http://www.iana.org).";
+      leaf start-port {
+         type inet:port-number;
+         mandatory true;
+         description
+         "The first 16-bit source port number to be matched";
+      }
+      leaf end-port {
+         type inet:port-number;
+         must ". >= ../start-port" {
+         error-message
+          "The end-port must be greater than or equal to start-port";
+        }
+        description
+         "The last 16-bit source port number to be matched";
+       }
+    }
+    container destination-port-range {
+      presence "Enables setting destination port range";
+      description
+       "Inclusive range representing destination ports to be used.
+       When only start-port is present, it represents a single
+       port.";
+        leaf start-port {
+          type inet:port-number;
+          mandatory true;
+          description
+          "The first 16-bit destination port number to be matched";
+       }
+       leaf end-port {
+         type inet:port-number;
+         must ". >= ../start-port" {
+         error-message
+           "The end-port must be greater than or equal to
+          start-port";
+        }
+        description
+     "The last 16-bit destination port number to be matched";
+     }
+   }
+ }
+
+ grouping ipv4-binary-traffic-selector {
+   container source-address-range-v4 {
+      presence "Enables setting source IPv4 address range";
+      description
+       "Inclusive range representing IPv4 addresses to be used. When
+       only start-address is present, it represents a single
+       address.";
+      leaf start-address {
+        type inet:ipv4-address;
+        mandatory true;
+       description
+        "The first source address to be matched";
+      }
+      leaf end-address {
+        type inet:ipv4-address;
+        description
+         "The last source address to be matched";
+       }
+   }
+   container destination-address-range-v4 {
+      presence "Enables setting destination IPv4 address range";
+      description
+        "Inclusive range representing IPv4 addresses to be used.
+        When only start-address is present, it represents a
+        single address.";
+      leaf start-address {
+        type inet:ipv4-address;
+        mandatory true;
+        description
+         "The first destination address to be matched";
+      }
+      leaf end-address {
+        type inet:ipv4-address;
+        description
+         "The last destination address to be matched";
+      }
+   }
+   container ds-range {
+      presence "Enables setting dscp range";
+      description
+       "Inclusive range representing DiffServ Codepoints to be used.
+       When only start-ds is present, it represents a single
+       Codepoint.";
+      leaf start-ds {
+        type inet:dscp;
+        mandatory true;
+        description
+         "The first differential service value to be matched";
+    }
+    leaf end-ds {
+      type inet:dscp;
+      must ". >= ../start-ds" {
+        error-message
+          "The end-ds must be greater than or equal to start-ds";
+      }
+      description
+        "The last differential service value to be matched";
+   }
+  }
+  container protocol-range {
+    presence "Enables setting protocol range";
+    description
+      "Inclusive range representing IP protocol(s) to be used. When
+       only start-protocol is present, it represents a single
+       protocol.";
+    leaf start-protocol {
+      type uint8;
+      mandatory true;
+      description
+        "The first 8-bit protocol value to be matched.";
+     }
+     leaf end-protocol {
+       type uint8;
+       must ". >= ../start-protocol" {
+         error-message
+           "The end-protocol must be greater than or equal to
+          start-protocol";
+       }
+     description
+       "The last 8-bit protocol value to be matched.";
+     }
+   }
+   description "ipv4 binary traffic selector";
+ }
+  grouping ipv6-binary-traffic-selector {
+   container source-address-range-v6 {
+     presence "Enables setting source IPv6 address range";
+      description
+       "Inclusive range representing IPv6 addresses to be used.
+       When only start-address is present, it represents a
+       single address.";
+      leaf start-address {
+        type inet:ipv6-address;
+        mandatory true;
+        description
+        "The first source address, from the
+        range of 128-bit IPv6 addresses to be matched";
+      }
+      leaf end-address {
+        type inet:ipv6-address;
+        description
+            "The last source address, from the
+            range of 128-bit IPv6 addresses to be matched";
+      }
+   }
+   container destination-address-range-v6 {
+     presence "Enables setting destination IPv6 address range";
+     description
+       "Inclusive range representing IPv6 addresses to be used.
+        When only start-address is present, it represents a
+        single address.";
+     leaf start-address {
+       type inet:ipv6-address;
+       mandatory true;
+       description
+           "The first destination address, from the
+           range of 128-bit IPv6 addresses to be matched";
+     }
+     leaf end-address {
+       type inet:ipv6-address;
+       description
+           "The last destination address, from the
+           range of 128-bit IPv6 addresses to be matched";
+    }
+  }
+  container flow-label-range {
+    presence "Enables setting Flow Label range";
+    description
+      "Inclusive range representing IPv4 addresses to be used. When
+       only start-flow-label is present, it represents a single
+       flow label.";
+    leaf start-flow-label {
+      type inet:ipv6-flow-label;
+      description
+        "The first flow label value to be matched";
+    }
+    leaf end-flow-label {
+      type inet:ipv6-flow-label;
+      must ". >= ../start-flow-label" {
+        error-message
+          "The end-flow-lable must be greater than or equal to
+           start-flow-label";
+      }
+      description
+         "The first flow label value to be matched";
+    }
+   }
+  container traffic-class-range {
+    presence "Enables setting the traffic class range";
+    description
+     "Inclusive range representing IPv4 addresses to be used. When
+      only start-traffic-class is present, it represents a single
+      traffic class.";
+    leaf start-traffic-class {
+      type inet:dscp;
+      description
+       "The first traffic class value to be matched";
+      reference
+       "RFC 3260: New Terminology and Clarifications for Diffserv
+        RFC 3168: The Addition of Explicit Congestion Notification
+        (ECN) to IP";
+    }
+    leaf end-traffic-class {
+      type inet:dscp;
+      must ". >= ../start-traffic-class" {
+        error-message
+          "The end-traffic-class must be greater than or equal to
+           start-traffic-class";
+      }
+      description
+        "The last traffic class value to be matched";
+    }
+  }
+  container next-header-range {
+    presence "Enables setting Next Header range";
+    description
+     "Inclusive range representing Next Headers to be used. When
+      only start-next-header is present, it represents a
+      single Next Header.";
+    leaf start-next-header {
+      type uint8;
+      description
+       "The first 8-bit next header value to be matched.";
+    }
+    leaf end-next-header {
+      type uint8;
+      must ". >= ../start-next-header" {
+        error-message
+          "The end-next-header must be greater than or equal to
+          start-next-header";
+      }
+      description
+        "The last 8-bit next header value to be matched.";
+    }
+  }
+  description "ipv6 binary traffic selector";
+}
+  grouping traffic-selector {
+    leaf ts-format {
+       type identityref {
+         base traffic-selector-format;
+       }
+       description "Traffic Selector Format";
+     }
+    uses traffic-selector-base;
+    uses ipv4-binary-traffic-selector;
+    uses ipv6-binary-traffic-selector;
+    description
+     "The traffic selector includes the parameters used to match
+       packets for a specific flow binding.";
+    reference
+     "RFC 6089: Flow Bindings in Mobile IPv6 and Network
+       Mobility (NEMO) Basic Support";
+  }
+
+  grouping ts-list {
+    list selectors {
+      key index;
+      leaf index {
+        type uint64;
+        description "index";
+      }
+      uses traffic-selector;
+      description "traffic selectors";
+    }
+    description "traffic selector list";
+  }
+}
 
 <CODE ENDS>]]></artwork>
         </figure>

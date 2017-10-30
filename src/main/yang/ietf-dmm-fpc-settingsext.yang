@@ -1,16 +1,16 @@
 module ietf-dmm-fpc-settingsext {
-	yang-version 1.1;
-	namespace "urn:ietf:params:xml:ns:yang:ietf-dmm-fpc-settingsext";
-	prefix fpcbase;
-	
+  yang-version 1.1;
+  namespace "urn:ietf:params:xml:ns:yang:ietf-dmm-fpc-settingsext";
+  prefix fpcbase;
+  
     import ietf-inet-types { prefix inet; 
-    		revision-date 2013-07-15; }
+        revision-date 2013-07-15; }
     import ietf-trafficselector-types { prefix traffic-selectors; 
-    		revision-date 2017-10-29; }
+        revision-date 2017-10-29; }
     import ietf-yang-types { prefix ytypes;
         revision-date 2013-07-15; }
     import ietf-pmip-qos { prefix pmipqos;
-    		revision-date 2016-02-10; }
+        revision-date 2016-02-10; }
 
     organization "IETF Distributed Mobility Management (DMM)
       Working Group";
@@ -35,9 +35,9 @@ module ietf-dmm-fpc-settingsext {
     "This module contains YANG definition for
      Forwarding Policy Configuration Protocol(FPCP).
 
-    	It contains Settings defintions as well as Descriptor and 
-    	Action extensions.
-    	
+      It contains Settings defintions as well as Descriptor and 
+      Action extensions.
+      
      Copyright (c) 2016 IETF Trust and the persons identified as the
      document authors. All rights reserved.
 
@@ -52,8 +52,8 @@ module ietf-dmm-fpc-settingsext {
      without warranty as described in the Simplified BSD License.";
     
     revision 2017-09-27 {
-		description "Version 10 updates.";
-		reference "draft-ietf-dmm-fpc-cpdp-10";
+    description "Version 10 updates.";
+    reference "draft-ietf-dmm-fpc-cpdp-10";
 }
 revision 2017-07-22 {
     description "Version 08 updates.";
@@ -94,7 +94,7 @@ revision 2016-08-03 {
             description "Nexthop Type";
         }
         choice nexthop-value {
-        	    mandatory true;
+              mandatory true;
             case ip-nexthop {
                 leaf ip {
                   type inet:ip-address;
@@ -163,10 +163,10 @@ revision 2016-08-03 {
       container destination {
         choice value {
           case nexthop-case {
-			container nexthop {
-	            uses fpcbase:fpc-nexthop;
-	            description "Next Hop";
-	        }
+      container nexthop {
+              uses fpcbase:fpc-nexthop;
+              description "Next Hop";
+          }
             description "Port Forward Case";
           }
           description "Copy Forward Value";
@@ -240,7 +240,7 @@ revision 2016-08-03 {
         }
     ///////////////////////////////
     // 3GPP Integration         //
-	//    Tunnel Types
+  //    Tunnel Types
       identity threeGPP-tunnel-type {
           description "3GPP Base Tunnel Type";
       }
@@ -610,50 +610,50 @@ revision 2016-08-03 {
             }
             description "Action Value";
         }
-    		description "FPC Action Value";
+        description "FPC Action Value";
     }
 
     //////////////////////////////
     // DESCRIPTOR DEFINITIONS
-	grouping fpc-descriptor-value {
-		choice descriptor-value {
-			mandatory true;
-			case all-traffic {
-				leaf all-traffic {
-					type empty;
-					description "admit any";
-				}
-			}
-			case no-traffic {
-				leaf no-traffic {
-					type empty;
-					description "deny any";
-				}
-			}
-			case prefix-descriptor {
-				leaf destination-ip {
-					type inet:ip-prefix;
-					description "Rule of destination IP";
-				}
-				leaf source-ip {
-					type inet:ip-prefix;
-					description "Rule of source IP";
-				}
-				description "Traffic descriptor based upon source/
-					destination as IP prefixes";
-			}
-			case pmip-selector {
-				uses traffic-selectors:traffic-selector;
-				description "PMIP Selector";
-			}
-			case threegpp-tft {
-					uses fpcbase:tft;
-					description "3GPP TFT";
-			}
-			description "Descriptor Value";
-		}
-		description "FPC Descriptor Values";
-	}
+  grouping fpc-descriptor-value {
+    choice descriptor-value {
+      mandatory true;
+      case all-traffic {
+        leaf all-traffic {
+          type empty;
+          description "admit any";
+        }
+      }
+      case no-traffic {
+        leaf no-traffic {
+          type empty;
+          description "deny any";
+        }
+      }
+      case prefix-descriptor {
+        leaf destination-ip {
+          type inet:ip-prefix;
+          description "Rule of destination IP";
+        }
+        leaf source-ip {
+          type inet:ip-prefix;
+          description "Rule of source IP";
+        }
+        description "Traffic descriptor based upon source/
+          destination as IP prefixes";
+      }
+      case pmip-selector {
+        uses traffic-selectors:traffic-selector;
+        description "PMIP Selector";
+      }
+      case threegpp-tft {
+          uses fpcbase:tft;
+          description "3GPP TFT";
+      }
+      description "Descriptor Value";
+    }
+    description "FPC Descriptor Values";
+  }
     
     //SETTINGS DEFINITIONS
     grouping fpc-settings {
@@ -682,13 +682,13 @@ revision 2016-08-03 {
                   }
                   description "No Parameters Case";
                 }
-				case pmip {
-					uses pmip-tunnel-info;
-				}
-				case threegpp {
-					uses threegpp-tunnel-info;
-					uses threegpp-properties;
-				}
+        case pmip {
+          uses pmip-tunnel-info;
+        }
+        case threegpp {
+          uses threegpp-tunnel-info;
+          uses threegpp-properties;
+        }
                 description "Mobility Profile Parameters";
             }
             description
@@ -707,39 +707,39 @@ revision 2016-08-03 {
         description "A collection of settings";
     }
     identity access-technology {
-		description "The technology used in the access network";
-	}
+    description "The technology used in the access network";
+  }
     identity role {
-		description "The access-technology function of the DPN";
+    description "The access-technology function of the DPN";
 }
-	identity ietf-pmip-access-type {
-		base "fpcbase:access-technology";
-		description "PMIP Access";
-	}
-	identity threeGPP-access-type {
-		base "fpcbase:access-technology";
-		description "3GPP Access Type";
-	}
- 	// Instructions
-	grouping instructions {
-		container instructions {
-			choice instr-type {
-				case threegpp-instr {
-					leaf instr-3gpp-mob {
-						type fpcbase:threegpp-instr;
-						description "3GPP GTP Mobility Instructions";
-					}
-				}
-				case pmip-instr {
-					leaf instr-pmip {
-						type pmip-commandset;
-						description "PMIP Instructions";
-					}
-				}
-				description "Instruction Value Choice";
-			}
-			description "Instructions";
-		}
-		description "Instructions Value";
-	}
+  identity ietf-pmip-access-type {
+    base "fpcbase:access-technology";
+    description "PMIP Access";
+  }
+  identity threeGPP-access-type {
+    base "fpcbase:access-technology";
+    description "3GPP Access Type";
+  }
+   // Instructions
+  grouping instructions {
+    container instructions {
+      choice instr-type {
+        case threegpp-instr {
+          leaf instr-3gpp-mob {
+            type fpcbase:threegpp-instr;
+            description "3GPP GTP Mobility Instructions";
+          }
+        }
+        case pmip-instr {
+          leaf instr-pmip {
+            type pmip-commandset;
+            description "PMIP Instructions";
+          }
+        }
+        description "Instruction Value Choice";
+      }
+      description "Instructions";
+    }
+    description "Instructions Value";
+  }
 }

@@ -7,8 +7,8 @@ module ietf-trafficselector-types {
  prefix "traffic-selectors";
 
  import ietf-inet-types {
- 	prefix inet;
- 	revision-date 2013-07-15;
+   prefix inet;
+   revision-date 2013-07-15;
  }
 
  organization "IETF Distributed Mobility Management (DMM)
@@ -48,163 +48,163 @@ module ietf-trafficselector-types {
  without warranty as described in the Simplified BSD License.";
 
 
-	revision 2017-10-29 {
-	 	description "Base Version";
-	 	 reference
-	 	 	"RFC 6088: Traffic Selectors for Flow Bindings";
-	 }
+  revision 2017-10-29 {
+     description "Base Version";
+      reference
+        "RFC 6088: Traffic Selectors for Flow Bindings";
+   }
 
  // Identities
- 	identity traffic-selector-format {
- 		description
+   identity traffic-selector-format {
+     description
      "The base type for Traffic-Selector Formats";
- 	}
+   }
 
- 	identity ipv4-binary-selector-format {
- 		base traffic-selector-format;
- 		description
- 			"IPv4 Binary Traffic Selector Format";
- 	}
+   identity ipv4-binary-selector-format {
+     base traffic-selector-format;
+     description
+       "IPv4 Binary Traffic Selector Format";
+   }
 
- 	identity ipv6-binary-selector-format {
- 		base traffic-selector-format;
- 		description
- 			"IPv6 Binary Traffic Selector Format";
- 	}
+   identity ipv6-binary-selector-format {
+     base traffic-selector-format;
+     description
+       "IPv6 Binary Traffic Selector Format";
+   }
 
- 	// Type definitions and groupings
- 	typedef ipsec-spi {
- 		type uint32;
- 		description
+   // Type definitions and groupings
+   typedef ipsec-spi {
+     type uint32;
+     description
       "The first 32-bit IPsec Security Parameter Index (SPI)
- 	   value on data. This field is defined in [RFC4303].";
- 			reference
+      value on data. This field is defined in [RFC4303].";
+       reference
        "RFC 4303: IP Encapsulating Security
        Payload (ESP)";
- 	}
+   }
 
- 	grouping traffic-selector-base {
- 		description "A grouping of the commen leaves between the
+   grouping traffic-selector-base {
+     description "A grouping of the commen leaves between the
        v4 and v6 Traffic Selectors";
- 	  container ipsec-spi-range {
- 	    presence "Enables setting ipsec spi range";
- 	    description
+     container ipsec-spi-range {
+       presence "Enables setting ipsec spi range";
+       description
        "Inclusive range representing IPSec Security Parameter
        Indices to be used. When only start-spi is present, it
        represents a single spi.";
-	 leaf start-spi {
+   leaf start-spi {
        type ipsec-spi;
        mandatory true;
        description
-    	   "The first 32-bit IPsec SPI value on data.";
-	 		}
-	 leaf end-spi {
-	 		  type ipsec-spi;
-	 		  must ". >= ../start-spi" {
-	 		    error-message
-	 		      "The end-spi must be greater than or equal
-	 		       to start-spi";
-	 		}
+         "The first 32-bit IPsec SPI value on data.";
+       }
+   leaf end-spi {
+         type ipsec-spi;
+         must ". >= ../start-spi" {
+           error-message
+             "The end-spi must be greater than or equal
+              to start-spi";
+       }
       description
         "If more than one contiguous SPI value needs to be matched,
         then this field indicates the end value of a range.";
-	 		}
- 	 }
- 	 container source-port-range {
- 	   presence "Enables setting source port range";
- 	   description
+       }
+    }
+    container source-port-range {
+      presence "Enables setting source port range";
+      description
        "Inclusive range representing source ports to be used.
         When only start-port is present, it represents a single
-	   port. These value(s) are from the range of port numbers 
- 		   defined by IANA (http://www.iana.org).";
-	 	 leaf start-port {
-	 			type inet:port-number;
-	 			mandatory true;
-	 			description
+     port. These value(s) are from the range of port numbers 
+        defined by IANA (http://www.iana.org).";
+      leaf start-port {
+         type inet:port-number;
+         mandatory true;
+         description
          "The first 16-bit source port number to be matched";
-	 	 }
-	 	 leaf end-port {
-	 			type inet:port-number;
-	 			must ". >= ../start-port" {
-	 	    error-message
+      }
+      leaf end-port {
+         type inet:port-number;
+         must ". >= ../start-port" {
+         error-message
           "The end-port must be greater than or equal to start-port";
-	 	   }
-	 	   description
-	 		  "The last 16-bit source port number to be matched";
-	 		}
- 	 }
- 	 container destination-port-range {
- 	   presence "Enables setting destination port range";
- 	   description
+        }
+        description
+         "The last 16-bit source port number to be matched";
+       }
+    }
+    container destination-port-range {
+      presence "Enables setting destination port range";
+      description
        "Inclusive range representing destination ports to be used.
        When only start-port is present, it represents a single
        port.";
-	 		 leaf start-port {
-	 			 type inet:port-number;
-	 			 mandatory true;
-	 			 description
+        leaf start-port {
+          type inet:port-number;
+          mandatory true;
+          description
           "The first 16-bit destination port number to be matched";
-	 		}
-	 		leaf end-port {
-	 			type inet:port-number;
-	 	    must ". >= ../start-port" {
-	 	    error-message
-	 	      "The end-port must be greater than or equal to
+       }
+       leaf end-port {
+         type inet:port-number;
+         must ". >= ../start-port" {
+         error-message
+           "The end-port must be greater than or equal to
           start-port";
-	 	   }
-	 	   description
-	 	"The last 16-bit destination port number to be matched";
-	 	}
- 	}
+        }
+        description
+     "The last 16-bit destination port number to be matched";
+     }
+   }
  }
 
  grouping ipv4-binary-traffic-selector {
-	 container source-address-range-v4 {
- 	   presence "Enables setting source IPv4 address range";
- 	   description
+   container source-address-range-v4 {
+      presence "Enables setting source IPv4 address range";
+      description
        "Inclusive range representing IPv4 addresses to be used. When
        only start-address is present, it represents a single
        address.";
-	 	 leaf start-address {
-	 		 type inet:ipv4-address;
-	 		 mandatory true;
-	 		description
+      leaf start-address {
+        type inet:ipv4-address;
+        mandatory true;
+       description
         "The first source address to be matched";
-	 	 }
-	 	 leaf end-address {
-	 		 type inet:ipv4-address;
-	 		 description
-	 			"The last source address to be matched";
-	 		}
-	 }
-	 container destination-address-range-v4 {
- 	   presence "Enables setting destination IPv4 address range";
- 	   description
- 	     "Inclusive range representing IPv4 addresses to be used.
+      }
+      leaf end-address {
+        type inet:ipv4-address;
+        description
+         "The last source address to be matched";
+       }
+   }
+   container destination-address-range-v4 {
+      presence "Enables setting destination IPv4 address range";
+      description
+        "Inclusive range representing IPv4 addresses to be used.
         When only start-address is present, it represents a
         single address.";
-	 	 leaf start-address {
-	 		 type inet:ipv4-address;
-	 		 mandatory true;
-	 		 description
-	 			"The first destination address to be matched";
-	 	 }
-	 	 leaf end-address {
-	 	   type inet:ipv4-address;
-	 		 description
-	 			"The last destination address to be matched";
-	 	 }
-	 }
-	 container ds-range {
- 	   presence "Enables setting dscp range";
- 	   description
+      leaf start-address {
+        type inet:ipv4-address;
+        mandatory true;
+        description
+         "The first destination address to be matched";
+      }
+      leaf end-address {
+        type inet:ipv4-address;
+        description
+         "The last destination address to be matched";
+      }
+   }
+   container ds-range {
+      presence "Enables setting dscp range";
+      description
        "Inclusive range representing DiffServ Codepoints to be used.
        When only start-ds is present, it represents a single
        Codepoint.";
- 	   leaf start-ds {
- 		   type inet:dscp;
- 		   mandatory true;
- 		   description
+      leaf start-ds {
+        type inet:dscp;
+        mandatory true;
+        description
          "The first differential service value to be matched";
     }
     leaf end-ds {
@@ -214,10 +214,10 @@ module ietf-trafficselector-types {
           "The end-ds must be greater than or equal to start-ds";
       }
       description
-    	  "The last differential service value to be matched";
-	 }
+        "The last differential service value to be matched";
+   }
   }
-	container protocol-range {
+  container protocol-range {
     presence "Enables setting protocol range";
     description
       "Inclusive range representing IP protocol(s) to be used. When
@@ -228,31 +228,31 @@ module ietf-trafficselector-types {
       mandatory true;
       description
         "The first 8-bit protocol value to be matched.";
- 		}
- 		leaf end-protocol {
- 			type uint8;
- 	    must ". >= ../start-protocol" {
- 	      error-message
- 	        "The end-protocol must be greater than or equal to
+     }
+     leaf end-protocol {
+       type uint8;
+       must ". >= ../start-protocol" {
+         error-message
+           "The end-protocol must be greater than or equal to
           start-protocol";
- 	    }
- 		description
- 			"The last 8-bit protocol value to be matched.";
- 		}
-	 }
+       }
+     description
+       "The last 8-bit protocol value to be matched.";
+     }
+   }
    description "ipv4 binary traffic selector";
  }
-	grouping ipv6-binary-traffic-selector {
-	 container source-address-range-v6 {
+  grouping ipv6-binary-traffic-selector {
+   container source-address-range-v6 {
      presence "Enables setting source IPv6 address range";
- 	   description
+      description
        "Inclusive range representing IPv6 addresses to be used.
        When only start-address is present, it represents a
        single address.";
-	 	 leaf start-address {
-	 		 type inet:ipv6-address;
-	 		 mandatory true;
-	 		 description
+      leaf start-address {
+        type inet:ipv6-address;
+        mandatory true;
+        description
         "The first source address, from the
         range of 128-bit IPv6 addresses to be matched";
       }
@@ -302,9 +302,9 @@ module ietf-trafficselector-types {
            start-flow-label";
       }
       description
-    	   "The first flow label value to be matched";
+         "The first flow label value to be matched";
     }
- 	}
+   }
   container traffic-class-range {
     presence "Enables setting the traffic class range";
     description
@@ -328,7 +328,7 @@ module ietf-trafficselector-types {
            start-traffic-class";
       }
       description
-    	  "The last traffic class value to be matched";
+        "The last traffic class value to be matched";
     }
   }
   container next-header-range {
@@ -350,40 +350,40 @@ module ietf-trafficselector-types {
           start-next-header";
       }
       description
-    	  "The last 8-bit next header value to be matched.";
+        "The last 8-bit next header value to be matched.";
     }
   }
   description "ipv6 binary traffic selector";
 }
-	grouping traffic-selector {
-		leaf ts-format {
- 			type identityref {
- 				base traffic-selector-format;
- 			}
- 			description "Traffic Selector Format";
- 		}
-		uses traffic-selector-base;
-		uses ipv4-binary-traffic-selector;
-		uses ipv6-binary-traffic-selector;
+  grouping traffic-selector {
+    leaf ts-format {
+       type identityref {
+         base traffic-selector-format;
+       }
+       description "Traffic Selector Format";
+     }
+    uses traffic-selector-base;
+    uses ipv4-binary-traffic-selector;
+    uses ipv6-binary-traffic-selector;
     description
      "The traffic selector includes the parameters used to match
-			 packets for a specific flow binding.";
-		reference
+       packets for a specific flow binding.";
+    reference
      "RFC 6089: Flow Bindings in Mobile IPv6 and Network
        Mobility (NEMO) Basic Support";
   }
 
-	grouping ts-list {
-		list selectors {
-			key index;
-			leaf index {
-				type uint64;
+  grouping ts-list {
+    list selectors {
+      key index;
+      leaf index {
+        type uint64;
         description "index";
-			}
-			uses traffic-selector;
+      }
+      uses traffic-selector;
       description "traffic selectors";
-		}
+    }
     description "traffic selector list";
-	}
+  }
 }
 
