@@ -30,8 +30,6 @@
     "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7333.xml">
 <!ENTITY RFC6088 SYSTEM
     "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6088.xml">
-<!ENTITY RFC6089 SYSTEM
-    "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6089.xml">
 <!ENTITY RFC6241 SYSTEM
     "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6241.xml">
 <!ENTITY RFC6242 SYSTEM
@@ -616,7 +614,7 @@ DPN         |                 DPN        |
 
     <t>Each DPN entry contains the following information:
     <list style="hanging">
-    <t hangText="DPN-Id (Key):"> A unique ID of the virtual DPN</t>
+    <t hangText="DPN-Id (Key):"> A unique Identifier of the virtual DPN</t>
     <t hangText="DPN-Id (Name):">the human-readable display string</t>
     <t hangText="DPN-Resource-Mapping-Reference (O):">A reference to the underlying implementation, e.g. physical node,
        virtual element, etc. that supports this DPN.  This value MUST be non-empty prior to Dynamic-Policies being installed upon the DPN.</t>
@@ -651,7 +649,7 @@ DPN         |                 DPN        |
       |     +-[Access-Technology] <U-Key>,<Name> (O)
       |     +-[Role] <U-Key>, <Name> (O) 
       |     +-[Interface] <Set>
-      |             +-[Interface-ID] <L-Key>, <Name> (O)
+      |             +-[Interface-Id] <L-Key>, <Name> (O)
       |             +-[Interface-Protocol] <Set> 
       |             +-[Features] <Set> (O) 
       |             +-[Interface-Settings] <Set> (O)
@@ -685,7 +683,7 @@ DPN         |                 DPN        |
     <section anchor="dpn-group" title="DPN-Group">
 
     <t>A DPN-Group is a list of a group of DPNs serving some administrative purpose. Each group contains a list of DPNs
-       (referenced by DPN-ID) and selected interfaces (referenced by the interface's 3-tuple key). The interfaces are listed
+       (referenced by DPN-Id) and selected interfaces (referenced by the interface's 3-tuple key). The interfaces are listed
        rather than referred implicitly by each specific DPN to enable to define a subset of a DPN interfaces to be part of the group.</t>
 
     <t><figure anchor="fig-dpn-group" title="DPN Group">
@@ -700,7 +698,7 @@ DPN         |                 DPN        |
              |           +-[Supporting-DPN-Id] <Set>
              |           +-[DPN-Group-Peer-Reference] <Set> (O)
              +-[DPN-Peer-Group] <Set>                     
-             |           +-[Remote-DPN-Group-ID] <L-key>
+             |           +-[Remote-DPN-Group-Id] <L-key>
              |           +-[Interface-Settings] <Set> (O)
              +-[Domain-Id-Reference]
        ]]></artwork>
@@ -710,7 +708,7 @@ DPN         |                 DPN        |
 
     <t>Each DPN-Group entry contains the following information:
     <list style="hanging">
-    <t hangText="DPN-Group (Key):"> A unique ID of the DPN-Group</t>
+    <t hangText="DPN-Group (Key):"> A unique Identifer of the DPN-Group</t>
     <t hangText="DPN-Group (Name):">the human-readable display string</t>
     <t hangText="Referenced-Interfaces:">A set of interfaces and the DPNs / associated DPN-Peer-Groups that support them.  Each
     entry contains
@@ -728,18 +726,42 @@ DPN         |                 DPN        |
         and DPN-Peer-Group the Interface-Settings MUST be used.  Each entry contains the following information:
     entry contains
     <list style="hanging">
-    <t hangText="Remote-DPN-Group-Id: "> A unique ID of the DPN-Peer-Group</t>
+    <t hangText="Remote-DPN-Group-Id: "> A unique Identifier of the DPN-Peer-Group</t>
     <t hangText="Interface-Settings: ">an optional set of settings that MUST be known when determining the suitability of an interface for the
          specific request.</t>
     </list></t>
     </list></t>
 
     </section> <!-- End section DPN Group-->
+    
+        <section anchor="domain" title="Domain">
+
+    <t>A Domain represents a logica abstraction of a group of heterogeneous Topology resources.  Other models, outside of the scope
+    of this specificaiton, provide the details for the Domain.</t>
+
+    <t><figure anchor="fig-domain" title="Domainn">
+            <artwork align="center"><![CDATA[
+ |
+ +-[Domain] <Set>
+ |           +-[Domain-Id] <G-Key>, <Name> (O)
+             +-[Domain-Reference] 
+       ]]></artwork>
+          </figure>
+        </t>
+
+    <t>Each Domain entry contains the following information:
+    <list style="hanging">
+    <t hangText="Domain (Key):"> A unique Identifier of the Domain</t>
+    <t hangText="Domain (Name):">the human-readable display string</t>
+    <t hangText="Domain-Reference:">A link to the underlying resource / informaiton that provides further details regarding the domain.</t>
+    </list></t>
+
+    </section> <!-- End section Domain-->
+    
+    
     </section>        <!-- end section Topology -->
 
     <section anchor="policy" title="Policy">
-
-    <section anchor="policy-substructure" title="Policy Substructure">
 
     <t>The Policy substructure defines and identifies grouped Rules for enforcement on the data plane. Rules comprise
        traffic descriptors and actions on how to treat traffic in case the traffic descriptor matches a data packet.
@@ -757,7 +779,7 @@ DPN         |                 DPN        |
        defined in a set of rule definition entries (Rule-Definition) which comprise references to entries in the set of
        traffic descriptors (Descriptor-Reference) and traffic treatment actions (Action-Reference). Accordingly, a single
        rule or a group of rules are bound to a policy in the set of policy definitions (Policy-Definition) by reference to
-       entries in the set of rule definitions (Rule-ID).</t>
+       entries in the set of rule definitions (Rule-Id).</t>
 
  <t><figure anchor="fig-policy-substructure" title="Policy Substructure">
             <artwork align="center"><![CDATA[
@@ -772,7 +794,7 @@ DPN         |                 DPN        |
   |      |             +-[Rule-Id] <L-Key> (M)
   |      |             +-[Descriptor-Match-Type] (M) 
   |      |             +-[Descriptor-Reference] <Set>
-  |      |             |                +-[Descriptor-ID-Reference]
+  |      |             |                +-[Descriptor-Id-Reference]
   |      |             |                +-[Direction] (O)
   |      |             +-[Action-Reference] <Set>
   |      |                              +-[Action-Id-Reference] 
@@ -816,7 +838,7 @@ DPN         |                 DPN        |
     <t hangText="Action-Id-Reference: ">Identifies the referred Action-Definition.</t>
     <t hangText="Action-Order: ">Defines the order how actions are executed in case the rule applies per match of the associated traffic descriptor.</t>
     </list></t>
-    <t hangText="Descriptor-Definition: ">A set of descriptor definitions, each being identified by a key (Descriptor-ID)
+    <t hangText="Descriptor-Definition: ">A set of descriptor definitions, each being identified by a key (Descriptor-Id)
     <list>
     <t hangText="Descriptor-Id: ">Identifies a descriptor definition.</t>
     <t hangText="Descriptor-Type: ">Identifies the type of descriptor, e.g. an IPv6 traffic selector per [RFC 6088], for unambiguous
@@ -832,7 +854,7 @@ DPN         |                 DPN        |
     </list></t>
 
 
-    </section> <!-- End policy substructure -->
+    </section> <!-- End policy  -->
 
 
     <section anchor="config-policy" title="Configurable Policy">
@@ -867,10 +889,7 @@ DPN         |                 DPN        |
     <t hangText="Settings: ">Settings that apply to multiple policies at the identified DPN.</t>
     </list></t>
 
-    </section>
-
-
-    </section> <!-- end section Policy-->
+    </section> <!-- end section Configurable-Policy -->
 
     <section anchor="mobility" title="Mobility-Context">
 
@@ -927,10 +946,6 @@ DPN         |                 DPN        |
     <t hangText="Context-Settings-Complementary: ">Complementary settings that apply to the referenced policies per this Mobility-Context.</t>
     </list></t>
 
-    </section> <!-- End mobility context -->
-
-    <section anchor="rule-template" title="Rule Template">
-
     <t>The Rules Template format is aligned with the Rule Substructure. It can represent an Embedded-Rule
        per the Mobility-Context Substructure.</t>
 
@@ -962,7 +977,7 @@ DPN         |                 DPN        |
     <t hangText="Descriptor-Match-Type: ">Conjuction of Descriptor-Values to apply as match to DPN traffic,
                                           which can be either OR or AND. The identified conjunction applies
                                           to all Descriptor-Definitions in the given Rule-Definition</t>
-    <t hangText="Descriptor-Definition: ">A set of descriptor definitions, each being identified by a key (Descriptor-ID)
+    <t hangText="Descriptor-Definition: ">A set of descriptor definitions, each being identified by a key (Descriptor-Id)
     <list>
     <t hangText="Descriptor-Id: ">Identifies a Descriptor-Definition</t>
     <t hangText="Descriptor-Type: ">Identifies the type of descriptor, e.g. an IPv6 traffic selector per [RFC 6088], for
@@ -979,7 +994,7 @@ DPN         |                 DPN        |
     </list></t>
     </list></t>
 
-    </section>  <!-- End embeddable-rule -->
+        </section> <!-- End mobility context -->
 
    <section anchor="monitor_overview" title="Monitors">
         <t> Monitors provide a mechanism to produce reports when events
@@ -1007,7 +1022,7 @@ DPN         |                 DPN        |
         </t>
 
         <t><list style="hanging">
-        <t hangText="Monitor-Id:"> Name of the Monitor. The ID format MUST conform to <xref target="naming"></xref>.</t>
+        <t hangText="Monitor-Id:"> Name of the Monitor. The Id format MUST conform to <xref target="naming"></xref>.</t>
         <t hangText="Target:"> Description of what is to be monitored. This can be an Event, a Dynamic Policy, an installed DPN Policy,
               or values of a Dynamic-Policy attribute. When the type is an attribute of Mobility-Context, the target name
               is a concatenation of the Context-Id and the relative path (separated by '/') to the attribute(s) to be monitored. 
@@ -1059,7 +1074,29 @@ DPN         |                 DPN        |
 
     <section anchor="attr_application" title="Attribute Application">
 
-
+<t>When search for attributes in Settings to apply for Embeded Rules or Assigned-Policy-References the following search order is 
+applied by the Agent / DPN for Mobilty-Contexts:
+<list style="numbers">
+<t>DPN-Settings-Complementary of the DPN-Reference entry</t>
+<t>Context-Settings-Complementary of the Mobility-Context</t>
+<t>If Parent-Mobility-Context-Id-Reference is not empty the following are also searched:
+	<list style="numbers">
+	<t>DPN-Settings-Complementary of the DPN-Reference entry for the same interface, if present.</t>
+	<t>Context-Settings-Complementary of this parent Mobility-Context</t>
+	<t>Optionally, if this Mobility-Context has a non-empty Parent-Mobility-Context-Id-Reference this step MAY 
+	be repeated but it is NOT reccommended as it could slow system performance.</t>
+	</list></t>
+<t>Interface-Settings of the DPN interface</t>
+</list>
+</t>
+<t>Only looking at settings of the first Parent-Mobility-Context-Id-Reference is recommended for performance reasons.  If further depth of 
+search is supported the Agent MUST make this known to the Client.</t>
+<t>For Configurable Policy the following search order is applied:
+	<list style="numbers">
+	<t>Policy-Settings of the Installed-Policy</t>
+	<t>Settings of the Configurable-Policy</t>
+	</list>
+</t>
 
     </section>        <!-- end section title="Attribute Application"  -->
 
@@ -1328,7 +1365,7 @@ in a delay of the NOTIFY.</t>
       information, which indicates the result of processing the message, using
       the RESPONSE_BODY property. In case the processing of the message results
       in a failure, the Agent sets the ERROR_TYPE and ERROR_TAG
-      accordingly and MAY clear the entity, e.g. Context or Installed-Policy, which caused the failure,
+      accordingly and MAY clear the entity, e.g. Context or Configurable-Policy, which caused the failure,
       in the response.</t>
 
   <t> If based upon Agent configuration or the processing of the request
@@ -1568,7 +1605,7 @@ in a delay of the NOTIFY.</t>
   </t>
 
   <t>
-     <figure anchor="fig_port" title="Structure of Policies and Vports">
+     <figure anchor="fig_port" title="Structure of Configurable Policies">
         <artwork align="center"><![CDATA[
 
   Descriptor_1 -+          +- Action_1
@@ -1586,12 +1623,12 @@ in a delay of the NOTIFY.</t>
                   +------+                |
                                          <Intsalled-Policy>
 
-  +-------------------+     +---------------------+
-  | Bind 1..M traffic |     |  Bind 1..N traffic  |
-  |  Descriptors to   | --> |  treatment actions  |
-  |  to a Policy and  |     |   to a Policy and   |
-  |  Installed-Policy |     |  Installed-Policy |
-  +-------------------+     +---------------------+
+  +---------------------+     +----------------------+
+  | Bind 1..M traffic   |     |  Bind 1..N traffic   |
+  |  Descriptors to     | --> |  treatment actions   |
+  |  to a Policy and    |     |   to a Policy and    |
+  | Configurable-Policy |     |  Configurable-Policy |
+  +---------------------+     +----------------------+
 
  |                                                 |
  +-------------- Data-Plane Rule ------------------+
@@ -1601,14 +1638,14 @@ in a delay of the NOTIFY.</t>
   </t>
 
   <t>
-   As depicted in <xref target="fig_port"/>, the Installed-Policy represents the anchor
+   As depicted in <xref target="fig_port"/>, the Configurable-Policy represents the anchor
    of Rules through the Policy / Rule hierarchy.  A Client and Agent use the identifier of the
    associated Policy to directly access the Rule and perform modifications of
    traffic Descriptors or Action references.  A Client and Agent use the
    identifiers to access the Descriptors or Actions to perform modifications.
    From the viewpoint of packet processing, arriving packets are matched
    against traffic Descriptors and processed according to the treatment
-   Actions specified in the list of properties associated with the Installed-Policy.
+   Actions specified in the list of properties associated with the Configurable-Policy.
   </t>
   <t>
    A Client complements a rule's Descriptors with a Rule's Order (priority)
@@ -1888,7 +1925,7 @@ information such as YANG the data type MAY change.</t>
 </section>
 
 <section anchor="mobilitystructs" title="Mobility Structures">
-  <texttable anchor="port_field" title="Installed-Policy Fields">
+  <texttable anchor="port_field" title="Configurable-Policy Fields">
     <ttcol align="left">Field</ttcol>
     <ttcol align="left">Type</ttcol>
       <c>DPN_ID</c>
@@ -2235,7 +2272,7 @@ information such as YANG the data type MAY change.</t>
 <section anchor="derived_attrs" title="Derived and Subtyped Attributes">
   <t>This section notes settings and derived attributes.</t>
   <texttable anchor="context_link_fields"
-         title="Context Downlink/Uplink Field Definitions in Settings">
+         title="Context Tunnel And QoS Settings">
     <ttcol align="left">Field</ttcol>
     <ttcol align="left">Type</ttcol>
     <ttcol align="left">Detail</ttcol>
@@ -2269,18 +2306,12 @@ information such as YANG the data type MAY change.</t>
       <c>[NOTE 1]</c>
 
       <c>NEXTHOP</c>
-      <c>[ IP Address | MAC Address | SPI | MPLS Label | SID | Interface Index ]
-     (See <xref target="nexthop_subtypes"/>).</c>
-      <c>[NOTE 1]</c>
+      <c>Varies</c>
+      <c>[NOTE 1] See <xref target="nexthop_subtypes"/>.</c>
 
       <c>QOS_PROFILE_PARAMS</c>
       <c>[ 3GPP_QOS | PMIP_QOS ]</c>
       <c>[NOTE 1]</c>
-
-      <c>DPN_SPECIFIC_PARAMS</c>
-      <c>[ TUN_IF or Varies]</c>
-      <c>Specifies optional node specific parameters in need such as if-index,
-     tunnel-if-number that must be unique in the DPN.</c>
       <postamble>
         NOTE 1 - These parameters are extensible.  The Types may be extended
     for Field value by future specifications or in the case of Vendor
@@ -2289,103 +2320,87 @@ information such as YANG the data type MAY change.</t>
   </texttable>
   <texttable anchor="descriptor_subtypes"
          title="Descriptor Subtypes" align="left">
-    <ttcol align="left">Field</ttcol>
+    <ttcol align="left">Field  (Type Value)</ttcol>
     <ttcol align="left">Type Value</ttcol>
     <ttcol align="left">Type</ttcol>
     <ttcol align="left">Description</ttcol>
 
-    <c>TO_PREFIX</c>
-    <c>0</c>
+    <c>TO_PREFIX (0)</c>
     <c>[IP Address] [ Prefix Len ]</c>
     <c>Aggregated or per-host destination IP address/prefix descriptor.</c>
 
-    <c>FROM_PREFIX</c>
-    <c>1</c>
+    <c>FROM_PREFIX (1)</c>
     <c>[IP Address] [ Prefix Len ]</c>
     <c>Aggregated or per-host source IP address/prefix descriptor.</c>
 
-    <c>TRAFFIC_SELECTOR</c>
-    <c>2</c>
+    <c>TRAFFIC_SELECTOR (2)</c>
     <c>Format per specification <xref target="RFC6088"/>.</c>
     <c>Traffic Selector.</c>
   </texttable>
 
   <texttable anchor="action_subtypes" title="Action Subtypes" align="left">
-    <ttcol align="left">Field</ttcol>
-    <ttcol align="left">Type Value</ttcol>
+    <ttcol align="left">Field (Type Value)</ttcol>
     <ttcol align="left">Type</ttcol>
     <ttcol align="left">Description</ttcol>
 
-    <c>DROP</c>
-    <c>0</c>
+    <c>DROP (0)</c>
     <c>Empty</c>
     <c>Drop the associated packets.</c>
 
-    <c>REWRITE</c>
-    <c>1</c>
+    <c>REWRITE (1)</c>
     <c>[in_src_ip] [out_src_ip]
        [in_dst_ip] [out_dst_ip]
        [in_src_port] [out_src_port]
        [in_dst_port] [out_dst_port]</c>
     <c>Rewrite IP Address (NAT) or IP Address / Port (NAPT).</c>
 
-    <c>COPY_FORWARD</c>
-    <c>2</c>
+    <c>COPY_FORWARD (2)</c>
     <c>FPC-Identity. See <xref target="naming"/>.</c>
     <c>Copy all packets and forward them to the provided identity.  The
        value of the identity MUST be a port or context.</c>
   </texttable>
 
   <texttable anchor="nexthop_subtypes" title="Next Hop Subtypes" align="left">
-    <ttcol align="left">Field</ttcol>
-    <ttcol align="left">Type Value</ttcol>
+    <ttcol align="left">Field (Type Value)</ttcol>
     <ttcol align="left">Type</ttcol>
     <ttcol align="left">Description</ttcol>
 
-    <c>IP_ADDR</c>
-    <c>0</c>
+    <c>IP_ADDR (0)</c>
     <c>IP Address</c>
     <c>An IP Address.</c>
 
-    <c>MAC_ADDR</c>
-    <c>1</c>
+    <c>MAC_ADDR (1)</c>
     <c>MAC Address</c>
     <c>A MAC Address.</c>
 
-    <c>SERVICE_PATH_ID</c>
-    <c>2</c>
+    <c>SERVICE_PATH_ID (2)</c>
     <c>[24, unsigned integer]</c>
     <c>Service Path Identifier (SPI)</c>
 
-    <c>MPLS_LABEL</c>
-    <c>3</c>
+    <c>MPLS_LABEL (3)</c>
     <c>[20, unsigned integer]</c>
     <c>MPLS Label</c>
 
-    <c>NSH</c>
-    <c>4</c>
+    <c>NSH (4)</c>
     <c>[SERVICE_PATH_ID] [8, unsigned integer]</c>
-    <c>Included NSH which is a SPI and Service Index (8 bits).</c>
+    <c>See <xref target="I-D.ietf-sfc-nsh"/></c>
 
-    <c>INTERFACE_INDEX</c>
-    <c>5</c>
+    <c>INTERFACE_INDEX (5)</c>
     <c>[16, unsigned integer]</c>
     <c>Interface Index (an unsigned integer).</c>
 
-    <c>SEGMENT_ID</c>
-    <c>6</c>
+    <c>SEGMENT_ID (6)</c>
     <c>[128, unsigned integer]</c>
     <c>Segement Identifier.</c>
     
-    <c>MPLS_LABEL_STACK</c>
+    <c>MPLS_LABEL_STACK (7)</c>
     <c>7</c>
-    <c>1*[MPLS_LABEL]</c>
-    <c>MPLS Label</c>
+    <c>1*[20 bit labels]</c>
+    <c>MPLS SR Stack. See <xref target="I-D.ietf-spring-segment-routing-mpls"/>.</c>
     
-    <c>SRV6_STACK</c>
-    <c>8</c>
-    <c>1*[IPv6 ADDR or PREFIX]</c>
-    <c>SRv6 Stack</c>
+    <c>SRV6_STACK (8)</c>
+    <c>32+ Bytes</c>
+    <c>See <xref target="I-D.ietf-6man-segment-routing-header"/>.</c>
   </texttable>
 
   <texttable anchor="qos_subtypes" title="QoS Subtypes" align="left">
@@ -2826,7 +2841,6 @@ activation system:
     &rfc2119;
     &RFC7333;
     &RFC6088;
-    &RFC6089;
     &RFC6991;
     &I-D.ietf-sfc-nsh;
     &I-D.ietf-6man-segment-routing-header;
