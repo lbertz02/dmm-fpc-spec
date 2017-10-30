@@ -258,21 +258,23 @@
             composed of Descriptors and Actions. Descriptors
             in a rule identify traffic flows, and Actions apply
             treatments to packets that match the Descriptors in the
-            rule. An arbitrary set of policies can be abstracted as a
-            Policy-group to be applied to a particular collection of flows, which
-            is called the Virtual Port (Vport).</t>
+            rule. An arbitrary set of policies can applied to a particular 
+            collection of flows throgh the use of a Configurable-Policy.</t>
 
             <t hangText="Mobility:">A mobility session which is active on a mobile node
-            is abstracted as a Context with associated runtime
+            is abstracted as a Mobility-Context with associated runtime
             concrete attributes, such as tunnel endpoints, tunnel
             identifiers, delegated prefix(es), routing information,
-            etc. Contexts are attached to DPN-groups along with
-            consequence of the control plane. One or multiple Contexts
-            which have same sets of policies are assigned Vports which
-            abstract those policy sets. A Context can belong to multiple
-            Vports which serve various kinds of purpose and policy. Monitors
-            provide a mechanism to produce reports when events regarding
-            Vports, Sessions, DPNs or the Agent occur.</t>
+            etc. Mobility-Contexts are attached to DPNs via DPN-References.
+            The References assign pre-defined Policies that were requested to be
+            enforced as part of the mobility signaling request.  Policy may also 
+            be realized by Embedded-Rules in the DPN-Reference.  Such policies are 
+            typically highly specialized (e.g. negotiated as a part of signaling), 
+            were not pre-provisioned or designed as a template.  Hence, they are not 
+            reusable across Mobility-Contexts.</t>
+            
+            <t>Monitors provide a mechanism to produce reports when events regarding
+            Configurable Policies, Mobility Contexts, DPNs or the Agent occur.</t>
 
         </list>
         </t>
@@ -323,13 +325,11 @@
             application in a tenant may utilize a single or multiple
             domains.</t>
 
-            <t hangText="Virtual Port (Vport):">
-                A set of forwarding policies.</t>
+            <t hangText="Configurable Policy:">
+                A set of Rules (forwarding policies) installed upon a DPN.</t>
 
-            <t hangText="Context:">An abstracted endpoint of a mobility
-            session associated with runtime attributes. Vports may
-            apply to Context which instantiates those forwarding policies
-            on a DPN.
+            <t hangText="Mobility Context:">An abstracted endpoint of a mobility
+            session associated with runtime attributes.
             </t>
         </list></t>
 
@@ -476,18 +476,26 @@ DPN         |                 DPN        |
             <t hangText="Name:">a human-readable string</t>
             <t hangText="Key:">a unique value. There are 3 types of keys:
             <list>
-            <t hangText="U-Key:">a universally unique key</t>
+            <t hangText="U-Key:">a universally unique key across all tenants. U-Key spaces are typically involve the 
+            use of registries or language specific mechanisms that guarantee universal uniqueness of values. </t>
             <t hangText="G-Key:">a globally unique key - unique within a tenant</t>
-            <t hangText="L-Key:">a locally unique key</t>
+            <t hangText="L-Key:">a unique key within the set of values in local namespace.  For example, there exist 
+            interfaces with teh same name, e.g. "interface0", in two different DPNs within the same tenant but there can
+            only be one "interface0" within each DPN, i.e. its local Interface-Id L-Key space.</t>
             </list></t>
         </list></t>
+
+	<t>The Settings pattern, i.e. attributes whose names contain the word 'Settings', is a genera set that holds
+	unique properties.  If multiple values of a property are present they are held in a List for the property within
+	the settings container.  The container acts as an extensible placeholder for properties (attribute/value pairs).</t>
 
 <t>Each entity or its subtype may be optional (O) or mandatory (M). Entities that are not marked as optional are mandatory.</t>
 
        <t><figure anchor="fig-modelnotation_example">
             <artwork align="center"><![CDATA[
      Example: The following example shows 3 entities:
-              - Entity1 is a globally unique key and has an optional, associated Name
+              - Entity1 is a globally unique key and has an 
+                      optional, associated Name
               - Entity2 is a list
               - Entity3 is a set and is optional
          +
@@ -515,7 +523,7 @@ DPN         |                 DPN        |
             <t hangText="Topology: ">defines the different DPNs and links between them.</t>
             <t hangText="Policy-Definitions: ">describes how to handle flows: how to identify traffic and what actions are performed on data packets</t>
             <t hangText="Configurable-Policy: ">policies that are relatively static. These policies are usually pre-provisioned and are modified only
-                                                 when the network configuration is updated or when new policy rules are configured</t>
+            when the network configuration is updated or when new policy rules are configured</t>
             <t hangText="Mobility-Context: "> policies that are created or modified during the network's operation. In most cases, on a per-flow or per session basis</t>
             <t hangText="Monitor: "> a list of events that trigger notification messages from FPC Agents to FPC Clients</t>
     </list></t>
@@ -530,11 +538,13 @@ DPN         |                 DPN        |
      :          +-[Topology]
                 |
                 +-[Policy]
-                |	
+                |
+                +-[Configurable-Policy] <Set>
+                |
                 +-[Mobility-Context] <Set>
                 |
                 +-[Monitor] <Set>
-	]]></artwork>
+    ]]></artwork>
             <postamble></postamble>
           </figure>
         </t>
@@ -543,8 +553,6 @@ DPN         |                 DPN        |
 
 
     <section anchor="topology" title="Topology">
-
-    <section anchor="topology-substructure" title="Topology Substructure">
 
     <t>The Topology sub-structure specifies virtual DPNs and the relations between them. It is used by the network
        management entity to select the most appropriate DPN resources for handling specific session flows.</t>
@@ -562,10 +570,11 @@ DPN         |                 DPN        |
 
     <t>The Topology sub-structure is comprised of the following sub-structures:
     <list style="hanging">
-     <t hangText="DPN-List: "> the list of virtual DPNs in a network configuration.</t>
-     <t hangText="DPN-Type-Set: "> a set of DPN-Type entities.</t>
-     <t hangText="DPN-Group-List: "> a list of virtual DPNs that supports a specific administrative purpose (in/out bound, roaming,
+     <t hangText="DPN-Set: "> the set of virtual DPNs in a network configuration</t>
+     <t hangText="DPN-Type-Set: "> a set of DPN-Type entities</t>
+     <t hangText="DPN-Group-Set: "> a set of virtual DPNs that supports a specific administrative purpose (in/out bound, roaming,
         subnetwork with common specific configuration etc.)</t>
+     <t hangText="Domain: "> a set of Domains tha represent a logical partition of network resources</t>
     </list></t>
 
     <t><figure anchor="fig-topology-substructure" title="Topology Substructure">
@@ -574,8 +583,8 @@ DPN         |                 DPN        |
         +-[Topology]
         |          +-[DPN] <Set>
         |          +-[DPN-Type] <Set>
-                  +-[DPN-Group] <Set>
-	   
+        |          +-[DPN-Group] <Set>
+        |          +-[Domain] <Set>
     ]]></artwork>
             <postamble></postamble>
           </figure>
@@ -584,22 +593,22 @@ DPN         |                 DPN        |
 
     <section anchor="dpn" title="DPN">
 
-    <t>The DPN list sub-structure specifies a subset of virtual DPNs in the network . It is a list (not a set) since some of
-       the DPNs may be identical in functionality.</t>
+    <t>The DPN set sub-structure specifies a subset of virtual DPNs in the network . Some of
+       the DPNs may be identical in functionality and only differ by their key.</t>
 
 
     <t><figure anchor="fig-dpn-substructure" title="DPN Substructure">
             <artwork align="center"><![CDATA[
         |
-        +-[DPN] <List>
-        |     +-[DPN-ID] <G-Key>, <Name>
-        |     +-[DPN-Resource-Mapping-Reference] 
+        +-[DPN] <Set>
+        |     +-[DPN-Id] <G-Key>, <Name> (O)
+        |     +-[DPN-Resource-Mapping-Reference] (O) 
         |     +-[Interface] <Set>
         |                 +-[Interface-Reference]
-        |                 |                     +-[Access-Technology] <U-Key>
-        |                 |                     +-[Role] <U-Key>
-        |                 |                     +-[Interface-Id] <L-Key>
-        |                 +-[Additional-Settings]
+        |                 |           +-[Access-Technology] <U-Key>
+        |                 |           +-[Role] <U-Key>
+        |                 |           +-[Interface-Id] <L-Key>
+        |                 +-[Interface-Settings] <Set> (O)
     ]]></artwork>
             <postamble></postamble>
           </figure>
@@ -619,7 +628,8 @@ DPN         |                 DPN        |
        that is specific to that interface:
        <list>
        <t>Interface-Reference - a 3-tuple key that uniquely references an entry in the DPN-Type-Set sub-structure: Access-Technology, Role and Interface-Id.</t>
-       <t>Additional-Settings - settings of this interface (that do not affect the DPN selection). Examples: MTU size, Sequence number support etc.</t> 
+       <t>Interface-Settings - An optional set of settings of this interface (that do not affect the DPN selection of active or enabled interfaces). 
+       	Examples: MTU size, display name, etc.</t> 
        </list></t>
     </list></t>
 
@@ -638,13 +648,13 @@ DPN         |                 DPN        |
             <artwork align="center"><![CDATA[
       |
       +-[DPN-Type] <Set>
-      |          +-[Access-Technology] <U-Key>(M),<name>(O)
-      |          +-[Role] <U-Key>, <Name> 
-                 +-[Interface] <Set>
-                             +-[Interface-ID] <L-Key> (M), <Name> (O)
-                             +-[Interface-Protocols] <Set> 
-                             +-[Features] <Set> 
-                             +-[Interface-Settings] <Set> (O)
+      |     +-[Access-Technology] <U-Key>,<Name> (O)
+      |     +-[Role] <U-Key>, <Name> (O) 
+      |     +-[Interface] <Set>
+      |             +-[Interface-ID] <L-Key>, <Name> (O)
+      |             +-[Interface-Protocol] <Set> 
+      |             +-[Features] <Set> (O) 
+      |             +-[Interface-Settings] <Set> (O)
       ]]></artwork>
             <postamble></postamble>
           </figure>
@@ -656,10 +666,10 @@ DPN         |                 DPN        |
     <t hangText="Role: ">the role (MAG, LMA, PGW, AMF etc.) of the device sharing the interfaces specified below.</t>
     <t hangText="Interface: ">A set of interfaces possible for the group above. Each interface carries the following information:
       <list>
-      <t>Interface-ID: a key that is used together with the 2-tuple Access-Technology and Role, to create a 3-tuple key that is referred
+      <t>Interface-Id: a key that is used together with the 2-tuple Access-Technology and Role, to create a 3-tuple key that is referred
          to be the interface definition of virtual DPNs</t>
       <t>Interface-Protocols: rotocols supported by this interface - PMIP, S5-GTP, S5-PMIP etc.</t>
-      <t>Features: a set of supported features which further determine the suitability of the interface to the desired operation</t>
+      <t>Features: an optional set of supported features which further determine the suitability of the interface to the desired operation</t>
       <t>Interface-Settings: an optional set of settings that MUST be known when determining the suitability of an interface for the
          specific request. The difference between 'Features' and 'Settings' is that 'Features' are static while 'Settings' may be configured.
          Examples: SequenceNumber=ON/OFF</t>
@@ -680,32 +690,52 @@ DPN         |                 DPN        |
 
     <t><figure anchor="fig-dpn-group" title="DPN Group">
             <artwork align="center"><![CDATA[
-         |
-         +-[DPN-Group]
-         |           +-[DPN-Group-ID] <G-Key>(M), <Name>(O)
-                     +-[Referenced-DPNs] <Set>
-                     |                 +-[DPN-ID] <U-Key> <Set>
-                     |                          +-[Interface-ID] <L-Key>
-                     |                          +-[Role] <U-Key>
-                     |                          +-[Access-Technology] <U-Key>
-                     |                          +-[DPN-Group-Peer] <Set>
-                     +-[DPN-Peer-Group] <Set>                     
-                     |                +-[Remote-DPN-Group-ID] <G-key>
-                     |                +-[Interface-Settings]  
-                     +-[Domain-ID] <L-key>
+ |
+ +-[DPN-Group] <Set>
+ |           +-[DPN-Group-Id] <G-Key>, <Name> (O)
+             +-[Referenced-Interface] <Set>
+             |           +-[Interface-Id] <L-Key>
+             |           +-[Role] <U-Key>
+             |           +-[Access-Technology] <U-Key>
+             |           +-[Supporting-DPN-Id] <Set>
+             |           +-[DPN-Group-Peer-Reference] <Set> (O)
+             +-[DPN-Peer-Group] <Set>                     
+             |           +-[Remote-DPN-Group-ID] <L-key>
+             |           +-[Interface-Settings] <Set> (O)
+             +-[Domain-Id-Reference]
        ]]></artwork>
             <postamble></postamble>
           </figure>
         </t>
 
+    <t>Each DPN-Group entry contains the following information:
+    <list style="hanging">
+    <t hangText="DPN-Group (Key):"> A unique ID of the DPN-Group</t>
+    <t hangText="DPN-Group (Name):">the human-readable display string</t>
+    <t hangText="Referenced-Interfaces:">A set of interfaces and the DPNs / associated DPN-Peer-Groups that support them.  Each
+    entry contains
+    <list style="hanging">
+    <t hangText="Interface-Id: ">a key that is used together with the 2-tuple Access-Technology and Role, to create a 3-tuple key that is referred
+         to be the interface definition of virtual DPNs</t>
+    <t hangText="Role: ">the role (MAG, LMA, PGW, AMF etc.) of the device sharing the interfaces specified below.</t>
+    <t hangText="Access-technology: ">the technology used in the access network that originated the signaling (WiMAX, 3GPP, 802.x etc.)</t>
+    <t hangText="Role: ">the role (MAG, LMA, PGW, AMF etc.) of the device sharing the interfaces specified below.</t>
+    <t hangText="Supporting-DPN-Id (Set): ">A set of DPN-Id-References that support the specific interface for this DPN-Group.</t>
+    <t hangText="Interface-Settings: ">an optional set of settings that MUST be known when determining the suitability of an interface for the
+         specific request.F</t>
+    </list></t>
+        <t hangText="DPN-Peer-Group:">A set of Remote (from the DPN-Group's point of view) DPN-Groups.  When communication occurs between the DPN-Group
+        and DPN-Peer-Group the Interface-Settings MUST be used.  Each entry contains the following information:
+    entry contains
+    <list style="hanging">
+    <t hangText="Remote-DPN-Group-Id: "> A unique ID of the DPN-Peer-Group</t>
+    <t hangText="Interface-Settings: ">an optional set of settings that MUST be known when determining the suitability of an interface for the
+         specific request.</t>
+    </list></t>
+    </list></t>
+
     </section> <!-- End section DPN Group-->
-
-
-    </section> <!-- End section Topology Substructure-->
-
-
     </section>        <!-- end section Topology -->
-
 
     <section anchor="policy" title="Policy">
 
@@ -731,31 +761,31 @@ DPN         |                 DPN        |
 
  <t><figure anchor="fig-policy-substructure" title="Policy Substructure">
             <artwork align="center"><![CDATA[
-      |
-      +-[Policy]
-      |        +-[Policy-Definition] <Set>
-      |        |                   +-[Policy-ID] <G-Key> (M)
-      |        |                   +-[Rule-Reference] Set (M)
-      |        |                          +-[Precedence] <L-Key> (M)
-      |        |                          +-[Rule-ID-Reference] (M)
-      |        +-[Rule-Definition] <Set>
-      |        |                 +-[Rule-ID] <L-Key> (M)
-      |        |                 +-[Descriptor-Match-Type] (M) 
-      |        |                 +-[Descriptor-Reference] <Set>
-      |        |                 |                      +-[Descriptor-ID-Reference] 
-      |        |                 |                      +-[Direction]
-      |        |                 +-[Action-Reference] <Set>
-      |        |                                    +-[Action-ID-Reference] 
-      |        |                                    +-[Action-Order]
-      |        +-[Descriptor-Definition] <Set>
-      |        |                   +-[Descriptor -ID] <L-Key> (M)
-      |        |                   +-[Descriptor-Type]
-      |        |                   +-[Descriptor-Value]
-      |        +-[Action-Definition] <Set>
-      |                            +-[Action-ID] <L-Key> (M)
-      |                            +-[Action-Type]
-      |                            +-[Action-Value] 
-      |
+  |
+  +-[Policy]
+  |      +-[Policy-Definition] <Set>
+  |      |             +-[Policy-Id] <G-Key> (M)
+  |      |             +-[Rule-Reference] Set (M)
+  |      |             +-[Precedence] <L-Key> (M)
+  |      |             +-[Rule-Id-Reference] (M)
+  |      +-[Rule-Definition] <Set>
+  |      |             +-[Rule-Id] <L-Key> (M)
+  |      |             +-[Descriptor-Match-Type] (M) 
+  |      |             +-[Descriptor-Reference] <Set>
+  |      |             |                +-[Descriptor-ID-Reference]
+  |      |             |                +-[Direction] (O)
+  |      |             +-[Action-Reference] <Set>
+  |      |                              +-[Action-Id-Reference] 
+  |      |                              +-[Action-Order]
+  |      +-[Descriptor-Definition] <Set>
+  |      |             +-[Descriptor -Id] <L-Key> (M)
+  |      |             +-[Descriptor-Type]
+  |      |             +-[Descriptor-Value]
+  |      +-[Action-Definition] <Set>
+  |                    +-[Action-Id] <L-Key> (M)
+  |                    +-[Action-Type]
+  |                    +-[Action-Value] 
+  |
       ]]></artwork>
             <postamble></postamble>
           </figure>
@@ -765,36 +795,37 @@ DPN         |                 DPN        |
     <list style="hanging">
     <t hangText="Policy-Definition: ">A set of policy definitions which bind a single or multiple rules to a policy.
     <list>
-    <t hangText="Policy-ID: ">Identifies a policy definition.</t>
+    <t hangText="Policy-Id: ">Identifies a policy definition.</t>
     <t hangText="Rule-Reference: ">Assigns a set of rule definitions, which are bound to a policy definition, by reference
        to the associated Rule in the Rule-Definition Substructure.</t>
     <t hangText="Precedence: ">Defines the order with which the rules must be applied.</t>
-    <t hangText="Rule-ID-Reference: ">Identifies a rule.</t>
+    <t hangText="Rule-Id-Reference: ">Identifies a rule.</t>
     </list></t>
     <t hangText="Rule-Definition: ">A set of rule definitions which bind a single or multiple traffic descriptors
        (by reference to Descriptor-Definition) to a single or multiple traffic treatment actions (by reference to Action-Definition).
     <list>
-    <t hangText="Rule-ID: ">Identifies a rule definition.</t>
+    <t hangText="Rule-Id: ">Identifies a rule definition.</t>
     <t hangText="Descriptor-Match-Type: ">Conjuction of Descriptor-Values to apply as match to DPN traffic, which can be either
        OR or AND. The identified conjunction applies to all Descriptor-Definitions in the given Rule-Definition.</t>
     <t hangText="Descriptor-Reference: ">Assigns a set of descriptors to the rule by reference to the associated Descriptor-Definition.</t>
-    <t hangText="Descriptor-ID-Reference: ">Identifies the referred Descriptor-Definition</t>
+    <t hangText="Descriptor-Id-Reference: ">Identifies the referred Descriptor-Definition</t>
     <t hangText="Direction: ">Indicates if a rule applies to uplink traffic, to downlink traffic, or to both, uplink- and downlink traffic.
-       Applying a rule to both, uplink- and downlink traffic, in case of symmetric rules, allows omitting a separate entry for each direction.</t>
+       Applying a rule to both, uplink- and downlink traffic, in case of symmetric rules, allows omitting a separate entry for each direction.
+       When not present, the direction is implied by the Descriptor's values.</t>
     <t hangText="Action-Reference: ">Assigns a set of actions to the rule by reference to the associated Action-Definition.</t>
-    <t hangText="Action-ID-Reference: ">Identifies the referred Action-Definition.</t>
+    <t hangText="Action-Id-Reference: ">Identifies the referred Action-Definition.</t>
     <t hangText="Action-Order: ">Defines the order how actions are executed in case the rule applies per match of the associated traffic descriptor.</t>
     </list></t>
     <t hangText="Descriptor-Definition: ">A set of descriptor definitions, each being identified by a key (Descriptor-ID)
     <list>
-    <t hangText="Descriptor-ID: ">Identifies a descriptor definition.</t>
+    <t hangText="Descriptor-Id: ">Identifies a descriptor definition.</t>
     <t hangText="Descriptor-Type: ">Identifies the type of descriptor, e.g. an IPv6 traffic selector per [RFC 6088], for unambiguous
 2      interpretation of a Descriptor-Value.</t>
     <t hangText="Descriptor-Value: ">Defines all required attribute-value pairs per the traffic descriptor type identified in Descriptor-Type.</t>
     </list></t>
     <t hangText="Action-Definition: ">A set of action definitions.
     <list>
-    <t hangText="Action-ID: ">Identifies an action definition.</t>
+    <t hangText="Action-Id: ">Identifies an action definition.</t>
     <t hangText="Action-Type: ">Identifies the type of an action for unambiguous interpretation of an Action-Value entry.</t>
     <t hangText="Action-Value: ">Defines all required attribute-value pairs per the action type identified in Action-Type.</t>
     </list></t>
@@ -810,12 +841,12 @@ DPN         |                 DPN        |
             <artwork align="center"><![CDATA[
       |
       +-[Configurable-Policy] <Set>
-      |                     +-[DPN-ID-Reference] <U-Key>
-      |                     +-[Installed-Policy] <List>                   
-      |                     |                  +-[Installed-DPN-Policy-ID] <G-Key>
-      |                     |                  +-[Policy-ID-Reference]
-      |                     |                  +-[Policy-Settings]
-      |                     +-[Settings]
+      |               +-[DPN-Id-Reference] <U-Key>
+      |               +-[Installed-Policy] <List>                   
+      |               |           +-[Installed-Policy-Id] <G-Key>
+      |               |           +-[Policy-Id-Reference]
+      |               |           +-[Policy-Settings] <Set> (O)
+      |               +-[Settings] <Set> (O)
       |
      ]]></artwork>
             <postamble></postamble>
@@ -824,11 +855,11 @@ DPN         |                 DPN        |
 
     <t>The Configurable-Policy Substructure contains the following entries:
     <list style="hanging">
-    <t hangText="DPN-ID-Reference: ">Refers to the DPN to which the policy applies.</t>
+    <t hangText="DPN-Id-Reference: ">Refers to the DPN to which the policy applies.</t>
     <t hangText="Installed-Policy: ">A list of policies that apply to an identified DPN.
     <list>
-    <t hangText="Installed-DPN-Policy-ID: ">Holds the identifier of the DPN at which the policy has been installed.</t>
-    <t hangText="Policy-ID-Reference: ">Assigns a policy by reference to the associated Policy-Definition.</t>
+    <t hangText="Installed-Policy-Id: ">Holds the identifier of the DPN at which the policy has been installed.</t>
+    <t hangText="Policy-Id-Reference: ">Assigns a policy by reference to the associated Policy-Definition.</t>
     <t hangText="Policy-Settings: ">Settings that apply to the previously referenced policy to complement rules or
       make them concrete, e.g. in case the descriptor representing a packet match has not or unambiguously been defined
       in the poliicy sub-structure.</t>
@@ -854,20 +885,20 @@ DPN         |                 DPN        |
 
    <t><figure anchor="fig-mobility-context" title="Mobility Context">
             <artwork align="center"><![CDATA[
-      |
-      +-[Mobility-Context] <Set>
-      |                  +-[Mobility-Context-ID] <U-Key>
-      |                  +-[DPN-Group-ID-Reference] (O)
-      |                  +-[Parent-Mobility-Context-ID-Reference] (O)
-      |                  +-[DPN-References] <List>
-      |                  |                +-[DPN-ID-Reference] 
-      |                  |                +-[Direction] 
-      |                  |                +-[DPN-Settings-Complementary]
-      |                  |                +-[Interface-ID-Reference] 
-      |                  |                +-[Embedded-Rule] set <concrete>
-      |                  |                +-[Assigned-Policy-Reference] <Set> 
-      |                  +-[Requested-Policy-Reference] <Set>
-      |                  +-[Context-Settings-Complementary]
+ |
+ +-[Mobility-Context] <Set>
+ |            +-[Mobility-Context-Id] <G-Key>
+ |            +-[DPN-Group-Id-Reference] (O)
+ |            +-[Parent-Mobility-Context-Id-Reference] (O)
+ |            +-[DPN-References] <List>
+ |            |          +-[DPN-Id-Reference] 
+ |            |          +-[Direction] (O) 
+ |            |          +-[DPN-Settings-Complementary]
+ |            |          +-[Interface-Id-Reference] 
+ |            |          +-[Embedded-Rule] <Set> (O)
+ |            |          +-[Assigned-Policy-Reference] <Set> (O)
+ |            +-[Requested-Policy-Reference] <Set> (O)
+ |            +-[Context-Settings-Complementary] <Set> (O)
     ]]></artwork>
             <postamble></postamble>
           </figure>
@@ -875,16 +906,18 @@ DPN         |                 DPN        |
 
   <t>The Mobility-Context Substructure holds the following entries:
     <list style="hanging">
-    <t hangText="Mobility-Context-ID: ">Identifies a Mobility-Context</t>
-    <t hangText="DPN-Group-ID-Reference: ">Assigns a DPN-Group, which groups DPN that are used during the DPN selection procedure, by reference.</t>
-    <t hangText="Parent-Mobility-Context-ID-Reference: ">Assigns a parent Mobility-Context to aquire settings as required.</t>
-    <t hangText="DPN-References: ">Holds a list of DPNs with the associated concrete policies that apply to the DPN.
+    <t hangText="Mobility-Context-Id: ">Identifies a Mobility-Context</t>
+    <t hangText="DPN-Group-Id-Reference: ">Assigns a DPN-Group, which groups DPN that are used during the DPN selection procedure, by reference.</t>
+    <t hangText="Parent-Mobility-Context-Id-Reference: ">Assigns a parent Mobility-Context to aquire settings as required.</t>
+    <t hangText="DPN-References: ">Holds a list of DPNs with the associated concrete policies that apply to the DPN. An entry MUST have at least
+    one value present in its Assigned-Policy-Refence or Embedded-Rule sets in order to be valid.
     <list>
-    <t hangText="DPN-ID-Reference: ">Assigns a DPN, to which the policy applies, by reference.</t>
+    <t hangText="DPN-Id-Reference: ">Assigns a DPN, to which the policy applies, by reference.</t>
     <t hangText="Direction: ">Indicates if a rule applies to uplink or downlink traffic, or to both, uplink- and downlink traffic. Applying a
-       rule to both, uplink- and downlink traffic, in case of symmetric rules, allows omitting a separate entry for each direction.</t>
+       rule to both, uplink- and downlink traffic, in case of symmetric rules, allows omitting a separate entry for each direction.
+       When not present the value is assumed to apply to both directions.</t>
     <t hangText="DPN-Settings-Complementary: ">Complementary seeings that apply to the DPN for the given Mobility-Context.</t>
-    <t hangText="Interface-ID-Reference: ">Assigns the selected interface of the DPN my reference.</t>
+    <t hangText="Interface-Id-Reference: ">Assigns the selected interface of the DPN my reference.</t>
     <t hangText="Embedded-Rule: ">Rule that applies to the DPN for this Mobility-Context. This rule is embedded and not refereced in the
        Policy substructure.</t>
     <t hangText="Assigned-Policy-Reference: ">A set of references to the list of Requested-Policy-References per this Mobility-Context.</t>
@@ -905,17 +938,18 @@ DPN         |                 DPN        |
             <artwork align="center"><![CDATA[
      |
      +-[Embedded-Rule] <List>
-     |               +-[Rule-ID]
-     |               +-[Precedence] <L-Key>
-     |               +-[Descriptor-Match-Type] (M)
-     |               +-[Descriptor-Definition] <Set>
-     |               |                       +-[Descriptor-ID] <L-Key> (M)
-     |               |                       +-[Descriptor-Type]
-     |               |                       +-[Descriptor-Value]
-     |               +-[Action-Definition] <Set>
-     |                                   +-[Action-ID] <L-Key> (M)
-     |                                   +-[Action-Type]
-     |                                   +-[Action-Value]
+     |         +-[Rule-Id] (M)
+     |         +-[Precedence] <L-Key>
+     |         +-[Descriptor-Match-Type] (M)
+     |         +-[Descriptor-Definition] <Set>
+     |         |             +-[Descriptor-Id] <L-Key> (M)
+     |         |             +-[Descriptor-Type]
+     |         |             +-[Descriptor-Value]
+     |         +-[Action-Definition] <Set>
+     |                       +-[Action-Order] <L-Key> (M)
+     |                       +-[Action-Id] (O)
+     |                       +-[Action-Type]
+     |                       +-[Action-Value]
     ]]></artwork>
             <postamble></postamble>
           </figure>
@@ -923,14 +957,14 @@ DPN         |                 DPN        |
 
 <t>The Embedded-Rule template holds the following entries:
     <list style="hanging">
-    <t hangText="Rule-ID: ">Identifies a rule definition</t>
-    <t hangText="Precedence: ">Defines the order with which the rules must be applied</t>
+    <t hangText="Rule-Id: ">Identifies a rule definition. It is provided for convenience.</t>
+    <t hangText="Precedence: ">Defines the order with which the rules must be applied and is used as the key.</t>
     <t hangText="Descriptor-Match-Type: ">Conjuction of Descriptor-Values to apply as match to DPN traffic,
                                           which can be either OR or AND. The identified conjunction applies
                                           to all Descriptor-Definitions in the given Rule-Definition</t>
     <t hangText="Descriptor-Definition: ">A set of descriptor definitions, each being identified by a key (Descriptor-ID)
     <list>
-    <t hangText="Descriptor-ID: ">Identifies a Descriptor-Definition</t>
+    <t hangText="Descriptor-Id: ">Identifies a Descriptor-Definition</t>
     <t hangText="Descriptor-Type: ">Identifies the type of descriptor, e.g. an IPv6 traffic selector per [RFC 6088], for
                                     unambiguous 2 interpretation of a Descriptor-Value</t>
     <t hangText="Descriptor-Value: ">Defines all required attribute-value pairs per the traffic descriptor type identified
@@ -938,19 +972,14 @@ DPN         |                 DPN        |
     </list></t>
     <t hangText="Action-Definition: ">A set of action definitions.
     <list>
-    <t hangText="Action-ID: ">Identifies an action definition.</t>
+    <t hangText="Action-Order: ">Defines the order how actions are executed in case the rule applies per match of the associated traffic descriptor.</t>
+    <t hangText="Action-Id: ">Identifies an action definition.</t>
     <t hangText="Action-Type: ">Identifies the type of an action for unambiguous interpretation of an Action-Value entry.</t>
     <t hangText="Action-Value: ">Defines all required attribute-value pairs per the action type identified in Action-Type.</t>
     </list></t>
     </list></t>
 
-
-
-
-
     </section>  <!-- End embeddable-rule -->
- 
-
 
    <section anchor="monitor_overview" title="Monitors">
         <t> Monitors provide a mechanism to produce reports when events
@@ -967,10 +996,10 @@ DPN         |                 DPN        |
             <artwork align="center"><![CDATA[
        |
        +-[Monitor] <List>
-       |         +-[Monitor-ID] <U-Key>
+       |         +-[Monitor-Id] <U-Key>
        |         +-[Target]
        |         +-[Binding-Information] (O)
-       |         +-[Deterrable]
+       |         +-[Deterrable] (O)
        |         +-[Configuration]
               ]]></artwork>
             <postamble></postamble>
@@ -978,7 +1007,7 @@ DPN         |                 DPN        |
         </t>
 
         <t><list style="hanging">
-        <t hangText="Monitor-id:"> Name of the Monitor. The ID format MUST conform to <xref target="naming"></xref>.</t>
+        <t hangText="Monitor-Id:"> Name of the Monitor. The ID format MUST conform to <xref target="naming"></xref>.</t>
         <t hangText="Target:"> Description of what is to be monitored. This can be an Event, a Dynamic Policy, an installed DPN Policy,
               or values of a Dynamic-Policy attribute. When the type is an attribute of Mobility-Context, the target name
               is a concatenation of the Context-Id and the relative path (separated by '/') to the attribute(s) to be monitored. 
@@ -1003,10 +1032,33 @@ DPN         |                 DPN        |
 
 
     <section anchor="naming" title="Namespace and Format">
+<t>The identifiers and names in FPC models which reside in the same
+   namespace must be unique.  That uniqueness must be kept in agent or
+   data-plane tenant namespace on an Agent.  The tenant namespace
+   uniqueness MUST be applied to all elements of the tenant model, i.e.
+   Topology, Policy and Mobility models.</t>
+   
+   <t> When a Policy needs to be applied to Contexts in all tenants on an
+   Agent, the Agent SHOULD define that policy to be visible from all the
+   tenants.  In this case, the Agent assigns an unique identifier in the
+   agent namespace and effectively creates a U-Key although only a G-Key is required.</t>
+   
+   <t> The format of identifiers can utilize any format with agreement
+   between data-plane agent and client operators.  The formats include
+   but are not limited to Globally Unique IDentifiers (GUIDs),
+   Universally Unique IDentifiers (UUIDs), Fully Qualified Domain Names
+   (FQDNs), Fully Qualified Path Names (FQPNs) and Uniform Resource
+   Identifiers (URIs).</t>
 
+<t>The FPC model does not limit the types of format that dictate the
+   choice of FPC protocol.  However the choice of identifiers which are
+   used in Mobility model need to be considered to handle runtime
+   parameters in real-time.</t>
+   
     </section>        <!-- end section title="Namespace and Format"  -->
 
     <section anchor="attr_application" title="Attribute Application">
+
 
 
     </section>        <!-- end section title="Attribute Application"  -->
