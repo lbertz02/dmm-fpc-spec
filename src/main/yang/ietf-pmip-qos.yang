@@ -48,11 +48,11 @@ module ietf-pmip-qos {
      in Section 4.e of the Trust Legal Provisions and are provided
      without warranty as described in the Simplified BSD License.";
 
-    revision 2016-02-10 {
-        description "Initial revision";
-        reference
-         "RFC 7222: Quality-of-Service Option for Proxy Mobile IPv6";
-    }
+	revision 2017-10-29 {
+	 	description "Base Version";
+	 	 reference
+	 	 	"RFC 6088: Traffic Selectors for Flow Bindings";
+	 }
 
     // Type Definitions
 
