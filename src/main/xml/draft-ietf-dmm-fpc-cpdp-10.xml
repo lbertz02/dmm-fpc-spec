@@ -4755,8 +4755,8 @@ module ietf-pmip-qos {
         "Traffic Class consists of a 6-bit DSCP field followed by a
          2-bit reserved field.";
      reference
-         "RFC 3289: Management Information Base for the Differentiated
-                    Services Architecture
+         "RFC 3289: Management Information Base for the 
+             Differentiated Services Architecture
           RFC 2474: Definition of the Differentiated Services Field
                     (DS Field) in the IPv4 and IPv6 Headers
           RFC 2780: IANA Allocation Guidelines For Values In
@@ -4949,7 +4949,7 @@ module ietf-pmip-qos {
       type uint32;
       description
         "The aggregate maximum uplink bit rate that is
-            requested/allocated for the mobile node's IP flows.  The
+            requested/allocated for the mobile node's IP flows. The
             measurement units are bits per second.";
    }
 
@@ -4994,11 +4994,11 @@ module ietf-pmip-qos {
        }
        mandatory true;
        description
-        "This is a 4-bit unsigned integer value.  It is used to decide
-        whether a mobility session establishment or modification
-        request can be accepted; this is typically used for
-        admission control of Guaranteed Bit Rate traffic in case of
-        resource limitations.";
+        "This is a 4-bit unsigned integer value.  It is used to 
+        decide whether a mobility session establishment or 
+        modification request can be accepted; this is typically used
+        for admission control of Guaranteed Bit Rate traffic in 
+        case of resource limitations.";
      }
      leaf premption-capability {
        type enumeration {
@@ -5188,7 +5188,8 @@ module ietf-pmip-qos {
                 description "Aggregate-Max-UL-Bit-Rate Case";
             }
             case gbr-dl-case {
-                when "./attributetype = 'Guaranteed-DL-Bit-Rate-type'";
+                when "./attributetype = 
+                   'Guaranteed-DL-Bit-Rate-type'";
                 leaf gbr-dl {
                     type qos-pmip:Guaranteed-DL-Bit-Rate-Value;
                     description "Guaranteed-DL-Bit-Rate Value";
@@ -5196,7 +5197,8 @@ module ietf-pmip-qos {
                 description "Guaranteed-DL-Bit-Rate Case";
             }
             case gbr-ul-case {
-                when "./attributetype = 'Guaranteed-UL-Bit-Rate-type'";
+                when "./attributetype = 
+                 'Guaranteed-UL-Bit-Rate-type'";
                 leaf gbr-ul {
                     type qos-pmip:Guaranteed-UL-Bit-Rate-Value;
                     description "Guaranteed-UL-Bit-Rate Value";
@@ -5645,13 +5647,131 @@ module ietf-trafficselector-types {
 <!-- template for YANG model, end -->
   </section>
   <section anchor="ietf-dmm-fpc-tree" title="FPC YANG Data Model Structure">
-    <t>This section only shows the structure for FPC YANG model.</t>
+    <t>This section only shows the structure for FPC YANG model. NOTE, it does NOT show the settings, Action values or Descriptor Value.</t>
 <t>
  <figure anchor="fig-ietf-dmm-fpc-tree"
               title="YANG FPC Agent Tree">
 <artwork align="center"><![CDATA[
-module: ietf-dmm-fpc
 
+module: ietf-dmm-fpc
++--rw mobility
+   +--rw topology
+   |  +--rw dpn-set* [dpn-id]
+   |  |  +--rw dpn-id                            fpc:fpc-identity
+   |  |  +--rw dpn-name?                         string
+   |  |  +--rw dpn-resource-mapping-reference?   string
+   |  |  +--rw interface-set* [access-technology role interface-id]
+   |  |     +--rw access-technology         identityref
+   |  |     +--rw role                      identityref
+   |  |     +--rw interface-id              fpc:fpc-interface-id
+   |  |     +--rw interface-settings-set
+   |  +--rw dpn-type-set* [access-technology role]
+   |  |  +--rw access-technology         identityref
+   |  |  +--rw access-technology-name?   string
+   |  |  +--rw role                      identityref
+   |  |  +--rw role-name?                string
+   |  |  +--rw interface-set* [interface-id]
+   |  |     +--rw interface-id              fpc:fpc-interface-id
+   |  |     +--rw interface-name?           string
+   |  |     +--rw interface-protocol-set*   identityref
+   |  |     +--rw feature-set*              identityref
+   |  |     +--rw interface-settings-set
+   |  +--rw dpn-group-set* [dpn-group-id]
+   |  |  +--rw dpn-group-id           fpc:fpc-identity
+   |  |  +--rw referenced-dpns-set* 
+                       [access-technology role interface-id]
+   |  |  |  +--rw access-technology        identityref
+   |  |  |  +--rw role                     identityref
+   |  |  |  +--rw interface-id             fpc:fpc-interface-id
+   |  |  |  +--rw supporting-dpn-id-set*   fpc:fpc-identity
+   |  |  |  +--rw dpn-group-peer-id-set*   fpc:fpc-identity
+   |  |  +--rw dpn-group-peer-set* [remote-dpn-group-id]
+   |  |  |  +--rw remote-dpn-group-id       fpc:fpc-identity
+   |  |  |  +--rw interface-settings-set
+   |  |  +--rw domain-id?             fpc:fpc-identity
+   |  +--rw domain-set* [domain-id]
+   |  |  +--rw domain-id           fpc:fpc-identity
+   |  |  +--rw domain-name?        string
+   |  |  +--rw domain-reference?   string
+   |  +--rw basename?          fpc:fpc-identity
+   |  +--rw base-state?        string
+   |  +--rw base-checkpoint?   string
+   +--rw policy
+   |  +--rw action-definition-set* [action-id]
+   |  |  +--rw action-id      fpc:fpc-identity
+   |  |  +--rw action-type?   identityref
+   |  |  +--rw (action-value)?
+   |  +--rw descriptor-definition-set* [descriptor-id]
+   |  |  +--rw descriptor-id      fpc:fpc-identity
+   |  |  +--rw descriptor-type?   identityref
+   |  |  +--rw (descriptor-value)?
+   |  +--rw rule-definition-set* [rule-id]
+   |  |  +--rw rule-id                     fpc:fpc-identity
+   |  |  +--rw descriptor-match-type       enumeration
+   |  |  +--rw descriptor-reference-set* [descriptor-id-reference]
+   |  |  |  +--rw descriptor-id-reference    fpc:fpc-identity
+   |  |  |  +--rw direction?                 fpc:fpc-direction-type
+   |  |  +--rw action-reference-set* [action-order]
+   |  |     +--rw action-order           uint32
+   |  |     +--rw action-id-reference    fpc:fpc-identity
+   |  +--rw policy-definition-set* [policy-id]
+   |  |  +--rw policy-id    fpc:fpc-identity
+   |  |  +--rw rule-set* [precedence]
+   |  |     +--rw precedence           uint32
+   |  |     +--rw rule-id-reference    fpc:fpc-identity
+   |  +--rw basename?                    fpc:fpc-identity
+   |  +--rw base-state?                  string
+   |  +--rw base-checkpoint?             string
+   +--rw installed-policy-list* [dpn-id-reference]
+   |  +--rw dpn-id-reference        fpc:fpc-identity
+   |  +--rw installed-policy-set* [installed-policy-id]
+   |  |  +--rw installed-policy-id    fpc:fpc-identity
+   |  |  +--rw policy-id-reference?   fpc:fpc-identity
+   |  |  +--rw policy-settings
+   |  +--rw settings-set
+   +--ro mobility-context-set* [mobility-context-id]
+   |  +--ro mobility-context-id                     fpc:fpc-identity
+   |  +--ro dpn-group-id-reference?                 fpc:fpc-identity
+   |  +--ro parent-mobility-context-id-reference?   fpc:fpc-identity
+   |  +--ro dpn-reference-list* [dpn-id-reference direction]
+   |  |  +--ro dpn-id-reference                 fpc:fpc-identity
+   |  |  +--ro direction                        
+                                  fpc:fpc-direction-type
+   |  |  +--ro dpn-settings-complementary
+   |  |  +--ro interface-id-reference           fpc:fpc-interface-id
+   |  |  +--ro embedded-rule-set* [precedence]
+   |  |  |  +--ro rule-id                      fpc:fpc-identity
+   |  |  |  +--ro descriptor-match-type        enumeration
+   |  |  |  +--ro precedence                   uint32
+   |  |  |  +--ro action-definition-set* [action-order]
+   |  |  |  |  +--ro action-order    uint32
+   |  |  |  |  +--ro action-id?      fpc:fpc-identity
+   |  |  |  |  +--ro action-type?    identityref
+   |  |  |  |  +--ro (action-value)?
+   |  |  |  +--ro descriptor-definition-set* [descriptor-id]
+   |  |  |     +--ro descriptor-id      fpc:fpc-identity
+   |  |  |     +--ro descriptor-type?   identityref
+   |  |  |     +--ro (descriptor-value)?
+   |  |  +--ro assigned-policy-reference-set*   fpc:fpc-identity
+   |  +--ro requested-policy-reference-set*         fpc:fpc-identity
+   |  +--ro context-settings-complementary
+   +--rw monitor-set* [monitor-id]
+      +--rw monitor-id             fpc:fpc-identity
+      +--rw deterrable?            boolean
+      +--rw binding-information
+      +--rw target                 fpc-identity
+      +--rw (configuration)
+         +--:(periodic-config)
+         |  +--rw period?                uint32
+         +--:(threshold-config)
+         |  +--rw lo-thresh?             uint32
+         |  +--rw hi-thresh?             uint32
+         +--:(scheduled-config)
+         |  +--rw report-time?           uint32
+         +--:(events-config-ident)
+         |  +--rw event-identities*      identityref
+         +--:(events-config)
+            +--rw event-ids*             uint32
      ]]></artwork>
         <postamble></postamble>
       </figure>
