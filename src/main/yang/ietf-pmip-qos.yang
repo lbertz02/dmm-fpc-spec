@@ -48,6 +48,10 @@ module ietf-pmip-qos {
      in Section 4.e of the Trust Legal Provisions and are provided
      without warranty as described in the Simplified BSD License.";
 
+  revision 2018-02-28 {
+    description "Updated to drop unnecessary attribute types.";
+  }
+
   revision 2017-10-29 {
      description "Base Version";
       reference
@@ -114,144 +118,7 @@ module ietf-pmip-qos {
                 received with any value in this range.";
     }
 
-    // QoS Attribute Types
-
-    //The enumeration value for mapping - don't confuse with the
-    //  identities
-    typedef qos-attrubite-type-enum {
-      type enumeration {
-        enum Reserved {
-          value 0;
-          description "This value is reserved and cannot be used";
-        }
-        enum Per-MN-Agg-Max-DL-Bit-Rate {
-          value 1;
-          description "Per-Mobile-Node Aggregate Maximum Downlink
-              Bit Rate.";
-        }
-        enum Per-MN-Agg-Max-UL-Bit-Rate {
-          value 2;
-          description "Per-Mobile-Node Aggregate Maximum Uplink Bit
-            Rate.";
-        }
-        enum Per-Session-Agg-Max-DL-Bit-Rate {
-          value 3;
-          description "Per-Mobility-Session Aggregate Maximum
-            Downlink Bit Rate.";
-        }
-        enum Per-Session-Agg-Max-UL-Bit-Rate {
-          value 4;
-          description "Per-Mobility-Session Aggregate Maximum
-             Uplink Bit Rate.";
-        }
-        enum Allocation-Retention-Priority {
-          value 5;
-          description "Allocation and Retention Priority.";
-        }
-        enum Aggregate-Max-DL-Bit-Rate {
-          value 6;
-          description "Aggregate Maximum Downlink Bit Rate.";
-        }
-        enum Aggregate-Max-UL-Bit-Rate {
-          value 7;
-          description "Aggregate Maximum Uplink Bit Rate.";
-        }
-        enum Guaranteed-DL-Bit-Rate {
-          value 8;
-          description "Guaranteed Downlink Bit Rate.";
-        }
-        enum Guaranteed-UL-Bit-Rate {
-          value 9;
-          description "Guaranteed Uplink Bit Rate.";
-        }
-        enum QoS-Traffic-Selector {
-          value 10;
-          description "QoS Traffic Selector.";
-        }
-        enum QoS-Vendor-Specific-Attribute {
-          value 11;
-          description "QoS Vendor-Specific Attribute.";
-        }
-      }
-     description
-    "The type of the QoS attribute.  This specification reserves 
-       the following reserved values.
-         (12) to (254) -  Reserved
-            These values are reserved for future allocation.
-
-         (255)  Reserved
-            This value is reserved and cannot be used.";
-    }
-
-    // Attribute Type as Identities
-    // Added for convenience of inclusion and extension in
-    //    other YANG modules.
-    identity qos-attribute-type {
-      description
-        "Base type for Quality of Service Attributes";
-    }
-
-    identity Per-MN-Agg-Max-DL-Bit-Rate-type {
-      base qos-attribute-type;
-      description
-        "Per-Mobile-Node Aggregate Maximum Downlink Bit Rate.";
-    }
-
-   identity Per-MN-Agg-Max-UL-Bit-Rate-type {
-      base qos-attribute-type;
-      description
-        "Per-Mobile-Node Aggregate Maximum Uplink Bit Rate";
-   }
-
-   identity Per-Session-Agg-Max-DL-Bit-Rate-type {
-      base qos-attribute-type;
-      description
-       "Per-Mobility-Session Aggregate Maximum Downlink Bit Rate.";
-  }
-
-   identity Per-Session-Agg-Max-UL-Bit-Rate-type {
-      base qos-attribute-type;
-      description
-       "Per-Mobility-Session Aggregate Maximum Uplink Bit Rate.";
-   }
-
-   identity Allocation-Retention-Priority-type {
-      base qos-attribute-type;
-      description
-        "Allocation and Retention Priority.";
-   }
-
-   identity Aggregate-Max-DL-Bit-Rate-type {
-      base qos-attribute-type;
-      description "Aggregate Maximum Downlink Bit Rate.";
-   }
-
-  identity Aggregate-Max-UL-Bit-Rate-type {
-      base qos-attribute-type;
-      description "Aggregate Maximum Uplink Bit Rate.";
-  }
-
-  identity Guaranteed-DL-Bit-Rate-type {
-      base qos-attribute-type;
-      description "Guaranteed Downlink Bit Rate.";
-  }
-
-  identity Guaranteed-UL-Bit-Rate-type {
-      base qos-attribute-type;
-      description "Guaranteed Uplink Bit Rate.";
-  }
-
-  identity QoS-Traffic-Selector-type {
-      base qos-attribute-type;
-      description "QoS Traffic Selector.";
-  }
-
-  identity QoS-Vendor-Specific-Attribute-type {
-      base qos-attribute-type;
-      description "QoS Vendor-Specific Attribute.";
-  }
-
-  //value definitions
+  //Value definitions
   typedef Per-MN-Agg-Max-DL-Bit-Rate-Value {
       type uint32;
       description
@@ -432,14 +299,6 @@ module ietf-pmip-qos {
 
     //Primary Structures (groupings)
     grouping qosattribute {
-        leaf attributetype {
-            type identityref {
-                base qos-attribute-type;
-            }
-            mandatory true;
-            description "the attribute type";
-        }
-
         //All of the sub-types by constraint
         choice attribute-choice {
             case per-mn-agg-max-dl-case {
