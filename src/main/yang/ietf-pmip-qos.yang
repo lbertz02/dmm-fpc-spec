@@ -22,8 +22,8 @@ module ietf-pmip-qos {
         WG Chair: Dapeng Liu
                   <mailto:maxpassion@gmail.com>
 
-        WG Chair: Jouni Korhonen
-                  <mailto:jouni.nospam@gmail.com>
+        WG Chair: Sri Gundavelli
+                  <mailto:sgundave@cisco.com>
 
         Editor:   Satoru Matsushima
                   <mailto:satoru.matsushima@g.softbank.co.jp>
@@ -49,7 +49,8 @@ module ietf-pmip-qos {
      without warranty as described in the Simplified BSD License.";
 
   revision 2018-02-28 {
-    description "Updated to drop unnecessary attribute types.";
+    description "Updated to drop unnecessary attribute types.
+        Update WG co-chair.";
   }
 
   revision 2017-10-29 {
@@ -294,100 +295,42 @@ module ietf-pmip-qos {
         "QoS Vendor-Specific Attribute.";
     }
 
-    //NOTE - We do NOT add the Status Codes or other changes in
-    // PMIP in this module
-
     //Primary Structures (groupings)
     grouping qosattribute {
-        //All of the sub-types by constraint
-        choice attribute-choice {
-            case per-mn-agg-max-dl-case {
-                when "./attributetype = "
-                   + "'Per-MN-Agg-Max-DL-Bit-Rate-type'";
-                leaf per-mn-agg-max-dl {
-                    type qos-pmip:Per-MN-Agg-Max-DL-Bit-Rate-Value;
-                    description "Per-MN-Agg-Max-DL-Bit-Rate Value";
-                }
-                description "Per-MN-Agg-Max-DL-Bit-Rate Case";
-            }
-            case per-mn-agg-max-ul-case {
-                when "./attributetype = "
-                  + "'Per-MN-Agg-Max-UL-Bit-Rate-type'";
-                leaf per-mn-agg-max-ul {
-                    type qos-pmip:Per-MN-Agg-Max-UL-Bit-Rate-Value;
-                    description "Per-MN-Agg-Max-UL-Bit-Rate Value";
-                }
-                description "Per-MN-Agg-Max-UL-Bit-Rate Case";
-            }
-            case per-session-agg-max-dl-case {
-                when "./attributetype = "
-                + "'Per-Session-Agg-Max-DL-Bit-Rate-type'";
-                container per-session-agg-max-dl {
-                    uses qos-pmip:Per-Session-Agg-Max-Bit-Rate-Value;
-                    description "Per-Session-Agg-Max-Bit-Rate Value";
-                }
-                description "Per-Session-Agg-Max-Bit-Rate Case";
-            }
-            case per-session-agg-max-ul-case {
-                when "./attributetype = "
-                + "'Per-Session-Agg-Max-UL-Bit-Rate-type'";
-                container per-session-agg-max-ul {
-                    uses qos-pmip:Per-Session-Agg-Max-Bit-Rate-Value;
-                    description "Per-Session-Agg-Max-Bit-Rate Value";
-                }
-                description "Per-Session-Agg-Max-Bit-Rate Case";
-            }
-            case allocation-retention-priority-case {
-                when "./attributetype = "
-                   + "'Allocation-Retention-Priority-type'";
-                uses qos-pmip:Allocation-Retention-Priority-Value;
-                description "Allocation-Retention-Priority Case";
-            }
-            case agg-max-dl-case {
-                when "./attributetype = "
-                  + "'Aggregate-Max-DL-Bit-Rate-type'";
-                leaf agg-max-dl {
-                    type qos-pmip:Aggregate-Max-DL-Bit-Rate-Value;
-                    description "Aggregate-Max-DL-Bit-Rate Value";
-                }
-                description "Aggregate-Max-DL-Bit-Rate Case";
-            }
-            case agg-max-ul-case {
-                when "./attributetype = "
-                  + "'Aggregate-Max-UL-Bit-Rate-type'";
-                leaf agg-max-ul {
-                    type qos-pmip:Aggregate-Max-UL-Bit-Rate-Value;
-                    description "Aggregate-Max-UL-Bit-Rate Value";
-                }
-                description "Aggregate-Max-UL-Bit-Rate Case";
-            }
-            case gbr-dl-case {
-                when "./attributetype = 'Guaranteed-DL-Bit-Rate-type'";
-                leaf gbr-dl {
-                    type qos-pmip:Guaranteed-DL-Bit-Rate-Value;
-                    description "Guaranteed-DL-Bit-Rate Value";
-                }
-                description "Guaranteed-DL-Bit-Rate Case";
-            }
-            case gbr-ul-case {
-                when "./attributetype = 'Guaranteed-UL-Bit-Rate-type'";
-                leaf gbr-ul {
-                    type qos-pmip:Guaranteed-UL-Bit-Rate-Value;
-                    description "Guaranteed-UL-Bit-Rate Value";
-                }
-                description "Guaranteed-UL-Bit-Rate Case";
-            }
-            case traffic-selector-case {
-                when "./attributetype = 'QoS-Traffic-Selector-type'";
-                container traffic-selector {
-                    uses traffic-selectors:traffic-selector;
-                    description "traffic selector";
-                }
-                description "traffic selector Case";
-            }
-            description "Attribute Value";
+        leaf per-mn-agg-max-dl {
+            type qos-pmip:Per-MN-Agg-Max-DL-Bit-Rate-Value;
+            description "Per-MN-Agg-Max-DL-Bit-Rate Value";
         }
-        description "PMIP QoS Attribute";
+        leaf per-mn-agg-max-ul {
+            type qos-pmip:Per-MN-Agg-Max-UL-Bit-Rate-Value;
+            description "Per-MN-Agg-Max-UL-Bit-Rate Value";
+        }
+        container per-session-agg-max-dl {
+            uses qos-pmip:Per-Session-Agg-Max-Bit-Rate-Value;
+            description "Per-Session-Agg-Max-Bit-Rate Value";
+        }
+        container per-session-agg-max-ul {
+            uses qos-pmip:Per-Session-Agg-Max-Bit-Rate-Value;
+            description "Per-Session-Agg-Max-Bit-Rate Value";
+        }
+        uses qos-pmip:Allocation-Retention-Priority-Value;
+        leaf agg-max-dl {
+            type qos-pmip:Aggregate-Max-DL-Bit-Rate-Value;
+            description "Aggregate-Max-DL-Bit-Rate Value";
+        }
+        leaf agg-max-ul {
+            type qos-pmip:Aggregate-Max-UL-Bit-Rate-Value;
+            description "Aggregate-Max-UL-Bit-Rate Value";
+        }
+        leaf gbr-dl {
+            type qos-pmip:Guaranteed-DL-Bit-Rate-Value;
+            description "Guaranteed-DL-Bit-Rate Value";
+        }
+        leaf gbr-ul {
+            type qos-pmip:Guaranteed-UL-Bit-Rate-Value;
+            description "Guaranteed-UL-Bit-Rate Value";
+        }
+        description "PMIP QoS Attributes";
     }
 
     grouping qosoption {
@@ -406,11 +349,10 @@ module ietf-pmip-qos {
             mandatory true;
             description "Operation Code";
         }
-        list attributes {
-            unique "attributetype";
-            uses qosattribute;
-            min-elements 1;
-            description "Attributes";
+        uses qosattribute;
+        container traffic-selector {
+            uses traffic-selectors:traffic-selector;
+            description "traffic selector";
         }
         description "PMIP QoS Option";
     }

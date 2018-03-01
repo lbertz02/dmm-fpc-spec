@@ -3,11 +3,11 @@ module ietf-dmm-fpc {
     namespace "urn:ietf:params:xml:ns:yang:ietf-dmm-fpc";
     prefix fpc;
 
-    import ietf-inet-types { prefix inet; 
+    import ietf-inet-types { prefix inet;
         revision-date 2013-07-15; }
-    import ietf-restconf { prefix restconf; 
+    import ietf-restconf { prefix restconf;
         revision-date 2017-01-26; }
-    import ietf-dmm-fpc-settingsext { prefix fpcbase; 
+    import ietf-dmm-fpc-settingsext { prefix fpcbase;
     revision-date 2017-09-27;
   }
 
@@ -47,6 +47,9 @@ module ietf-dmm-fpc {
      in Section 4.e of the Trust Legal Provisions and are provided
      without warranty as described in the Simplified BSD License.";
 
+    revision 2018-02-28 {
+    description "Version updates.";
+  }
     revision 2017-09-27 {
     description "Version 10 updates.";
     reference "draft-ietf-dmm-fpc-cpdp-10";
@@ -79,8 +82,21 @@ revision 2016-08-03 {
       description "Provides the scope of refeneces in an operation.
         Used to optmize the Agent processing.";
     }
-    
+
   //General Structures
+
+  grouping templatedef {
+    leaf extensible {
+        type boolean;
+        description "Indicates if the template is extensible";
+    }
+    leaf-list mandatory-static-attributes {
+        type string;
+        description "Attribute (Name) that cannot change.  If
+            it has not been defined in the template it MUST not
+            be present at all for the template to be valid.";
+    }
+  }
     typedef fpc-identity {
         type union {
             type uint32;
@@ -97,7 +113,7 @@ revision 2016-08-03 {
       }
       description "FPC Target Value";
     }
-  // Topology 
+  // Topology
   typedef fpc-interface-id {
         type fpc:fpc-identity;
         description "DPN interface Identifier";
@@ -187,7 +203,7 @@ revision 2016-08-03 {
       description "Set of DPNs";
     }
     list dpn-type-set {
-      key "access-technology role";  
+      key "access-technology role";
       uses fpc:access-technology-key;
       leaf access-technology-name {
         type string;
@@ -240,7 +256,7 @@ revision 2016-08-03 {
           type fpc:fpc-identity;
           description "DPN Peer Groups reference";
         }
-        description "A list of DPNs supporting a group 
+        description "A list of DPNs supporting a group
           by DPN Type";
       }
       list dpn-group-peer-set {
@@ -251,7 +267,7 @@ revision 2016-08-03 {
           description "Remote DPN Group identifier";
         }
         uses fpc:interface-settings;
-        description "Locally applied settings used for 
+        description "Locally applied settings used for
           the referenced DPN-Group (peer group).";
       }
       leaf domain-id {
@@ -343,7 +359,7 @@ revision 2016-08-03 {
     grouping match-type {
         leaf descriptor-match-type {
           type enumeration {
-            enum or { 
+            enum or {
               value 0;
               description "OR logic";
             }
@@ -353,7 +369,7 @@ revision 2016-08-03 {
             }
           }
           mandatory true;
-          description "Type of Match (OR or AND) applied to the 
+          description "Type of Match (OR or AND) applied to the
             descriptor-reference-set.";
       }
         description "Map Type Grouping";
@@ -484,7 +500,7 @@ revision 2016-08-03 {
     }
     leaf dpn-group-id-reference {
       type fpc:fpc-identity;
-      description "Group ID used when DPN selecitons were 
+      description "Group ID used when DPN selecitons were
         made";
     }
     leaf parent-mobility-context-id-reference {
@@ -533,15 +549,15 @@ revision 2016-08-03 {
       }
       leaf-list assigned-policy-reference-set {
         type fpc:fpc-identity;
-        description "List of Policies request to be enforced for 
+        description "List of Policies request to be enforced for
           this Mobility Context";
       }
       description "DPN List";
     }
-    
+
     leaf-list requested-policy-reference-set {
       type fpc:fpc-identity;
-      description "List of Policies request to be enforced for 
+      description "List of Policies request to be enforced for
         this Mobility Context";
     }
     container context-settings-complementary {
@@ -856,7 +872,7 @@ revision 2016-08-03 {
       type result-status;
       mandatory true;
       description "Status";
-    }    
+    }
     description "Status value for all messages";
   }
   grouping result {
@@ -867,7 +883,7 @@ revision 2016-08-03 {
   grouping result-body {
     leaf notify-follows {
       type boolean;
-      description "Indicates that a notification will 
+      description "Indicates that a notification will
         follow regarding this result";
     }
     choice result-type {
@@ -952,7 +968,7 @@ revision 2016-08-03 {
       }
       leaf send_data {
         type boolean;
-        description "Indicates if NOTIFY with final data 
+        description "Indicates if NOTIFY with final data
           is desired upon deregistration";
       }
     }
