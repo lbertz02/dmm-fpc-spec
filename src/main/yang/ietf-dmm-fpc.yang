@@ -126,7 +126,6 @@ revision 2016-08-03 {
         }
         description "Interface Identifier key";
     }
-
     identity interface-protocols {
         description "Protocol supported by the interface";
     }
@@ -142,98 +141,63 @@ revision 2016-08-03 {
     }
     description "Settings container";
   }
-  //Topology - Groupings
   grouping interface-settings {
     container interface-settings-set {
       description "Interface settings";
     }
     description "Generic interface settings container";
   }
-  grouping access-technology-key {
-    leaf access-technology {
-      type identityref {
-        base "fpcbase:access-technology";
-      }
-      mandatory true;
-      description "Access Technology";
-    }
-    description "Access Technology key";
-  }
 
-
-  grouping dpn-identifier-key {
-    leaf dpn-id {
-      type fpc:fpc-identity;
-      mandatory true;
-      description "DPN Identifier Type";
+    grouping policy-key {
+        leaf policy-key {
+            description "policy-key";
+        }
     }
-    description "DPN Identifier key";
-  }
-  grouping dpn-interface-reference {
-    uses fpc:access-technology-key;
-    uses fpc:role-key;
-    uses fpc:interface-id-key;
-    description "A reference to a DPN interface";
-  }
+    grouping policy-confiugration {
+        uses fpc:policy-key;
+        description "Policy Configuration";
+    }
+
   // Topology Grouping
   grouping fpc-topology {
-        list service-group {
-            key service-group-key;
-            uses fpc:service-group-key;
-            list dpn {
-                key dpn-key;
-                uses fpc:dpn-key;
-                uses fpc:role-key;
-                list referenced-interface {
-                    key interface-key;
-                    uses fpc:interface-key;
-                    leaf-list service-group-key {
-                        type fpc:fpc-identity;
-                        description "Peer Service Group";"
-                    }
-                    description "Referenced Interface";
-                }
-            }
-            description "Service Group";
+    list service-group {
+        key service-group-key;
+        uses fpc:service-group-key;
+        leaf service-group-name {
+            type string;
+            description "Service Group Name";
         }
-    list dpn-set {
-      key dpn-id;
-      uses fpc:dpn-identifier-key;
-      leaf dpn-name {
-        type string;
-        description "DPN name";
-      }
-      leaf dpn-resource-mapping-reference {
-        type string;
-        description "Reference to underlying DPN resource(s)";
-      }
-      list interface-set {
-        key "access-technology role interface-id";
-        uses fpc:dpn-interface-reference;
-        uses fpc:interface-settings;
-        description "DPN interfaces";
-      }
-      description "Set of DPNs";
+        list dpn {
+            key "dpn-key role-key";
+            uses fpc:dpn-key;
+            uses fpc:role-key;
+            list referenced-interface {
+                key interface-key;
+                uses fpc:interface-key;
+                leaf-list peer-service-group-key {
+                    type fpc:fpc-identity;
+                    description "Peer Service Group";
+                }
+                description "Referenced Interface";
+            }
+        }
+        description "Service Group";
     }
-    list dpn-type-set {
-      key "access-technology role";
-      uses fpc:access-technology-key;
-      leaf access-technology-name {
-        type string;
-        description "Access Technology Name";
-      }
+    list dpn-type {
+      key role-key;
       uses fpc:role-key;
       leaf role-name {
         type string;
-        description "Access Technology Role Name";
+        description "Role Name";
       }
-      list interface-set {
-        key interface-id;
-        uses fpc:interface-id-key;
-        leaf interface-name {
-          type string;
-          description "DPN-Type Interface Name";
-        }
+      leaf-list service-group-key {
+        uses fpc:service-group-key;
+        description "Service Group";
+      }
+      list interface {
+        key "dpn-key interface-key";
+        uses fpc:dpn-key;
+        uses fpc:interface-key;
         leaf-list interface-protocol-set {
           type identityref {
             base "interface-protocols";
@@ -251,63 +215,70 @@ revision 2016-08-03 {
       }
       description "Set of DPN types";
     }
-    list dpn-group-set {
-      key "dpn-group-id";
-      leaf dpn-group-id {
+    list dpn {
+      key dpn-id;
+      uses fpc:dpn-key;
+      leaf dpn-name {
+        type string;
+        description "DPN name";
+      }
+      leaf dpn-resource-mapping-reference {
+        type string;
+        description "Reference to underlying DPN resource(s)";
+      }
+      leaf-list domain-key {
         type fpc:fpc-identity;
-        mandatory true;
-        description "DPN Group Identifier";
+        description "Domains";
       }
-      list referenced-dpns-set {
-        key "access-technology role interface-id";
-        uses fpc:dpn-interface-reference;
-        leaf-list supporting-dpn-id-set {
-          type fpc:fpc-identity;
-          description "DPNs that suppport this group";
-        }
-        leaf-list dpn-group-peer-id-set {
-          type fpc:fpc-identity;
-          description "DPN Peer Groups reference";
-        }
-        description "A list of DPNs supporting a group
-          by DPN Type";
+      leaf-list service-group-key {
+        uses fpc:service-group-key;
+        description "Service Group";
       }
-      list dpn-group-peer-set {
-        key remote-dpn-group-id;
-        leaf remote-dpn-group-id {
-          type fpc:fpc-identity;
-          mandatory true;
-          description "Remote DPN Group identifier";
+      list interface-set {
+        key "interface-key";
+        uses fpc:interface-key;
+        leaf interface-name {
+            type string;
+            description "DPN-Type Interface Name";
+        }
+        leaf-list roles {
+            type identityref {
+                base "fpcbase:role";
+            }
+            description "Roles supported";
         }
         uses fpc:interface-settings;
-        description "Locally applied settings used for
-          the referenced DPN-Group (peer group).";
+        description "DPN interfaces";
       }
-      leaf domain-id {
-        type fpc:fpc-identity;
-        description "Domain Identiifer";
+      list dpn-policy-configuration {
+        key policy-key;
+        uses fpc:policy-configuration;
+        description "DPN Policy Configuration";
       }
-      description "List of DPN groups";
+      description "Set of DPNs";
     }
     list domain-set {
-      key domain-id;
-      leaf domain-id {
+      key domain-key;
+      leaf domain-key {
         type fpc:fpc-identity;
         mandatory true;
-        description "Domain Identifier";
+        description "Domain Key";
       }
       leaf domain-name {
         type string;
         description "Domain displayname";
       }
-      leaf domain-reference {
-        type string;
-        description "Reference to domain resources";
+      list domain-policy-configuration {
+        key policy-key;
+        uses fpc:policy-configuration;
+        description "Domain Policy Cofiguration";
       }
       description "List of Domains";
     }
     description "FPC Topology grouping";
   }
+
+
   // Policy Structures
     // Descriptor Structure
     identity fpc-descriptor-type {

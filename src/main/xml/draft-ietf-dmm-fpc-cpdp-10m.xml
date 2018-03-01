@@ -995,11 +995,11 @@ DPN         |                 DPN        |
       |
       +-[DPN-Type] <Set>
       |     +-[Extensible: = FALSE]
-      |     +-[Role] <U-Key>, <Name> (O) 
-      |     +-[DPN-Key] <Set>
+      |     +-[Role] <U-Key>, <Name> (O)
       |     +-[Service-Group-Key] <Set>
       |     +-[Interface] <Set>
       |     |       +-[Interface-Key] <L-Key>, <Name> (O)
+      |     |       +-[DPN-Key]
       |     |       +-[Protocol] <Set> 
       |     |       +-[Features] <Set> (O) 
       |     |       +-[Settings] <Set> (O)
@@ -1011,11 +1011,6 @@ DPN         |                 DPN        |
 
     <t> Each DPN-Type entry contains the following information:
     <list style="hanging">
-    <t hangText="Role: ">
-	the role (MAG, LMA, PGW, AMF, etc.) of the device hosting the
-	interfaces in the Interface Set. </t>
-    <t hangText="DPN-Key: "> Keys enabling reference to the DPNs that
-	support this DPN-Type. </t>
     <t hangText="Service-Group-Key: "> Keys enabling reference to the
 	Service-Groups that are to be supported by this DPN-Type. </t>
     <t hangText="Interface: ">
@@ -1024,6 +1019,9 @@ DPN         |                 DPN        |
         <list>
         <t> Interface-Key: a key that is used to locate the interface
 	    definition.</t>
+        <t hangText="Role: ">
+            the roles (MAG, LMA, PGW, AMF, etc.) of the interface. </t>
+        <t hangText="DPN-Key: "> The DPN key of the associated interface.</t>
         <t> Protocol: set of protocols supported by this interface
 	    (e.g., PMIP, S5-GTP, S5-PMIP etc.). </t>
         <t> Features (optional): a set of static features which further
@@ -1108,8 +1106,9 @@ DPN         |                 DPN        |
       |
       +-[DPN] <G-Key>, <Name> (O) <Set>
       |     +-[Extensible: = FALSE]
-      |     +-[Role] <U-Key>, <Name> (O) 
       |     +-[Interface] <L-Key> <Set>
+      |     |      +-[Role] <U-Key>
+      |     |      +-[Settings] (O)
       |     +-[Domain-Key]
       |     +-[Service-Group-Key] <Set> (O)
       |     +-[DPN-Policy-Configuration] <List> (M)
@@ -1126,10 +1125,7 @@ DPN         |                 DPN        |
     <list style="hanging">
     <t hangText="DPN-Key:"> A unique Identifier of the DPN </t>
     <t hangText="DPN-Name:"> A human-readable display string </t>
-    <t hangText="Role: ">
-	the role (MAG, LMA, PGW, AMF, etc.) of the DPN. </t>
-<!--  CEP: If this is an entry of an Indexed Set, then add to earlier list. -->
-<!--  CEP: But then just reference it by "Role-Key".  -->
+
     <t hangText="Domain-Key:"> A Key providing access to the Domain
 	information about the Domain in which the DPN resides. </t>
     <t hangText="Interface-Set:"> The Interface-Set references all
@@ -1137,7 +1133,15 @@ DPN         |                 DPN        |
 	transmitted) available on the DPN.   Each Interface makes use of
 	attribute values that are specific to that interface, for
 	example, the MTU size.  These do not affect the DPN selection
-	of active or enabled interfaces. </t> 
+	of active or enabled interfaces. Interfaces contain the following
+        informaiton:
+        <list>
+            <t hangText="Role: ">
+                the role (MAG, LMA, PGW, AMF, etc.) of the DPN. </t>
+            <t> Settings (optional): configurable settings that
+                further determine the suitability of an interface for the specific
+                request.  For example: SequenceNumber=ON/OFF. </t>
+        </list></t>
     <t hangText="Service-Group-Set:"> The Service-Group-Set references
 	all of the Service-Groups which have been configured using
 	Interfaces hosted on this DPN.  The purpose of a Service-Group
