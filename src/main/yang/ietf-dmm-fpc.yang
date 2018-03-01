@@ -66,37 +66,25 @@ revision 2016-08-03 {
     description "Initial Revision.";
     reference "draft-ietf-dmm-fpc-cpdp-05";
 }
-    feature fpc-basename-registry {
-      description "Ability to track Base Names already provisioned
-        on the Agent";
-    }
-    feature fpc-bundles {
-      description "Ability for Client to send multiple bundles of
-        actions to an Agent";
-    }
-    feature fpc-auto-binding {
-      description "Allows a FPC Agent to advertise Topology Objects
-        that could be DPNs";
-    }
-    feature operation-ref-scope {
-      description "Provides the scope of refeneces in an operation.
-        Used to optmize the Agent processing.";
-    }
 
-  //General Structures
+    //General Structures
+    grouping extensibility {
+        leaf extensible {
+            type boolean;
+            description "Indicates if the template is extensible";
+        }
+        description "Extensibility";
+    }
+    grouping templatedef {
+        uses fpc:extensibility;
+        leaf-list mandatory-static-attributes {
+            type string;
+            description "Attribute (Name) that cannot change.  If
+                it has not been defined in the template it MUST not
+                be present at all for the template to be valid.";
+        }
 
-  grouping templatedef {
-    leaf extensible {
-        type boolean;
-        description "Indicates if the template is extensible";
     }
-    leaf-list mandatory-static-attributes {
-        type string;
-        description "Attribute (Name) that cannot change.  If
-            it has not been defined in the template it MUST not
-            be present at all for the template to be valid.";
-    }
-  }
     typedef fpc-identity {
         type union {
             type uint32;
@@ -105,25 +93,47 @@ revision 2016-08-03 {
         }
         description "FPC Identity";
     }
-    grouping target-value {
-      leaf target {
-          type fpc-identity;
-      mandatory true;
-      description "Target Identity";
-      }
-      description "FPC Target Value";
+
+    // Topology Information Model
+    // Type Definitions
+    grouping service-group-key {
+        leaf service-group-key {
+            type fpc:fpc-identity;
+        }
+        description "Service Group Key";
     }
-  // Topology
-  typedef fpc-interface-id {
-        type fpc:fpc-identity;
-        description "DPN interface Identifier";
-  }
+    grouping dpn-key {
+        leaf dpn-key {
+            type fpc:fpc-identity;
+        }
+        description "DPN Key";
+    }
+    grouping role-key {
+        leaf role {
+            type identityref {
+                base "fpcbase:role";
+            }
+            mandatory true;
+            description "Access Technology Role";
+        }
+        description "Access Technology Role key";
+    }
+    grouping interface-key {
+        leaf interface-key{
+            type fpc:fpc-identity;
+            mandatory true;
+            description "interface identifier";
+        }
+        description "Interface Identifier key";
+    }
+
     identity interface-protocols {
         description "Protocol supported by the interface";
     }
     identity features {
         description "Protocol features";
     }
+
   // Settings
   grouping settings {
     container settings-set {
@@ -149,24 +159,8 @@ revision 2016-08-03 {
     }
     description "Access Technology key";
   }
-  grouping role-key {
-    leaf role {
-      type identityref {
-        base "fpcbase:role";
-      }
-      mandatory true;
-      description "Access Technology Role";
-    }
-    description "Access Technology Role key";
-  }
-  grouping interface-id-key {
-    leaf interface-id {
-      type fpc:fpc-interface-id;
-      mandatory true;
-      description "interface identifier";
-    }
-    description "Interface Identifier key";
-  }
+
+
   grouping dpn-identifier-key {
     leaf dpn-id {
       type fpc:fpc-identity;
@@ -183,6 +177,25 @@ revision 2016-08-03 {
   }
   // Topology Grouping
   grouping fpc-topology {
+        list service-group {
+            key service-group-key;
+            uses fpc:service-group-key;
+            list dpn {
+                key dpn-key;
+                uses fpc:dpn-key;
+                uses fpc:role-key;
+                list referenced-interface {
+                    key interface-key;
+                    uses fpc:interface-key;
+                    leaf-list service-group-key {
+                        type fpc:fpc-identity;
+                        description "Peer Service Group";"
+                    }
+                    description "Referenced Interface";
+                }
+            }
+            description "Service Group";
+        }
     list dpn-set {
       key dpn-id;
       uses fpc:dpn-identifier-key;
@@ -827,7 +840,6 @@ revision 2016-08-03 {
   }
   grouping fpc-op-ref-scope {
     leaf op-ref-scope {
-      if-feature operation-ref-scope;
       type fpc:ref-scope;
       description "Reference Scope";
     }
@@ -916,33 +928,6 @@ revision 2016-08-03 {
     }
     output {
       uses fpc:result;
-    }
-  }
-  rpc configure-bundles {
-    if-feature fpc:fpc-bundles;
-    description "CONF_BUNDLES message";
-    input {
-      uses fpc:op-header;
-      uses fpc:fpc-op-type;
-      uses fpc:fpc-op-ref-scope;
-      list bundles {
-        key op-id;
-        leaf op-id {
-          type op-identifier;
-          mandatory true;
-          description "Operation Identifier";
-        }
-        uses fpc:op-input;
-        description "List of operations";
-      }
-    }
-    output {
-      uses fpc:status-value;
-      list bundles {
-        key op-id;
-        uses fpc:result;
-        description "Operation Identifier";
-      }
     }
   }
   rpc reg_monitor {
