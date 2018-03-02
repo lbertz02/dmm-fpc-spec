@@ -51,11 +51,12 @@ module ietf-dmm-fpc {
      without warranty as described in the Simplified BSD License.";
 
     revision 2018-02-28 {
-    description "Version updates.";
+    description "Version 10 updates.";
+    reference "draft-ietf-dmm-fpc-cpdp-10";
   }
     revision 2017-09-27 {
     description "Version 10 updates.";
-    reference "draft-ietf-dmm-fpc-cpdp-10";
+    reference "draft-ietf-dmm-fpc-cpdp-09";
   }
 revision 2017-07-22 {
     description "Version 08 updates.";
@@ -86,7 +87,7 @@ revision 2016-08-03 {
                 it has not been defined in the template it MUST not
                 be present at all for the template to be valid.";
         }
-
+        description "Teamplate Definition";
     }
     typedef fpc-identity {
         type union {
@@ -180,7 +181,6 @@ revision 2016-08-03 {
         key rule-template-key;
         uses fpc:rule-template-key;
         leaf descriptor-match-type {
-            default "and";
             type enumeration {
                 enum or {
                     value 0;
@@ -191,6 +191,7 @@ revision 2016-08-03 {
                     description "AND logic";
                 }
             }
+            default "and";
             description "Type of Match (OR or AND) applied
                 to the descriptor-configurations";
         }
@@ -253,6 +254,7 @@ revision 2016-08-03 {
     grouping dpn-key {
         leaf dpn-key {
             type fpc:fpc-identity;
+            description "DPN Key";
         }
         description "DPN Key";
     }
@@ -419,12 +421,9 @@ revision 2016-08-03 {
     }
     choice configuration {
       mandatory true;
-      case periodic-config {
-        leaf period {
+      leaf period {
           type uint32;
           description "Period";
-        }
-        description "Periodic Config Case";
       }
       case threshold-config {
         leaf low {
@@ -437,28 +436,19 @@ revision 2016-08-03 {
         }
         description "Threshold Config Case";
       }
-      case scheduled-config {
-        leaf schedule {
+      leaf schedule {
           type uint32;
           description "Reporting Time";
-        }
-        description "Scheduled Config Case";
       }
-      case events-config-ident {
-        leaf-list event-identities {
+      leaf-list event-identities {
           type identityref {
             base "fpc:event-type";
           }
           description "Event Identities";
-        }
-        description "Events Config Identities Case";
       }
-      case events-config {
-        leaf-list event-ids {
+      leaf-list event-ids {
           type uint32;
             description "Event IDs";
-        }
-        description "Events Config Case";
       }
       description "Event Config Value";
     }
@@ -516,13 +506,14 @@ revision 2016-08-03 {
       }
       description "Set of DPNs";
     }
+    description "Mobility Information Model";
    }
    container topology-information-model {
     list service-group {
         key service-group-key;
         leaf service-group-key {
-            mandatory true;
             type fpc:fpc-identity;
+            mandatory true;
             description "Service Group Key";
         }
         leaf service-group-name {
@@ -542,6 +533,7 @@ revision 2016-08-03 {
                 }
                 description "Referenced Interface";
             }
+            description "DPN";
         }
         description "Service Group";
     }
@@ -654,6 +646,7 @@ revision 2016-08-03 {
             type uint32;
             description "Execution Delay (ms)";
         }
+        description "Execution Delay";
     }
     typedef ref-scope {
       type enumeration {
@@ -681,6 +674,7 @@ revision 2016-08-03 {
       description "Search scope for references in the operation.";
     }
     rpc configure {
+        description "Configure RPC";
         input {
             uses client-id;
             uses execution-delay;
@@ -689,7 +683,6 @@ revision 2016-08-03 {
         output {
             uses ypatch:yang-patch-status;
         }
-        description "Configure RPC";
     }
     augment "/configure/input/yang-patch/edit" {
         leaf op-ref-scope {
@@ -811,6 +804,7 @@ revision 2016-08-03 {
         + "edit-status-choice/ok" {
         leaf notify-follows {
             type boolean;
+            description "Notify Follows Indication";
         }
         uses fpc:subsequent-edits;
         description "Configure output augments";
@@ -832,7 +826,6 @@ revision 2016-08-03 {
             mandatory true;
             description "Operation Identifier";
         }
-
         choice edit-status-choice {
                description
                  "A choice between different types of status
@@ -851,6 +844,7 @@ revision 2016-08-03 {
                     edit identified by the same 'edit-id' value.";
                }
         }
+        description "Monitor Response";
     }
 
   // Common RPCs
@@ -861,6 +855,7 @@ revision 2016-08-03 {
       list monitors {
         key monitor-key;
         uses fpc:monitor-config;
+        description "Monitor Configuration";
       }
     }
     output {
@@ -907,6 +902,7 @@ revision 2016-08-03 {
   // Notification Messages & Structures
   notification config-result-notification {
     uses ypatch:yang-patch-status;
+    description "Configuration Result Notification";
   }
   augment "/config-result-notification" {
         uses fpc:subsequent-edits;
@@ -960,8 +956,6 @@ revision 2016-08-03 {
     base "notification-cause";
     description "DPN Unavailable";
   }
-
-
   notification notify {
     leaf notification-id {
       type uint32;
@@ -990,12 +984,9 @@ revision 2016-08-03 {
         }
         description "DPN Candidate Information";
       }
-      case dpn-unavailable {
-        leaf dpn-id {
-          type fpc:fpc-identity;
-          description "DPN Identifier";
-        }
-        description "DPN Unavailable";
+      leaf dpn-id {
+        type fpc:fpc-identity;
+        description "DPN Identifier for DPN Unavailable";
       }
       case monitor-notification {
         list reports {
