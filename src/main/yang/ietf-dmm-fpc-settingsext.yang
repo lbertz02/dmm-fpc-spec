@@ -55,6 +55,7 @@ module ietf-dmm-fpc-settingsext {
 
 revision 2018-02-28 {
     description "Version updates.";
+    reference "draft-ietf-dmm-fpc-cpdp-10";
 }
 revision 2017-09-27 {
     description "Version 10 updates.";
@@ -164,6 +165,7 @@ revision 2016-08-03 {
         }
         description "Tunnel Information";
       }
+      description "Tunnel Value";
     }
 
   //////////////////////////////
@@ -221,41 +223,29 @@ revision 2016-08-03 {
               description "Component Type";
           }
           choice value {
-            case ipv4-local {
-              leaf ipv4-local {
+            leaf ipv4-local {
                 type inet:ipv4-address;
                 description "IPv4 Local Address";
-              }
             }
-            case ipv6-prefix-local {
-              leaf ipv6-prefix-local {
+            leaf ipv6-prefix-local {
                 type inet:ipv6-prefix;
                 description "IPv6 Local Prefix";
-              }
             }
-            case ipv4-ipv6-remote {
-              leaf ipv4-ipv6-remote {
+            leaf ipv4-ipv6-remote {
                 type inet:ip-address;
                 description "Ipv4 Ipv6 remote address";
-              }
             }
-            case ipv6-prefix-remote {
-              leaf ipv6-prefix-remote {
+            leaf ipv6-prefix-remote {
                 type inet:ipv6-prefix;
                 description "IPv6 Remote Prefix";
-              }
             }
-            case next-header {
-              leaf next-header {
+            leaf next-header {
                 type uint8;
                 description "Next Header";
-              }
             }
-            case local-port {
-              leaf local-port {
+            leaf local-port {
                 type inet:port-number;
                 description "Local Port";
-              }
             }
             case local-port-range {
               leaf local-port-lo {
@@ -267,11 +257,9 @@ revision 2016-08-03 {
                 description "Local Port Max Value";
               }
             }
-            case remote-port {
-              leaf remote-port {
+            leaf remote-port {
                 type inet:port-number;
                 description "Remote Port";
-              }
             }
             case remote-port-range {
               leaf remote-port-lo {
@@ -283,17 +271,13 @@ revision 2016-08-03 {
                 description "Remote Port Max Value";
               }
             }
-            case ipsec-index {
-              leaf ipsec-index {
+            leaf ipsec-index {
                 type traffic-selectors:ipsec-spi;
                 description "IPSec Index";
-              }
             }
-            case traffic-class {
-              leaf traffic-class {
+            leaf traffic-class {
                 type inet:dscp;
                 description "Traffic Class";
-              }
             }
             case traffic-class-range {
                 leaf traffic-class-lo {
@@ -305,11 +289,9 @@ revision 2016-08-03 {
                   description "Traffic Class Max Value";
                 }
             }
-            case flow-label-type {
-              leaf-list flow-label {
+            leaf-list flow-label {
                 type inet:ipv6-flow-label;
                 description "Flow Label";
-              }
             }
             description "Component Value";
           }
@@ -333,17 +315,13 @@ revision 2016-08-03 {
   grouping fpc-descriptor-value {
     choice descriptor-value {
       mandatory true;
-      case all-traffic {
-        leaf all-traffic {
+      leaf all-traffic {
           type empty;
           description "admit any";
-        }
       }
-      case no-traffic {
-        leaf no-traffic {
+      leaf no-traffic {
           type empty;
           description "deny any";
-        }
       }
       case prefix-descriptor {
         uses fpcbase:prefix-descriptor;
@@ -353,19 +331,13 @@ revision 2016-08-03 {
         uses traffic-selectors:traffic-selector;
         description "PMIP Selector";
       }
-      case rfc5777-classifier {
-        container rfc5777-classifier-template {
+      container rfc5777-classifier-template {
             uses rfc5777:classifier;
             description "RFC 5777 Classifier";
-        }
-        description "RFC 5777 Classifier Option";
       }
-      case threegpp-packet-filter {
-          container packet-filter {
+      container packet-filter {
             uses fpcbase:packet-filter;
             description "Packet Filter";
-          }
-          description "3GPP Packet Filter";
       }
       case tunnel-info {
         uses fpcbase:tunnel-value;
@@ -398,76 +370,47 @@ revision 2016-08-03 {
     }
     grouping fpc-nexthop {
         choice next-hop-value {
-            case ipaddress-nexthop {
-                leaf ip-address {
-                  type inet:ip-address;
-                  description "IP Value";
-                }
-                description "IP Case";
+            leaf ip-address {
+                type inet:ip-address;
+                description "IP Value";
             }
-            case macaddress-nexthop {
-                leaf mac-address {
-                  type ytypes:mac-address;
-                  description "MAC Address Value";
-                }
+            leaf mac-address {
+                type ytypes:mac-address;
+                description "MAC Address Value";
             }
-            case servicepath {
-                leaf service-path {
-                    type fpcbase:fpc-service-path-id;
-                    description "Service Path Value";
-                }
-                description "Service Path Case";
+            leaf service-path {
+                type fpcbase:fpc-service-path-id;
+                description "Service Path Value";
             }
-            case mplslabel-nexthop {
-                leaf mpls-path {
-                    type fpcbase:fpc-mpls-label;
-                    description "MPLS Value";
-                }
-                description "Service Path Case";
+            leaf mpls-path {
+                type fpcbase:fpc-mpls-label;
+                description "MPLS Value";
             }
-            case nsh-nexthop {
-                leaf nsh {
-                    type string {
-                        length "16";
-                    }
-                    description "NSH";
+            leaf nsh {
+                type string {
+                    length "16";
                 }
                 description "Network Service Header";
             }
-            case if-nexthop {
-                leaf interface {
-                    type uint16;
-                    description "If (interface) Value";
-                }
-                description "Service Path Case";
+            leaf interface {
+                type uint16;
+                description "If (interface) Value";
             }
-            case segment-nexthop {
-                leaf segment-identifier {
-                    type fpcbase:segment-id;
-                    description "Segment Id";
-                }
-                description "Segement Identifier";
+            leaf segment-identifier {
+                type fpcbase:segment-id;
+                description "Segment Id";
             }
-            case mpls-stack-nexthop {
-                leaf-list mpls-label-stack {
-                    type fpcbase:fpc-mpls-label;
-                    description "MPLS Stack";
-                }
-                description "MPLS Label Stack";
+            leaf-list mpls-label-stack {
+                type fpcbase:fpc-mpls-label;
+                description "MPLS Stack";
             }
-            case mpls-sr-nexthop {
-                leaf-list mpls-sr-stack {
-                    type fpcbase:fpc-mpls-label;
-                    description "MPLS SR Stack";
-                }
-                description "MPLS SR Label Stack";
+            leaf-list mpls-sr-stack {
+                type fpcbase:fpc-mpls-label;
+                description "MPLS SR Stack";
             }
-            case mpls-stack-nexthop {
-                leaf-list srv6-stack {
-                    type fpcbase:segment-id;
-                    description "Segment Id";
-                }
-                description "Segment Id Stack";
+            leaf-list srv6-stack {
+                type fpcbase:segment-id;
+                description "Segment Id";
             }
             case tunnel-info {
                 uses fpcbase:tunnel-value;
@@ -476,7 +419,7 @@ revision 2016-08-03 {
             }
             description "Value";
         }
-      description "Nexthop Value";
+        description "Nexthop Value";
     }
 
     //////////////////////////////
@@ -568,45 +511,35 @@ revision 2016-08-03 {
     grouping fpc-action-value {
         choice action-value {
             mandatory true;
-            case drop {
-              leaf drop {
+            leaf drop {
                 type empty;
                 description "Drop Traffic";
-              }
             }
-            case rewrite {
-                container rewrite {
-                    choice rewrite-value {
-                        case prefix-descriptor {
-                            uses fpcbase:prefix-descriptor;
-                            description "IP Prefix descriptor";
-                        }
-                        case pmip-selector {
-                            uses traffic-selectors:traffic-selector;
-                            description "PMIP Selector";
-                        }
-                        case rfc5777-classifier {
-                            container rfc5777-classifier-template {
-                                uses rfc5777:classifier;
-                                description "RFC 5777 Classifier";
-                            }
-                            description "RFC 5777 Classifier Option";
-                        }
+            container rewrite {
+                choice rewrite-value {
+                    case prefix-descriptor {
+                        uses fpcbase:prefix-descriptor;
+                        description "IP Prefix descriptor";
                     }
-                    description "Rewrite/NAT value";
+                    case pmip-selector {
+                        uses traffic-selectors:traffic-selector;
+                        description "PMIP Selector";
+                    }
+                    container rfc5777-classifier-template {
+                        uses rfc5777:classifier;
+                        description "RFC 5777 Classifier";
+                    }
+                    description "Rewrite Choice";
                 }
+                description "Rewrite/NAT value";
             }
-            case copy-forward {
-                container copy-forward-nexthop {
+            container copy-forward-nexthop {
                     uses fpcbase:fpc-nexthop;
                     description "Copy Forward Value";
-                }
             }
-            case next-hop {
-                container nexthop {
+            container nexthop {
                     uses fpcbase:fpc-nexthop;
                     description "NextHop Value";
-                }
             }
             case qos {
                 leaf trafficclass {
@@ -637,17 +570,13 @@ revision 2016-08-03 {
   grouping instructions {
     container instructions {
       choice instr-type {
-        case threegpp-instr {
-          leaf instr-3gpp-mob {
+        leaf instr-3gpp-mob {
             type fpcbase:threegpp-instr;
             description "3GPP GTP Mobility Instructions";
-          }
         }
-        case pmip-instr {
-          leaf instr-pmip {
+        leaf instr-pmip {
             type pmip-commandset;
             description "PMIP Instructions";
-          }
         }
         description "Instruction Value Choice";
       }

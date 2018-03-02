@@ -49,7 +49,9 @@ module ietf-trafficselector-types {
 
   revision 2018-02-28 {
     description
-"removed ts-list and updated WG co-chair.";
+     "removed ts-list and updated WG co-chair.";
+    reference
+     "RFC 6088: Traffic Selectors for Flow Bindings";
   }
 
   revision 2017-10-29 {

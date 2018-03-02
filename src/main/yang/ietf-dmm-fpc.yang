@@ -5,12 +5,14 @@ module ietf-dmm-fpc {
 
     import ietf-inet-types { prefix inet;
         revision-date 2013-07-15; }
-    import ietf-restconf { prefix restconf;
-        revision-date 2017-01-26; }
     import ietf-dmm-fpc-settingsext { prefix fpcbase;
         revision-date 2018-02-28; }
     import ietf-diam-trafficclassifier { prefix rfc5777;
         revision-date 2018-02-28; }
+    import ietf-restconf { prefix rc;
+        revision-date 2017-01-26; }
+    import ietf-yang-patch { prefix ypatch;
+        revision-date 2017-02-22; }
 
     organization "IETF Distributed Mobility Management (DMM)
       Working Group";
@@ -94,6 +96,13 @@ revision 2016-08-03 {
         }
         description "FPC Identity";
     }
+    grouping index {
+        leaf index {
+            type uint16;
+            description "Index";
+        }
+        description "Index Value";
+    }
 
     // Policy Structures
     grouping descriptor-template-key {
@@ -121,7 +130,7 @@ revision 2016-08-03 {
         description "Rule Key";
     }
     grouping policy-template-key {
-        leaf polciy-template-key {
+        leaf policy-template-key {
             type fpc:fpc-identity;
             mandatory true;
             description "Rule Identifier";
@@ -132,6 +141,11 @@ revision 2016-08-03 {
     // Policy Structures
     grouping policy-configuration {
         list policy-configuration {
+            key index;
+            leaf index {
+                type uint16;
+                description "Index used for reference";
+            }
             choice policy-value {
                 case descriptor-value {
                     uses fpcbase:fpc-descriptor-value;
@@ -151,19 +165,19 @@ revision 2016-08-03 {
     // FPC Policy
     grouping policy-information-model {
       list action-template {
-        key action-id;
+        key action-template-key;
         uses fpc:action-template-key;
         uses fpcbase:fpc-action-value;
         description "Action Template";
       }
       list descriptor-template {
-        key descriptor-key;
+        key descriptor-template-key;
         uses fpc:descriptor-template-key;
         uses fpcbase:fpc-descriptor-value;
         description "Descriptor Template";
       }
       list rule-template {
-        key rule-key;
+        key rule-template-key;
         uses fpc:rule-template-key;
         leaf descriptor-match-type {
             default "and";
@@ -188,7 +202,10 @@ revision 2016-08-03 {
                 description "Direction";
             }
             list attribute-expression {
+                key index;
+                uses fpc:index;
                 uses fpcbase:fpc-descriptor-value;
+                description "Descriptor Attributes";
             }
             description "A set of Descriptor references";
         }
@@ -201,13 +218,17 @@ revision 2016-08-03 {
             }
             uses fpc:action-template-key;
             list attribute-expression {
+                key index;
+                uses fpc:index;
                 uses fpcbase:fpc-action-value;
+                description "Action Attributes";
             }
             description "A set of Action references";
         }
         description "Rule Template";
       }
       list policy-template {
+        key policy-template-key;
         uses fpc:policy-template-key;
         list rule-template {
             key "precedence";
@@ -268,132 +289,6 @@ revision 2016-08-03 {
     description "Generic interface settings container";
   }
 
-  // Topology Grouping
-  grouping fpc-topology {
-    list service-group {
-        key service-group-key;
-        leaf service-group-key {
-            mandatory true;
-            type fpc:fpc-identity;
-            description "Service Group Key";
-        }
-        leaf service-group-name {
-            type string;
-            description "Service Group Name";
-        }
-        list dpn {
-            key "dpn-key role-key";
-            uses fpc:dpn-key;
-            uses fpc:role-key;
-            list referenced-interface {
-                key interface-key;
-                uses fpc:interface-key;
-                leaf-list peer-service-group-key {
-                    type fpc:fpc-identity;
-                    description "Peer Service Group";
-                }
-                description "Referenced Interface";
-            }
-        }
-        description "Service Group";
-    }
-    list dpn-type {
-      key role-key;
-      uses fpc:role-key;
-      leaf role-name {
-        type string;
-        description "Role Name";
-      }
-      leaf-list service-group-key {
-        type fpc:fpc-identity;
-        description "Service Group";
-      }
-      list interface {
-        key "dpn-key interface-key";
-        uses fpc:dpn-key;
-        uses fpc:interface-key;
-        leaf-list interface-protocol-set {
-          type identityref {
-            base "interface-protocols";
-          }
-          description "Supported protocols";
-        }
-        leaf-list feature-set {
-          type identityref {
-            base "interface-protocols";
-          }
-          description "Supported features";
-        }
-        uses fpc:interface-settings;
-        description "A DPN interface types";
-      }
-      description "Set of DPN types";
-    }
-    list dpn {
-      key dpn-key;
-      uses fpc:dpn-key;
-      leaf dpn-name {
-        type string;
-        description "DPN name";
-      }
-      leaf dpn-resource-mapping-reference {
-        type string;
-        description "Reference to underlying DPN resource(s)";
-      }
-      leaf-list domain-key {
-        type fpc:fpc-identity;
-        description "Domains";
-      }
-      leaf-list service-group-key {
-        type fpc:fpc-identity;
-        description "Service Group";
-      }
-      list interface-set {
-        key "interface-key";
-        uses fpc:interface-key;
-        leaf interface-name {
-            type string;
-            description "DPN-Type Interface Name";
-        }
-        leaf-list roles {
-            type identityref {
-                base "fpc:role";
-            }
-            description "Roles supported";
-        }
-        uses fpc:interface-settings;
-        description "DPN interfaces";
-      }
-      list dpn-policy-configuration {
-        key policy-template-key;
-        uses fpc:policy-template-key;
-        uses fpc:policy-configuration;
-        description "DPN Policy Configuration";
-      }
-      description "Set of DPNs";
-    }
-    list domain-set {
-      key domain-key;
-      leaf domain-key {
-        type fpc:fpc-identity;
-        mandatory true;
-        description "Domain Key";
-      }
-      leaf domain-name {
-        type string;
-        description "Domain displayname";
-      }
-      list domain-policy-configuration {
-        key policy-template-key;
-        uses fpc:policy-template-key;
-        uses fpc:policy-configuration;
-        description "Domain Policy Cofiguration";
-      }
-      description "List of Domains";
-    }
-    description "FPC Topology grouping";
-  }
-
   // Mobility Context
   grouping mobility-context {
     leaf mobility-context-key {
@@ -415,7 +310,6 @@ revision 2016-08-03 {
     }
     container mobile-node {
         leaf-list ip-address {
-            mandatory true;
             type inet:ip-address;
             description "IP Address";
         }
@@ -432,7 +326,10 @@ revision 2016-08-03 {
         description "Mobile Node";
     }
     container domain {
-        uses fpc:domain-template-key;
+        leaf domain-key {
+            type fpc:fpc-identity;
+            description "Domain Key";
+        }
         list domain-policy-configuration {
             key policy-template-key;
             uses fpc:policy-template-key;
@@ -492,26 +389,34 @@ revision 2016-08-03 {
     type uint32;
     description "Event ID Type";
   }
-  grouping monitor-id {
-    leaf monitor-id {
+  grouping monitor-key {
+    leaf monitor-key {
       type fpc:fpc-identity;
       mandatory true;
-      description "Monitor Identifier";
+      description "Monitor Key";
     }
     description "Monitor Id";
   }
-    grouping monitor-config {
-        uses fpc:monitor-id;
+  grouping target-value {
+    leaf target {
+        type string;
+        description "target";
+    }
+    description "Target Value";
+  }
+  grouping monitor-config {
+    uses fpc:extensibility;
+    uses fpc:monitor-key;
+    uses fpc:target-value;
+    container binding-information {
+        description "Placeholder for information helpful
+            to binding the monitor ot the correct target";
+    }
     leaf deterrable {
       type boolean;
       description "Indicates reports related to this
         config can be delayed.";
     }
-    container binding-information {
-      description "Placeholder for information helpful
-        to binding the monitor ot the correct target";
-    }
-    uses fpc:target-value;
     choice configuration {
       mandatory true;
       case periodic-config {
@@ -522,18 +427,18 @@ revision 2016-08-03 {
         description "Periodic Config Case";
       }
       case threshold-config {
-        leaf lo-thresh {
+        leaf low {
           type uint32;
-          description "lo threshold";
+          description "low threshold";
         }
-        leaf hi-thresh {
+        leaf hi {
           type uint32;
-          description "hi threshold";
+          description "high threshold";
         }
         description "Threshold Config Case";
       }
       case scheduled-config {
-        leaf report-time {
+        leaf schedule {
           type uint32;
           description "Reporting Time";
         }
@@ -559,38 +464,158 @@ revision 2016-08-03 {
     }
     description "Monitor Configuration";
   }
-    grouping report {
-      uses fpc:monitor-config;
-      choice report-value {
-        leaf trigger {
-          type fpc:event-type-id;
-          description "Trigger Identifier";
-        }
-        case simple-empty {
-          leaf nothing {
-            type empty;
-            description "Empty Value";
-          }
-          description "Empty Case";
-        }
-        case simple-val32 {
-          leaf val32 {
-            type uint32;
-            description "Unsigned 32 bit value";
-          }
-          description "Simple Value Case";
-        }
-        case list-simple-val32 {
-            leaf-list  val32-list {
-              type uint32;
-              description "Unsigned 32 bit value";
-            }
-            description "Simple Value Case";
-          }
-        description "Report Value";
+
+  // Top Level Structures
+  list tenant {
+   key "tenant-key";
+   leaf tenant-key {
+        type fpc:fpc-identity;
+        description "Tenant Key";
+   }
+   container mobility-information-model {
+    list dpn {
+      key dpn-key;
+      uses fpc:dpn-key;
+      leaf dpn-name {
+        type string;
+        description "DPN name";
       }
-      description "Monitor Report";
+      leaf dpn-resource-mapping-reference {
+        type string;
+        description "Reference to underlying DPN resource(s)";
+      }
+      leaf-list domain-key {
+        type fpc:fpc-identity;
+        description "Domains";
+      }
+      leaf-list service-group-key {
+        type fpc:fpc-identity;
+        description "Service Group";
+      }
+      list interface {
+        key "interface-key";
+        uses fpc:interface-key;
+        leaf interface-name {
+            type string;
+            description "DPN-Type Interface Name";
+        }
+        leaf-list roles {
+            type identityref {
+                base "fpc:role";
+            }
+            description "Roles supported";
+        }
+        uses fpc:interface-settings;
+        description "DPN interfaces";
+      }
+      list dpn-policy-configuration {
+        key policy-template-key;
+        uses fpc:policy-template-key;
+        uses fpc:policy-configuration;
+        description "DPN Policy Configuration";
+      }
+      description "Set of DPNs";
     }
+   }
+   container topology-information-model {
+    list service-group {
+        key service-group-key;
+        leaf service-group-key {
+            mandatory true;
+            type fpc:fpc-identity;
+            description "Service Group Key";
+        }
+        leaf service-group-name {
+            type string;
+            description "Service Group Name";
+        }
+        list dpn {
+            key "dpn-key role-key";
+            uses fpc:dpn-key;
+            uses fpc:role-key;
+            list referenced-interface {
+                key interface-key;
+                uses fpc:interface-key;
+                leaf-list peer-service-group-key {
+                    type fpc:fpc-identity;
+                    description "Peer Service Group";
+                }
+                description "Referenced Interface";
+            }
+        }
+        description "Service Group";
+    }
+    list dpn-type {
+      key role-key;
+      uses fpc:role-key;
+      leaf role-name {
+        type string;
+        description "Role Name";
+      }
+      leaf-list service-group-key {
+        type fpc:fpc-identity;
+        description "Service Group";
+      }
+      list interface {
+        key "dpn-key interface-key";
+        uses fpc:dpn-key;
+        uses fpc:interface-key;
+        leaf-list interface-protocol-set {
+          type identityref {
+            base "interface-protocols";
+          }
+          description "Supported protocols";
+        }
+        leaf-list feature-set {
+          type identityref {
+            base "interface-protocols";
+          }
+          description "Supported features";
+        }
+        uses fpc:interface-settings;
+        description "A DPN interface types";
+      }
+      description "Set of DPN types";
+    }
+    list domain-set {
+      key domain-key;
+      leaf domain-key {
+        type fpc:fpc-identity;
+        mandatory true;
+        description "Domain Key";
+      }
+      leaf domain-name {
+        type string;
+        description "Domain displayname";
+      }
+      list domain-policy-configuration {
+        key policy-template-key;
+        uses fpc:policy-template-key;
+        uses fpc:policy-configuration;
+        description "Domain Policy Cofiguration";
+      }
+      description "List of Domains";
+    }
+    description "FPC Topology grouping";
+   }
+   container policy-information-model {
+        uses fpc:policy-information-model;
+        uses fpc:basename-info;
+        description "Policy";
+   }
+   list mobility-context {
+        key "mobility-context-key";
+        uses fpc:mobility-context;
+        description "Mobility Context";
+   }
+   list monitor {
+        key monitor-key;
+        uses fpc:monitor-config;
+        description "Monitor";
+   }
+   description "Tenant";
+  }
+
     typedef agent-identifier {
         type fpc:fpc-identity;
         description "Agent Identifier";
@@ -614,52 +639,21 @@ revision 2016-08-03 {
           }
           description "Basename Information";
     }
-    // Top Level Structures
-  container tenants {
-    list tenant {
-      key "tenant-id";
-      leaf tenant-id {
-          type fpc:fpc-identity;
-          description "Tenant ID";
-      }
-          container mobility {
-           container topology {
-              uses fpc:fpc-topology;
-             uses fpc:basename-info {
-               if-feature fpc:fpc-basename-registry;
-             }
-              description "Topology";
-            }
-           container policy {
-             uses fpc:fpc-policy;
-             uses fpc:basename-info {
-               if-feature fpc:fpc-basename-registry;
-             }
-             description "Policy";
-           }
-            uses fpc:configurable-policy-set;
-            list mobility-context-set {
-                key "mobility-context-id";
-                config false;
-                uses fpc:mobility-context;
-                description "Mobility Context Set";
-            }
-            list monitor-set {
-              key monitor-id;
-              uses fpc:monitor-config;
-              description "Monitor Configurations";
-            }
-            description "Mobility Elements";
-          }
-      description "Tenant";
+
+    // RPCs
+    grouping client-id {
+        leaf client-id {
+            type fpc:client-identifier;
+            mandatory true;
+            description "Client Id";
+        }
+        description "Client Identifier";
     }
-    description "Tenant List";
-  }
-    // RPC
-    // RPC Specific Structures
-    typedef op-identifier {
-        type uint64;
-        description "Operation Identifier";
+    grouping execution-delay {
+        leaf execution-delay {
+            type uint32;
+            description "Execution Delay (ms)";
+        }
     }
     typedef ref-scope {
       type enumeration {
@@ -686,164 +680,191 @@ revision 2016-08-03 {
       }
       description "Search scope for references in the operation.";
     }
-    grouping context-operation {
-      uses fpc:mobility-context;
-      uses fpcbase:instructions;
-      description "Context Operation";
+    rpc configure {
+        input {
+            uses client-id;
+            uses execution-delay;
+            uses ypatch:yang-patch;
+        }
+        output {
+            uses ypatch:yang-patch-status;
+        }
+        description "Configure RPC";
     }
-    grouping payload {
-        uses fpc:configurable-policy-set;
-    list mobility-context-set {
-        key "mobility-context-id";
-        uses fpc:mobility-context;
-        description "Mobility Context Set";
+    augment "/configure/input/yang-patch/edit" {
+        leaf op-ref-scope {
+            type fpc:ref-scope;
+            description "Reference Scope";
+        }
+        uses fpcbase:instructions;
+        description "yang-patch edit augments for configure rpc";
     }
-    uses fpc:fpc-policy;
-    description "Payload";
-  }
+    grouping subsequent-edits {
+         list subsequent-edit {
+           key edit-id;
+           ordered-by user;
+
+           description "Edit list";
+
+           leaf edit-id {
+             type string;
+             description "Arbitrary string index for the edit.";
+           }
+
+           leaf operation {
+             type enumeration {
+               enum create {
+                 description "Create";
+               }
+               enum delete {
+                 description "Delete";
+               }
+               enum insert {
+                 description "Insert";
+               }
+               enum merge {
+                 description "Merge";
+               }
+               enum move {
+                 description "Move";
+               }
+               enum replace {
+                 description "Replace";
+               }
+               enum remove {
+                 description
+                   "Delete the target node if it currently exists.";
+               }
+             }
+             mandatory true;
+             description
+               "The datastore operation requested";
+           }
+
+           leaf target {
+             type ypatch:target-resource-offset;
+             mandatory true;
+             description
+               "Identifies the target data node";
+           }
+
+           leaf point {
+             when "(../operation = 'insert' or ../operation = 'move')"
+                + "and (../where = 'before' or ../where = 'after')" {
+               description
+                 "This leaf only applies for 'insert' or 'move'
+                  operations, before or after an existing entry.";
+             }
+             type ypatch:target-resource-offset;
+             description
+               "The absolute URL path for the data node";
+           }
+
+           leaf where {
+             when "../operation = 'insert' or ../operation = 'move'" {
+               description
+                 "This leaf only applies for 'insert' or 'move'
+                  operations.";
+             }
+             type enumeration {
+               enum before {
+                 description
+                   "Insert or move a data node before.";
+               }
+               enum after {
+                 description
+                   "Insert or move a data node after.";
+               }
+              enum first {
+                 description
+                   "Insert or move a data node so it becomes ordered
+                    as the first entry.";
+               }
+               enum last {
+                 description
+                   "Insert or move a data node so it becomes ordered
+                    as the last entry.";
+               }
+             }
+             default last;
+             description
+               "Identifies where a data resource will be inserted
+                or moved.";
+           }
+
+           anydata value {
+             when "../operation = 'create' "
+                + "or ../operation = 'merge' "
+                + "or ../operation = 'replace' "
+                + "or ../operation = 'insert'" {
+               description
+                 "The anydata 'value' is only used for 'create',
+                  'merge', 'replace', and 'insert' operations.";
+             }
+             description
+               "Value used for this edit operation.";
+           }
+         }
+         description "Subsequent Edits";
+    }
+    augment "/configure/output/yang-patch-status/edit-status/edit/"
+        + "edit-status-choice/ok" {
+        leaf notify-follows {
+            type boolean;
+        }
+        uses fpc:subsequent-edits;
+        description "Configure output augments";
+    }
+
     grouping op-header {
-    leaf client-id {
-      type fpc:client-identifier;
-      mandatory true;
-      description "Client ID";
-    }
-    leaf delay {
-      type uint32;
-      description "Operation Delay (ms)";
-    }
-    leaf op-id {
-      type op-identifier;
-      mandatory true;
-      description "Operation Identifier";
-    }
-    description "Common Operation header";
-    }
-  grouping fpc-op-type {
-    leaf op-type {
-      type enumeration {
-        enum create {
-          value 0;
-          description "create";
+        uses client-id;
+        uses execution-delay;
+        leaf op-id {
+            type uint64;
+            mandatory true;
+            description "Operation Identifier";
         }
-        enum update {
-          value 1;
-          description "update";
+        description "Common Operation header";
+    }
+    grouping monitor-response {
+        leaf op-id {
+            type uint64;
+            mandatory true;
+            description "Operation Identifier";
         }
-        enum query {
-          value 2;
-          description "query";
+
+        choice edit-status-choice {
+               description
+                 "A choice between different types of status
+                  responses for each 'edit' entry.";
+               leaf ok {
+                 type empty;
+                 description
+                   "This 'edit' entry was invoked without any
+                    errors detected by the server associated
+                    with this edit.";
+               }
+               case errors {
+                 uses rc:errors;
+                 description
+                   "The server detected errors associated with the
+                    edit identified by the same 'edit-id' value.";
+               }
         }
-        enum delete {
-          value 3;
-          description "delete";
-        }
-      }
-      mandatory true;
-      description "Type";
     }
-    description "FPC Operation Type";
-  }
-  grouping fpc-op-ref-scope {
-    leaf op-ref-scope {
-      type fpc:ref-scope;
-      description "Reference Scope";
-    }
-    description "FPC OP-REF Scope";
-  }
-  grouping op-input {
-    uses fpc:fpc-op-ref-scope;
-    uses fpcbase:instructions;
-    choice op_body {
-      case create_or_update {
-        uses fpc:payload;
-        description "Create/Update input";
-      }
-      case delete_or_query {
-        uses fpc:target-value;
-        description "Delete/Query input";
-      }
-      description "Opeartion Input value";
-    }
-    description "Operation Input";
-  }
-  typedef result-status {
-    type enumeration {
-      enum ok {
-        value 0;
-        description "OK";
-      }
-      enum err {
-        value 1;
-        description "Error";
-      }
-    }
-    description "Result Status";
-  }
-  grouping status-value {
-    leaf op-id {
-      type op-identifier;
-      mandatory true;
-      description "Operation Identifier";
-    }
-    leaf status {
-      type result-status;
-      mandatory true;
-      description "Status";
-    }
-    description "Status value for all messages";
-  }
-  grouping result {
-    uses fpc:status-value;
-    uses fpc:result-body;
-    description "General Result grouping";
-  }
-  grouping result-body {
-    leaf notify-follows {
-      type boolean;
-      description "Indicates that a notification will
-        follow regarding this result";
-    }
-    choice result-type {
-      case err {
-        uses restconf:errors;
-        description "Error Information";
-      }
-      case create-or-update-success {
-        uses fpc:payload;
-        description "Create/Update Success";
-      }
-      case delete_or_query-success {
-        uses fpc:target-value;
-        description "Delete/Query Success";
-      }
-      case empty-case {
-        description "Empty Case";
-      }
-      description "Result Value";
-    }
-    description "Common Result member body";
-  }
+
   // Common RPCs
-  rpc configure {
-    description "CONF message";
-    input {
-      uses fpc:op-header;
-      uses fpc:fpc-op-type;
-      uses fpc:op-input;
-    }
-    output {
-      uses fpc:result;
-    }
-  }
   rpc reg_monitor {
     description "Used to register monitoring of parameters/events";
     input {
       uses fpc:op-header;
-      uses fpc:monitor-config;
+      list monitors {
+        key monitor-key;
+        uses fpc:monitor-config;
+      }
     }
     output {
-      uses fpc:status-value;
-      uses restconf:errors;
+        uses fpc:monitor-response;
     }
   }
   rpc dereg_monitor {
@@ -851,71 +872,77 @@ revision 2016-08-03 {
       parameters/events";
     input {
       uses fpc:op-header;
-      leaf-list monitor-set {
-        type fpc:fpc-identity;
+      list monitor {
+        key monitor-key;
+        uses fpc:monitor-key;
         min-elements 1;
+        leaf send_data {
+            type boolean;
+            description "Indicates if NOTIFY with final data
+                is desired upon deregistration";
+        }
         description "Monitor Identifier";
-      }
-      leaf send_data {
-        type boolean;
-        description "Indicates if NOTIFY with final data
-          is desired upon deregistration";
       }
     }
     output {
-      uses fpc:status-value;
-      uses restconf:errors;
+        uses fpc:monitor-response;
     }
   }
   rpc probe {
     description "Probe the status of a registered monitor";
     input {
       uses fpc:op-header;
-      uses fpc:monitor-id;
+      list monitor {
+        key monitor-key;
+        uses fpc:monitor-key;
+        min-elements 1;
+        description "Monitor";
+      }
     }
     output {
-      uses fpc:status-value;
-      uses restconf:errors;
+        uses fpc:monitor-response;
     }
   }
+
   // Notification Messages & Structures
-  grouping notification-header {
-    leaf notification-id {
-      type uint32;
-      description "Notification Identifier";
-    }
-    leaf timestamp {
-      type uint32;
-      description "timestamp";
-    }
-    description "Notification Header";
-  }
   notification config-result-notification {
-    uses fpc:notification-header;
-    uses fpc:status-value;
-    choice value {
-      case config-result {
-        uses result-body;
-        description "CONF Result";
-      }
-      case config-bundle-result {
-        list bundles {
-          key op-id;
-          uses fpc:result;
-          description "Operation Identifier";
-        }
-        description "CONF_BUNDLES Result";
-      }
-      description "Config Result value";
-    }
-    description "CONF/CONF_BUNDLES Async Result";
+    uses ypatch:yang-patch-status;
   }
+  augment "/config-result-notification" {
+        uses fpc:subsequent-edits;
+        description "config-result-notificatio augment";
+  }
+
   identity notification-cause {
     description "Notification Cause";
   }
-  identity dpn-availabilty-change {
+  identity subscribed-event-occured {
     base "notification-cause";
-    description "DPN Candidate/Exisitng DPN Availablity Change";
+    description "Subscribed Event Occurence";
+  }
+  identity low-threshold-crossed {
+    base "notification-cause";
+    description "Subscribed Event Occurence";
+  }
+  identity high-threshold-crossed {
+    base "notification-cause";
+    description "Subscribed Event Occurence";
+  }
+  identity periodic-report {
+    base "notification-cause";
+    description "Periodic Report";
+  }
+  identity scheduled-report {
+    base "notification-cause";
+    description "Scheduled Report";
+  }
+  identity probe {
+    base "notification-cause";
+    description "Probe";
+  }
+  identity deregistration-final-value {
+    base "notification-cause";
+    description "Probe";
   }
   identity monitoring-suspension {
     base "notification-cause";
@@ -925,12 +952,25 @@ revision 2016-08-03 {
     base "notification-cause";
     description "Indicates that monitoring has resumed";
   }
-  identity monitor-notification {
+  identity dpn-available {
     base "notification-cause";
-    description "Indicates 1+ monitor reports";
+    description "DPN Candidate Available";
   }
+  identity dpn-unavailable {
+    base "notification-cause";
+    description "DPN Unavailable";
+  }
+
+
   notification notify {
-    uses fpc:notification-header;
+    leaf notification-id {
+      type uint32;
+      description "Notification Identifier";
+    }
+    leaf timestamp {
+      type uint32;
+      description "timestamp";
+    }
     leaf cause {
       type identityref {
         base "notification-cause";
@@ -939,14 +979,12 @@ revision 2016-08-03 {
     }
     choice value {
       case dpn-candidate-available {
-        if-feature fpc:fpc-auto-binding;
         leaf node-id {
           type inet:uri;
           description "Topology URI";
         }
         list supported-interface-list {
-          key "access-technology role";
-          uses fpc:access-technology-key;
+          key role-key;
           uses fpc:role-key;
           description "Support Intefaces";
         }
@@ -961,8 +999,26 @@ revision 2016-08-03 {
       }
       case monitor-notification {
         list reports {
-          uses fpc:report;
-          description "Reports";
+            choice report-value {
+                leaf trigger {
+                    type fpc:event-type-id;
+                    description "Trigger Identifier";
+                }
+                leaf nothing {
+                    type empty;
+                    description "Empty Value";
+                }
+                leaf val32 {
+                    type uint32;
+                    description "Unsigned 32 bit value";
+                }
+                leaf-list  val32-list {
+                    type uint32;
+                    description "Unsigned 32 bit value";
+                }
+                description "Simple Value Case";
+            }
+            description "Report Value";
         }
         description "Monitor Notification";
       }

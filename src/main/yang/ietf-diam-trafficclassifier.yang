@@ -90,8 +90,10 @@ module ietf-diam-trafficclassifier {
     }
     typedef negated-flag-type {
     	type enumeration {
-    		enum False { value 0; }
-    		enum True { value 1; }
+            enum False { value 0;
+                description "false"; }
+            enum True { value 1;
+                description "True"; }
     	}
     	description
     		"When set to True, the meaning of the match is inverted and the
@@ -100,12 +102,22 @@ module ietf-diam-trafficclassifier {
 
     		   Note that the negation does not impact the port comparisons.";
     }
+    grouping index {
+        leaf index {
+            type uint16;
+            mandatory true;
+            description "Identifier used for referencing";
+        }
+        description "Index Value";
+    }
     grouping to-from-spec-value {
     	leaf-list ip-address {
     		type inet:ip-address;
             description "IP address";
     	}
     	list ip-address-range {
+            key index;
+            uses diamclassifier:index;
             leaf ip-address-start {
                 type inet:ip-address;
                 description "IP Address Start";
@@ -127,17 +139,18 @@ module ietf-diam-trafficclassifier {
     	list mac-address-mask {
             key mac-address;
             leaf mac-address {
-                mandatory true;
                 type yang-types:mac-address;
+                mandatory true;
                 description "MAC address";
             }
             leaf macaddress-mask-pattern {
-                mandatory true;
                 type yang-types:mac-address;
+                mandatory true;
                 description
     			 "The value specifies the bit positions of a
     			   MAC address that are taken for matching.";
             }
+            description "MAC Address Mask";
     	}
     	leaf-list eui64-address {
             type diamclassifier:eui64-address-type;
@@ -146,24 +159,27 @@ module ietf-diam-trafficclassifier {
     	list eui64-address-mask {
     		key eui64-address;
             leaf eui64-address {
-                mandatory true;
                 type diamclassifier:eui64-address-type;
+                mandatory true;
                 description "eui64 address";
             }
             leaf eui64-address-mask-pattern {
-                mandatory true;
                 type diamclassifier:eui64-address-type;
+                mandatory true;
                 description
     			 "The value is 8 octets specifying the bit
                   positions of a EUI64 address that are taken
                  for matching.";
             }
+            description "EUI64 Address Mask";
     	}
     	leaf-list port {
     		type inet:port-number;
             description "Port Number";
     	}
     	list port-range {
+            key index;
+            uses diamclassifier:index;
             leaf ip-address-start {
                 type inet:port-number;
                 description "Port Start";
@@ -188,8 +204,8 @@ module ietf-diam-trafficclassifier {
 
     grouping option-type-group {
         leaf option-type {
-            mandatory true;
             type uint8;
+            mandatory true;
             description "Option Type";
         }
         leaf-list ip-option-value {
@@ -208,6 +224,7 @@ module ietf-diam-trafficclassifier {
         }
         description "VLAN ID";
     }
+
   grouping classifier {
     leaf protocol {
         type uint8;
@@ -218,8 +235,16 @@ module ietf-diam-trafficclassifier {
         description "Direction";
     }
     list from-spec {
+        key index;
+        uses diamclassifier:index;
         uses diamclassifier:to-from-spec-value;
         description "from specification";
+    }
+    list to-spec {
+        key index;
+        uses diamclassifier:index;
+        uses diamclassifier:to-from-spec-value;
+        description "to specification";
     }
     leaf-list disffserv-code-point {
         type inet:dscp;
@@ -251,8 +276,8 @@ module ietf-diam-trafficclassifier {
     list tcp-flag {
         key tcp-flag-type;
         leaf tcp-flag-type {
-            mandatory true;
             type uint32;
+            mandatory true;
             description "TCP Flag Type";
         }
         leaf negated {
@@ -267,6 +292,8 @@ module ietf-diam-trafficclassifier {
         description "ICMP Option Value";
     }
     list eth-option {
+        key index;
+        uses diamclassifier:index;
         container eth-proto-type {
             leaf-list eth-ether-type {
                 type string {
@@ -283,6 +310,8 @@ module ietf-diam-trafficclassifier {
             description "Ether Proto Type";
         }
         list vlan-id-range {
+            key index;
+            uses diamclassifier:index;
             leaf-list s-vlan-id-start {
                 type diamclassifier:vlan-id;
                 description "S-VID  VLAN ID Start";
@@ -299,8 +328,11 @@ module ietf-diam-trafficclassifier {
                 type diamclassifier:vlan-id;
                 description "C-VID  VLAN ID End";
             }
+            description "VLAN ID Range";
         }
         list user-priority-range {
+            key index;
+            uses diamclassifier:index;
             leaf-list low-user-priority {
                 type uint32 {
                     range "0..7";

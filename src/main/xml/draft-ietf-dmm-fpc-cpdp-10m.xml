@@ -1755,7 +1755,7 @@ DPN         |                 DPN        |
             <t>An edit response, Edit-Status, is comprised of the following:
             <list>
                 <t>Edit-Id: Edit Indentifier.</t>
-                <t>Edit-Status: Either OK or ERROR.</t>
+                <t>Edit-Status: OK.</t>
                 <t>When the Edit-Status is OK the following values MAY be present
                     <list>
                         <t>Notify-Follows - A boolean indicator that the edit has
@@ -1770,6 +1770,8 @@ DPN         |                 DPN        |
                     See <xref target="messages"/> for details.</t>
             </list>
             </t>
+            <t>The response will minimally contain an Edit-Status implying 'OK' or a
+                list of errors.</t>
             
 <t>
     <figure anchor="configure-result"
@@ -1786,7 +1788,7 @@ DPN         |                 DPN        |
 |         +-[Error-Info]
 +-[Edit-Status]
 |         +-[Edit-Id:]
-|         +-[Edit-Status:]
+|         +-[Edit-Status: ~ OK]
 |         +-[Notify-Follows]
 |         +-[Subsequent-Edits] <List>
 |         |    +-[Edit-Id:] <L-Key>
