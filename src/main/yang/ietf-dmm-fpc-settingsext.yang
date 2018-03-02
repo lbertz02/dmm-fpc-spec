@@ -73,6 +73,99 @@ revision 2016-08-03 {
     reference "draft-ietf-dmm-fpc-cpdp-05";
 }
 
+    //Tunnel Information
+     identity tunnel-type {
+          description "Tunnel Type";
+      }
+      identity grev1 {
+          base "fpcbase:tunnel-type";
+          description "GRE v1";
+      }
+      identity grev2 {
+          base "fpcbase:tunnel-type";
+          description "GRE v2";
+      }
+      identity ipinip {
+          base "fpcbase:tunnel-type";
+          description "IP in IP";
+      }
+      identity gtpv1 {
+          base "fpcbase:tunnel-type";
+          description "GTP version 1 Tunnel";
+      }
+      identity gtpv2 {
+          base "fpcbase:tunnel-type";
+          description "GTP version 2 Tunnel";
+      }
+
+    grouping tunnel-value {
+      container tunnel-info {
+        leaf tunnel-local-address {
+            type inet:ip-address;
+            description "local tunnel address";
+        }
+        leaf tunnel-remote-address {
+            type inet:ip-address;
+            description "remote tunnel address";
+        }
+        leaf mtu-size {
+            type uint32;
+            description "MTU size";
+        }
+        leaf tunnel {
+            type identityref {
+                base "fpcbase:tunnel-type";
+            }
+        description "tunnel type";
+        }
+        leaf payload-type {
+            type enumeration {
+                enum ipv4 {
+                    value 0;
+                    description "IPv4";
+                }
+                enum ipv6 {
+                    value 1;
+                    description "IPv6";
+                }
+                enum dual {
+                    value 2;
+                    description "IPv4 and IPv6";
+                }
+            }
+            description "Payload Type";
+        }
+        leaf gre-key {
+            type uint32;
+            description "GRE_KEY";
+        }
+        container gtp-tunnel-info {
+            leaf local-tunnel-identifier {
+                type uint32;
+                description "Tunnel Endpoint IDentifier (TEID)";
+            }
+            leaf remote-tunnel-identifier {
+                type uint32;
+                description "Tunnel Endpoint IDentifier (TEID)";
+            }
+            leaf sequence-numbers-enabled {
+                type boolean;
+                description "Sequence No. Enabled";
+            }
+            description "GTP Tunnel Information";
+        }
+        leaf ebi {
+            type fpcbase:ebi-type;
+            description "EPS Bearier Identifier";
+        }
+        leaf lbi {
+            type fpcbase:ebi-type;
+            description "Linked Bearier Identifier";
+        }
+        description "Tunnel Information";
+      }
+    }
+
   //////////////////////////////
   // DESCRIPTOR DEFINITIONS
 
@@ -267,13 +360,17 @@ revision 2016-08-03 {
         }
         description "RFC 5777 Classifier Option";
       }
-      case threegpp-tft {
-          list packet-filters {
-            key identifier;
+      case threegpp-packet-filter {
+          container packet-filter {
             uses fpcbase:packet-filter;
-            description "List of Packet Filters";
+            description "Packet Filter";
           }
-          description "3GPP Packet Filter List";
+          description "3GPP Packet Filter";
+      }
+      case tunnel-info {
+        uses fpcbase:tunnel-value;
+        description "Tunnel Descriptor (only
+            considers source info)";
       }
       description "Descriptor Value";
     }
@@ -371,6 +468,11 @@ revision 2016-08-03 {
                     description "Segment Id";
                 }
                 description "Segment Id Stack";
+            }
+            case tunnel-info {
+                uses fpcbase:tunnel-value;
+                description "Tunnel Descriptor (only
+                considers source info)";
             }
             description "Value";
         }
@@ -475,7 +577,6 @@ revision 2016-08-03 {
             case rewrite {
                 container rewrite {
                     choice rewrite-value {
-
                         case prefix-descriptor {
                             uses fpcbase:prefix-descriptor;
                             description "IP Prefix descriptor";
@@ -532,126 +633,7 @@ revision 2016-08-03 {
         description "FPC Action Value";
     }
 
-
-    //Tunnel Information
-     identity tunnel-type {
-          description "Tunnel Type";
-      }
-      identity grev1 {
-          base "fpcbase:tunnel-type";
-          description "GRE v1";
-      }
-      identity grev2 {
-          base "fpcbase:tunnel-type";
-          description "GRE v2";
-      }
-      identity ipinip {
-          base "fpcbase:tunnel-type";
-          description "IP in IP";
-      }
-      identity gtpv1 {
-          base "fpcbase:tunnel-type";
-          description "GTP version 1 Tunnel";
-      }
-      identity gtpv2 {
-          base "fpcbase:tunnel-type";
-          description "GTP version 2 Tunnel";
-      }
-
-    grouping tunnel-value {
-        leaf tunnel-local-address {
-            type inet:ip-address;
-            description "local tunnel address";
-        }
-        leaf tunnel-remote-address {
-            type inet:ip-address;
-            description "remote tunnel address";
-        }
-        leaf mtu-size {
-            type uint32;
-            description "MTU size";
-        }
-        leaf tunnel {
-            type identityref {
-                base "fpcbase:tunnel-type";
-            }
-        description "tunnel type";
-        }
-        leaf payload-type {
-            type enumeration {
-                enum ipv4 {
-                    value 0;
-                    description "IPv4";
-                }
-                enum ipv6 {
-                    value 1;
-                    description "IPv6";
-                }
-                enum dual {
-                    value 2;
-                    description "IPv4 and IPv6";
-                }
-            }
-            description "Payload Type";
-        }
-        leaf gre-key {
-            type uint32;
-            description "GRE_KEY";
-        }
-        container gtp-tunnel-info {
-            leaf local-tunnel-identifier {
-                type uint32;
-                description "Tunnel Endpoint IDentifier (TEID)";
-            }
-            leaf remote-tunnel-identifier {
-                type uint32;
-                description "Tunnel Endpoint IDentifier (TEID)";
-            }
-            leaf sequence-numbers-enabled {
-                type boolean;
-                description "Sequence No. Enabled";
-            }
-            description "GTP Tunnel Information";
-        }
-        leaf ebi {
-            type fpcbase:ebi-type;
-            description "EPS Bearier Identifier";
-        }
-        leaf lbi {
-            type fpcbase:ebi-type;
-            description "Linked Bearier Identifier";
-        }
-        description "Tunnel Information";
-    }
-
-    //SETTINGS DEFINITIONS
-    grouping fpc-settings {
-        leaf-list delegated-ip-prefixes {
-            type inet:ip-prefix;
-            description "Delegated Prefix(es)";
-        }
-        leaf imsi {
-            type fpcbase:imsi-type;
-            description "IMSI";
-        }
-        description "A collection of settings";
-    }
-
-    identity access-technology {
-        description "The technology used in the access network";
-    }
-    identity role {
-        description "The access-technology function of the DPN";
-    }
-  identity ietf-pmip-access-type {
-    base "fpcbase:access-technology";
-    description "PMIP Access";
-  }
-  identity threeGPP-access-type {
-    base "fpcbase:access-technology";
-    description "3GPP Access Type";
-  }
-   // Instructions
+  // Instructions
   grouping instructions {
     container instructions {
       choice instr-type {

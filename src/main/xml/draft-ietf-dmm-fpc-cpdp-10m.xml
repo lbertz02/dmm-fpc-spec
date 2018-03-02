@@ -1345,18 +1345,19 @@ DPN         |                 DPN        |
  |            +-[Delegating-IP-Prefix:] <Set>
  |            +-[Parent-Context]
  |            +-[Child-Context] <Set>
- |            +-[Mobile-Node:]
- |            |       +-[IP-Address:] <Set>
+ |            +-[Mobile-Node]
+ |            |       +-[IP-Address] <Set>
  |            |       +-[MN-Policy-Configuration] <Set>
  |            +-[Domain-Key]
  |            |       +-[Domain-Policy-Configuration] <Set>
  |            +-[DPN-Key] <Set>
+ |            |       +-[Role]
  |            |       +-[DPN-Policy-Configuration] <Set>
- |            +-[ServiceDataFlow]
- |            |       +-[Service-Group-Key]
- |            |       +-[Interface-Key] <Set>
- |            |       +-[Flow-Policy-Configuration] <Set>
- |            |       |       +-[Direction]
+ |            |       +-[ServiceDataFlow]
+ |            |       |       +-[Service-Group-Key]
+ |            |       |       +-[Interface-Key] <Set>
+ |            |       |       +-[Flow-Policy-Configuration] <Set>
+ |            |       |       |       +-[Direction]
 
     ]]></artwork>
             <postamble></postamble>
@@ -1379,6 +1380,7 @@ DPN         |                 DPN        |
     <t hangText="Domain-Policy-Configuration: "> For each Domain-Policy in the
 	set, a key and relevant information for the Policy Attributes. </t>
     <t hangText="DPN-Key: "> Enables access to a DPN instance. </t>
+    <t hangText="Role: "> Role this DPN fulfills in the Mobility-Context.</t>
     <t hangText="DPN-Policy-Configuration: "> For each DPN-Policy in the set, a
 	key and relevant information for the Policy Attributes. </t>
     <t hangText="ServiceDataFlow: "> Characterizes a traffic flow that has been
@@ -2682,6 +2684,7 @@ DPN         |                 DPN        |
                <t>sequence-numbers-on - Indicates that sequence numbers will be used</t>
            </list>
        </t>
+       <t>Tunnels can be used as Next Hop and Descriptor values.</t>
        <t>
            <figure anchor="tunneltemplates"
                title="Tunnel Templates">
@@ -2699,6 +2702,7 @@ DPN         |                 DPN        |
 |     +-[(MPLS Stack) mpls-label-stack]
 |     +-[(MPLS SR Stack) mpls-sr-stack]
 |     +-[(IPv6 SR Stack) srv6-stack]
+|     +-[tunnel-template]
 ...
 |
 +-[tunnel-template]
