@@ -10,7 +10,8 @@ module ietf-pmip-qos {
       prefix inet;
       revision-date 2013-07-15;
     }
-    import ietf-trafficselector-types { prefix traffic-selectors; }
+    import ietf-trafficselector-types { prefix traffic-selectors;
+        revision-date 2018-02-28; }
 
     organization "IETF Distributed Mobility Management (DMM)
       Working Group";
