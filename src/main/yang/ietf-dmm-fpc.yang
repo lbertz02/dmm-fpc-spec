@@ -72,20 +72,34 @@ revision 2016-08-03 {
 }
 
     //General Structures
-    grouping extensibility {
+    grouping templatedef {
         leaf extensible {
             type boolean;
             description "Indicates if the template is extensible";
         }
-        description "Extensibility";
-    }
-    grouping templatedef {
-        uses fpc:extensibility;
         leaf-list mandatory-static-attributes {
             type string;
             description "Attribute (Name) that cannot change.  If
                 it has not been defined in the template it MUST not
                 be present at all for the template to be valid.";
+        }
+        leaf entity-state {
+            type enumeration {
+                enum initial {
+                    description "Inital Configuration";
+                }
+                enum partially-configured {
+                    description "Partial Configuration";
+                }
+                enum configured {
+                    description "Confgured";
+                }
+                enum active {
+                    description "Active";
+                }
+            }
+            default initial;
+            description "Entity State";
         }
         description "Teamplate Definition";
     }
@@ -139,7 +153,7 @@ revision 2016-08-03 {
         description "Rule Key";
     }
 
-    // Policy Structures
+    // Settings
     grouping policy-configuration {
         list policy-configuration {
             key index;
@@ -147,7 +161,7 @@ revision 2016-08-03 {
                 type uint16;
                 description "Index used for reference";
             }
-            choice policy-value {
+            choice policy-setting {
                 case descriptor-value {
                     uses fpcbase:fpc-descriptor-value;
                     description "Descriptor Value";
@@ -156,7 +170,7 @@ revision 2016-08-03 {
                     uses fpcbase:fpc-action-value;
                     description "Action Value";
                 }
-                description "Configuration Value";
+                description "Policy Attributes";
             }
             description "Policy Configuration";
         }
@@ -169,12 +183,14 @@ revision 2016-08-03 {
         key action-template-key;
         uses fpc:action-template-key;
         uses fpcbase:fpc-action-value;
+        uses fpc:templatedef;
         description "Action Template";
       }
       list descriptor-template {
         key descriptor-template-key;
         uses fpc:descriptor-template-key;
         uses fpcbase:fpc-descriptor-value;
+        uses fpc:templatedef;
         description "Descriptor Template";
       }
       list rule-template {
@@ -226,6 +242,8 @@ revision 2016-08-03 {
             }
             description "A set of Action references";
         }
+        uses fpc:templatedef;
+        uses fpc:policy-configuration;
         description "Rule Template";
       }
       list policy-template {
@@ -242,6 +260,8 @@ revision 2016-08-03 {
             uses fpc:rule-template-key;
             description "Rule Entry";
         }
+        uses fpc:templatedef;
+        uses fpc:policy-configuration;
         description "Policy Template";
       }
       description "FPC Policy Structures";
@@ -319,7 +339,7 @@ revision 2016-08-03 {
             type fpcbase:imsi-type;
             description "IMSI";
         }
-        list mn-policy-configuration {
+        list mn-settings {
             key policy-template-key;
             uses fpc:policy-template-key;
             uses fpc:policy-configuration;
@@ -332,7 +352,7 @@ revision 2016-08-03 {
             type fpc:fpc-identity;
             description "Domain Key";
         }
-        list domain-policy-configuration {
+        list domain-settings {
             key policy-template-key;
             uses fpc:policy-template-key;
             uses fpc:policy-configuration;
@@ -343,7 +363,7 @@ revision 2016-08-03 {
     list dpn {
         key dpn-key;
         uses fpc:dpn-key;
-        list dpn-policy-configuration {
+        list dpn-settings {
             key policy-template-key;
             uses fpc:policy-template-key;
             uses fpc:policy-configuration;
@@ -370,7 +390,7 @@ revision 2016-08-03 {
                 uses fpc:interface-key;
                 description "interface assigned";
             }
-            list flow-policy-configuration {
+            list flow-settings {
                 key policy-template-key;
                 uses fpc:policy-template-key;
                 uses fpc:policy-configuration;
@@ -407,7 +427,7 @@ revision 2016-08-03 {
     description "Target Value";
   }
   grouping monitor-config {
-    uses fpc:extensibility;
+    uses fpc:templatedef;
     uses fpc:monitor-key;
     uses fpc:target-value;
     container binding-information {
@@ -498,7 +518,7 @@ revision 2016-08-03 {
         uses fpc:interface-settings;
         description "DPN interfaces";
       }
-      list dpn-policy-configuration {
+      list dpn-settings {
         key policy-template-key;
         uses fpc:policy-template-key;
         uses fpc:policy-configuration;
@@ -508,8 +528,11 @@ revision 2016-08-03 {
     }
     description "Mobility Information Model";
    }
-   container topology-information-model {
-    list service-group {
+   container dpn-checkpoint {
+        uses fpc:basename-info;
+        description "DPN Checkpoint information";
+   }
+   list service-group {
         key service-group-key;
         leaf service-group-key {
             type fpc:fpc-identity;
@@ -535,8 +558,19 @@ revision 2016-08-03 {
             }
             description "DPN";
         }
+        list service-settings {
+            key policy-template-key;
+            uses fpc:policy-template-key;
+            uses fpc:policy-configuration;
+            description "Service Configuration";
+        }
         description "Service Group";
-    }
+   }
+   container service-group-checkpoint {
+        uses fpc:basename-info;
+        description "Service Group Checkpoint information";
+   }
+   container topology-information-model {
     list dpn-type {
       key role-key;
       uses fpc:role-key;
@@ -569,7 +603,7 @@ revision 2016-08-03 {
       }
       description "Set of DPN types";
     }
-    list domain-set {
+    list domain {
       key domain-key;
       leaf domain-key {
         type fpc:fpc-identity;
@@ -580,14 +614,15 @@ revision 2016-08-03 {
         type string;
         description "Domain displayname";
       }
-      list domain-policy-configuration {
+      list domain-settings {
         key policy-template-key;
         uses fpc:policy-template-key;
         uses fpc:policy-configuration;
-        description "Domain Policy Cofiguration";
+        description "Domain Cofiguration";
       }
       description "List of Domains";
     }
+    uses fpc:basename-info;
     description "FPC Topology grouping";
    }
    container policy-information-model {
@@ -620,10 +655,6 @@ revision 2016-08-03 {
           leaf basename {
             type fpc:fpc-identity;
             description "Rules Basename";
-          }
-          leaf base-state {
-            type string;
-            description "Current State";
           }
           leaf base-checkpoint {
             type string;
@@ -965,55 +996,42 @@ revision 2016-08-03 {
       type uint32;
       description "timestamp";
     }
-    leaf cause {
-      type identityref {
-        base "notification-cause";
-      }
-      description "Notification Cause";
-    }
-    choice value {
-      case dpn-candidate-available {
-        leaf node-id {
-          type inet:uri;
-          description "Topology URI";
+    list report {
+        key monitor-key;
+        uses fpc:monitor-key;
+        min-elements 1;
+        leaf trigger {
+            type identityref {
+                base "notification-cause";
+            }
+            description "Notification Cause";
         }
-        list supported-interface-list {
-          key role-key;
-          uses fpc:role-key;
-          description "Support Intefaces";
-        }
-        description "DPN Candidate Information";
-      }
-      leaf dpn-id {
-        type fpc:fpc-identity;
-        description "DPN Identifier for DPN Unavailable";
-      }
-      case monitor-notification {
-        list reports {
-            choice report-value {
-                leaf trigger {
-                    type fpc:event-type-id;
-                    description "Trigger Identifier";
+        choice value {
+            case dpn-candidate-available {
+                leaf node-id {
+                    type inet:uri;
+                    description "Topology URI";
                 }
-                leaf nothing {
-                    type empty;
-                    description "Empty Value";
+                list supported-interface-list {
+                    key role-key;
+                    uses fpc:role-key;
+                    description "Support Intefaces";
                 }
-                leaf val32 {
-                    type uint32;
-                    description "Unsigned 32 bit value";
+                description "DPN Candidate Information";
+            }
+            case dpn-unavailable {
+                leaf dpn-id {
+                    type fpc:fpc-identity;
+                    description "DPN Identifier for DPN Unavailable";
                 }
-                leaf-list  val32-list {
-                    type uint32;
-                    description "Unsigned 32 bit value";
-                }
-                description "Simple Value Case";
+                description "DPN Unavailable";
+            }
+            anydata report-value {
+                description "Any non integer report";
             }
             description "Report Value";
         }
-        description "Monitor Notification";
-      }
-      description "Notify Value";
+        description "Report";
     }
     description "Notify Message";
   }

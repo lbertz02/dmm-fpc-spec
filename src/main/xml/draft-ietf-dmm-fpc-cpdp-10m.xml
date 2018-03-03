@@ -708,6 +708,7 @@ DPN         |                 DPN        |
          |      +-[Attributes] <Set> (M) 
          |      +-[Extensible ~ FALSE]
          |      +-[Entity-State ~ Initial]
+         |      +-[Version]
            ]]></artwork>
              <postamble></postamble>
         </figure>
@@ -723,11 +724,13 @@ DPN         |                 DPN        |
 		Template.  Default value is FALSE.  If a Template does
 		not explicitly specify this attribute, the default
 		value is considered to be in effect. </t>
-        <t hangText="Entity-Status:"> Either Initial, PartiallyConfigured,
+        <t hangText="Entity-State:"> Either Initial, PartiallyConfigured,
 		Configured, or Active.  Default value is Initial.
 		See <xref target="att_appl"/> for more information
 		about how the Entity-Status changes during the configuration
 		steps of the Entity.  </t>
+        <t hangText="Version:"> Provides a version tag for the
+        template.</t>
 	</list> 
     </t>
 
@@ -767,7 +770,7 @@ DPN         |                 DPN        |
         <t hangText="'[Att-Name]'">
 		Non-mandatory Attribute may be included but template does not
 		provide any configured value. </t>
-        <t hangText="'[Att-Name := Att-Value]'">
+        <t hangText="'[Att-Name = Att-Value]'">
 		Non-mandatory Attribute may be included and has a statically
 		configured value. </t>
         <t hangText="'[Att-Name ~ Att-Value]'">
@@ -835,6 +838,9 @@ DPN         |                 DPN        |
 	identifiers which are used in a Mobility model should be considered
 	to efficiently handle runtime parameters. </t>
    
+    <t> There are identifiers reserved for Protocol Operation.
+        See <xref target="reservedidentities"/> for details.</t>
+   
     </section>        <!-- end section title="Namespace and Format"  -->
 
     <section anchor="att_appl" title="Configuring Attribute Values">
@@ -893,8 +899,66 @@ DPN         |                 DPN        |
 	configured on the DPN-resident policy.
     </t>
     </section>        <!-- end section title="Attribute Application"  -->
+    
+     <section anchor="entity-cfg" title="Entity Configuration Blocks">
 
-    <section anchor="InfoModel"
+    <t> As described in
+	<xref target="att_appl" />, a Policy Template may be configured
+	in several stages by configuring default or missing values for
+	Attributes that do not already have statically configured values.
+	A Policy-Configuration is the combination of a Policy-Key (to identify
+	the Policy Template defining the Attributes) and the currently
+	configured Attribute Values to be applied to the Policy Template.
+
+	More generally, an Entity-Configuration can be defined for any
+	configurable Indexed Set to be the combination of the Entity-Key
+	along with a set of Attribute-Expressions that supply configuration
+	information for the entity's Attributes.  <xref target="fig-ent-cfg" />
+	shows a schematic representation for such Entity Configuration Blocks.
+	<figure anchor="fig-ent-cfg" title="Entity Configuration Block">
+            <artwork align="center"><![CDATA[
+     [Entity Configuration Block]
+     |       +-[Entity-Key] (M)
+     |       +-[Attribute-Expression] <Set> (M)
+       ]]></artwork>
+            <postamble></postamble>
+          </figure>
+        </t>
+
+    <t> This document makes use of the following kinds of Entity
+	Configuration Blocks:
+    <list>
+    <t> Domain-Policy-Configuration </t>
+    <t> DPN-Policy-Configuration </t>
+    <t> Descriptor-Configuration </t>
+    <t> Action-Configuration </t>
+    <t> MN-Policy-Configuration </t>
+    <t> Flow-Policy-Configuration </t>
+    </list></t>
+    </section> <!-- End section "Entity Configuration Blocks" -->
+     
+     <section anchor="checkpoint"
+         title="Infomation Model Checkpoint">
+         <t> The Information Model Checkpoint permits Clients and
+             tenants with common scopes, referred to in this specification
+             as Checkpoint BaseNames, to track the state of
+             provisioned information on an Agent. The Agent records
+             the Checkpoint BaseName and Checkpoint value set by a Client. If a new Client
+             attaches to the Agent it can query to determine
+             the amount of work that must be executed to configure the Agent
+             to a specific BaseName / checkpoint revision.</t>
+         <t> Checkpoints are defined for the following information
+             model components:
+             <list>
+                 <t> Service-Group </t>
+                 <t> DPN Information Model </t>
+                 <t> Topology Information Model </t>
+                 <t> Policy Information Model </t>
+             </list>
+         </t>
+     </section>
+     
+     <section anchor="InfoModel"
 		title="Information Model Components">
 
     <section anchor="srv-group" title="Service-Group">
@@ -941,43 +1005,6 @@ DPN         |                 DPN        |
         </list></t>
     </list></t>
     </section> <!-- End section "Service Group" -->
- 
-    <section anchor="entity-cfg" title="Entity Configuration Blocks">
-
-    <t> As described in
-	<xref target="att_appl" />, a Policy Template may be configured
-	in several stages by configuring default or missing values for
-	Attributes that do not already have statically configured values.
-	A Policy-Configuration is the combination of a Policy-Key (to identify
-	the Policy Template defining the Attributes) and the currently
-	configured Attribute Values to be applied to the Policy Template.
-
-	More generally, an Entity-Configuration can be defined for any
-	configurable Indexed Set to be the combination of the Entity-Key
-	along with a set of Attribute-Expressions that supply configuration
-	information for the entity's Attributes.  <xref target="fig-ent-cfg" />
-	shows a schematic representation for such Entity Configuration Blocks.
-	<figure anchor="fig-ent-cfg" title="Entity Configuration Block">
-            <artwork align="center"><![CDATA[
-     [Entity Configuration Block]
-     |       +-[Entity-Key] (M)
-     |       +-[Attribute-Expression] <Set> (M)
-       ]]></artwork>
-            <postamble></postamble>
-          </figure>
-        </t>
-
-    <t> This document makes use of the following kinds of Entity
-	Configuration Blocks:
-    <list>
-    <t> Domain-Policy-Configuration </t>
-    <t> DPN-Policy-Configuration </t>
-    <t> Descriptor-Configuration </t>
-    <t> Action-Configuration </t>
-    <t> MN-Policy-Configuration </t>
-    <t> Flow-Policy-Configuration </t>
-    </list></t>
-    </section> <!-- End section "Entity Configuration Blocks" -->
  
     <section anchor="dpn-type" title="DPN-Type">
 
@@ -1036,9 +1063,6 @@ DPN         |                 DPN        |
      <t> The Role uniquely identifies the kind of interfaces that may be
 	 available for DPNs of the specific type.</t>
     </section> <!-- End section DPN Type-->
-
-
-    </section>        <!-- end section "Information Model Components" -->
 
     <section anchor="topology" title="Topology Information Model">
     <t>
@@ -1413,8 +1437,8 @@ DPN         |                 DPN        |
             be watched. </t>
     <t> When a Monitor is specified, the configuration MUST be applicable
             to the attribute/entity monitored. For example, a Monitor using a
-            Threshold configuration cannot be applied to a Context, because
-            Contexts do not have thresholds. But  such a monitor could be
+            Threshold configuration cannot be applied to a Mobility-Context, because
+            it does not have a threshold. Such a monitor could be
             applied to a numeric threshold property of a Context. </t>
     <t> 
         <figure anchor="fig-monitor"
@@ -1425,7 +1449,6 @@ DPN         |                 DPN        |
        |         +-[Extensible:]
        |         +-[Monitor-Key:] <U-Key>
        |         +-[Target:]
-       |         +-[Binding-Information]
        |         +-[Deferrable]
        |         +-[Configuration]
               ]]></artwork>
@@ -1435,26 +1458,20 @@ DPN         |                 DPN        |
 
     <t> <list style="hanging">
         <t hangText="Monitor-Key:">
-            Name of the Monitor. The Id format MUST conform to
+            Name of the Monitor. The format MUST conform to
             <xref target="naming"> </xref>.</t>
         <t hangText="Target:">
             Description of what is to be monitored. This can be a
-            Dynamic Policy, an installed DPN Policy, or values of a
-            Dynamic-Policy attribute. When the type is an attribute of
-            Mobility-Context, the target name is a concatenation of the
-            Context-Id and the relative path (separated by '/') to the
-            attribute(s) to be monitored. Target must provide unambiguously
-            identify the monitored attribute and the location (DPN).</t>
-        <t hangText="Binding-Information:">
-            Complements (ambigous) Target information to define the Monitor
-            in an unambigous way.</t>
+            Service Data Flow, a Policy installed upon a DPN, values of a
+            Mobility-Context, etc. The target name is the
+            absolute information model path (separated by '/') to the
+            attribute / entity to be monitored.</t>
         <t hangText="Deferrable: ">
             Indicates that a monitoring report can be delayed up to a defined
             maximum delay for possible bundling with other reports. </t>
         <t hangText="Configuration:">
-            Determined by the Monitor subtype. The recipient of a notification
-            as monitor report is specified in the Configuration. Four
-            reporting types are defined:
+            Determined by the Monitor subtype. The monitor report is
+            specified by the Configuration. Four report types are defined:
             <list style="symbols">
             <t> Periodic reporting specifies an interval by which a
                 notification is sent.</t>
@@ -1473,6 +1490,9 @@ DPN         |                 DPN        |
     </section>        <!-- end section title="Monitor Information Model"  -->
 
 </section>        <!-- end section title="Information Model"  -->
+    
+    
+    </section>        <!-- end section "Information Model Components" -->
 
 <section anchor="protocol" title="Protocol">
     <section anchor="semantics"
@@ -1820,6 +1840,55 @@ DPN         |                 DPN        |
             </t>
             </section>        <!-- end section "Asynchronous Notification" -->
           </section>        <!-- end section "Operation Response" -->
+        
+            <section anchor="reservedidentities" title="Reserved Identities">
+                <t> Several identities are reserved in the Policy Information
+                    Model and Mobility-Context to faciliate specfic uses cases.</t>
+                <t> Agents and tenants express their support for descriptors and
+                    actions using the following Key patterns
+                    <list>
+                        <t> supported-&lt;descriptor template name&gt; indicates a
+                            support for the descriptor template as defined in
+                            its original specification.  For example
+                            "base-rfc5777classifier" is a Descriptor Template
+                            that conforms to the rfc5777-classifier
+                            (<xref target="descriptor-templates"/>) as defined
+                            in this document.</t>
+                        <t> supported-&lt;action template name&gt; indicates a
+                            support for the action template as defined in
+                            its original specification.</t>
+                        <t> "base-rule" is comprised of all base descriptors using
+                            an 'or' Descriptor-Match-Type and all Actions in
+                            no specific order.</t>
+                        <t> "base-template" is comprised of the base rule.</t>
+                    </list>
+                </t>
+                <t> "base-template" can be used to determine supported Action and
+                    Descriptor Templates.  It can also be used to support an open
+                    template where any specific Descriptors and Actions can be
+                    applied, however, depending upon the Order of Actions it
+                    is likely to produce undesirable results. </t>
+                <t> One use case is supported via reservation of specific DPN-Keys:
+                    <list>
+                        <t> Requested policies are those that the Client would like to be assigned
+                            to a DPN.  The naming convention is similar to those used for DPN
+                            Assignment via an Agent.
+                            <list>
+                                <t> "Requested" is a Key that represents requested policies which have
+                                    not been assigned to a specific DPN.  No Role is assigned
+                                    to the DPN.</t>
+                                <t> "Requested-&lt;Role&gt;" represents requested policies that have not
+                                    been assigned to a DPN and can only be assigned to DPNs
+                                    that fulfill the specified Role. </t>
+                            </list>
+                            It is possible to have policies in the "Requested" DPN that do not
+                            appear in other entries which reflects the inability to successfully
+                            assign the policy.
+                        </t>
+                    </list>
+                </t>
+                
+            </section>        
         </section>
 
         <section anchor="monitor_descr" title="Monitor Messages">
@@ -2499,24 +2568,11 @@ DPN         |                 DPN        |
           </t>
           </section>
 
-          <section anchor="registry"
-                             title="Basename Registry Feature (Optional)">
-          <t> The Optional BaseName Registry support feature is provided to
-              permit Clients and tenants with common scopes, referred to in
-              this specification as BaseNames, to track the state of
-              provisioned policy information on an Agent. The registry records
-              the BaseName and Checkpoint set by a Client. If a new Client
-              attaches to the Agent it can query the Registry to determine
-              the amount of work that must be executed to configure the Agent
-              to a BaseName / checkpoint revision. A State value is also
-              provided in the registry to help Clients coordinate work on
-              common BaseNames.</t>
-          </section>
         </section>
     
 </section>
 
-<section anchor="derived_attrs" title="Templates">
+<section anchor="derived_attrs" title="Templates And Command Sets">
         <t>Configurations templates are shown below.</t>
         
  <section title="Monitor Configuration Templates">
@@ -2804,7 +2860,7 @@ DPN         |                 DPN        |
     </t>
     </section>
    
-    <section anchor="thregpp" title="3GPP Specific Templates and Extensions">
+    <section anchor="thregpp" title="3GPP Specific Templates and Command-Set">
     <t> 3GPP support is optional and detailed in this section. The following
         acronyms are used:
         <list hangIndent="4" style="hanging">
@@ -2827,7 +2883,7 @@ DPN         |                 DPN        |
 
 <t>
     <figure anchor="tgpp-template-exstensions"
-        title="3GPP Mobility Template">
+        title="3GPP Mobility Templates">
         <artwork align="center"><![CDATA[
             |
             +-[ MN-Policy-Template ]
@@ -2851,7 +2907,7 @@ DPN         |                 DPN        |
 
 <t>
     <figure anchor="tgpp-tft"
-        title="3GPP Traffc Flow Template (Descriptor)">
+        title="3GPP Packet Filter Template (Descriptor)">
         <artwork align="center"><![CDATA[
 |
 +-[ packet-filter ]
