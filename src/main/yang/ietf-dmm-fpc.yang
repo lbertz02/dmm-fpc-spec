@@ -305,8 +305,11 @@ revision 2016-08-03 {
 
   // Settings
   grouping interface-settings {
-    container interface-settings-set {
-      description "Interface settings";
+    list interface-settings {
+        key policy-template-key;
+        uses fpc:policy-template-key;
+        uses fpc:policy-configuration;
+        description "Interface settings";
     }
     description "Generic interface settings container";
   }

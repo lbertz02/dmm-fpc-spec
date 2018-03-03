@@ -1,0 +1,384 @@
+module: ietf-dmm-fpc
+    +--rw tenant* [tenant-key]
+       +--rw tenant-key                    fpc:fpc-identity
+       +--rw mobility-information-model
+       |  +--rw dpn* [dpn-key]
+       |     +--rw dpn-key                           fpc:fpc-identity
+       |     +--rw dpn-name?                         string
+       |     +--rw dpn-resource-mapping-reference?   string
+       |     +--rw domain-key*                       fpc:fpc-identity
+       |     +--rw service-group-key*                fpc:fpc-identity
+       |     +--rw interface* [interface-key]
+       |     |  +--rw interface-key             fpc:fpc-identity
+       |     |  +--rw interface-name?           string
+       |     |  +--rw roles*                    identityref
+       |     |  +--rw interface-settings
+       |     |     +--rw index    uint16
+       |     |     +--rw (policy-setting)?
+       |     |        +--:(descriptor-value)
+       |     |        +--:(action-value)
+       |     +--rw dpn-settings* [policy-template-key]
+       |        +--rw policy-template-key     fpc:fpc-identity
+       |        +--rw policy-configuration* [index]
+       |           +--rw index    uint16
+       |           +--rw (policy-setting)?
+       |              +--:(descriptor-value)
+       |              +--:(action-value)
+       +--rw dpn-checkpoint
+       |  +--rw basename?          fpc:fpc-identity
+       |  +--rw base-checkpoint?   string
+       +--rw service-group* [service-group-key]
+       |  +--rw service-group-key     fpc:fpc-identity
+       |  +--rw service-group-name?   string
+       |  +--rw dpn* [dpn-key role-key]
+       |  |  +--rw dpn-key                 fpc:fpc-identity
+       |  |  +--rw role-key                identityref
+       |  |  +--rw referenced-interface* [interface-key]
+       |  |     +--rw interface-key             fpc:fpc-identity
+       |  |     +--rw peer-service-group-key*   fpc:fpc-identity
+       |  +--rw service-settings* [policy-template-key]
+       |     +--rw policy-template-key     fpc:fpc-identity
+       |     +--rw policy-configuration* [index]
+       |        +--rw index    uint16
+       |        +--rw (policy-setting)?
+       |           +--:(descriptor-value)
+       |           +--:(action-value)
+       +--rw service-group-checkpoint
+       |  +--rw basename?          fpc:fpc-identity
+       |  +--rw base-checkpoint?   string
+       +--rw topology-information-model
+       |  +--rw dpn-type* [role-key]
+       |  |  +--rw role-key             identityref
+       |  |  +--rw role-name?           string
+       |  |  +--rw service-group-key*   fpc:fpc-identity
+       |  |  +--rw interface* [dpn-key interface-key]
+       |  |     +--rw dpn-key                   fpc:fpc-identity
+       |  |     +--rw interface-key             fpc:fpc-identity
+       |  |     +--rw interface-protocol-set*   identityref
+       |  |     +--rw feature-set*              identityref
+       |  |     +--rw interface-settings-set
+       |  +--rw domain* [domain-key]
+       |  |  +--rw domain-key         fpc:fpc-identity
+       |  |  +--rw domain-name?       string
+       |  |  +--rw domain-settings* [policy-template-key]
+       |  |     +--rw policy-template-key     fpc:fpc-identity
+       |  |     +--rw policy-configuration* [index]
+       |  |        +--rw index    uint16
+       |  |        +--rw (policy-setting)?
+       |  |           +--:(descriptor-value)
+       |  |           +--:(action-value)
+       |  +--rw basename?          fpc:fpc-identity
+       |  +--rw base-checkpoint?   string
+       +--rw policy-information-model
+       |  +--rw action-template* [action-template-key]
+       |  |  +--rw action-template-key            fpc:fpc-identity
+       |  |  +--rw extensible?                    boolean
+       |  |  +--rw mandatory-static-attributes*   string
+       |  |  +--rw entity-state?                  enumeration
+       |  +--rw descriptor-template* [descriptor-template-key]
+       |  |  +--rw descriptor-template-key        fpc:fpc-identity
+       |  |  +--rw extensible?                    boolean
+       |  |  +--rw mandatory-static-attributes*   string
+       |  |  +--rw entity-state?                  enumeration
+       |  +--rw rule-template* [rule-template-key]
+       |  |  +--rw rule-template-key              fpc:fpc-identity
+       |  |  +--rw descriptor-match-type?         enumeration
+       |  |  +--rw descriptor-configuration* [descriptor-template-key]
+       |  |  |  +--rw descriptor-template-key    fpc:fpc-identity
+       |  |  |  +--rw direction?                 rfc5777:direction-type
+       |  |  |  +--rw attribute-expression* [index]
+       |  |  |     +--rw index    uint16
+       |  |  +--rw action-configuration* [action-order]
+       |  |  |  +--rw action-order            uint32
+       |  |  |  +--rw action-template-key     fpc:fpc-identity
+       |  |  |  +--rw attribute-expression* [index]
+       |  |  |     +--rw index    uint16
+       |  |  +--rw extensible?                    boolean
+       |  |  +--rw mandatory-static-attributes*   string
+       |  |  +--rw entity-state?                  enumeration
+       |  |  +--rw policy-configuration* [index]
+       |  |     +--rw index    uint16
+       |  |     +--rw (policy-setting)?
+       |  |        +--:(descriptor-value)
+       |  |        +--:(action-value)
+       |  +--rw policy-template* [policy-template-key]
+       |  |  +--rw policy-template-key            fpc:fpc-identity
+       |  |  +--rw rule-template* [precedence]
+       |  |  |  +--rw precedence           uint32
+       |  |  |  +--rw rule-template-key    fpc:fpc-identity
+       |  |  +--rw extensible?                    boolean
+       |  |  +--rw mandatory-static-attributes*   string
+       |  |  +--rw entity-state?                  enumeration
+       |  |  +--rw policy-configuration* [index]
+       |  |     +--rw index    uint16
+       |  |     +--rw (policy-setting)?
+       |  |        +--:(descriptor-value)
+       |  |        +--:(action-value)
+       |  +--rw basename?              fpc:fpc-identity
+       |  +--rw base-checkpoint?       string
+       +--rw mobility-context* [mobility-context-key]
+       |  +--rw mobility-context-key    fpc:fpc-identity
+       |  +--rw delegating-ip-prefix*   inet:ip-prefix
+       |  +--rw parent-context?         fpc:fpc-identity
+       |  +--rw child-context*          fpc:fpc-identity
+       |  +--rw mobile-node
+       |  |  +--rw ip-address*    inet:ip-address
+       |  |  +--rw imsi?          fpcbase:imsi-type
+       |  |  +--rw mn-settings* [policy-template-key]
+       |  |     +--rw policy-template-key     fpc:fpc-identity
+       |  |     +--rw policy-configuration* [index]
+       |  |        +--rw index    uint16
+       |  |        +--rw (policy-setting)?
+       |  |           +--:(descriptor-value)
+       |  |           +--:(action-value)
+       |  +--rw domain
+       |  |  +--rw domain-key?        fpc:fpc-identity
+       |  |  +--rw domain-settings* [policy-template-key]
+       |  |     +--rw policy-template-key     fpc:fpc-identity
+       |  |     +--rw policy-configuration* [index]
+       |  |        +--rw index    uint16
+       |  |        +--rw (policy-setting)?
+       |  |           +--:(descriptor-value)
+       |  |           +--:(action-value)
+       |  +--rw dpn* [dpn-key]
+       |     +--rw dpn-key              fpc:fpc-identity
+       |     +--rw dpn-settings* [policy-template-key]
+       |     |  +--rw policy-template-key     fpc:fpc-identity
+       |     |  +--rw policy-configuration* [index]
+       |     |     +--rw index    uint16
+       |     |     +--rw (policy-setting)?
+       |     |        +--:(descriptor-value)
+       |     |        +--:(action-value)
+       |     +--rw role?                identityref
+       |     +--rw service-data-flow* [identifier]
+       |        +--rw identifier           uint32
+       |        +--rw service-group-key?   fpc:fpc-identity
+       |        +--rw interface* [interface-key]
+       |        |  +--rw interface-key    fpc:fpc-identity
+       |        +--rw flow-settings* [policy-template-key]
+       |           +--rw policy-template-key fpc:fpc-identity
+       |           +--rw policy-configuration* [index]
+       |              +--rw index    uint16
+       |              +--rw (policy-setting)?
+       |                 +--:(descriptor-value)
+       |                 +--:(action-value)
+       +--rw monitor* [monitor-key]
+          +--rw extensible?                    boolean
+          +--rw mandatory-static-attributes*   string
+          +--rw entity-state?                  enumeration
+          +--rw monitor-key                    fpc:fpc-identity
+          +--rw target?                        string
+          +--rw binding-information
+          +--rw deterrable?                    boolean
+          +--rw (configuration)
+             +--:(period)
+             |  +--rw period?                        uint32
+             +--:(threshold-config)
+             |  +--rw low?                           uint32
+             |  +--rw hi?                            uint32
+             +--:(schedule)
+             |  +--rw schedule?                      uint32
+             +--:(event-identities)
+             |  +--rw event-identities*              identityref
+             +--:(event-ids)
+                +--rw event-ids*                     uint32
+
+  rpcs:
+    +---x configure
+    |  +---w input
+    |  |  +---w client-id          fpc:client-identifier
+    |  |  +---w execution-delay?   uint32
+    |  |  +---w yang-patch
+    |  |     +---w patch-id    string
+    |  |     +---w comment?    string
+    |  |     +---w edit* [edit-id]
+    |  |        +---w edit-id         string
+    |  |        +---w operation       enumeration
+    |  |        +---w target          target-resource-offset
+    |  |        +---w point?          target-resource-offset
+    |  |        +---w where?          enumeration
+    |  |        +---w value?          <anydata>
+    |  |        +---w op-ref-scope?   fpc:ref-scope
+    |  |        +---w instructions
+    |  |           +---w (instr-type)?
+    |  |              +--:(instr-3gpp-mob)
+    |  |              |  +---w instr-3gpp-mob?   fpcbase:threegpp-instr
+    |  |              +--:(instr-pmip)
+    |  |                 +---w instr-pmip?       pmip-commandset
+    |  +--ro output
+    |     +--ro yang-patch-status
+    |        +--ro patch-id       string
+    |        +--ro (global-status)?
+    |        |  +--:(global-errors)
+    |        |  |  +--ro errors
+    |        |  |     +--ro error*
+    |        |  |        +--ro error-type       enumeration
+    |        |  |        +--ro error-tag        string
+    |        |  |        +--ro error-app-tag?   string
+    |        |  |        +--ro error-path?      instance-identifier
+    |        |  |        +--ro error-message?   string
+    |        |  |        +--ro error-info?      <anydata>
+    |        |  +--:(ok)
+    |        |     +--ro ok?            empty
+    |        +--ro edit-status
+    |           +--ro edit* [edit-id]
+    |              +--ro edit-id            string
+    |              +--ro (edit-status-choice)?
+    |                 +--:(ok)
+    |                 |  +--ro ok?                empty
+    |                 |  +--ro notify-follows?    boolean
+    |                 |  +--ro subsequent-edit* [edit-id]
+    |                 |     +--ro edit-id      string
+    |                 |     +--ro operation    enumeration
+    |                 |     +--ro target       
+				ypatch:target-resource-offset
+    |                 |     +--ro point?       
+				ypatch:target-resource-offset
+    |                 |     +--ro where?       enumeration
+    |                 |     +--ro value?       <anydata>
+    |                 +--:(errors)
+    |                    +--ro errors
+    |                       +--ro error*
+    |                          +--ro error-type       enumeration
+    |                          +--ro error-tag        string
+    |                          +--ro error-app-tag?   string
+    |                          +--ro error-path?      
+					instance-identifier
+    |                          +--ro error-message?   string
+    |                          +--ro error-info?      <anydata>
+    +---x reg_monitor
+    |  +---w input
+    |  |  +---w client-id          fpc:client-identifier
+    |  |  +---w execution-delay?   uint32
+    |  |  +---w op-id              uint64
+    |  |  +---w monitors* [monitor-key]
+    |  |     +---w extensible?                    boolean
+    |  |     +---w mandatory-static-attributes*   string
+    |  |     +---w entity-state?                  enumeration
+    |  |     +---w monitor-key                    fpc:fpc-identity
+    |  |     +---w target?                        string
+    |  |     +---w binding-information
+    |  |     +---w deterrable?                    boolean
+    |  |     +---w (configuration)
+    |  |        +--:(period)
+    |  |        |  +---w period?               uint32
+    |  |        +--:(threshold-config)
+    |  |        |  +---w low?                  uint32
+    |  |        |  +---w hi?                   uint32
+    |  |        +--:(schedule)
+    |  |        |  +---w schedule?             uint32
+    |  |        +--:(event-identities)
+    |  |        |  +---w event-identities*     identityref
+    |  |        +--:(event-ids)
+    |  |           +---w event-ids*            uint32
+    |  +--ro output
+    |     +--ro op-id     uint64
+    |     +--ro (edit-status-choice)?
+    |        +--:(ok)
+    |        |  +--ro ok?       empty
+    |        +--:(errors)
+    |           +--ro errors
+    |              +--ro error*
+    |                 +--ro error-type       enumeration
+    |                 +--ro error-tag        string
+    |                 +--ro error-app-tag?   string
+    |                 +--ro error-path?      instance-identifier
+    |                 +--ro error-message?   string
+    |                 +--ro error-info?      <anydata>
+    +---x dereg_monitor
+    |  +---w input
+    |  |  +---w client-id          fpc:client-identifier
+    |  |  +---w execution-delay?   uint32
+    |  |  +---w op-id              uint64
+    |  |  +---w monitor* [monitor-key]
+    |  |     +---w monitor-key    fpc:fpc-identity
+    |  |     +---w send_data?     boolean
+    |  +--ro output
+    |     +--ro op-id     uint64
+    |     +--ro (edit-status-choice)?
+    |        +--:(ok)
+    |        |  +--ro ok?       empty
+    |        +--:(errors)
+    |           +--ro errors
+    |              +--ro error*
+    |                 +--ro error-type       enumeration
+    |                 +--ro error-tag        string
+    |                 +--ro error-app-tag?   string
+    |                 +--ro error-path?      instance-identifier
+    |                 +--ro error-message?   string
+    |                 +--ro error-info?      <anydata>
+    +---x probe
+       +---w input
+       |  +---w client-id          fpc:client-identifier
+       |  +---w execution-delay?   uint32
+       |  +---w op-id              uint64
+       |  +---w monitor* [monitor-key]
+       |     +---w monitor-key    fpc:fpc-identity
+       +--ro output
+          +--ro op-id     uint64
+          +--ro (edit-status-choice)?
+             +--:(ok)
+             |  +--ro ok?       empty
+             +--:(errors)
+                +--ro errors
+                   +--ro error*
+                      +--ro error-type       enumeration
+                      +--ro error-tag        string
+                      +--ro error-app-tag?   string
+                      +--ro error-path?      instance-identifier
+                      +--ro error-message?   string
+                      +--ro error-info?      <anydata>
+
+  notifications:
+    +---n config-result-notification
+    |  +--ro yang-patch-status
+    |  |  +--ro patch-id       string
+    |  |  +--ro (global-status)?
+    |  |  |  +--:(global-errors)
+    |  |  |  |  +--ro errors
+    |  |  |  |     +--ro error*
+    |  |  |  |        +--ro error-type       enumeration
+    |  |  |  |        +--ro error-tag        string
+    |  |  |  |        +--ro error-app-tag?   string
+    |  |  |  |        +--ro error-path?      instance-identifier
+    |  |  |  |        +--ro error-message?   string
+    |  |  |  |        +--ro error-info?      <anydata>
+    |  |  |  +--:(ok)
+    |  |  |     +--ro ok?            empty
+    |  |  +--ro edit-status
+    |  |     +--ro edit* [edit-id]
+    |  |        +--ro edit-id    string
+    |  |        +--ro (edit-status-choice)?
+    |  |           +--:(ok)
+    |  |           |  +--ro ok?        empty
+    |  |           +--:(errors)
+    |  |              +--ro errors
+    |  |                 +--ro error*
+    |  |                    +--ro error-type       enumeration
+    |  |                    +--ro error-tag        string
+    |  |                    +--ro error-app-tag?   string
+    |  |                    +--ro error-path?      instance-identifier
+    |  |                    +--ro error-message?   string
+    |  |                    +--ro error-info?      <anydata>
+    |  +--ro subsequent-edit* [edit-id]
+    |     +--ro edit-id      string
+    |     +--ro operation    enumeration
+    |     +--ro target       ypatch:target-resource-offset
+    |     +--ro point?       ypatch:target-resource-offset
+    |     +--ro where?       enumeration
+    |     +--ro value?       <anydata>
+    +---n notify
+       +--ro notification-id?   uint32
+       +--ro timestamp?         uint32
+       +--ro report* [monitor-key]
+          +--ro monitor-key                 fpc:fpc-identity
+          +--ro trigger?                    identityref
+          +--ro (value)?
+             +--:(dpn-candidate-available)
+             |  +--ro node-id?                    inet:uri
+             |  +--ro supported-interface-list* [role-key]
+             |     +--ro role-key    identityref
+             +--:(dpn-unavailable)
+             |  +--ro dpn-id?                     fpc:fpc-identity
+             +--:(report-value)
+                +--ro report-value?               <anydata>

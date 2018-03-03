@@ -1888,7 +1888,7 @@ DPN         |                 DPN        |
                     </list>
                 </t>
                 
-            </section>        
+            </section>
         </section>
 
         <section anchor="monitor_descr" title="Monitor Messages">
@@ -2094,24 +2094,29 @@ DPN         |                 DPN        |
    |-------------PBU----->|                          |           |
    |         |            |---(1)--Configure-------->|           |
    |         |          "configure" : {              |           |
-   |         |           "client-identifier" : 0,    |           |
+   |         |           "client-id" : 0,            |           |
    |         |           "operation-id" : 0,         |           |
-   |         |           "edits" : [                 |           |
+   |         |           "edit" : [                  |           |
    |         |            "edit-id" : 0,             |           |
    |         |            "edit-type" : "create",    |           |
-   |         |            "target" : "mobility-context",         |
+   |         |            "target" : "/mobility-context",        |
    |         |            "value" : {                            |
    |         |              "mobility-context-key" : "ctxt1",    |
    |         |              "delegating-ip-prefix" : [ <HNP> ],  |
-   |         |              "dpn-set" : "[ {                     |
+   |         |              "dpn" : "[ {                         |
    |         |               "dpn-key" : "DPN1",                 |
-   |         |               "dpn-policy-expression" : [
-   |         |                 {"policy-key" : "dl-tunnel-with-qos",
-   |         |                  "qos-template" : <QOS Settings...>,
-   |         |                  "tunnel" : <DL tunnel info...> },
-   |         |                 {"policy-key" : "ul-tunnel",
-   |         |                  "tunnel" : <UL tunnel info...> } ]
-   |         |           } ] } ] }                   |           |
+   |         |               "service-data-flow" : [
+   |         |                 "identifier" : 0,
+   |         |                 "flow-settings" : [
+   |         |                   ...
+   |         |                  {"policy-key" : "dl-tunnel-with-qos",
+   |         |                   "qos-template" : <QOS Settings...>,
+   |         |                   ...
+   |         |                   "tunnel" : <DL tunnel info...> },
+   |         |                  {"policy-key" : "ul-tunnel",
+   |         |                   ...
+   |         |                   "tunnel" : <UL tunnel info...> } ]
+   |         |           ] } ] } ] }                 |           |
    |         |            |                          |--tun1 up->|
    |         |            |                          |           |
    |         |            |                          |--tc qos-->|
@@ -2139,17 +2144,20 @@ DPN         |                 DPN        |
    |         |---PBU ---->|                          |           |
    |         |            |--(3)- CONFIG(MODIFY)---->|           |
    |         |          "configure" : {              |-tun1 mod->|
-   |         |           "client-identifier" : 0,    |           |
+   |         |           "client-id" : 0,            |           |
    |         |           "operation-id" : 1,         |           |
-   |         |           "edits" : [                 |           |
+   |         |           "edit" : [                  |           |
    |         |            "edit-id" : 0,             |           |
    |         |            "edit-type" : "merge",     |           |
-   |         |            "target" : "mobility-context/ctxt1",   |
+   |         |            "target" : "/mobility-context/ctxt1",  |
    |         |            "value" : {                |           |
    |         |              "dpn-set" : "[ {                     |
    |         |               "dpn-key" : "DPN1",                 |
-   |         |               "dpn-policy-expression" : [
-   |         |                 {"policy-key" : "dl-tunnel-with-qos",
+   |         |               "service-data-flow" : [
+   |         |                 "identifier" : 0,
+   |         |                 "flow-settings" : [
+   |         |                   ...
+   |         |                  {"policy-key" : "dl-tunnel-with-qos",
    |         |                  "tunnel" : <NEW tunnel info...> } ]
    |         |           } ] } ] }                   |           |
    |         |<--PBA------|                          |           |
@@ -2172,8 +2180,6 @@ DPN         |                 DPN        |
    |         |            |                          |           |
 
       ]]></artwork>
-        <postamble>NOTE - For readability, "DPN-Key Set is 'dpn-set' in this
-            figure.</postamble>
       </figure>
         </t>
 
@@ -2233,8 +2239,10 @@ DPN         |                 DPN        |
    |         |           "edits" : [                 |           |
    |         |            "edit-id" : 0,             |           |
    |         |            "edit-type" : "merge",     |           |
-   |         |            "target" : "mobility-context/ctxt1     |
-   |         |                /dpn-set/DPN1/dl-tunnel-with-qos"  |
+   |         |            "target" : "/mobility-context/ctxt1    |
+   |         |                /dpn/DPN1/service-data-flow/0      |
+   |         |                /flow-settings/dl-tunnel-with-qos  |
+   |         |                /0"                                |
    |         |            "value" : {                |           |
    |         |                  "tunnel" : null      |           |
    |         |             } ] }                     |           |
@@ -2260,7 +2268,7 @@ DPN         |                 DPN        |
    |         |           "edits" : [                 |           |
    |         |            "edit-id" : 0,             |           |
    |         |            "edit-type" : "delete",    |           |
-   |         |            "target" : "mobility-context/ctxt1"    |
+   |         |            "target" : "/mobility-context/ctxt1"   |
    |         |            ] }                        |           |
    |         |            |                          |           |
    |         |            |<---(4)- Response --------|           |
@@ -2300,11 +2308,6 @@ DPN         |                 DPN        |
           <figure anchor="fig_multidpn_example"
             title="Exemplary Message Sequence for Multi-DPN Agent">
               <artwork align="center"><![CDATA[
-
-
-
-
-
                         +-----------+           +-------+ +---------+
 +------+ +------+     +-----+ FPC   |           | FPC   | |  Anchor |
 |MAG-C1| |MAG-C2|     |LMA-C| Client|           | Agent | |   DPN1  |
@@ -2315,29 +2318,38 @@ DPN         |                 DPN        |
    |         |          "configure" : {              |--tun1 up->|
    |         |           "client-identifier" : 0,    |           |
    |         |           "operation-id" : 0,         |           |
-   |         |           "edits" : [                 |--tc qos-->|
+   |         |           "edit" : [                  |--tc qos-->|
    |         |            "edit-id" : 0,             |           |
    |         |            "edit-type" : "create",    |           |
    |         |            "target" : "mobility-context",         |
    |         |            "value" : {                            |
    |         |              "mobility-context-key" : "ctxt1",    |
    |         |              "delegating-ip-prefix" : [ <HNP> ],  |
-   |         |              "dpn-set" : "[ {                     |
+   |         |              "dpn" : "[ {                         |
    |         |               "dpn-key" : "DPN1",                 |
-   |         |               "dpn-policy-expression" : [
-   |         |                 {"policy-key" : "dl-tunnel-with-qos",
-   |         |                  "qos-template" : <QOS Settings...>,
-   |         |                  "tunnel" : <DL tunnel info...> },
-   |         |                 {"policy-key" : "ul-tunnel",
-   |         |                  "tunnel" : <UL tunnel info...> } ]
-   |         |                }, {
-   |         |               "dpn-key" : "DPN1",                 |
-   |         |               "dpn-policy-expression" : [
-   |         |                 {"policy-key" : "dl-tunnel-with-qos",
-   |         |                  "qos-template" : <QOS Settings...>,
-   |         |                  "tunnel" : <DL tunnel info...> },
-   |         |                 {"policy-key" : "ul-tunnel",
-   |         |                  "tunnel" : <UL tunnel info...> } ]
+   |         |               "service-data-flow" : [
+   |         |                 "identifier" : 0,
+   |         |                 "flow-settings" : [
+   |         |                   ...
+   |         |                  {"policy-key" : "dl-tunnel-with-qos",
+   |         |                   "qos-template" : <QOS Settings...>,
+   |         |                   ...
+   |         |                   "tunnel" : <DL tunnel info...> },
+   |         |                  {"policy-key" : "ul-tunnel",
+   |         |                   ...
+   |         |                   "tunnel" : <UL tunnel info...> } ]
+   |         |               "dpn-key" : "DPN2",                 |
+   |         |               "service-data-flow" : [
+   |         |                 "identifier" : 0,
+   |         |                 "flow-settings" : [
+   |         |                   ...
+   |         |                  {"policy-key" : "dl-tunnel-with-qos",
+   |         |                   "qos-template" : <QOS Settings...>,
+   |         |                   ...
+   |         |                   "tunnel" : <DL tunnel info...> },
+   |         |                  {"policy-key" : "ul-tunnel",
+   |         |                   ...
+   |         |                   "tunnel" : <UL tunnel info...> } ]
    |         |                } ] } ] }              |           |
    |         |            |                          |           |
    |         |            |<---(2)- Response --------|           |
@@ -2407,8 +2419,6 @@ DPN         |                 DPN        |
             re-write the source IP address to IP_A.
         </t>
 
-<!-- LB: Add the policy => DPN => Context Process flow -->
-
         <t> <xref target="fig_port"/> illustrates the generic policy
             configuration model as used between a FPC Client and a FPC Agent.
         </t>
@@ -2420,17 +2430,17 @@ DPN         |                 DPN        |
   Descriptor_1 -+          +- Action_1
                 |          |
   Descriptor_2 -+--<Rule>--+- Action_2
-                  +------+
-                  /Order#/-------------+
-                  +------+             |
+                  +-----------+
+                  /Precendent#/--------+
+                  +----------+         |
                                        |
   Descriptor_3 -+          +- Action_3 +-<Policy>
                 |          |           |  ^
   Descriptor_4 -+--<Rule>--+- Action_4 |  |
-                  +------+             |  |
-                  /Order#/-------------+  |
-                  +------+                |
-                                         <DPN-Policy-Configuration>
+                  +-----------+        |  |
+                  /Precendent#/--------+  |
+                  +----------+            |
+                                         <DPN-Settings>
 
   +---------------------+     +----------------------+
   | Bind 1..M traffic   |     |  Bind 1..N traffic   |
@@ -2448,7 +2458,7 @@ DPN         |                 DPN        |
 
 	<t>
 	    As depicted in <xref target="fig_port"/>, the
-	    DPN-Policy-Configuration
+	    DPN Settings
             represents the anchor of Rules through the Policy / Rule hierarchy.
             A Client and Agent use the identifier of the associated Policy to
             directly access the Rule and perform modifications of traffic
@@ -2462,27 +2472,22 @@ DPN         |                 DPN        |
 	    Descriptors, to allow unambiguous traffic matching
 	    on the Data-Plane.
         </t>
-    
-<!-- LB: Is this necessary? (below) -->
         <t> <xref target="fig_context"/> illustrates the generic context
-            configuration model as used between a FPC Client and a FPC Agent.
+            configuration model as used between a Client and a Agent.
         </t>
-
         <t>
-            <figure anchor="fig_context" title="Structure of Contexts">
+            <figure anchor="fig_context" title="Mobility Context Heirarchy">
               <artwork align="center"><![CDATA[
-
-  TrafficSelector_1
-           |
-  profile-parameters
-           |
-  mobility-profile-- dl ------+
-                     ^        |
-                     |      qos-profile
-               <Context-ID1>       |
-                     ^        per-mn-agg-max-dl_2
-                     |
-               <Context-ID2>
+  <Policy 1>
+        ^
+        |
+  <Service-Data-Flow 0> <--- <Mobility-Context-ID2>
+                                       ^
+                                       |
+  <Policy 1>                           |
+  ^                                    |
+  |                                    |
+  <Service-Data-Flow 0> <--- <Mobility-Context-ID1>
 
   +-------------------+     +---------------------+
   | Bind 1..M traffic |     |  Bind 1..N traffic  |
@@ -2497,7 +2502,7 @@ DPN         |                 DPN        |
 	    <postamble></postamble>
             </figure>
         </t>
-	<t> As depicted in <xref target="fig_context"/>, the Context represents
+	<t> The figure <xref target="fig_context"/> represents
             a mobility session hierarchy.  A Client and Agent directly assigns
             values such as downlink traffic descriptors, QoS information, etc.
             A Client and Agent use the context identifiers to access the
@@ -2505,70 +2510,19 @@ DPN         |                 DPN        |
             From the viewpoint of packet processing, arriving packets are
             matched against traffic Descriptors and processed according to the
             qos or other mobility profile related Actions specified in the
-            Context's properties. If present, the final action is to use a
-            Context's tunnel information to encapsulate and forward the packet.
+            Mobilty-Context's and Service-Data-Flow's' properties. If present, a
+            Policy could contain tunnel information to encapsulate and forward the packet.
         </t>
 
-        <t> A second Context also references context1 in the figure.  Based
+        <t> A second Mobility-Context also references Mobility-Context-ID1 in the figure.  Based
             upon the technology a property in a parent context (parent
             mobility-context-id reference) MAY be inherited by its
             descendants.  This permits concise over the wire representation.
             When a Client deletes a parent Context all children are also
             deleted.</t>
         </section>
-        
-  <!-- LB: Is this necessary? (below) -->
-          <section anchor="multieditsexample" title="Configure with multiple edits">
-            <t> Bundles provide transaction boundaries around work in a single
-                message.  Operations in a bundle MUST be successfully executed
-                in the order specified.  This allows references created in one
-                operation to be used in a subsequent operation in the bundle.
-            </t>
-            <t> The example bundle shows in Operation 1 (OP 1) the creation of
-                a Context 1 which is then referenced in Operation 2 (OP 2) by
-                CONTEXT_ID 2.  If OP 1 fails then OP 2 will not be executed.
-                The advantage of the CONF_BUNDLE is preservation of dependency
-                orders in a single message as opposed to sending multiple
-                CONFIG messages and awaiting results from the Agent.</t>
-            <t> When a CONF_BUNDLE fails, any entities provisioned in the
-                CURRENT operation are removed, however, any successful
-                operations completed prior to the current operation are
-                preserved in order to reduce system load.</t>
-            <t>
-              <figure anchor="fig_multi_edits_example"
-              title="Exemplary Multi-Edit Message (focus on FPC reference point)">
-                <artwork align="center"><![CDATA[
-                        +-------Router--------+
-+-----------+           |+-------+ +---------+|
-|   FPC     |            | FPC   | |  Anchor |
-|  Client   |            | Agent | |   DPN   |
-+-----------+            +-------+ +---------+
-     |                          |           |
-     |--CONF_BUNDLE(CREATE)---->|           |
-     | [ OP 1,                  |           |
-     |   [ MOBILTY_CONTEXT_ID 1,  |--tun1 up->|
-     | DPNREFLIST:[[DPN1, BOTH  |           |
-     |  DPN_SETTINGS_COMPL:[    |           |
-     |   DOWNLINK(QOS/TUN),     |           |
-     |   UPLINK(QOS/TUN)] ]]    |--tc qos-->|
-     |   CTXT_SETTINGS_COMPL:[  |           |
-     |     IP_PREFIX(HNP) ] ] ],|           |
-     | [ OP 2,                  |           |
-     |   [ MOBILTY_CONTEXT_ID,  |--tun1 up->|
-     | DPNREFLIST:[[DPN1, BOTH  |           |
-     |  DPN_SETTINGS_COMPL:[    |           |
-     |   DOWNLINK(QOS/TUN),     |           |
-     |   UPLINK(QOS/TUN)] ]]    |--tc qos-->|
-     | PARENT_CONTEXT_ID_REF=1  |           |
-     |  ] ]                     |           |
-     |                          |           |
-      ]]></artwork>
-              <postamble></postamble>
-            </figure>
-          </t>
-          </section>
 
-        </section>
+    </section>
     
 </section>
 
