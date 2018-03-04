@@ -47,7 +47,7 @@ module: ietf-dmm-fpc
        |  +--rw basename?          fpc:fpc-identity
        |  +--rw base-checkpoint?   string
        +--rw topology-information-model
-       |  +--rw dpn-type* [role-key]
+       |  +--rw service-endpoint* [role-key]
        |  |  +--rw role-key             identityref
        |  |  +--rw role-name?           string
        |  |  +--rw service-group-key*   fpc:fpc-identity

@@ -510,7 +510,7 @@ revision 2016-08-03 {
         uses fpc:interface-key;
         leaf interface-name {
             type string;
-            description "DPN-Type Interface Name";
+            description "Service Endpoint Interface Name";
         }
         leaf-list roles {
             type identityref {
@@ -574,7 +574,7 @@ revision 2016-08-03 {
         description "Service Group Checkpoint information";
    }
    container topology-information-model {
-    list dpn-type {
+    list service-endpoint {
       key role-key;
       uses fpc:role-key;
       leaf role-name {
