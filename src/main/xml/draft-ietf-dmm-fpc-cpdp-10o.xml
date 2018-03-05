@@ -317,10 +317,10 @@
 	    regardless of whether they are realized as hardware or purely
 	    in software.  </t>
 
-	<t hangText="Service-Endpoint: ">
+	<t hangText="DPN-Set: ">
 	    the set of DPNs in a network configuration</t>
-	<t hangText="Service-Endpoint Set: ">
-	    a set of Service-Endpoint entities</t>
+	<t hangText="DPN-Type-Set: ">
+	    a set of DPN-Type entities</t>
         <t hangText="FPC Agent:"> An FPC Agent manages DPNs, thereby providing
 	    abstracted data-plane networks to FPC Clients. </t>
 
@@ -806,7 +806,7 @@ DPN         |                 DPN        |
 	would indicate that the mandatory Attribute "Max-Latency-in-ms"
 	requires to be configured with a floating point value before the
 	instantiated entity could be used.
-	Similarly, [(float) Max-Latency-in-ms: = 9.5]
+	Similarly, [(float) Max-Latency-in-ms: 9.5]
 	would statically configure a floating point value of 9.5 to the
 	mandatory Attribute "Max-Latency-in-ms".
 	</t>
@@ -939,28 +939,28 @@ DPN         |                 DPN        |
     </list></t>
     </section> <!-- End section "Entity Configuration Blocks" -->
      
-     <section anchor="checkpoint"
-         title="Infomation Model Checkpoint">
-         <t> The Information Model Checkpoint permits Clients and
-             tenants with common scopes, referred to in this specification
-             as Checkpoint BaseNames, to track the state of
-             provisioned information on an Agent. The Agent records
-             the Checkpoint BaseName and Checkpoint value set by a Client. If a new Client
-             attaches to the Agent it can query to determine
-             the amount of work that must be executed to configure the Agent
-             to a specific BaseName / checkpoint revision.</t>
-         <t> Checkpoints are defined for the following information
-             model components:
-             <list>
-                 <t> Service-Group </t>
-                 <t> DPN Information Model </t>
-                 <t> Topology Information Model </t>
-                 <t> Policy Information Model </t>
-             </list>
-         </t>
-     </section>
+    <section anchor="checkpoint"
+	title="Infomation Model Checkpoint">
+        <t> The Information Model Checkpoint permits Clients and
+            tenants with common scopes, referred to in this specification
+            as Checkpoint BaseNames, to track the state of provisioned
+	    information on an Agent. The Agent records the Checkpoint BaseName
+	    and Checkpoint value set by a Client. If a new Client
+            attaches to the Agent it can query to determine
+            the amount of work that must be executed to configure the Agent
+            to a specific BaseName / checkpoint revision.</t>
+        <t> Checkpoints are defined for the following information
+            model components:
+            <list>
+                <t> Service-Group </t>
+                <t> DPN Information Model </t>
+                <t> Topology Information Model </t>
+                <t> Policy Information Model </t>
+            </list>
+        </t>
+    </section>
      
-     <section anchor="InfoModel"
+    <section anchor="InfoModel"
 		title="Information Model Components">
 
     <section anchor="srv-group" title="Service-Group">
@@ -976,7 +976,7 @@ DPN         |                 DPN        |
             <artwork align="center"><![CDATA[
  |
  +-[Service-Group] <G-Key>, <Name> (O) <Set>
- |           +-[Extensible: = FALSE]
+ |           +-[Extensible: FALSE]
  |           +-[DPN-Key]
  |           +-[Role] <U-Key>
  |           +-[Referenced-Interface] <Set>
@@ -1008,9 +1008,9 @@ DPN         |                 DPN        |
     </list></t>
     </section> <!-- End section "Service Group" -->
  
-    <section anchor="service-endpoint" title="Service-Endpoint">
+    <section anchor="dpn-type" title="DPN-Type">
 
-    <t> Service-Endpoint is the collection of all possible types of DPN interfaces
+    <t> DPN-Type is the collection of all possible types of DPN interfaces
 	defined for DPNs in the network.  The interfaces are grouped according
 	to their Role (e.g. LMA, MAG, PGW, AMF, etc.)  Within a group,
 	DPN interfaces may have additional properties that are more specific,
@@ -1019,11 +1019,11 @@ DPN         |                 DPN        |
         for resources in a network to carry out required operations on
 	data-plane traffic.</t>
     
-    <t> <figure anchor="fig-service-endpoint" title="Service-Endpoint">
+    <t> <figure anchor="fig-dpn-type" title="DPN Type">
             <artwork align="center"><![CDATA[
       |
-      +-[Service-Endpoint] <Set>
-      |     +-[Extensible: = FALSE]
+      +-[DPN-Type] <Set>
+      |     +-[Extensible: FALSE]
       |     +-[Role] <U-Key>, <Name> (O)
       |     +-[Service-Group-Key] <Set>
       |     +-[Interface] <Set>
@@ -1038,10 +1038,10 @@ DPN         |                 DPN        |
           </figure>
         </t>
 
-    <t> Each Service-Endpoint entry contains the following information:
+    <t> Each DPN-Type entry contains the following information:
     <list style="hanging">
     <t hangText="Service-Group-Key: "> Keys enabling reference to the
-	Service-Groups that are to be supported by this Service-Endpoint. </t>
+	Service-Groups that are to be supported by this DPN-Type. </t>
     <t hangText="Interface: ">
 	A set of interfaces possible for the group defined by the Role.
         Each interface carries the following information:
@@ -1083,7 +1083,7 @@ DPN         |                 DPN        |
             <artwork align="center"><![CDATA[
         |
         +-[Topology Information Model]
-        |          +-[Extensible: = FALSE]
+        |          +-[Extensible: FALSE]
         |          +-[DPN] <Set>
         |          +-[Domain] <Set>
     ]]></artwork>
@@ -1125,20 +1125,24 @@ DPN         |                 DPN        |
 	Some of the DPNs in the Set may be identical in functionality
 	and only differ by their Key. </t>
 
+<!--  CEP: In this structure, DPN-Type does not seem to be needed.  Its
+      	   subattributes are promoted to be DPN attributes.  -->
     <t> <figure anchor="fig-dpn-structure" title="DPN Information Model">
             <artwork align="center"><![CDATA[
       |
       +-[DPN] <G-Key>, <Name> (O) <Set>
-      |     +-[Extensible: = FALSE]
+      |     +-[Extensible: FALSE]
       |     +-[Interface] <L-Key> <Set>
       |     |      +-[Role] <U-Key>
-      |     |      +-[Protocol] <Set>
       |     |      +-[Settings] (O)
       |     +-[Domain-Key]
       |     +-[Service-Group-Key] <Set> (O)
       |     +-[DPN-Policy-Configuration] <List> (M)
       |     +-[DPN-Resource-Mapping-Reference] (O)
     ]]></artwork>
+<!--  CEP: TBD: should Protocol be re-inserted, or is Interface enough?
+      		Pro: people know what a protocol is.
+		Con: The Interface might define the protocol.  -->
             <postamble></postamble>
        </figure>
     </t>
@@ -1180,9 +1184,9 @@ DPN         |                 DPN        |
 	defined within the Policy-Template. </t>
     <t hangText="DPN-Resident-Policy.Policy-Configuration:"> A Policy Key
 	providing access to Template from which the DPN-Resident-Policy was
-	instantiated, as well as an Attribute for this instantiation from the
-	Policy-Template and also specifies whether the Attribute-Expression
-	for default values and statically configured values, according to the
+	instantiated, as well as an Attribute-Expression for this instantiation
+	from the Policy-Template, which supplies default values and statically
+	configured values for the Attributes, according to the
 	    syntax specified in <xref target="templates"/>. </t>
     <t hangText="DPN-Resource-Mapping-Reference (O):"> A reference to the
 	underlying implementation, e.g. physical node, software module,
@@ -1433,11 +1437,11 @@ DPN         |                 DPN        |
     <t> Monitors provide a mechanism to produce reports when events
             occur. A Monitor will have a target that specifies what is to
             be watched. </t>
-    <t> When a Monitor is specified, the configuration MUST be applicable
-            to the attribute/entity monitored. For example, a Monitor using a
-            Threshold configuration cannot be applied to a Mobility-Context, because
-            it does not have a threshold. Such a monitor could be
-            applied to a numeric threshold property of a Context. </t>
+    <t> The attribute/entity to be monitored places certain constraints on the
+	    configuration that can be specified. For example, a Monitor using
+	    a Threshold configuration cannot be applied to a Mobility-Context,
+	    because it does not have a threshold. Such a monitor configuration
+	    could be applied to a numeric threshold property of a Context. </t>
     <t> 
         <figure anchor="fig-monitor"
                   title="Monitor Substructure">
@@ -1471,16 +1475,16 @@ DPN         |                 DPN        |
             Determined by the Monitor subtype. The monitor report is
             specified by the Configuration. Four report types are defined:
             <list style="symbols">
-            <t> Periodic reporting specifies an interval by which a
+            <t> "Periodic" reporting specifies an interval by which a
                 notification is sent.</t>
-            <t> Event reporting specifies a list of event types that, if
+            <t> "Event-List" reporting specifies a list of event types that, if
                 they occur and are related to the monitored attribute,
                 will result in sending a notification.</t>
-            <t> Scheduled reporting specifies the time (in seconds since
+            <t> "Scheduled" reporting specifies the time (in seconds since
                 Jan 1, 1970) when a notification for the monitor should be
                 sent. Once this Monitor's notification is completed the
                 Monitor is automatically de-registered.</t>
-            <t> Threshold reporting specifies one or both of a low and high
+            <t> "Threshold" reporting specifies one or both of a low and high
                 threshold. When these values are crossed a corresponding
                 notification is sent.</t>
             </list> </t>
@@ -2679,25 +2683,32 @@ DPN         |                 DPN        |
                ]]></artwork>
            </figure>
        </t>
-       
-   </section>
-   <section title="Tunnel Templates">
-       <t>The Network Service Header is specified in <xref target="RFC8300"/>.</t>
-       <t>The MPLS SR Stack is specified in <xref target="I-D.ietf-spring-segment-routing-mpls"/>.</t>
-       <t>The IPv6 SR Stack is specified in <xref target="I-D.ietf-6man-segment-routing-header"/>.</t>
-       <t>A tunnel MUST have the local-address or remote-address (or both) populated.</t>
-       <t>For GRE, the gre-key MUST be present.</t>
-       <t>For GTP (GPRS Tunneling Protocol), the following attributes MAY be present
-           <list>
-               <t>local tunnel endpoint identifier (teid) - MUST be present local-address is nonempty</t>
-               <t>remote tunnel endpoint identifier (teid) - MUST be present remote-address is nonempty</t>
-               <t>sequence-numbers-on - Indicates that sequence numbers will be used</t>
-           </list>
-       </t>
-       <t>Tunnels can be used as Next Hop and Descriptor values.</t>
-       <t>
-           <figure anchor="tunneltemplates"
-               title="Tunnel Templates">
+    </section>
+
+    <section title="Tunnel Templates">
+        <t> The Network Service Header is specified in
+		<xref target="RFC8300"/>.</t>
+        <t> The MPLS SR Stack is specified in
+		<xref target="I-D.ietf-spring-segment-routing-mpls"/>.</t>
+        <t> The IPv6 SR Stack is specified in
+		<xref target="I-D.ietf-6man-segment-routing-header"/>.</t>
+        <t> A tunnel MUST have the local-address or remote-address
+		(or both) populated.</t>
+        <t> For GRE, the gre-key MUST be present.</t>
+        <t> For GTP (GPRS Tunneling Protocol), the following attributes MAY
+		be present
+            <list>
+                <t> local tunnel endpoint identifier (teid) - MUST be present
+			if local-address is nonempty</t>
+                <t> remote tunnel endpoint identifier (teid) - MUST be present
+			if remote-address is nonempty</t>
+                <t> sequence-numbers-on - Indicates that sequence numbers
+			will be used</t>
+            </list>
+        </t>
+        <t> Tunnels can be used as Next Hop and Descriptor values.</t>
+        <t>
+            <figure anchor="tunneltemplates" title="Tunnel Templates">
                <artwork align="center"><![CDATA[
 |
 +-[next-hop-template]
@@ -2733,19 +2744,17 @@ DPN         |                 DPN        |
                ]]></artwork>
            </figure>
        </t>
-   </section>
-   <section title="Action Templates">
-       <t>The following figure shows common next-hop (set next-hop) and tunnel
-           templates for Actions.</t>
-       <t>Drop action has no values.</t>
-       <t>Rewrite uses a Descriptor to set the values of the packet.  Exactly one
-           Descriptor MUST be present. Only the Destination and Source port fields,
-           if present, are used from the Descriptor.</t>
-       <t>Copy-Forward creates a copy of the packet and then forwards it
-           in accordance to the nexthop value.</t>
-       <t>
-           <figure anchor="action_templates"
-               title="Action Templates">
+    </section>
+    <section title="Action Templates">
+        <t> The following figure shows common next-hop (set next-hop) and
+	    tunnel templates for Actions.</t>
+        <t> Drop action has no values.</t>
+        <t> Rewrite uses a Descriptor to set the values of the packet.
+	    Exactly one Descriptor MUST be present. Only the Destination and
+	    Source port fields, if present, are used from the Descriptor.</t>
+        <t> Copy-Forward creates a copy of the packet and then forwards it
+            in accordance to the nexthop value.
+            <figure anchor="action_templates" title="Action Templates">
                <artwork align="center"><![CDATA[
 |
 +-[drop-template]
@@ -2761,16 +2770,13 @@ DPN         |                 DPN        |
 +-[copy-forward-template]
 |     +-[Extensible: True]
 |     +-[next-hop:]
-               ]]></artwork>
-           </figure>
-       </t>
-  </section>
+               ]]></artwork> </figure> </t>
+   </section>
  
    <section title="Quality of Service Action Templates">
        <t>PMIP QoS is specified in <xref target="RFC7222"/>.</t>
        <t>
-           <figure anchor="qos_templates"
-               title="QoS Templates">
+           <figure anchor="qos_templates" title="QoS Templates">
                <artwork align="center"><![CDATA[
 |
 +-[qos-template]
@@ -2795,9 +2801,7 @@ DPN         |                 DPN        |
 |     |     +-[(Unsigned 32) agg-max-ul]
 |     |     +-[(Unsigned 32) gbr-dl]
 |     |     +-[(Unsigned 32) gbr-ul]
-               ]]></artwork>
-           </figure>
-       </t>
+               ]]></artwork> </figure> </t>
     </section>
 
     <section title="PMIP Command-Set">
@@ -2816,26 +2820,24 @@ DPN         |                 DPN        |
     <t> 3GPP support is optional and detailed in this section. The following
         acronyms are used:
         <list hangIndent="4" style="hanging">
-        <t hangText="APN-AMBR:"> Access Point Name Aggregate
+            <t hangText="APN-AMBR:"> Access Point Name Aggregate
                                  Maximum Bit Rate</t>
-        <t hangText="UE-AMBR:"> User Equipment Aggregate
+            <t hangText="UE-AMBR:"> User Equipment Aggregate
             Maximum Bit Rate</t>
-        <t hangText="QCI:"> QoS Class Identifier</t>
+            <t hangText="QCI:"> QoS Class Identifier</t>
                 
-        <t hangText="EBI:"> EPS Bearer Identity </t>
-        <t hangText="LBI:"> Linked Bearer Identity </t>
-        <t hangText="IMSI:"> International Mobile Subscriber Identity</t>
+            <t hangText="EBI:"> EPS Bearer Identity </t>
+            <t hangText="LBI:"> Linked Bearer Identity </t>
+            <t hangText="IMSI:"> International Mobile Subscriber Identity</t>
 
-        <t hangText="TFT:"> Traffic Flow Template (TFT)</t>
-       </list></t>
-    
-       <t>Generally, 3GPP QoS values should use the qos-template.
-           Note, User Equipment Aggregate Maximum Bit Rate (UE-AMBR) maps to the
-           per-mn-agg-max-dl and per-mn-agg-max-ul.</t>
+            <t hangText="TFT:"> Traffic Flow Template (TFT)</t>
+        </list></t>
 
-<t>
-    <figure anchor="tgpp-template-exstensions"
-        title="3GPP Mobility Templates">
+        <t> Generally, 3GPP QoS values should use the qos-template.  Note: User
+	    Equipment Aggregate Maximum Bit Rate (UE-AMBR) maps to the
+            per-mn-agg-max-dl and per-mn-agg-max-ul.
+        <figure anchor="tgpp-template-exstensions"
+        	title="3GPP Mobility Templates">
         <artwork align="center"><![CDATA[
             |
             +-[ MN-Policy-Template ]
@@ -2852,14 +2854,10 @@ DPN         |                 DPN        |
             |     +-[(Unsigned 32) ue-agg-max-bitrate]
             |     +-[(Unsigned 32) apn-agg-max-bitrate]
             ...
-        ]]></artwork>
-        <postamble></postamble>
-    </figure>
-</t>
+        ]]></artwork> <postamble></postamble> </figure>
 
-<t>
-    <figure anchor="tgpp-tft"
-        title="3GPP Packet Filter Template (Descriptor)">
+        <figure anchor="tgpp-tft"
+        	title="3GPP Packet Filter Template (Descriptor)">
         <artwork align="center"><![CDATA[
 |
 +-[ packet-filter ]
@@ -2886,12 +2884,9 @@ DPN         |                 DPN        |
 |     |     |      +-[(dscp) traffic-class-hi]
 |     |     +-[(dscp) flow-label]
 ...
+        ]]></artwork> <postamble></postamble> </figure> </t>
 
-        ]]></artwork>
-        <postamble></postamble>
-    </figure>
-</t>
-    <t> The following Command Set values are supported for 3GPP.
+     <t> The following Command Set values are supported for 3GPP.
         <list style="symbols">
           <t> assign-ip - Assign the IP Address for the mobile session.</t>
           <t> assign-fteid-ip - Assign the Fully Qualified TEID (F-TEID)
@@ -2899,14 +2894,14 @@ DPN         |                 DPN        |
           <t> assign-fteid-teid - Assign the Fully Qualified TEID (F-TEID)
               LOCAL TEID.</t>
           <t> session - Assign values for the Session Level.  When this
-              involves 'assign-fteid-ip' and 'assign-fteid-teid' this implies
-              the values are part of the default bearer.</t>
+              involves 'assign-fteid-ip' and 'assign-fteid-teid',
+	      the values are part of the default bearer. </t>
           <t> uplink - Command applies to uplink.</t>
           <t> downlink - Command applies to downlink.</t>
           <t> assign-dpn - Assign the Dataplane Node.</t>
         </list>
     </t>
-   </section>
+    </section>
 </section>
 
 <section title="Implementation Status">
@@ -3153,9 +3148,9 @@ activation system:
     XML: N/A, the requested URI is an XML namespace.</artwork></figure></t>
     
     <t> <figure><artwork>
-    URI: urn:ietf:params:xml:ns:yang:ietf-diam-trafficclassifier
-    Registrant Contact: The DMM WG of the IETF.
-    XML: N/A, the requested URI is an XML namespace.</artwork></figure></t>
+   URI: urn:ietf:params:xml:ns:yang:ietf-diam-trafficclassifier
+   Registrant Contact: The DMM WG of the IETF.
+   XML: N/A, the requested URI is an XML namespace.</artwork></figure></t>
     
     <t> This document registers the following YANG modules in the "YANG
           Module Names" registry <xref target="RFC6020"/>.</t>
@@ -3783,7 +3778,7 @@ revision 2016-08-03 {
         uses fpc:interface-key;
         leaf interface-name {
             type string;
-            description "Service-Endpoint Interface Name";
+            description "DPN-Type Interface Name";
         }
         leaf-list roles {
             type identityref {
@@ -3848,7 +3843,7 @@ revision 2016-08-03 {
             information";
    }
    container topology-information-model {
-    list service-endpoint {
+    list dpn-type {
       key role-key;
       uses fpc:role-key;
       leaf role-name {
@@ -3863,13 +3858,13 @@ revision 2016-08-03 {
         key "dpn-key interface-key";
         uses fpc:dpn-key;
         uses fpc:interface-key;
-        leaf-list protocol {
+        leaf-list interface-protocol-set {
           type identityref {
             base "interface-protocols";
           }
           description "Supported protocols";
         }
-        leaf-list feature {
+        leaf-list feature-set {
           type identityref {
             base "interface-protocols";
           }
@@ -6112,15 +6107,15 @@ module: ietf-dmm-fpc
 |  +--rw basename?          fpc:fpc-identity
 |  +--rw base-checkpoint?   string
 +--rw topology-information-model
-|  +--rw service-endpoint* [role-key]
+|  +--rw dpn-type* [role-key]
 |  |  +--rw role-key             identityref
 |  |  +--rw role-name?           string
 |  |  +--rw service-group-key*   fpc:fpc-identity
 |  |  +--rw interface* [dpn-key interface-key]
 |  |     +--rw dpn-key                   fpc:fpc-identity
 |  |     +--rw interface-key             fpc:fpc-identity
-|  |     +--rw protocol*   identityref
-|  |     +--rw feature*              identityref
+|  |     +--rw interface-protocol-set*   identityref
+|  |     +--rw feature-set*              identityref
 |  |     +--rw interface-settings-set
 |  +--rw domain* [domain-key]
 |  |  +--rw domain-key         fpc:fpc-identity
@@ -6455,44 +6450,6 @@ rpcs:
       </figure>
     </t>
     </section>
-</section>
-<section anchor="changelog" title="Changes since Version 09">
-    <t>The following changes have been made since version 09
-        <list>
-            <t>Migration to a Template based framework.  This
-                affects all elements.  The framework has a
-                template definition language.</t>
-            <t>Basename is split into two aspects.  The first is
-                version which applies to Templates. The second
-                is checkpointing which applies to specific
-                sections only.</t>
-            <t>Rule was inside Policy and now is Rule-Template
-                and stands as a peer structure to Policy.</t>
-            <t>Types, e.g. Descriptor Types, Action Types, etc.,
-                are now templates that have no values filled
-                in.</t>
-            <t>The embedded rule has been replaced by a template
-                that has no predefined variables. All rules, pre-configured
-                or embedded, are realized as Policy instantiations.</t>
-            <t>The Unassigned DPN is used to track requests vs.
-                those that are installed, i.e. Agent assignment of
-                Policy is supported.</t>
-            <t>The Topology system supports selection information by
-                ServiceGroup or ServiceEndpoint.</t>
-            <t>DPN Peer Groups and DPN Groups are now PeerServiceGroup
-                and ServiceGroup.</t>
-            <t>Bulk Configuration and Configuration now follow
-                a style similar to YANG Patch.  Agents MAY response
-                back with edits it made to complete the Client edit
-                request.</t>
-            <t>RFC 5777 Classifiers have been added.</t>
-            <t>All operations have a common error format.</t>
-            <t>DPN-Type is now Service-Endpoint.</t>
-            <t>Configurable Policies are now Policies installed under
-                the DPN.</t>
-        </list>
-    </t>
-    
 </section>
 </back>
 </rfc>

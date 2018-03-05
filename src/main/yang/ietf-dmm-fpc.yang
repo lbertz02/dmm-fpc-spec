@@ -518,6 +518,12 @@ revision 2016-08-03 {
             }
             description "Roles supported";
         }
+        leaf-list protocol {
+          type identityref {
+            base "interface-protocols";
+          }
+          description "Supported protocols";
+        }
         uses fpc:interface-settings;
         description "DPN interfaces";
       }
@@ -589,13 +595,13 @@ revision 2016-08-03 {
         key "dpn-key interface-key";
         uses fpc:dpn-key;
         uses fpc:interface-key;
-        leaf-list interface-protocol-set {
+        leaf-list protocol {
           type identityref {
             base "interface-protocols";
           }
           description "Supported protocols";
         }
-        leaf-list feature-set {
+        leaf-list feature {
           type identityref {
             base "interface-protocols";
           }
