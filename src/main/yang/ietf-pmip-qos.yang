@@ -50,15 +50,9 @@ module ietf-pmip-qos {
      without warranty as described in the Simplified BSD License.";
 
   revision 2018-02-28 {
-    description "Updated to drop unnecessary attribute types.
-        Update WG co-chair.";
+    description "Initial Revision.";
     reference "RFC 6088: Traffic Selectors for Flow Bindings";
   }
-  revision 2017-10-29 {
-     description "Base Version";
-      reference
-        "RFC 6088: Traffic Selectors for Flow Bindings";
-   }
 
     // Type Definitions
 

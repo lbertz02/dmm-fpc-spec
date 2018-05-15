@@ -51,25 +51,9 @@ module ietf-dmm-fpc {
      without warranty as described in the Simplified BSD License.";
 
     revision 2018-02-28 {
-    description "Version 10 updates.";
+    description "Initial Revision.";
     reference "draft-ietf-dmm-fpc-cpdp-10";
   }
-    revision 2017-09-27 {
-    description "Version 10 updates.";
-    reference "draft-ietf-dmm-fpc-cpdp-09";
-  }
-revision 2017-07-22 {
-    description "Version 08 updates.";
-    reference "draft-ietf-dmm-fpc-cpdp-08";
-}
-revision 2017-03-08 {
-    description "Version 06 updates.";
-    reference "draft-ietf-dmm-fpc-cpdp-06";
-}
-revision 2016-08-03 {
-    description "Initial Revision.";
-    reference "draft-ietf-dmm-fpc-cpdp-05";
-}
 
     //General Structures
     grouping templatedef {
@@ -106,8 +90,8 @@ revision 2016-08-03 {
     typedef fpc-identity {
         type union {
             type uint32;
-            type string;
             type instance-identifier;
+            type string;
         }
         description "FPC Identity";
     }
