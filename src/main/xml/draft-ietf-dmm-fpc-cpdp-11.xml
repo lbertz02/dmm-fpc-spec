@@ -1005,7 +1005,7 @@ DPN         |                 DPN        |
         hosting the interfaces of the DPN Group.</t>
     <t hangText="Protocol (Set):">The set of protocols supported by
         this interface (e.g., PMIP, S5-GTP, S5-PMIP etc.).  The
-        protocol is MAY be ‘gtp’ but many protocols implement specific
+        protocol is MAY be 'gtp' but many protocols implement specific
         message sets, e.g. s5-pmip, s8-pmip. When a protocol implements
         such message sub-subsets the Protocol value MUST include this
         information.</t>
@@ -1015,8 +1015,8 @@ DPN         |                 DPN        |
     <t hangText="Settings (Set):">An optional set of configurable
         settings that further determine the suitability of an
         interface for the specific request.
-        For example: SequenceNumber=ON/OFF.*
-    <t hangText="DPN-Key:"> A key used to identify the DPN.
+        For example: SequenceNumber=ON/OFF.</t>
+    <t hangText="DPN-Key:"> A key used to identify the DPN.</t>
     <t hangText="Referenced-Interface (Set):"> The *DPN* Interfaces and
 	peer Service-Groups associated with them.  Each entry contains
         <list style="hanging">
