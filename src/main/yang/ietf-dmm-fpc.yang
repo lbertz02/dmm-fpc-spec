@@ -6,9 +6,9 @@ module ietf-dmm-fpc {
     import ietf-inet-types { prefix inet;
         revision-date 2013-07-15; }
     import ietf-dmm-fpc-settingsext { prefix fpcbase;
-        revision-date 2018-02-28; }
+        revision-date 2018-05-17; }
     import ietf-diam-trafficclassifier { prefix rfc5777;
-        revision-date 2018-02-28; }
+        revision-date 2018-05-17; }
     import ietf-restconf { prefix rc;
         revision-date 2017-01-26; }
     import ietf-yang-patch { prefix ypatch;

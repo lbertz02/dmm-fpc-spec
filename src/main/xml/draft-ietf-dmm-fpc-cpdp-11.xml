@@ -44,10 +44,10 @@
     "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7222.xml">
 <!ENTITY RFC7660 SYSTEM
     "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7660.xml">
-<!ENTITY RFC8342 SYSTEM
+<!ENTITY RFC8040 SYSTEM
  "http://xml.resource.org/public/rfc/bibxml/reference.RFC.8040.xml">
 <!ENTITY RFC8342 SYSTEM
-    "http://xml.resource.org/public/rfc/bibxml/reference.RFC.8040.xml">
+    "http://xml.resource.org/public/rfc/bibxml/reference.RFC.8342.xml">
 <!ENTITY RFC8072 SYSTEM
     "http://xml.resource.org/public/rfc/bibxml/reference.RFC.8072.xml">
 <!ENTITY RFC8300 SYSTEM
@@ -3245,7 +3245,7 @@ activation system:
             <t>fpc-descriptor-value (ietf-dmm-fpc-settingsext)</t>
             <t>fpc-action-value (ietf-dmm-fpc-settingsext)</t>
         </list>
-    <t>
+    </t>
     
     <t>The YANG modules in this document conform to the Network
     Management Datastore Architecture (NMDA) defined in <xref target="RFC8342"/>.</t>
@@ -3271,9 +3271,9 @@ module ietf-dmm-fpc {
     import ietf-inet-types { prefix inet;
         revision-date 2013-07-15; }
     import ietf-dmm-fpc-settingsext { prefix fpcbase;
-        revision-date 2018-02-28; }
+        revision-date 2018-05-17; }
     import ietf-diam-trafficclassifier { prefix rfc5777;
-        revision-date 2018-02-28; }
+        revision-date 2018-05-17; }
     import ietf-restconf { prefix rc;
         revision-date 2017-01-26; }
     import ietf-yang-patch { prefix ypatch;
@@ -4006,7 +4006,7 @@ module ietf-dmm-fpc {
            }
 
            leaf point {
-             when "(../operation = 'insert' or ../operation = 'move')"
+            when "(../operation = 'insert' or ../operation = 'move')"
                 + "and (../where = 'before' or ../where = 'after')" {
                description
                  "This leaf only applies for 'insert' or 'move'
@@ -4018,7 +4018,7 @@ module ietf-dmm-fpc {
            }
 
            leaf where {
-             when "../operation = 'insert' or ../operation = 'move'" {
+            when "../operation = 'insert' or ../operation = 'move'" {
                description
                  "This leaf only applies for 'insert' or 'move'
                   operations.";
@@ -4291,13 +4291,13 @@ module ietf-dmm-fpc-settingsext {
     import ietf-inet-types { prefix inet; 
         revision-date 2013-07-15; }
     import ietf-trafficselector-types { prefix traffic-selectors; 
-        revision-date 2018-02-28; }
+        revision-date 2018-05-17; }
     import ietf-yang-types { prefix ytypes;
         revision-date 2013-07-15; }
     import ietf-pmip-qos { prefix pmipqos;
-        revision-date 2018-02-28; }
+        revision-date 2018-05-17; }
     import ietf-diam-trafficclassifier { prefix rfc5777;
-        revision-date 2018-02-28; }
+        revision-date 2018-05-17; }
 
     organization "IETF Distributed Mobility Management (DMM)
       Working Group";
@@ -4879,7 +4879,7 @@ module ietf-pmip-qos {
       revision-date 2013-07-15;
     }
     import ietf-trafficselector-types { prefix traffic-selectors;
-        revision-date 2018-02-28; }
+        revision-date 2018-05-17; }
 
     organization "IETF Distributed Mobility Management (DMM)
       Working Group";
@@ -4938,8 +4938,8 @@ module ietf-pmip-qos {
         "Traffic Class consists of a 6-bit DSCP field followed by a
          2-bit reserved field.";
      reference
-         "RFC 3289: Management Information Base for the Differentiated
-                    Services Architecture
+         "RFC 3289: Management Information Base for the
+            Differentiated Services Architecture
           RFC 2474: Definition of the Differentiated Services Field
                     (DS Field) in the IPv4 and IPv6 Headers
           RFC 2780: IANA Allocation Guidelines For Values In
@@ -5040,7 +5040,7 @@ module ietf-pmip-qos {
        }
        mandatory true;
        description
-        "This is a 4-bit unsigned integer value.  It is used to decide
+       "This is a 4-bit unsigned integer value. It is used to decide
         whether a mobility session establishment or modification
         request can be accepted; this is typically used for
         admission control of Guaranteed Bit Rate traffic in case of
@@ -5068,7 +5068,7 @@ module ietf-pmip-qos {
        mandatory true;
        description
        "This is a 2-bit unsigned integer value.  It defines whether a
-        service data flow can get resources that were already
+        service data flow can get resources tha were already
         assigned to another service data flow with a lower priority
         level.";
      }
@@ -6051,10 +6051,10 @@ descriptor value:
 |     |     |  +--rw ip-address-mask*        inet:ip-prefix
 |     |     |  +--rw mac-address*            yang-types:mac-address
 |     |     |  +--rw mac-address-mask* [mac-address]
-|     |     |  |  +--rw mac-address             yang-types:mac-address
+|     |     |  |  +--rw mac-address           yang-types:mac-address
 |     |     |  |  +--rw macaddress-mask-pattern
                         yang-types:mac-address
-|     |     |  +--rw eui64-address*  diamclassifier:eui64-address-type
+|     |     |  +--rw eui64-address* diamclassifier:eui64-address-type
 |     |     |  +--rw eui64-address-mask* [eui64-address]
 |     |     |  |  +--rw eui64-address
                         diamclassifier:eui64-address-type
@@ -6238,7 +6238,7 @@ action value:
    |        +--:(rfc5777-classifier-template)
    |           +--rw rfc5777-classifier-template
    |              +--rw protocol?               uint8
-   |              +--rw direction?       diamclassifier:direction-type
+   |              +--rw direction?      diamclassifier:direction-type
    |              +--rw from-spec* [index]
    |              |  +--rw index                   uint16
    |              |  +--rw ip-address*             inet:ip-address
@@ -6342,7 +6342,7 @@ action value:
    |        +--:(mac-address)
    |        |  +--rw mac-address?          ytypes:mac-address
    |        +--:(service-path)
-   |        |  +--rw service-path?         fpcbase:fpc-service-path-id
+   |        |  +--rw service-path?        fpcbase:fpc-service-path-id
    |        +--:(mpls-path)
    |        |  +--rw mpls-path?            fpcbase:fpc-mpls-label
    |        +--:(nsh)
@@ -6379,7 +6379,7 @@ action value:
    |        +--:(mac-address)
    |        |  +--rw mac-address?          ytypes:mac-address
    |        +--:(service-path)
-   |        |  +--rw service-path?         fpcbase:fpc-service-path-id
+   |        |  +--rw service-path?        fpcbase:fpc-service-path-id
    |        +--:(mpls-path)
    |        |  +--rw mpls-path?            fpcbase:fpc-mpls-label
    |        +--:(nsh)
@@ -6670,8 +6670,8 @@ rpcs:
 |                 |  +--ro subsequent-edit* [edit-id]
 |                 |     +--ro edit-id      string
 |                 |     +--ro operation    enumeration
-|                 |     +--ro target     ypatch:target-resource-offset
-|                 |     +--ro point?     ypatch:target-resource-offset
+|                 |     +--ro target    ypatch:target-resource-offset
+|                 |     +--ro point?    ypatch:target-resource-offset
 |                 |     +--ro where?       enumeration
 |                 |     +--ro value?       <anydata>
 |                 +--:(errors)
@@ -6689,25 +6689,25 @@ rpcs:
         |  |  +---w execution-delay?   uint32
         |  |  +---w op-id              uint64
         |  |  +---w monitors* [monitor-key]
-        |  |     +---w extensible?                    boolean
-        |  |     +---w mandatory-static-attributes*   string
-        |  |     +---w entity-state?                  enumeration
-        |  |     +---w monitor-key                    fpc:fpc-identity
-        |  |     +---w target?                        string
+        |  |     +---w extensible?                   boolean
+        |  |     +---w mandatory-static-attributes*  string
+        |  |     +---w entity-state?                 enumeration
+        |  |     +---w monitor-key                   fpc:fpc-identity
+        |  |     +---w target?                       string
         |  |     +---w binding-information
-        |  |     +---w deterrable?                    boolean
+        |  |     +---w deterrable?                   boolean
         |  |     +---w (configuration)
         |  |        +--:(period)
-        |  |        |  +---w period?                        uint32
+        |  |        |  +---w period?                       uint32
         |  |        +--:(threshold-config)
-        |  |        |  +---w low?                           uint32
-        |  |        |  +---w hi?                            uint32
+        |  |        |  +---w low?                          uint32
+        |  |        |  +---w hi?                           uint32
         |  |        +--:(schedule)
-        |  |        |  +---w schedule?                      uint32
+        |  |        |  +---w schedule?                     uint32
         |  |        +--:(event-identities)
-        |  |        |  +---w event-identities*             identityref
+        |  |        |  +---w event-identities*            identityref
         |  |        +--:(event-ids)
-        |  |           +---w event-ids*                     uint32
+        |  |           +---w event-ids*                    uint32
         |  +--ro output
         |     +--ro op-id     uint64
         |     +--ro (edit-status-choice)?
@@ -6794,7 +6794,7 @@ notifications:
         |  |                  +--ro error-type       enumeration
         |  |                  +--ro error-tag        string
         |  |                  +--ro error-app-tag?   string
-        |  |                  +--ro error-path?    instance-identifier
+        |  |                  +--ro error-path?   instance-identifier
         |  |                  +--ro error-message?   string
         |  |                   +--ro error-info?      <anydata>
         |  +--ro subsequent-edit* [edit-id]
@@ -6825,7 +6825,8 @@ notifications:
     </t>
     </section>
 </section>
-<section anchor="changelog" title="Changes since Version 09">
+<section anchor="changelog" title="Change Log">
+<section anchor="changelog10" title="Changes since Version 09">
     <t>The following changes have been made since version 09
         <list>
             <t>Migration to a Template based framework.  This
@@ -6858,7 +6859,16 @@ notifications:
             <t>All operations have a common error format.</t>
         </list>
     </t>
-    
+</section>
+<section anchor="changelog11" title="Changes since Version 10">
+    <t>The following changes have been made since version 10
+        <list>
+            <t>Updated ServiceGroup and eliminated Service Endpoint as noted
+                in ML during IETF 101.</t>
+            <t>Scrubbed YANG for NMDA compliance and Guidelines (RFC 6087bis).</t>
+         </list>
+    </t>
+</section>
 </section>
 </back>
 </rfc>
