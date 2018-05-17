@@ -3218,12 +3218,34 @@ activation system:
         per <xref target="RFC5777"/></t>
     </list></t>
     
-    <t>All modules defined in this specificatio make use of (import)
+    <t>All modules defined in this specification make use of (import)
         ietf-inet-types as defined in <xref target="RFC6991"/>.</t>
     <t>ietf-dmm-fpc-settingsext and ietf-diam-trafficclassifier make use of
         (imports) ietf-yang-types as defined in <xref target="RFC6991"/>.</t>
     <t>ietf-dmm-fpc imports the restconf (ietf-restconf) <xref target="RFC8040"/> and yang patch
         (ietf-yang-patch) <xref target="RFC8072"/> modules.</t>
+    
+    <t>ietf-pmip-qos and ietf-dmm-fpc-settings import the trafficselector from
+        the ietf-traffic-selector-types module.</t>
+    <t>ietf-dmm-fpc-settings also imports the qosattribute (ietf-pmip-qos) and
+        classifier (ietf-diam-trafficclassifier).</t>
+    <t>ietf-dmm-fpc-settingsext groups various settings, actions and descriptors and
+        is used by the fpc module (ietf-dmm-fpc).</t>
+    
+    <t>The following groupings are intended for reuse (import) by other modules.
+        <list style="symbols">
+            <t>qosoption (ietf-qos-pmip module)</t>
+            <t>qosattribute (ietf-qos-pmip module)</t>
+            <t>qosoption (ietf-qos-pmip module)</t>
+            <t>Allocation-Retention-Priority-Value (ietf-qos-pmip module)</t>
+            <t>trafficselector (ietf-traffic-selector-types)</t>
+            <t>classifier (ietf-diam-trafficclassifier)</t>
+            <t>packet-filter (ietf-dmm-fpc-settingsext)</t>
+            <t>instructions (ietf-dmm-fpc-settingsext)</t>
+            <t>fpc-descriptor-value (ietf-dmm-fpc-settingsext)</t>
+            <t>fpc-action-value (ietf-dmm-fpc-settingsext)</t>
+        </list>
+    <t>
     
     <t>The YANG modules in this document conform to the Network
     Management Datastore Architecture (NMDA) defined in <xref target="RFC8342"/>.</t>
@@ -3240,7 +3262,7 @@ activation system:
         <xref target="RFC8040"/> and the fpc-settingsext module defined in
         this document.</t>
     <figure> <artwork><![CDATA[
-<CODE BEGINS> file "ietf-dmm-fpc@2018-02-28.yang"
+<CODE BEGINS> file "ietf-dmm-fpc@2018-05-17.yang"
 module ietf-dmm-fpc {
   yang-version 1.1;
     namespace "urn:ietf:params:xml:ns:yang:ietf-dmm-fpc";
@@ -3267,8 +3289,8 @@ module ietf-dmm-fpc {
         WG Chair: Dapeng Liu
                   <mailto:maxpassion@gmail.com>
 
-        WG Chair: Sri Gundavelli
-                  <mailto:sgundave@cisco.com>
+        WG Chair: Jouni Korhonen
+                  <mailto:jouni.nospam@gmail.com>
 
         Editor:   Satoru Matsushima
                   <mailto:satoru.matsushima@g.softbank.co.jp>
@@ -3293,40 +3315,22 @@ module ietf-dmm-fpc {
      in Section 4.e of the Trust Legal Provisions and are provided
      without warranty as described in the Simplified BSD License.";
 
-    revision 2018-02-28 {
-    description "Version 10 updates.";
+    revision 2018-05-17 {
+    description "Initial Revision.";
     reference "draft-ietf-dmm-fpc-cpdp-10";
   }
-    revision 2017-09-27 {
-    description "Version 10 updates.";
-    reference "draft-ietf-dmm-fpc-cpdp-09";
-  }
-revision 2017-07-22 {
-    description "Version 08 updates.";
-    reference "draft-ietf-dmm-fpc-cpdp-08";
-}
-revision 2017-03-08 {
-    description "Version 06 updates.";
-    reference "draft-ietf-dmm-fpc-cpdp-06";
-}
-revision 2016-08-03 {
-    description "Initial Revision.";
-    reference "draft-ietf-dmm-fpc-cpdp-05";
-}
 
     //General Structures
     grouping templatedef {
         leaf extensible {
             type boolean;
-            description "Indicates if the template is
-                extensible";
+            description "Indicates if the template is extensible";
         }
         leaf-list mandatory-static-attributes {
             type string;
-            description "Attribute (Name) that cannot change.
-                If it has not been defined in the template it
-                MUST NOT be present at all for the template
-                to be valid.";
+            description "Attribute (Name) that cannot change.  If
+                it has not been defined in the template it MUST not
+                be present at all for the template to be valid.";
         }
         leaf entity-state {
             type enumeration {
@@ -3351,8 +3355,8 @@ revision 2016-08-03 {
     typedef fpc-identity {
         type union {
             type uint32;
-            type string;
             type instance-identifier;
+            type string;
         }
         description "FPC Identity";
     }
@@ -3453,8 +3457,8 @@ revision 2016-08-03 {
                 }
             }
             default "and";
-            description "Type of Match (OR or AND)
-             applied to the descriptor-configurations";
+            description "Type of Match (OR or AND) applied
+                to the descriptor-configurations";
         }
         list descriptor-configuration {
             key "descriptor-template-key";
@@ -3547,17 +3551,6 @@ revision 2016-08-03 {
     identity features {
         description "Protocol features";
     }
-
-  // Settings
-  grouping interface-settings {
-    list interface-settings {
-        key policy-template-key;
-        uses fpc:policy-template-key;
-        uses fpc:policy-configuration;
-        description "Interface settings";
-    }
-    description "Generic interface settings container";
-  }
 
   // Mobility Context
   grouping mobility-context {
@@ -3667,17 +3660,13 @@ revision 2016-08-03 {
     }
     description "Monitor Id";
   }
-  grouping target-value {
-    leaf target {
-        type string;
-        description "target";
-    }
-    description "Target Value";
-  }
   grouping monitor-config {
     uses fpc:templatedef;
     uses fpc:monitor-key;
-    uses fpc:target-value;
+    leaf target {
+      type string;
+      description "target";
+    }
     container binding-information {
         description "Placeholder for information helpful
             to binding the monitor ot the correct target";
@@ -3740,8 +3729,7 @@ revision 2016-08-03 {
       }
       leaf dpn-resource-mapping-reference {
         type string;
-        description "Reference to underlying
-            DPN resource(s)";
+        description "Reference to underlying DPN resource(s)";
       }
       leaf-list domain-key {
         type fpc:fpc-identity;
@@ -3756,7 +3744,7 @@ revision 2016-08-03 {
         uses fpc:interface-key;
         leaf interface-name {
             type string;
-            description "Interface Name";
+            description "Service Endpoint Interface Name";
         }
         leaf-list roles {
             type identityref {
@@ -3765,14 +3753,19 @@ revision 2016-08-03 {
             description "Roles supported";
         }
         leaf-list protocol {
-            type identityref {
-                 base "interface-protocols";
-            }
-            description "Supported protocols";
+          type identityref {
+            base "interface-protocols";
+          }
+          description "Supported protocols";
         }
-        uses fpc:interface-settings;
-        description "DPN interfaces";
-      }
+        list interface-settings {
+         key policy-template-key;
+         uses fpc:policy-template-key;
+         uses fpc:policy-configuration;
+         description "Interface settings";
+       }
+       description "DPN interfaces";
+     }
       list dpn-settings {
         key policy-template-key;
         uses fpc:policy-template-key;
@@ -3787,8 +3780,13 @@ revision 2016-08-03 {
         uses fpc:basename-info;
         description "DPN Checkpoint information";
    }
-   list service-group {
-        key service-group-key;
+   container service-group-checkpoint {
+        uses fpc:basename-info;
+        description "Service Group Checkpoint information";
+   }
+   container topology-information-model {
+     list service-group {
+        key "service-group-key role-key";
         leaf service-group-key {
             type fpc:fpc-identity;
             mandatory true;
@@ -3798,10 +3796,33 @@ revision 2016-08-03 {
             type string;
             description "Service Group Name";
         }
+        uses fpc:role-key;
+        leaf role-name {
+            type string;
+            description "Role Name";
+        }
+        leaf-list protocol {
+          type identityref {
+            base "interface-protocols";
+          }
+          min-elements 1;
+          description "Supported protocols";
+        }
+        leaf-list feature {
+            type identityref {
+                base "interface-protocols";
+            }
+            description "Supported features";
+        }
+        list settings {
+            key policy-template-key;
+            uses fpc:policy-template-key;
+            uses fpc:policy-configuration;
+            description "Service Configuration";
+        }
         list dpn {
-            key "dpn-key role-key";
+            key dpn-key;
             uses fpc:dpn-key;
-            uses fpc:role-key;
             list referenced-interface {
                 key interface-key;
                 uses fpc:interface-key;
@@ -3813,51 +3834,7 @@ revision 2016-08-03 {
             }
             description "DPN";
         }
-        list service-settings {
-            key policy-template-key;
-            uses fpc:policy-template-key;
-            uses fpc:policy-configuration;
-            description "Service Configuration";
-        }
         description "Service Group";
-   }
-   container service-group-checkpoint {
-        uses fpc:basename-info;
-        description "Service Group Checkpoint
-            information";
-   }
-   container topology-information-model {
-    list service-endpoint {
-      key role-key;
-      uses fpc:role-key;
-      leaf role-name {
-        type string;
-        description "Role Name";
-      }
-      leaf-list service-group-key {
-        type fpc:fpc-identity;
-        description "Service Group";
-      }
-      list interface {
-        key "dpn-key interface-key";
-        uses fpc:dpn-key;
-        uses fpc:interface-key;
-        leaf-list protocol {
-          type identityref {
-            base "interface-protocols";
-          }
-          description "Supported protocols";
-        }
-        leaf-list feature {
-          type identityref {
-            base "interface-protocols";
-          }
-          description "Supported features";
-        }
-        uses fpc:interface-settings;
-        description "A DPN interface types";
-      }
-      description "Set of DPN types";
     }
     list domain {
       key domain-key;
@@ -3951,17 +3928,14 @@ revision 2016-08-03 {
         }
         enum storage {
           value 3;
-          description "One or more references exist in
-            storage.";
+          description "One or more references exist in storage.";
         }
         enum unknown {
           value 4;
-          description "The location of the references
-            are unknown.";
+          description "The location of the references are unknown.";
         }
       }
-      description "Search scope for references in
-        the operation.";
+      description "Search scope for references in the operation.";
     }
     rpc configure {
         description "Configure RPC";
@@ -3980,8 +3954,7 @@ revision 2016-08-03 {
             description "Reference Scope";
         }
         uses fpcbase:instructions;
-        description "yang-patch edit augments for
-            configure rpc";
+        description "yang-patch edit augments for configure rpc";
     }
     grouping subsequent-edits {
          list subsequent-edit {
@@ -3992,8 +3965,7 @@ revision 2016-08-03 {
 
            leaf edit-id {
              type string;
-             description "Arbitrary string index
-                for the edit.";
+             description "Arbitrary string index for the edit.";
            }
 
            leaf operation {
@@ -4018,8 +3990,7 @@ revision 2016-08-03 {
                }
                enum remove {
                  description
-                   "Delete the target node if it currently
-                        exists.";
+                   "Delete the target node if it currently exists.";
                }
              }
              mandatory true;
@@ -4033,20 +4004,21 @@ revision 2016-08-03 {
              description
                "Identifies the target data node";
            }
+
            leaf point {
-            when "(../operation = 'insert' or ../operation = 'move')"
-             + "and (../where = 'before' or ../where = 'after')" {
+             when "(../operation = 'insert' or ../operation = 'move')"
+                + "and (../where = 'before' or ../where = 'after')" {
                description
                  "This leaf only applies for 'insert' or 'move'
                   operations, before or after an existing entry.";
-            }
+             }
              type ypatch:target-resource-offset;
              description
                "The absolute URL path for the data node";
            }
 
            leaf where {
-            when "../operation = 'insert' or ../operation = 'move'" {
+             when "../operation = 'insert' or ../operation = 'move'" {
                description
                  "This leaf only applies for 'insert' or 'move'
                   operations.";
@@ -4310,7 +4282,7 @@ revision 2016-08-03 {
             ietf-trafficselector-types and ietf-pmip-qos modules.</t>
         <figure>
           <artwork><![CDATA[
-<CODE BEGINS> file "ietf-dmm-fpc-settingsext@2018-02-28.yang"
+<CODE BEGINS> file "ietf-dmm-fpc-settingsext@2018-05-17.yang"
 module ietf-dmm-fpc-settingsext {
   yang-version 1.1;
   namespace "urn:ietf:params:xml:ns:yang:ietf-dmm-fpc-settingsext";
@@ -4366,25 +4338,9 @@ module ietf-dmm-fpc-settingsext {
      in Section 4.e of the Trust Legal Provisions and are provided
      without warranty as described in the Simplified BSD License.";
 
-revision 2018-02-28 {
-    description "Version updates.";
-    reference "draft-ietf-dmm-fpc-cpdp-10";
-}
-revision 2017-09-27 {
-    description "Version 10 updates.";
-    reference "draft-ietf-dmm-fpc-cpdp-10";
-}
-revision 2017-07-22 {
-    description "Version 08 updates.";
-    reference "draft-ietf-dmm-fpc-cpdp-08";
-}
-revision 2017-03-08 {
-    description "Version 06 updates.";
-    reference "draft-ietf-dmm-fpc-cpdp-06";
-}
-revision 2016-08-03 {
+revision 2018-05-17 {
     description "Initial Revision.";
-    reference "draft-ietf-dmm-fpc-cpdp-05";
+    reference "draft-ietf-dmm-fpc-cpdp-10";
 }
 
     //Tunnel Information
@@ -4870,8 +4826,8 @@ revision 2016-08-03 {
                 }
                 leaf apn-ambr {
                     type uint32;
-                    description "Access Point Name
-                      Aggregate Max Bit Rate";
+                    description
+                     "Access Point Name Aggregate Max Bit Rate";
                 }
                 description "QoS Attributes";
             }
@@ -4909,7 +4865,7 @@ revision 2016-08-03 {
         <t> This module references <xref target="RFC6991"/>.</t>
         <figure>
           <artwork><![CDATA[
-<CODE BEGINS> file "ietf-pmip-qos@2018-02-28.yang"
+<CODE BEGINS> file "ietf-pmip-qos@2018-05-17.yang"
 module ietf-pmip-qos {
     yang-version 1.1;
 
@@ -4961,16 +4917,10 @@ module ietf-pmip-qos {
      in Section 4.e of the Trust Legal Provisions and are provided
      without warranty as described in the Simplified BSD License.";
 
-  revision 2018-02-28 {
-    description "Updated to drop unnecessary attribute types.
-        Update WG co-chair.";
+  revision 2018-05-17 {
+    description "Initial Revision.";
     reference "RFC 6088: Traffic Selectors for Flow Bindings";
   }
-  revision 2017-10-29 {
-     description "Base Version";
-      reference
-        "RFC 6088: Traffic Selectors for Flow Bindings";
-   }
 
     // Type Definitions
 
@@ -4988,8 +4938,8 @@ module ietf-pmip-qos {
         "Traffic Class consists of a 6-bit DSCP field followed by a
          2-bit reserved field.";
      reference
-         "RFC 3289: Management Information Base for the
-                    Differentiated Services Architecture
+         "RFC 3289: Management Information Base for the Differentiated
+                    Services Architecture
           RFC 2474: Definition of the Differentiated Services Field
                     (DS Field) in the IPv4 and IPv6 Headers
           RFC 2780: IANA Allocation Guidelines For Values In
@@ -5090,7 +5040,7 @@ module ietf-pmip-qos {
        }
        mandatory true;
        description
-       "This is a 4-bit unsigned integer value.  It is used to decide
+        "This is a 4-bit unsigned integer value.  It is used to decide
         whether a mobility session establishment or modification
         request can be accepted; this is typically used for
         admission control of Guaranteed Bit Rate traffic in case of
@@ -5117,8 +5067,8 @@ module ietf-pmip-qos {
        }
        mandatory true;
        description
-       "This is a 2-bit unsigned integer value.  It defines whether
-        a service data flow can get resources that were already
+       "This is a 2-bit unsigned integer value.  It defines whether a
+        service data flow can get resources that were already
         assigned to another service data flow with a lower priority
         level.";
      }
@@ -5243,7 +5193,8 @@ module ietf-pmip-qos {
             type qos-pmip:Guaranteed-UL-Bit-Rate-Value;
             description "Guaranteed-UL-Bit-Rate Value";
         }
-        description "PMIP QoS Attributes";
+        description "PMIP QoS Attributes. Note Vendor option
+        is not a part of this grouping";
     }
 
     grouping qosoption {
@@ -5262,7 +5213,8 @@ module ietf-pmip-qos {
             mandatory true;
             description "Operation Code";
         }
-        uses qosattribute;
+        uses qos-pmip:qosattribute;
+        uses qos-pmip:QoS-Vendor-Specific-Attribute-Value-Base;
         container traffic-selector {
             uses traffic-selectors:traffic-selector;
             description "traffic selector";
@@ -5281,7 +5233,7 @@ module ietf-pmip-qos {
     <t> This module references <xref target="RFC6991"/>.</t>
     <figure>
          <artwork><![CDATA[
-<CODE BEGINS> file "ietf-trafficselector-types@2018-02-28.yang"
+<CODE BEGINS> file "ietf-trafficselector-types@2018-05-17.yang"
 module ietf-trafficselector-types {
  yang-version 1.1;
 
@@ -5331,18 +5283,12 @@ module ietf-trafficselector-types {
  in Section 4.e of the Trust Legal Provisions and are provided
  without warranty as described in the Simplified BSD License.";
 
-  revision 2018-02-28 {
+  revision 2018-05-17 {
     description
-     "removed ts-list and updated WG co-chair.";
+     "Initial Revision.";
     reference
      "RFC 6088: Traffic Selectors for Flow Bindings";
   }
-
-  revision 2017-10-29 {
-     description "Base Version";
-      reference
-        "RFC 6088: Traffic Selectors for Flow Bindings";
-   }
 
  // Identities
    identity traffic-selector-format {
@@ -5652,10 +5598,10 @@ module ietf-trafficselector-types {
          base traffic-selector-format;
        }
        description "Traffic Selector Format";
-     }
-    uses traffic-selector-base;
-    uses ipv4-binary-traffic-selector;
-    uses ipv6-binary-traffic-selector;
+    }
+    uses traffic-selectors:traffic-selector-base;
+    uses traffic-selectors:ipv4-binary-traffic-selector;
+    uses traffic-selectors:ipv6-binary-traffic-selector;
     description
      "The traffic selector includes the parameters used to match
        packets for a specific flow binding.";
@@ -5674,7 +5620,7 @@ module ietf-trafficselector-types {
         <t> This module references <xref target="RFC5777"/>.</t>
         <figure>
             <artwork><![CDATA[
-<CODE BEGINS> file "ietf-diam-trafficclassifier@2018-02-28.yang"
+<CODE BEGINS> file "ietf-diam-trafficclassifier@2018-05-17.yang"
 module ietf-diam-trafficclassifier {
  yang-version 1.1;
 
@@ -5725,7 +5671,7 @@ module ietf-diam-trafficclassifier {
  in Section 4.e of the Trust Legal Provisions and are provided
  without warranty as described in the Simplified BSD License.";
 
-  revision 2018-02-28 {
+  revision 2018-05-17 {
     description
         "Initial";
     reference
@@ -6042,6 +5988,463 @@ module ietf-diam-trafficclassifier {
     <figure anchor="fig-ietf-dmm-fpc-tree"
               title="YANG FPC Agent Tree">
     <artwork align="center"><![CDATA[
+
+descriptor value:
+|  +--rw (descriptor-value)
+|     +--:(all-traffic)
+|     |  +--rw all-traffic?                    empty
+|     +--:(no-traffic)
+|     |  +--rw no-traffic?                     empty
+|     +--:(prefix-descriptor)
+|     |  +--rw destination-ip?                 inet:ip-prefix
+|     |  +--rw source-ip?                      inet:ip-prefix
+|     +--:(pmip-selector)
+|     |  +--rw ts-format?                      identityref
+|     |  +--rw ipsec-spi-range!
+|     |  |  +--rw start-spi    ipsec-spi
+|     |  |  +--rw end-spi?     ipsec-spi
+|     |  +--rw source-port-range!
+|     |  |  +--rw start-port    inet:port-number
+|     |  |  +--rw end-port?     inet:port-number
+|     |  +--rw destination-port-range!
+|     |  |  +--rw start-port    inet:port-number
+|     |  |  +--rw end-port?     inet:port-number
+|     |  +--rw source-address-range-v4!
+|     |  |  +--rw start-address    inet:ipv4-address
+|     |  |  +--rw end-address?     inet:ipv4-address
+|     |  +--rw destination-address-range-v4!
+|     |  |  +--rw start-address    inet:ipv4-address
+|     |  |  +--rw end-address?     inet:ipv4-address
+|     |  +--rw ds-range!
+|     |  |  +--rw start-ds    inet:dscp
+|     |  |  +--rw end-ds?     inet:dscp
+|     |  +--rw protocol-range!
+|     |  |  +--rw start-protocol    uint8
+|     |  |  +--rw end-protocol?     uint8
+|     |  +--rw source-address-range-v6!
+|     |  |  +--rw start-address    inet:ipv6-address
+|     |  |  +--rw end-address?     inet:ipv6-address
+|     |  +--rw destination-address-range-v6!
+|     |  |  +--rw start-address    inet:ipv6-address
+|     |  |  +--rw end-address?     inet:ipv6-address
+|     |  +--rw flow-label-range!
+|     |  |  +--rw start-flow-label?   inet:ipv6-flow-label
+|     |  |  +--rw end-flow-label?     inet:ipv6-flow-label
+|     |  +--rw traffic-class-range!
+|     |  |  +--rw start-traffic-class?   inet:dscp
+|     |  |  +--rw end-traffic-class?     inet:dscp
+|     |  +--rw next-header-range!
+|     |     +--rw start-next-header?   uint8
+|     |     +--rw end-next-header?     uint8
+|     +--:(rfc5777-classifier-template)
+|     |  +--rw rfc5777-classifier-template
+|     |     +--rw protocol?               uint8
+|     |     +--rw direction?
+                    diamclassifier:direction-type
+|     |     +--rw from-spec* [index]
+|     |     |  +--rw index                   uint16
+|     |     |  +--rw ip-address*             inet:ip-address
+|     |     |  +--rw ip-address-range* [index]
+|     |     |  |  +--rw index               uint16
+|     |     |  |  +--rw ip-address-start?   inet:ip-address
+|     |     |  |  +--rw ip-address-end?     inet:ip-address
+|     |     |  +--rw ip-address-mask*        inet:ip-prefix
+|     |     |  +--rw mac-address*            yang-types:mac-address
+|     |     |  +--rw mac-address-mask* [mac-address]
+|     |     |  |  +--rw mac-address             yang-types:mac-address
+|     |     |  |  +--rw macaddress-mask-pattern
+                        yang-types:mac-address
+|     |     |  +--rw eui64-address*  diamclassifier:eui64-address-type
+|     |     |  +--rw eui64-address-mask* [eui64-address]
+|     |     |  |  +--rw eui64-address
+                        diamclassifier:eui64-address-type
+|     |     |  |  +--rw eui64-address-mask-pattern
+                        diamclassifier:eui64-address-type
+|     |     |  +--rw port*                   inet:port-number
+|     |     |  +--rw port-range* [index]
+|     |     |  |  +--rw index               uint16
+|     |     |  |  +--rw ip-address-start?   inet:port-number
+|     |     |  |  +--rw ip-address-end?     inet:port-number
+|     |     |  +--rw negated?
+                    diamclassifier:negated-flag-type
+|     |     |  +--rw use-assigned-address?   boolean
+|     |     +--rw to-spec* [index]
+|     |     |  +--rw index                   uint16
+|     |     |  +--rw ip-address*             inet:ip-address
+|     |     |  +--rw ip-address-range* [index]
+|     |     |  |  +--rw index               uint16
+|     |     |  |  +--rw ip-address-start?   inet:ip-address
+|     |     |  |  +--rw ip-address-end?     inet:ip-address
+|     |     |  +--rw ip-address-mask*        inet:ip-prefix
+|     |     |  +--rw mac-address*            yang-types:mac-address
+|     |     |  +--rw mac-address-mask* [mac-address]
+|     |     |  |  +--rw mac-address
+                        yang-types:mac-address
+|     |     |  |  +--rw macaddress-mask-pattern
+                        yang-types:mac-address
+|     |     |  +--rw eui64-address*
+                        diamclassifier:eui64-address-type
+|     |     |  +--rw eui64-address-mask* [eui64-address]
+|     |     |  |  +--rw eui64-address
+                        diamclassifier:eui64-address-type
+|     |     |  |  +--rw eui64-address-mask-pattern
+                        diamclassifier:eui64-address-type
+|     |     |  +--rw port*                   inet:port-number
+|     |     |  +--rw port-range* [index]
+|     |     |  |  +--rw index               uint16
+|     |     |  |  +--rw ip-address-start?   inet:port-number
+|     |     |  |  +--rw ip-address-end?     inet:port-number
+|     |     |  +--rw negated?
+                    diamclassifier:negated-flag-type
+|     |     |  +--rw use-assigned-address?   boolean
+|     |     +--rw disffserv-code-point*   inet:dscp
+|     |     +--rw fragmentation-flag?     enumeration
+|     |     +--rw ip-option* [option-type]
+|     |     |  +--rw option-type        uint8
+|     |     |  +--rw ip-option-value*   string
+|     |     |  +--rw negated?
+                        diamclassifier:negated-flag-type
+|     |     +--rw tcp-option* [option-type]
+|     |     |  +--rw option-type        uint8
+|     |     |  +--rw ip-option-value*   string
+|     |     |  +--rw negated?
+                    diamclassifier:negated-flag-type
+|     |     +--rw tcp-flag* [tcp-flag-type]
+|     |     |  +--rw tcp-flag-type    uint32
+|     |     |  +--rw negated?
+                    diamclassifier:negated-flag-type
+|     |     +--rw icmp-option* [option-type]
+|     |     |  +--rw option-type        uint8
+|     |     |  +--rw ip-option-value*   string
+|     |     |  +--rw negated?
+                    diamclassifier:negated-flag-type
+|     |     +--rw eth-option* [index]
+|     |        +--rw index                  uint16
+|     |        +--rw eth-proto-type
+|     |        |  +--rw eth-ether-type*   string
+|     |        |  +--rw eth-sap*          string
+|     |        +--rw vlan-id-range* [index]
+|     |        |  +--rw index              uint16
+|     |        |  +--rw s-vlan-id-start*   diamclassifier:vlan-id
+|     |        |  +--rw s-vlan-id-end*     diamclassifier:vlan-id
+|     |        |  +--rw c-vlan-id-start*   diamclassifier:vlan-id
+|     |        |  +--rw c-vlan-id-end*     diamclassifier:vlan-id
+|     |        +--rw user-priority-range* [index]
+|     |           +--rw index                 uint16
+|     |           +--rw low-user-priority*    uint32
+|     |           +--rw high-user-priority*   uint32
+|     +--:(packet-filter)
+|     |  +--rw packet-filter
+|     |     +--rw direction?
+                    fpcbase:packet-filter-direction
+|     |     +--rw identifier?              uint8
+|     |     +--rw evaluation-precedence?   uint8
+|     |     +--rw contents* [component-type-identifier]
+|     |        +--rw component-type-identifier
+                        fpcbase:component-type-id
+|     |        +--rw (value)?
+|     |           +--:(ipv4-local)
+|     |           |  +--rw ipv4-local?             inet:ipv4-address
+|     |           +--:(ipv6-prefix-local)
+|     |           |  +--rw ipv6-prefix-local?      inet:ipv6-prefix
+|     |           +--:(ipv4-ipv6-remote)
+|     |           |  +--rw ipv4-ipv6-remote?       inet:ip-address
+|     |           +--:(ipv6-prefix-remote)
+|     |           |  +--rw ipv6-prefix-remote?     inet:ipv6-prefix
+|     |           +--:(next-header)
+|     |           |  +--rw next-header?            uint8
+|     |           +--:(local-port)
+|     |           |  +--rw local-port?             inet:port-number
+|     |           +--:(local-port-range)
+|     |           |  +--rw local-port-lo?          inet:port-number
+|     |           |  +--rw local-port-hi?          inet:port-number
+|     |           +--:(remote-port)
+|     |           |  +--rw remote-port?            inet:port-number
+|     |           +--:(remote-port-range)
+|     |           |  +--rw remote-port-lo?         inet:port-number
+|     |           |  +--rw remote-port-hi?         inet:port-number
+|     |           +--:(ipsec-index)
+|     |           |  +--rw ipsec-index?  traffic-selectors:ipsec-spi
+|     |           +--:(traffic-class)
+|     |           |  +--rw traffic-class?               inet:dscp
+|     |           +--:(traffic-class-range)
+|     |           |  +--rw traffic-class-lo?            inet:dscp
+|     |           |  +--rw traffic-class-hi?            inet:dscp
+|     |           +--:(flow-label)
+|     |              +--rw flow-label*         inet:ipv6-flow-label
+|     +--:(tunnel-info)
+|        +--rw tunnel-info
+|           +--rw tunnel-local-address?    inet:ip-address
+|           +--rw tunnel-remote-address?   inet:ip-address
+|           +--rw mtu-size?                uint32
+|           +--rw tunnel?                  identityref
+|           +--rw payload-type?            enumeration
+|           +--rw gre-key?                 uint32
+|           +--rw gtp-tunnel-info
+|           |  +--rw local-tunnel-identifier?    uint32
+|           |  +--rw remote-tunnel-identifier?   uint32
+|           |  +--rw sequence-numbers-enabled?   boolean
+|           +--rw ebi?                     fpcbase:ebi-type
+|           +--rw lbi?                     fpcbase:ebi-type
+
+action value:
++--rw (action-value)
+   +--:(drop)
+   |  +--rw drop?                           empty
+   +--:(rewrite)
+   |  +--rw rewrite
+   |     +--rw (rewrite-value)?
+   |        +--:(prefix-descriptor)
+   |        |  +--rw destination-ip?                 inet:ip-prefix
+   |        |  +--rw source-ip?                      inet:ip-prefix
+   |        +--:(pmip-selector)
+   |        |  +--rw ts-format?                      identityref
+   |        |  +--rw ipsec-spi-range!
+   |        |  |  +--rw start-spi    ipsec-spi
+   |        |  |  +--rw end-spi?     ipsec-spi
+   |        |  +--rw source-port-range!
+   |        |  |  +--rw start-port    inet:port-number
+   |        |  |  +--rw end-port?     inet:port-number
+   |        |  +--rw destination-port-range!
+   |        |  |  +--rw start-port    inet:port-number
+   |        |  |  +--rw end-port?     inet:port-number
+   |        |  +--rw source-address-range-v4!
+   |        |  |  +--rw start-address    inet:ipv4-address
+   |        |  |  +--rw end-address?     inet:ipv4-address
+   |        |  +--rw destination-address-range-v4!
+   |        |  |  +--rw start-address    inet:ipv4-address
+   |        |  |  +--rw end-address?     inet:ipv4-address
+   |        |  +--rw ds-range!
+   |        |  |  +--rw start-ds    inet:dscp
+   |        |  |  +--rw end-ds?     inet:dscp
+   |        |  +--rw protocol-range!
+   |        |  |  +--rw start-protocol    uint8
+   |        |  |  +--rw end-protocol?     uint8
+   |        |  +--rw source-address-range-v6!
+   |        |  |  +--rw start-address    inet:ipv6-address
+   |        |  |  +--rw end-address?     inet:ipv6-address
+   |        |  +--rw destination-address-range-v6!
+   |        |  |  +--rw start-address    inet:ipv6-address
+   |        |  |  +--rw end-address?     inet:ipv6-address
+   |        |  +--rw flow-label-range!
+   |        |  |  +--rw start-flow-label?   inet:ipv6-flow-label
+   |        |  |  +--rw end-flow-label?     inet:ipv6-flow-label
+   |        |  +--rw traffic-class-range!
+   |        |  |  +--rw start-traffic-class?   inet:dscp
+   |        |  |  +--rw end-traffic-class?     inet:dscp
+   |        |  +--rw next-header-range!
+   |        |     +--rw start-next-header?   uint8
+   |        |     +--rw end-next-header?     uint8
+   |        +--:(rfc5777-classifier-template)
+   |           +--rw rfc5777-classifier-template
+   |              +--rw protocol?               uint8
+   |              +--rw direction?       diamclassifier:direction-type
+   |              +--rw from-spec* [index]
+   |              |  +--rw index                   uint16
+   |              |  +--rw ip-address*             inet:ip-address
+   |              |  +--rw ip-address-range* [index]
+   |              |  |  +--rw index               uint16
+   |              |  |  +--rw ip-address-start?   inet:ip-address
+   |              |  |  +--rw ip-address-end?     inet:ip-address
+   |              |  +--rw ip-address-mask*        inet:ip-prefix
+   |              |  +--rw mac-address*        yang-types:mac-address
+   |              |  +--rw mac-address-mask* [mac-address]
+   |              |  |  +--rw mac-address
+                                yang-types:mac-address
+   |              |  |  +--rw macaddress-mask-pattern
+                                yang-types:mac-address
+   |              |  +--rw eui64-address*
+                                diamclassifier:eui64-address-type
+   |              |  +--rw eui64-address-mask* [eui64-address]
+   |              |  |  +--rw eui64-address
+                                diamclassifier:eui64-address-type
+   |              |  |  +--rw eui64-address-mask-pattern
+                                diamclassifier:eui64-address-type
+   |              |  +--rw port*                   inet:port-number
+   |              |  +--rw port-range* [index]
+   |              |  |  +--rw index               uint16
+   |              |  |  +--rw ip-address-start?   inet:port-number
+   |              |  |  +--rw ip-address-end?     inet:port-number
+   |              |  +--rw negated?
+                            diamclassifier:negated-flag-type
+   |              |  +--rw use-assigned-address?   boolean
+   |              +--rw to-spec* [index]
+   |              |  +--rw index                   uint16
+   |              |  +--rw ip-address*             inet:ip-address
+   |              |  +--rw ip-address-range* [index]
+   |              |  |  +--rw index               uint16
+   |              |  |  +--rw ip-address-start?   inet:ip-address
+   |              |  |  +--rw ip-address-end?     inet:ip-address
+   |              |  +--rw ip-address-mask*        inet:ip-prefix
+   |              |  +--rw mac-address*
+                            yang-types:mac-address
+   |              |  +--rw mac-address-mask* [mac-address]
+   |              |  |  +--rw mac-address
+                                yang-types:mac-address
+   |              |  |  +--rw macaddress-mask-pattern
+                                yang-types:mac-address
+   |              |  +--rw eui64-address*
+                                diamclassifier:eui64-address-type
+   |              |  +--rw eui64-address-mask* [eui64-address]
+   |              |  |  +--rw eui64-address
+                                diamclassifier:eui64-address-type
+   |              |  |  +--rw eui64-address-mask-pattern
+                                diamclassifier:eui64-address-type
+   |              |  +--rw port*                   inet:port-number
+   |              |  +--rw port-range* [index]
+   |              |  |  +--rw index               uint16
+   |              |  |  +--rw ip-address-start?   inet:port-number
+   |              |  |  +--rw ip-address-end?     inet:port-number
+   |              |  +--rw negated?
+                            diamclassifier:negated-flag-type
+   |              |  +--rw use-assigned-address?   boolean
+   |              +--rw disffserv-code-point*   inet:dscp
+   |              +--rw fragmentation-flag?     enumeration
+   |              +--rw ip-option* [option-type]
+   |              |  +--rw option-type        uint8
+   |              |  +--rw ip-option-value*   string
+   |              |  +--rw negated?
+                            diamclassifier:negated-flag-type
+   |              +--rw tcp-option* [option-type]
+   |              |  +--rw option-type        uint8
+   |              |  +--rw ip-option-value*   string
+   |              |  +--rw negated?
+                            diamclassifier:negated-flag-type
+   |              +--rw tcp-flag* [tcp-flag-type]
+   |              |  +--rw tcp-flag-type    uint32
+   |              |  +--rw negated?
+                            diamclassifier:negated-flag-type
+   |              +--rw icmp-option* [option-type]
+   |              |  +--rw option-type        uint8
+   |              |  +--rw ip-option-value*   string
+   |              |  +--rw negated?
+                            diamclassifier:negated-flag-type
+   |              +--rw eth-option* [index]
+   |                 +--rw index                  uint16
+   |                 +--rw eth-proto-type
+   |                 |  +--rw eth-ether-type*   string
+   |                 |  +--rw eth-sap*          string
+   |                 +--rw vlan-id-range* [index]
+   |                 |  +--rw index              uint16
+   |                 |  +--rw s-vlan-id-start* diamclassifier:vlan-id
+   |                 |  +--rw s-vlan-id-end*   diamclassifier:vlan-id
+   |                 |  +--rw c-vlan-id-start* diamclassifier:vlan-id
+   |                 |  +--rw c-vlan-id-end*   diamclassifier:vlan-id
+   |                 +--rw user-priority-range* [index]
+   |                    +--rw index                 uint16
+   |                    +--rw low-user-priority*    uint32
+   |                    +--rw high-user-priority*   uint32
+   +--:(copy-forward-nexthop)
+   |  +--rw copy-forward-nexthop
+   |     +--rw (next-hop-value)?
+   |        +--:(ip-address)
+   |        |  +--rw ip-address?           inet:ip-address
+   |        +--:(mac-address)
+   |        |  +--rw mac-address?          ytypes:mac-address
+   |        +--:(service-path)
+   |        |  +--rw service-path?         fpcbase:fpc-service-path-id
+   |        +--:(mpls-path)
+   |        |  +--rw mpls-path?            fpcbase:fpc-mpls-label
+   |        +--:(nsh)
+   |        |  +--rw nsh?                  string
+   |        +--:(interface)
+   |        |  +--rw interface?            uint16
+   |        +--:(segment-identifier)
+   |        |  +--rw segment-identifier?   fpcbase:segment-id
+   |        +--:(mpls-label-stack)
+   |        |  +--rw mpls-label-stack*     fpcbase:fpc-mpls-label
+   |        +--:(mpls-sr-stack)
+   |        |  +--rw mpls-sr-stack*        fpcbase:fpc-mpls-label
+   |        +--:(srv6-stack)
+   |        |  +--rw srv6-stack*           fpcbase:segment-id
+   |        +--:(tunnel-info)
+   |           +--rw tunnel-info
+   |              +--rw tunnel-local-address?    inet:ip-address
+   |              +--rw tunnel-remote-address?   inet:ip-address
+   |              +--rw mtu-size?                uint32
+   |              +--rw tunnel?                  identityref
+   |              +--rw payload-type?            enumeration
+   |              +--rw gre-key?                 uint32
+   |              +--rw gtp-tunnel-info
+   |              |  +--rw local-tunnel-identifier?    uint32
+   |              |  +--rw remote-tunnel-identifier?   uint32
+   |              |  +--rw sequence-numbers-enabled?   boolean
+   |              +--rw ebi?                     fpcbase:ebi-type
+   |              +--rw lbi?                     fpcbase:ebi-type
+   +--:(nexthop)
+   |  +--rw nexthop
+   |     +--rw (next-hop-value)?
+   |        +--:(ip-address)
+   |        |  +--rw ip-address?           inet:ip-address
+   |        +--:(mac-address)
+   |        |  +--rw mac-address?          ytypes:mac-address
+   |        +--:(service-path)
+   |        |  +--rw service-path?         fpcbase:fpc-service-path-id
+   |        +--:(mpls-path)
+   |        |  +--rw mpls-path?            fpcbase:fpc-mpls-label
+   |        +--:(nsh)
+   |        |  +--rw nsh?                  string
+   |        +--:(interface)
+   |        |  +--rw interface?            uint16
+   |        +--:(segment-identifier)
+   |        |  +--rw segment-identifier?   fpcbase:segment-id
+   |        +--:(mpls-label-stack)
+   |        |  +--rw mpls-label-stack*     fpcbase:fpc-mpls-label
+   |        +--:(mpls-sr-stack)
+   |        |  +--rw mpls-sr-stack*        fpcbase:fpc-mpls-label
+   |        +--:(srv6-stack)
+   |        |  +--rw srv6-stack*           fpcbase:segment-id
+   |        +--:(tunnel-info)
+   |           +--rw tunnel-info
+   |              +--rw tunnel-local-address?    inet:ip-address
+   |              +--rw tunnel-remote-address?   inet:ip-address
+   |              +--rw mtu-size?                uint32
+   |              +--rw tunnel?                  identityref
+   |              +--rw payload-type?            enumeration
+   |              +--rw gre-key?                 uint32
+   |              +--rw gtp-tunnel-info
+   |              |  +--rw local-tunnel-identifier?    uint32
+   |              |  +--rw remote-tunnel-identifier?   uint32
+   |              |  +--rw sequence-numbers-enabled?   boolean
+   |              +--rw ebi?                     fpcbase:ebi-type
+   |              +--rw lbi?                     fpcbase:ebi-type
+   +--:(qos)
+      +--rw trafficclass?                   inet:dscp
+      +--rw per-mn-agg-max-dl?
+                qos-pmip:Per-MN-Agg-Max-DL-Bit-Rate-Value
+      +--rw per-mn-agg-max-ul?
+                qos-pmip:Per-MN-Agg-Max-UL-Bit-Rate-Value
+      +--rw per-session-agg-max-dl
+      |  +--rw max-rate        uint32
+      |  +--rw service-flag    boolean
+      |  +--rw exclude-flag    boolean
+      +--rw per-session-agg-max-ul
+      |  +--rw max-rate        uint32
+      |  +--rw service-flag    boolean
+      |  +--rw exclude-flag    boolean
+      +--rw prioirty-level                  uint8
+      +--rw premption-capability            enumeration
+      +--rw premption-vulnerability         enumeration
+      +--rw agg-max-dl?
+            qos-pmip:Aggregate-Max-DL-Bit-Rate-Value
+      +--rw agg-max-ul?
+            qos-pmip:Aggregate-Max-UL-Bit-Rate-Value
+      +--rw gbr-dl?
+            qos-pmip:Guaranteed-DL-Bit-Rate-Value
+      +--rw gbr-ul?
+            qos-pmip:Guaranteed-UL-Bit-Rate-Value
+      +--rw qci?
+            fpcbase:fpc-qos-class-identifier
+      +--rw ue-agg-max-bitrate?             uint32
+      +--rw apn-ambr?                       uint32
+
+policy setting:
+        |              +--rw (policy-setting)?
+        |                 +--:(descriptor-value)
+        |                 |  +--rw (descriptor-value)
+        |                 +--:(action-value)
+        |                    +--rw (action-value)
+
 module: ietf-dmm-fpc
 +--rw tenant* [tenant-key]
 +--rw tenant-key                    fpc:fpc-identity
@@ -6053,77 +6456,72 @@ module: ietf-dmm-fpc
 |     +--rw domain-key*                       fpc:fpc-identity
 |     +--rw service-group-key*                fpc:fpc-identity
 |     +--rw interface* [interface-key]
-|     |  +--rw interface-key             fpc:fpc-identity
-|     |  +--rw interface-name?           string
-|     |  +--rw roles*                    identityref
-|     |  +--rw interface-settings
-|     |     +--rw index    uint16
-|     |     +--rw (policy-setting)?
-|     |        +--:(descriptor-value)
-|     |        +--:(action-value)
+|     |  +--rw interface-key         fpc:fpc-identity
+|     |  +--rw interface-name?       string
+|     |  +--rw roles*                identityref
+|     |  +--rw protocol*             identityref
+|     |  +--rw interface-settings* [policy-template-key]
+|     |     +--rw policy-template-key     fpc:fpc-identity
+|     |     +--rw policy-configuration* [index]
+|     |        +--rw index                           uint16
+|     |        +--rw (policy-setting)?
+|     |           ...
 |     +--rw dpn-settings* [policy-template-key]
 |        +--rw policy-template-key     fpc:fpc-identity
 |        +--rw policy-configuration* [index]
-|           +--rw index    uint16
+|           +--rw index                           uint16
 |           +--rw (policy-setting)?
-|              +--:(descriptor-value)
-|              +--:(action-value)
 +--rw dpn-checkpoint
 |  +--rw basename?          fpc:fpc-identity
 |  +--rw base-checkpoint?   string
-+--rw service-group* [service-group-key]
-|  +--rw service-group-key     fpc:fpc-identity
-|  +--rw service-group-name?   string
-|  +--rw dpn* [dpn-key role-key]
-|  |  +--rw dpn-key                 fpc:fpc-identity
-|  |  +--rw role-key                identityref
-|  |  +--rw referenced-interface* [interface-key]
-|  |     +--rw interface-key             fpc:fpc-identity
-|  |     +--rw peer-service-group-key*   fpc:fpc-identity
-|  +--rw service-settings* [policy-template-key]
-|     +--rw policy-template-key     fpc:fpc-identity
-|     +--rw policy-configuration* [index]
-|        +--rw index    uint16
-|        +--rw (policy-setting)?
-|           +--:(descriptor-value)
-|           +--:(action-value)
-+--rw service-group-checkpoint
+        +--rw service-group-checkpoint
 |  +--rw basename?          fpc:fpc-identity
 |  +--rw base-checkpoint?   string
 +--rw topology-information-model
-|  +--rw service-endpoint* [role-key]
-|  |  +--rw role-key             identityref
-|  |  +--rw role-name?           string
-|  |  +--rw service-group-key*   fpc:fpc-identity
-|  |  +--rw interface* [dpn-key interface-key]
-|  |     +--rw dpn-key                   fpc:fpc-identity
-|  |     +--rw interface-key             fpc:fpc-identity
-|  |     +--rw protocol*   identityref
-|  |     +--rw feature*              identityref
-|  |     +--rw interface-settings-set
+|  +--rw service-group* [service-group-key role-key]
+|  |  +--rw service-group-key     fpc:fpc-identity
+|  |  +--rw service-group-name?   string
+|  |  +--rw role-key              identityref
+|  |  +--rw role-name?            string
+|  |  +--rw protocol*             identityref
+|  |  +--rw feature*              identityref
+|  |  +--rw settings* [policy-template-key]
+|  |  |  +--rw policy-template-key     fpc:fpc-identity
+|  |  |  +--rw policy-configuration* [index]
+|  |  |     +--rw index                           uint16
+|  |  |     +--rw (policy-setting)?
+|  |  |        ...
+|  |  +--rw dpn* [dpn-key]
+|  |     +--rw dpn-key                 fpc:fpc-identity
+|  |     +--rw referenced-interface* [interface-key]
+|  |        +--rw interface-key             fpc:fpc-identity
+|  |        +--rw peer-service-group-key*   fpc:fpc-identity
 |  +--rw domain* [domain-key]
 |  |  +--rw domain-key         fpc:fpc-identity
 |  |  +--rw domain-name?       string
 |  |  +--rw domain-settings* [policy-template-key]
 |  |     +--rw policy-template-key     fpc:fpc-identity
 |  |     +--rw policy-configuration* [index]
-|  |        +--rw index    uint16
+|  |        +--rw index                           uint16
 |  |        +--rw (policy-setting)?
-|  |           +--:(descriptor-value)
-|  |           +--:(action-value)
+|  |          ...
 |  +--rw basename?          fpc:fpc-identity
 |  +--rw base-checkpoint?   string
 +--rw policy-information-model
 |  +--rw action-template* [action-template-key]
 |  |  +--rw action-template-key            fpc:fpc-identity
+|  |  +--rw (action-value)
+|  |  |  ...
 |  |  +--rw extensible?                    boolean
 |  |  +--rw mandatory-static-attributes*   string
 |  |  +--rw entity-state?                  enumeration
 |  +--rw descriptor-template* [descriptor-template-key]
-|  |  +--rw descriptor-template-key        fpc:fpc-identity
-|  |  +--rw extensible?                    boolean
-|  |  +--rw mandatory-static-attributes*   string
-|  |  +--rw entity-state?                  enumeration
+|  |  +--rw descriptor-template-key         fpc:fpc-identity
+|  |  +--rw (descriptor-value)
+|  |  |  ...
+|  |  +--rw extensible?                     boolean
+|  |  +--rw mandatory-static-attributes*    string
+|  |  +--rw entity-state?                   enumeration
 |  +--rw rule-template* [rule-template-key]
 |  |  +--rw rule-template-key              fpc:fpc-identity
 |  |  +--rw descriptor-match-type?         enumeration
@@ -6131,20 +6529,23 @@ module: ietf-dmm-fpc
 |  |  |  +--rw descriptor-template-key    fpc:fpc-identity
 |  |  |  +--rw direction?                 rfc5777:direction-type
 |  |  |  +--rw attribute-expression* [index]
-|  |  |     +--rw index    uint16
+|  |  |     +--rw index                           uint16
+|  |  |     +--rw (descriptor-value)
+|  |  |        ...
 |  |  +--rw action-configuration* [action-order]
 |  |  |  +--rw action-order            uint32
 |  |  |  +--rw action-template-key     fpc:fpc-identity
 |  |  |  +--rw attribute-expression* [index]
-|  |  |     +--rw index    uint16
+|  |  |     +--rw index                      uint16
+|  |  |     +--rw (action-value)
+|  |  |        ...
 |  |  +--rw extensible?                    boolean
 |  |  +--rw mandatory-static-attributes*   string
 |  |  +--rw entity-state?                  enumeration
 |  |  +--rw policy-configuration* [index]
-|  |     +--rw index    uint16
+|  |     +--rw index                           uint16
 |  |     +--rw (policy-setting)?
-|  |        +--:(descriptor-value)
-|  |        +--:(action-value)
+|  |           ...
 |  +--rw policy-template* [policy-template-key]
 |  |  +--rw policy-template-key            fpc:fpc-identity
 |  |  +--rw rule-template* [precedence]
@@ -6154,10 +6555,9 @@ module: ietf-dmm-fpc
 |  |  +--rw mandatory-static-attributes*   string
 |  |  +--rw entity-state?                  enumeration
 |  |  +--rw policy-configuration* [index]
-|  |     +--rw index    uint16
+|  |     +--rw index                           uint16
 |  |     +--rw (policy-setting)?
-|  |        +--:(descriptor-value)
-|  |        +--:(action-value)
+|  |        ...
 |  +--rw basename?              fpc:fpc-identity
 |  +--rw base-checkpoint?       string
 +--rw mobility-context* [mobility-context-key]
@@ -6171,41 +6571,37 @@ module: ietf-dmm-fpc
 |  |  +--rw mn-settings* [policy-template-key]
 |  |     +--rw policy-template-key     fpc:fpc-identity
 |  |     +--rw policy-configuration* [index]
-|  |        +--rw index    uint16
+|  |        +--rw index                           uint16
 |  |        +--rw (policy-setting)?
-|  |           +--:(descriptor-value)
-|  |           +--:(action-value)
+|  |           ...
 |  +--rw domain
 |  |  +--rw domain-key?        fpc:fpc-identity
 |  |  +--rw domain-settings* [policy-template-key]
 |  |     +--rw policy-template-key     fpc:fpc-identity
 |  |     +--rw policy-configuration* [index]
-|  |        +--rw index    uint16
+|  |        +--rw index                           uint16
 |  |        +--rw (policy-setting)?
-|  |           +--:(descriptor-value)
-|  |           +--:(action-value)
+|  |           ...
 |  +--rw dpn* [dpn-key]
 |     +--rw dpn-key              fpc:fpc-identity
 |     +--rw dpn-settings* [policy-template-key]
 |     |  +--rw policy-template-key     fpc:fpc-identity
 |     |  +--rw policy-configuration* [index]
-|     |     +--rw index    uint16
+|     |     +--rw index                           uint16
 |     |     +--rw (policy-setting)?
-|     |        +--:(descriptor-value)
-|     |        +--:(action-value)
+|     |        ...
 |     +--rw role?                identityref
 |     +--rw service-data-flow* [identifier]
 |        +--rw identifier           uint32
 |        +--rw service-group-key?   fpc:fpc-identity
 |        +--rw interface* [interface-key]
-|        |  +--rw interface-key    fpc:fpc-identity
+||  +--rw interface-key    fpc:fpc-identity
 |        +--rw flow-settings* [policy-template-key]
-|           +--rw policy-template-key fpc:fpc-identity
+|           +--rw policy-template-key     fpc:fpc-identity
 |           +--rw policy-configuration* [index]
-|              +--rw index    uint16
+|              +--rw index                           uint16
 |              +--rw (policy-setting)?
-|                 +--:(descriptor-value)
-|                 +--:(action-value)
+|                 ...
 +--rw monitor* [monitor-key]
 +--rw extensible?                    boolean
 +--rw mandatory-static-attributes*   string
@@ -6226,72 +6622,68 @@ module: ietf-dmm-fpc
 |  +--rw event-identities*              identityref
 +--:(event-ids)
 +--rw event-ids*                     uint32
-        
+
 rpcs:
-        +---x configure
-        |  +---w input
-        |  |  +---w client-id          fpc:client-identifier
-        |  |  +---w execution-delay?   uint32
-        |  |  +---w yang-patch
-        |  |     +---w patch-id    string
-        |  |     +---w comment?    string
-        |  |     +---w edit* [edit-id]
-        |  |        +---w edit-id         string
-        |  |        +---w operation       enumeration
-        |  |        +---w target          target-resource-offset
-        |  |        +---w point?          target-resource-offset
-        |  |        +---w where?          enumeration
-        |  |        +---w value?          <anydata>
-        |  |        +---w op-ref-scope?   fpc:ref-scope
-        |  |        +---w instructions
-        |  |           +---w (instr-type)?
-        |  |              +--:(instr-3gpp-mob)
-        |  |              |  +---w instr-3gpp-mob?
-                                        fpcbase:threegpp-instr
-        |  |              +--:(instr-pmip)
-        |  |                 +---w instr-pmip?       pmip-commandset
-        |  +--ro output
-        |     +--ro yang-patch-status
-        |        +--ro patch-id       string
-        |        +--ro (global-status)?
-        |        |  +--:(global-errors)
-        |        |  |  +--ro errors
-        |        |  |     +--ro error*
-        |        |  |        +--ro error-type       enumeration
-        |        |  |        +--ro error-tag        string
-        |        |  |        +--ro error-app-tag?   string
-        |        |  |        +--ro error-path?   instance-identifier
-        |        |  |        +--ro error-message?   string
-        |        |  |        +--ro error-info?      <anydata>
-        |        |  +--:(ok)
-        |        |     +--ro ok?            empty
-        |        +--ro edit-status
-        |           +--ro edit* [edit-id]
-        |              +--ro edit-id            string
-        |              +--ro (edit-status-choice)?
-        |                 +--:(ok)
-        |                 |  +--ro ok?                empty
-        |                 |  +--ro notify-follows?    boolean
-        |                 |  +--ro subsequent-edit* [edit-id]
-        |                 |     +--ro edit-id      string
-        |                 |     +--ro operation    enumeration
-        |                 |     +--ro target
-        ypatch:target-resource-offset
-        |                 |     +--ro point?
-        ypatch:target-resource-offset
-        |                 |     +--ro where?       enumeration
-        |                 |     +--ro value?       <anydata>
-        |                 +--:(errors)
-        |                    +--ro errors
-        |                       +--ro error*
-        |                          +--ro error-type enumeration
-        |                          +--ro error-tag        string
-        |                          +--ro error-app-tag?   string
-        |                          +--ro error-path?
-        instance-identifier
-        |                          +--ro error-message?   string
-        |                          +--ro error-info?      <anydata>
-        +---x reg_monitor
++---x configure
+|  +---w input
+|  |  +---w client-id          fpc:client-identifier
+|  |  +---w execution-delay?   uint32
+|  |  +---w yang-patch
+|  |     +---w patch-id    string
+|  |     +---w comment?    string
+|  |     +---w edit* [edit-id]
+|  |        +---w edit-id         string
+|  |        +---w operation       enumeration
+|  |        +---w target          target-resource-offset
+|  |        +---w point?          target-resource-offset
+|  |        +---w where?          enumeration
+|  |        +---w value?          <anydata>
+|  |        +---w op-ref-scope?   fpc:ref-scope
+|  |        +---w instructions
+|  |           +---w (instr-type)?
+|  |              +--:(instr-3gpp-mob)
+|  |              |  +---w instr-3gpp-mob?   fpcbase:threegpp-instr
+|  |              +--:(instr-pmip)
+|  |                 +---w instr-pmip?       pmip-commandset
+|  +--ro output
+|     +--ro yang-patch-status
+|        +--ro patch-id       string
+|        +--ro (global-status)?
+|        |  +--:(global-errors)
+|        |  |  +--ro errors
+|        |  |     +--ro error*
+|        |  |        +--ro error-type       enumeration
+|        |  |        +--ro error-tag        string
+|        |  |        +--ro error-app-tag?   string
+|        |  |        +--ro error-path?      instance-identifier
+|        |  |        +--ro error-message?   string
+|        |  |        +--ro error-info?      <anydata>
+|        |  +--:(ok)
+|        |     +--ro ok?            empty
+|        +--ro edit-status
+|           +--ro edit* [edit-id]
+|              +--ro edit-id            string
+|              +--ro (edit-status-choice)?
+|                 +--:(ok)
+|                 |  +--ro ok?                empty
+|                 |  +--ro notify-follows?    boolean
+|                 |  +--ro subsequent-edit* [edit-id]
+|                 |     +--ro edit-id      string
+|                 |     +--ro operation    enumeration
+|                 |     +--ro target     ypatch:target-resource-offset
+|                 |     +--ro point?     ypatch:target-resource-offset
+|                 |     +--ro where?       enumeration
+|                 |     +--ro value?       <anydata>
+|                 +--:(errors)
+|                    +--ro errors
+|                       +--ro error*
+|                          +--ro error-type       enumeration
+|                          +--ro error-tag        string
+|                          +--ro error-app-tag?   string
+|                          +--ro error-path?      instance-identifier
+|                          +--ro error-message?   string
+|                          +--ro error-info?      <anydata>
++---x reg_monitor
         |  +---w input
         |  |  +---w client-id          fpc:client-identifier
         |  |  +---w execution-delay?   uint32
@@ -6300,22 +6692,22 @@ rpcs:
         |  |     +---w extensible?                    boolean
         |  |     +---w mandatory-static-attributes*   string
         |  |     +---w entity-state?                  enumeration
-        |  |     +---w monitor-key            fpc:fpc-identity
+        |  |     +---w monitor-key                    fpc:fpc-identity
         |  |     +---w target?                        string
         |  |     +---w binding-information
         |  |     +---w deterrable?                    boolean
         |  |     +---w (configuration)
         |  |        +--:(period)
-        |  |        |  +---w period?               uint32
+        |  |        |  +---w period?                        uint32
         |  |        +--:(threshold-config)
-        |  |        |  +---w low?                  uint32
-        |  |        |  +---w hi?                   uint32
+        |  |        |  +---w low?                           uint32
+        |  |        |  +---w hi?                            uint32
         |  |        +--:(schedule)
-        |  |        |  +---w schedule?             uint32
+        |  |        |  +---w schedule?                      uint32
         |  |        +--:(event-identities)
-        |  |        |  +---w event-identities*     identityref
+        |  |        |  +---w event-identities*             identityref
         |  |        +--:(event-ids)
-        |  |           +---w event-ids*            uint32
+        |  |           +---w event-ids*                     uint32
         |  +--ro output
         |     +--ro op-id     uint64
         |     +--ro (edit-status-choice)?
@@ -6330,7 +6722,7 @@ rpcs:
         |                 +--ro error-path?      instance-identifier
         |                 +--ro error-message?   string
         |                 +--ro error-info?      <anydata>
-        +---x dereg_monitor
++---x dereg_monitor
         |  +---w input
         |  |  +---w client-id          fpc:client-identifier
         |  |  +---w execution-delay?   uint32
@@ -6342,7 +6734,7 @@ rpcs:
         |     +--ro op-id     uint64
         |     +--ro (edit-status-choice)?
         |        +--:(ok)
-        |        |  +--ro ok?       empty
+|        |  +--ro ok?       empty
         |        +--:(errors)
         |           +--ro errors
         |              +--ro error*
@@ -6352,7 +6744,7 @@ rpcs:
         |                 +--ro error-path?      instance-identifier
         |                 +--ro error-message?   string
         |                 +--ro error-info?      <anydata>
-        +---x probe
++---x probe
         +---w input
         |  +---w client-id          fpc:client-identifier
         |  +---w execution-delay?   uint32
@@ -6367,15 +6759,15 @@ rpcs:
         +--:(errors)
         +--ro errors
         +--ro error*
-        +--ro error-type       enumeration
-        +--ro error-tag        string
-        +--ro error-app-tag?   string
-        +--ro error-path?      instance-identifier
-        +--ro error-message?   string
-        +--ro error-info?      <anydata>
-        
-        notifications:
-        +---n config-result-notification
++--ro error-type       enumeration
++--ro error-tag        string
++--ro error-app-tag?   string
++--ro error-path?      instance-identifier
++--ro error-message?   string
++--ro error-info?      <anydata>
+
+notifications:
++---n config-result-notification
         |  +--ro yang-patch-status
         |  |  +--ro patch-id       string
         |  |  +--ro (global-status)?
@@ -6398,14 +6790,13 @@ rpcs:
         |  |           |  +--ro ok?        empty
         |  |           +--:(errors)
         |  |              +--ro errors
-        |  |                 +--ro error*
-        |  |                    +--ro error-type       enumeration
-        |  |                    +--ro error-tag        string
-        |  |                    +--ro error-app-tag?   string
-        |  |                    +--ro error-path?
-                                            instance-identifier
-        |  |                    +--ro error-message?   string
-        |  |                    +--ro error-info?      <anydata>
+        |  |                +--ro error*
+        |  |                  +--ro error-type       enumeration
+        |  |                  +--ro error-tag        string
+        |  |                  +--ro error-app-tag?   string
+        |  |                  +--ro error-path?    instance-identifier
+        |  |                  +--ro error-message?   string
+        |  |                   +--ro error-info?      <anydata>
         |  +--ro subsequent-edit* [edit-id]
         |     +--ro edit-id      string
         |     +--ro operation    enumeration
@@ -6428,7 +6819,6 @@ rpcs:
         |  +--ro dpn-id?                     fpc:fpc-identity
         +--:(report-value)
         +--ro report-value?               <anydata>
-
      ]]></artwork>
         <postamble></postamble>
       </figure>

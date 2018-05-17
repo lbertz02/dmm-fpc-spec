@@ -50,7 +50,7 @@ module ietf-dmm-fpc {
      in Section 4.e of the Trust Legal Provisions and are provided
      without warranty as described in the Simplified BSD License.";
 
-    revision 2018-02-28 {
+    revision 2018-05-17 {
     description "Initial Revision.";
     reference "draft-ietf-dmm-fpc-cpdp-10";
   }
@@ -287,17 +287,6 @@ module ietf-dmm-fpc {
         description "Protocol features";
     }
 
-  // Settings
-  grouping interface-settings {
-    list interface-settings {
-        key policy-template-key;
-        uses fpc:policy-template-key;
-        uses fpc:policy-configuration;
-        description "Interface settings";
-    }
-    description "Generic interface settings container";
-  }
-
   // Mobility Context
   grouping mobility-context {
     leaf mobility-context-key {
@@ -406,17 +395,13 @@ module ietf-dmm-fpc {
     }
     description "Monitor Id";
   }
-  grouping target-value {
-    leaf target {
-        type string;
-        description "target";
-    }
-    description "Target Value";
-  }
   grouping monitor-config {
     uses fpc:templatedef;
     uses fpc:monitor-key;
-    uses fpc:target-value;
+    leaf target {
+      type string;
+      description "target";
+    }
     container binding-information {
         description "Placeholder for information helpful
             to binding the monitor ot the correct target";
@@ -508,9 +493,14 @@ module ietf-dmm-fpc {
           }
           description "Supported protocols";
         }
-        uses fpc:interface-settings;
-        description "DPN interfaces";
-      }
+        list interface-settings {
+         key policy-template-key;
+         uses fpc:policy-template-key;
+         uses fpc:policy-configuration;
+         description "Interface settings";
+       }
+       description "DPN interfaces";
+     }
       list dpn-settings {
         key policy-template-key;
         uses fpc:policy-template-key;
@@ -525,8 +515,13 @@ module ietf-dmm-fpc {
         uses fpc:basename-info;
         description "DPN Checkpoint information";
    }
-   list service-group {
-        key service-group-key;
+   container service-group-checkpoint {
+        uses fpc:basename-info;
+        description "Service Group Checkpoint information";
+   }
+   container topology-information-model {
+     list service-group {
+        key "service-group-key role-key";
         leaf service-group-key {
             type fpc:fpc-identity;
             mandatory true;
@@ -536,10 +531,33 @@ module ietf-dmm-fpc {
             type string;
             description "Service Group Name";
         }
+        uses fpc:role-key;
+        leaf role-name {
+            type string;
+            description "Role Name";
+        }
+        leaf-list protocol {
+          type identityref {
+            base "interface-protocols";
+          }
+          min-elements 1;
+          description "Supported protocols";
+        }
+        leaf-list feature {
+            type identityref {
+                base "interface-protocols";
+            }
+            description "Supported features";
+        }
+        list settings {
+            key policy-template-key;
+            uses fpc:policy-template-key;
+            uses fpc:policy-configuration;
+            description "Service Configuration";
+        }
         list dpn {
-            key "dpn-key role-key";
+            key dpn-key;
             uses fpc:dpn-key;
-            uses fpc:role-key;
             list referenced-interface {
                 key interface-key;
                 uses fpc:interface-key;
@@ -551,50 +569,7 @@ module ietf-dmm-fpc {
             }
             description "DPN";
         }
-        list service-settings {
-            key policy-template-key;
-            uses fpc:policy-template-key;
-            uses fpc:policy-configuration;
-            description "Service Configuration";
-        }
         description "Service Group";
-   }
-   container service-group-checkpoint {
-        uses fpc:basename-info;
-        description "Service Group Checkpoint information";
-   }
-   container topology-information-model {
-    list service-endpoint {
-      key role-key;
-      uses fpc:role-key;
-      leaf role-name {
-        type string;
-        description "Role Name";
-      }
-      leaf-list service-group-key {
-        type fpc:fpc-identity;
-        description "Service Group";
-      }
-      list interface {
-        key "dpn-key interface-key";
-        uses fpc:dpn-key;
-        uses fpc:interface-key;
-        leaf-list protocol {
-          type identityref {
-            base "interface-protocols";
-          }
-          description "Supported protocols";
-        }
-        leaf-list feature {
-          type identityref {
-            base "interface-protocols";
-          }
-          description "Supported features";
-        }
-        uses fpc:interface-settings;
-        description "A DPN interface types";
-      }
-      description "Set of DPN types";
     }
     list domain {
       key domain-key;

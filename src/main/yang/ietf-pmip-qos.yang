@@ -49,7 +49,7 @@ module ietf-pmip-qos {
      in Section 4.e of the Trust Legal Provisions and are provided
      without warranty as described in the Simplified BSD License.";
 
-  revision 2018-02-28 {
+  revision 2018-05-17 {
     description "Initial Revision.";
     reference "RFC 6088: Traffic Selectors for Flow Bindings";
   }
@@ -325,7 +325,8 @@ module ietf-pmip-qos {
             type qos-pmip:Guaranteed-UL-Bit-Rate-Value;
             description "Guaranteed-UL-Bit-Rate Value";
         }
-        description "PMIP QoS Attributes";
+        description "PMIP QoS Attributes. Note Vendor option
+        is not a part of this grouping";
     }
 
     grouping qosoption {
@@ -344,7 +345,8 @@ module ietf-pmip-qos {
             mandatory true;
             description "Operation Code";
         }
-        uses qosattribute;
+        uses qos-pmip:qosattribute;
+        uses qos-pmip:QoS-Vendor-Specific-Attribute-Value-Base;
         container traffic-selector {
             uses traffic-selectors:traffic-selector;
             description "traffic selector";
