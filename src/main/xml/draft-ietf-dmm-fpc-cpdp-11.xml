@@ -4557,7 +4557,6 @@ module ietf-dmm-fpc {
         </figure>
     </section>
 
-    <section anchor="yangmodels" title="YANG Models">
         <section anchor="description"
                  title="FPC YANG Settings and Extensions Model">
         <t> This module defines the base data elements in FPC that are likely
@@ -6262,10 +6261,9 @@ module ietf-diam-trafficclassifier {
 }
 <CODE ENDS>]]></artwork>
         </figure>
-    </section>
     </section> <!-- template for YANG model, end -->
-
-    <section anchor="ietf-dmm-fpc-tree" title="FPC YANG Data Model Structure">
+  </section>
+  <section anchor="ietf-dmm-fpc-tree" title="FPC YANG Tree Structure">
     <t> This section only shows the structure for FPC YANG model. NOTE, it
         does NOT show the settings, Action values or Descriptor Value.</t>
     <t>
@@ -7107,7 +7105,6 @@ notifications:
         <postamble></postamble>
       </figure>
     </t>
-    </section>
 </section>
 <section anchor="changelog" title="Change Log">
 <section anchor="changelog10" title="Changes since Version 09">
