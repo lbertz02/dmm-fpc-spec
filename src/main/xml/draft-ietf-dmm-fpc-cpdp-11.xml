@@ -1634,7 +1634,7 @@ DPN         |                 DPN        |
                             value).
                         </t>
                         <t hangText="Value">
-                            The value used for this edit operation.
+                            The value used for this edit operation.  In this message it MUST NOT be a MONITOR entity.
                         </t>
                     </list>
                 </t>
@@ -2058,9 +2058,11 @@ DPN         |                 DPN        |
         <t>Two DPNs are present.  The first, dpn1, has 3 interfaces.  Two support
             the LMA role and both have settings.  The thrid support the MAG function.
             Dpn2 provides a single interface with the MAG function.</t>
+        
         <t>Three ServiceGroups are presented.  The first provides the PMIP protocol
             and LMA role.  It also has a setting, OptionA, that is OFF and only
             contains ifc1 from dpn1.</t>
+        
         <t> The second group is comprised of interfaces
             that support the PMIP protocol and LMA function.  It only contains ifc2 from
             dpn1.  This is due to fact that OptionA is critical to selection and in the
@@ -2068,14 +2070,88 @@ DPN         |                 DPN        |
             An interface that has setting(s) or feature(s) that must appear in a ServiceGroup
             SHOULD NOT appear in ServiceGroups that do no have those setting(s) or feature(s)
             present.</t>
+        
         <t>A third group is comprised of interfaces that support the MAG function of the LMA
         protocol.  It contains the MAG interfaces form both dpn1 and dpn2.</t>
+        
         <t>Given the task to find a LMA that supports the PMIP protoocl the Client can
             determine that dpn1 is its only option and, depending on its requirment of
             OptionA can appropriately determine which interface to select.</t>
         </section>
-        <section anchor="simple_policy" title="Policy Creation and Installation">
-            
+        <section anchor="simple_policy" title="Policy Creation">
+        <t>A Policy must be installed upon an Agent in order to install policies on
+            the selected dpn(s).  This requires construction of the Action(s),
+            Descriptor(s) and Rule(s) used by the Policy.</t>
+        
+        <t>The CONFIGURE message permits editing all informaiton elements except
+        monitors.  The following figure shows use of a CONFIGURE message to install
+        policy on the Agent.</t>
+        
+        <figure anchor="fig_policy_example"
+            title="Example Policy Installation (focus on FPC reference point)">
+            <artwork align="center"><![CDATA[
+                                               +-------Router--------+
+                         +-----------+         |+-------+ +---------+|
+ +------+ +------+     +-----+ FPC   |          | FPC   | |  Anchor |
+ |MAG-C1| |MAG-C2|     |LMA-C| Client|          | Agent | |   DPN   |
+ +------+ +------+     +-----+-------+          +-------+ +---------+
+ |         |            |---(1)--Configure-------->|           |
+ |         |          "configure" : {              |           |
+ |         |           "client-id" : 0,            |           |
+ |         |           "operation-id" : 0,         |           |
+ |         |           "edit" : [ {                |           |
+ |         |            "edit-id" : 0,             |           |
+ |         |            "edit-type" : "create",    |           |
+ |         |            "target" : "/policy-information-model/
+                           /descriptor-template",              |
+ |         |            "value" : {                            |
+ |         |              "descriptor-template-key" : "desc1", |
+ |         |              "descriptor-type" : "all-traffic" }  |
+ |         |             }, {                                  |
+ |         |            "edit-id" : 1,             |           |
+ |         |            "edit-type" : "create",    |           |
+ |         |            "target" : "/policy-information-model/
+                           /action-template",                  |
+ |         |            "value" : {                            |
+ |         |              "action-template-key" : "action1",   |
+ |         |              "action-type" : "deny" }             |
+ |         |             }, {                                  |
+ |         |            "edit-id" : 2,             |           |
+ |         |            "edit-type" : "create",    |           |
+ |         |            "target" : "/policy-information-model/
+                           /rule-template",                    |
+ |         |            "value" : {                            |
+ |         |              "rule-template-key" : "deny-all",    |
+ |         |              "descriptor-match-type" : "and",     |
+ |         |              "descriptor-configuration" : [{      |
+ |         |              "descriptor-template-key" : "all" }],|
+ |         |              "action-configuration" : [{          |
+ |         |              "action-template-key" : "deny" }] }  |
+ |         |             }, {                                  |
+ |         |            "edit-id" : 3,             |           |
+ |         |            "edit-type" : "create",    |           |
+ |         |            "target" : "/policy-information-model/
+                           /policy-template",                  |
+ |         |            "value" : {                            |
+ |         |              "policy-template-key" : "policy1",   |
+ |         |              "policy-status" : "active",          |
+ |         |              "rule-template" : [ {                |
+ |         |              "rule-template-key" : "deny-all",    |
+ |         |              "precedence" : 0 } ]                 |
+ |         |             } } ] }                               |
+ |         |            |<---(2)- Response --------|           |
+ |         |            |                          |           |
+                
+            ]]></artwork>
+        </figure>
+        <t>In this example a descriptor "all" template and an action, "deny",
+        are both empty templates. The "deny-all" rule is comprised of the action
+        and descriptor and inlucded in "policy1". The policy's status is "Configured"
+        as it is a complete policy ready for immediate use.  The policy could be set
+        as "Active" if the Client intends to use it upon immediate installation
+        in a DPN.</t>
+        </section>
+        <section anchor="policy_install" title="Policy Installation">
         </section>
         <section anchor="simple" title="Simple RPC Operation">
         <t> An FPC Client and Agent MUST identify themselves using the Client
