@@ -1980,6 +1980,103 @@ DPN         |                 DPN        |
         <t> Please note that JSON is used to represent the information in Figures
             in this section but any over the wire representation
             that accurately reflects the information model MAY be used.</t>
+        <section anchor="simple_topo" title="DPN Selection">
+            <t>In order to assign a DPN to a Mobility Context, the Client
+                or Agent requires topology information.  The Service-Group
+                provides  information, e.g. function, role, protocol,
+                features and configuraiton, to determine suitable DPN
+                interfaces.</t>
+            <t>Consider a Client attempting to select DPN interfaces that
+                are served by a single Agent.  In this example 3 interfaces
+                are present with different protcols, settings and features
+                as shown in the following figure.</t>
+            <figure anchor="fig-servicegroup"
+                title="Monitor Messages">
+                <artwork align="center"><![CDATA[
+"topology-nformation-model" : {
+ "dpn" : [ {
+  "key" : "dpn1",
+  "interface" : [ {
+    "key" : "ifc1",
+    "role" : "lma",
+    "protocol" : "pmip",
+    "settings" : [ "optionA" : "OFF" ]
+  },{
+    "key" : "ifc2",
+    "role" : "lma",
+    "protocol" : "pmip",
+    "settings" : [ "optionC" : "OFF" ]
+   },{
+    "key" : "ifc2-b",
+    "role" : "mag",
+    "protocol" : "pmip"
+    } ] },
+  {
+  "key" : "dpn2",
+  "interface" : [ {
+    "key" : "ifc1",
+    "role" : "mag",
+    "protocol" : "pmip",
+    "settings" : [ "optionA" : "OFF", "optionB" : "ON"]
+  } ] }
+ ],
+ ...
+ },
+ "servicegroup" : [
+ { "key" : "group1",
+   "name" : "Anchors-OptionA-OFF",
+   "role" : "lma",
+   "protocol" : "pmip",
+   "settings" : [ "optionA" : "OFF" ],
+   "dpn" : [
+   { "key" : "dpn1",
+   "referenced-interfaces" : [ { "key" : "ifc1" } ] }
+   ]
+ },{ "key" : "group2",
+   "name" : "Anchors",
+   "role" : "lma",
+   "protocol" : "pmip",
+   "dpn" : [
+   { "key" : "dpn1",
+     "referenced-interfaces" : [ { "key" : "ifc2" } ] }
+   ]
+  },{ "key" : "group2",
+   "name" : "MAGs",
+   "role" : "mag",
+   "protocol" : "pmip",
+   "dpn" : [
+   { "key" : "dpn2",
+   "referenced-interfaces" : [ { "key" : "ifc1" } ] },
+   { "key" : "dpn1",
+   "referenced-interfaces" : [ { "key" : "ifc2-b" } ] }
+   ]
+  }
+]
+                ]]></artwork>
+                <postamble></postamble>
+            </figure>
+        <t>Two DPNs are present.  The first, dpn1, has 3 interfaces.  Two support
+            the LMA role and both have settings.  The thrid support the MAG function.
+            Dpn2 provides a single interface with the MAG function.</t>
+        <t>Three ServiceGroups are presented.  The first provides the PMIP protocol
+            and LMA role.  It also has a setting, OptionA, that is OFF and only
+            contains ifc1 from dpn1.</t>
+        <t> The second group is comprised of interfaces
+            that support the PMIP protocol and LMA function.  It only contains ifc2 from
+            dpn1.  This is due to fact that OptionA is critical to selection and in the
+            ServiceGroup but, in this instance, OptionC is not critical to selection.
+            An interface that has setting(s) or feature(s) that must appear in a ServiceGroup
+            SHOULD NOT appear in ServiceGroups that do no have those setting(s) or feature(s)
+            present.</t>
+        <t>A third group is comprised of interfaces that support the MAG function of the LMA
+        protocol.  It contains the MAG interfaces form both dpn1 and dpn2.</t>
+        <t>Given the task to find a LMA that supports the PMIP protoocl the Client can
+            determine that dpn1 is its only option and, depending on its requirment of
+            OptionA can appropriately determine which interface to select.</t>
+        </section>
+        <section anchor="simple_policy" title="Policy Creation and Installation">
+            
+        </section>
         <section anchor="simple" title="Simple RPC Operation">
         <t> An FPC Client and Agent MUST identify themselves using the Client
             Identifier and Agent Identifier respectively to ensure that for all
