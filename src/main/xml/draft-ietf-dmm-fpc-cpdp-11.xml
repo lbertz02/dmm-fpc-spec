@@ -7150,6 +7150,7 @@ notifications:
             <t>Updated ServiceGroup and eliminated Service Endpoint as noted
                 in ML during IETF 101.</t>
             <t>Scrubbed YANG for NMDA compliance and Guidelines (RFC 6087bis).</t>
+            <t>Monitor lifecycle, policy and policy installation examples added.</t>
          </list>
     </t>
 </section>
