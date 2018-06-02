@@ -1905,7 +1905,6 @@ DPN         |                 DPN        |
    |         |         +-[Extensible:]
    |         |         +-[Monitor-Key:] <U-Key>
    |         |         +-[Target:]
-   |         |         +-[Binding-Information]
    |         |         +-[Deferrable]
    |         |         +-[Configuration:]
    
@@ -1919,7 +1918,7 @@ DPN         |                 DPN        |
    |         |         +-[(Boolean) Send-Data ~ False]
    
    |
-   +-[Deregister-Monitors]
+   +-[Probe]
    |         +-[Client-Id:]
    |         +-[(Unsigned 32) Execution-Delay]
    |         +-[Operation-Id:]
@@ -2689,6 +2688,88 @@ DPN         |                 DPN        |
             deleted.</t>
         </section>
         <section anchor="monitor_msc" title="Monitor Example">
+            <t>The following example shows the installation of a DPN level
+                monitor to observe ifc1 status, a property that is either
+                "up" or "down", and another monitor to watch for interfac
+                events.  The interface
+                experiences an outage which is reported to the Client via
+                a Notify message.  At a later time a Probe and subsequent
+                Notify is sent. Finally, the monitors are de-registered.</t>
+            <t>Note, specific event identifiers and types are out of scope.</t>
+        <figure anchor="fig_monitor_example"
+            title="Monitor Example (focus on FPC reference point)">
+            <artwork align="center"><![CDATA[
+                                               +-------Router--------+
+                         +-----------+         |+-------+ +---------+|
+ +------+ +------+     +-----+ FPC   |          | FPC   | |  Anchor |
+ |MAG-C1| |MAG-C2|     |LMA-C| Client|          | Agent | |   DPN   |
+ +------+ +------+     +-----+-------+          +-------+ +---------+
+ |         |            |---(1)--Configure-------->|           |
+ |         |          "register-monitors" : {      |           |
+ |         |           "client-id" : 0,            |           |
+ |         |           "operation-id" : 0,         |           |
+ |         |           "monitors" : [ {            |           |
+ |         |            "monitor-key" : "ifc1-status",         |
+ |         |            "target" : "/dpn/dpn1/interface/ifc1/status"
+ |         |            "deferrable" : false,                  |
+ |         |            "configuration" : {  }                 |
+ |         |            }, {                                   |
+ |         |            "monitor-key" : "ifc1-events",         |
+ |         |            "target" : "/dpn/dpn1/interface/ifc1"  |
+ |         |            "deferrable" : false,                  |
+ |         |            "configuration" : {                    |
+ |         |              "configuration" : {                  |
+ |         |                "target-event-configuration" : [ 0,
+ |         |                  1, 3, .. ] } } } ] }             |
+ |         |            |<---(2)- Response --------|           |
+ |         |            |                          |           |
+          [ ifc1 goes down which is reported as event type 3 ]
+ |         |            |<---(3)-- NOTIFY ---------|           |
+ |         |          "notify" : {                 |           |
+ |         |           "notification-id" : 0,      |           |
+ |         |           "timestamp" : ...,          |           |
+ |         |           "report" : [ {              |           |
+ |         |            "monitor-key" : "ifc1-events",         |
+ |         |            "trigger" : "subscribed-event-occurred",
+ |         |            "value" : { 3 } } ] }      |           |
+ |         |            |                          |           |
+ |         |            |---(4)--  Probe  -------->|           |
+ |         |          "probe" : {      |           |
+ |         |           "client-id" : 0,            |           |
+ |         |           "operation-id" : 1,         |           |
+ |         |           "monitors" : [              |           |
+ |         |            "monitor-key" : "ifc1-status" ] }      |
+ |         |            |<---(5)- Response --------|           |
+ |         |            |                          |           |
+ |         |            |<---(6)-- NOTIFY ---------|           |
+ |         |          "notify" : {                 |           |
+ |         |           "notification-id" : 1,      |           |
+ |         |           "timestamp" : ...,          |           |
+ |         |           "report" : [ {              |           |
+ |         |            "monitor-key" : "ifc1-status",         |
+ |         |            "trigger" : "probe",
+ |         |            "value" : { "up" } } ] }   |           |
+ |         |            |                          |           |
+ |         |            |---(7)- Deregister ------>|           |
+ |         |          "deregister-monitors" : {    |           |
+ |         |           "client-id" : 0,            |           |
+ |         |           "operation-id" : 3,         |           |
+ |         |           "monitors" : [              |           |
+ |         |            { "monitor-key" : "ifc1-events" },     |
+ |         |            { "monitor-key" : "ifc1-status",       |
+ |         |              "send-data" : true } ] }             |
+ |         |            |<---(8)- Response --------|           |
+ |         |            |                          |           |
+ |         |            |<---(9)-- NOTIFY ---------|           |
+ |         |          "notify" : {                 |           |
+ |         |           "notification-id" : 2,      |           |
+ |         |           "timestamp" : ...,          |           |
+ |         |           "report" : [ {              |           |
+ |         |            "monitor-key" : "ifc1-status",         |
+ |         |            "trigger" : "deregistration-final-value",
+ |         |            "value" : { "up" } } ] }   |           |
+            ]]></artwork>
+        </figure>
         </section>
     </section>
     
