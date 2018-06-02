@@ -2078,7 +2078,7 @@ DPN         |                 DPN        |
             determine that dpn1 is its only option and, depending on its requirment of
             OptionA can appropriately determine which interface to select.</t>
         </section>
-        <section anchor="simple_policy" title="Policy Creation">
+        <section anchor="simple_policy" title="Policy Creation and Installation">
         <t>A Policy must be installed upon an Agent in order to install policies on
             the selected dpn(s).  This requires construction of the Action(s),
             Descriptor(s) and Rule(s) used by the Policy.</t>
@@ -2134,14 +2134,13 @@ DPN         |                 DPN        |
                            /policy-template",                  |
  |         |            "value" : {                            |
  |         |              "policy-template-key" : "policy1",   |
- |         |              "policy-status" : "active",          |
+ |         |              "policy-status" : "configured",      |
  |         |              "rule-template" : [ {                |
  |         |              "rule-template-key" : "deny-all",    |
  |         |              "precedence" : 0 } ]                 |
  |         |             } } ] }                               |
  |         |            |<---(2)- Response --------|           |
  |         |            |                          |           |
-                
             ]]></artwork>
         </figure>
         <t>In this example a descriptor "all" template and an action, "deny",
@@ -2150,8 +2149,38 @@ DPN         |                 DPN        |
         as it is a complete policy ready for immediate use.  The policy could be set
         as "Active" if the Client intends to use it upon immediate installation
         in a DPN.</t>
-        </section>
-        <section anchor="policy_install" title="Policy Installation">
+        <t>Installation of the policy on dpn1 is shown in the following Figure. The
+        Policy-Status is set to "Active" to make it immediately usable.  Leaving
+        the status as Configured would permit its installation on the DPN without
+        an ability to use it in a Mobility Context.  Such a use case is often
+        referred to as policy pre-configuration.</t>
+        <figure anchor="fig_policy_install_example"
+            title="Example Policy Installation (focus on FPC reference point)">
+            <artwork align="center"><![CDATA[
+                                               +-------Router--------+
+                         +-----------+         |+-------+ +---------+|
+ +------+ +------+     +-----+ FPC   |          | FPC   | |  Anchor |
+ |MAG-C1| |MAG-C2|     |LMA-C| Client|          | Agent | |   DPN   |
+ +------+ +------+     +-----+-------+          +-------+ +---------+
+ |         |            |---(1)--Configure-------->|           |
+ |         |          "configure" : {              |           |
+ |         |           "client-id" : 0,            |           |
+ |         |           "operation-id" : 0,         |           |
+ |         |           "edit" : [ {                |           |
+ |         |            "edit-id" : 0,             |           |
+ |         |            "edit-type" : "create",    |           |
+ |         |            "target" : "/policy-information-model/
+                          /dpn/dpn1/dpn-policy-configuration", |
+ |         |            "value" : {                            |
+ |         |              "policy-template-key" : "policy1",   |
+ |         |              "policy-status" : "active" } } ] }   |
+ |         |            |<---(2)- Response --------|           |
+ |         |            |                          |           |
+            ]]></artwork>
+        </figure>
+        <t>This message uses an edit type of "create" to add the
+            policy template directly to the installed DPN policy
+            set.</t>
         </section>
         <section anchor="simple" title="Simple RPC Operation">
         <t> An FPC Client and Agent MUST identify themselves using the Client
@@ -2221,7 +2250,7 @@ DPN         |                 DPN        |
         
         <t>
         <figure anchor="fig_msc_example"
-          title="Example Message Sequence (focus on FPC reference point)">
+          title="Single Agent with Handover (focus on FPC reference point)">
         <artwork align="center"><![CDATA[
                                               +-------Router--------+
                         +-----------+         |+-------+ +---------+|
@@ -2361,7 +2390,7 @@ DPN         |                 DPN        |
 
         <t>
         <figure anchor="fig_msc_delete_example"
-            title="Exemplary Message Sequence (focus on FPC reference point)">
+            title="Single Agent with Deletion (focus on FPC reference point)">
         <artwork align="center"><![CDATA[
                                               +-------Router--------+
                         +-----------+         |+-------+ +---------+|
@@ -2659,7 +2688,8 @@ DPN         |                 DPN        |
             When a Client deletes a parent Context all children are also
             deleted.</t>
         </section>
-
+        <section anchor="monitor_msc" title="Monitor Example">
+        </section>
     </section>
     
 </section>
