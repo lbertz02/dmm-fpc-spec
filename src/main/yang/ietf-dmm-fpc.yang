@@ -61,11 +61,15 @@ module ietf-dmm-fpc {
             type boolean;
             description "Indicates if the template is extensible";
         }
-        leaf-list mandatory-static-attributes {
+        leaf-list static-attributes {
             type string;
-            description "Attribute (Name) that cannot change.  If
-                it has not been defined in the template it MUST not
-                be present at all for the template to be valid.";
+            description "Attribute (Name) whose value cannot
+                change";
+        }
+        leaf-list mandatory-attributes {
+            type string;
+            description "Attribute (Name) of optional attributes
+              that MUST be present in instances of this tempplate.";
         }
         leaf entity-state {
             type enumeration {
@@ -84,6 +88,10 @@ module ietf-dmm-fpc {
             }
             default initial;
             description "Entity State";
+        }
+        leaf version {
+            type uint32;
+            description "Template Version";
         }
         description "Teamplate Definition";
     }
@@ -137,15 +145,16 @@ module ietf-dmm-fpc {
         description "Rule Key";
     }
 
-    // Settings
+    grouping fpc-setting-value {
+        anydata setting;
+        description "FPC Setting Value";
+    }
+    // Configuration / Settings
     grouping policy-configuration {
         list policy-configuration {
             key index;
-            leaf index {
-                type uint16;
-                description "Index used for reference";
-            }
-            choice policy-setting {
+            uses fpc:index;
+            choice policy-configuration-value {
                 case descriptor-value {
                     uses fpcbase:fpc-descriptor-value;
                     description "Descriptor Value";
@@ -153,6 +162,10 @@ module ietf-dmm-fpc {
                 case action-value {
                     uses fpcbase:fpc-action-value;
                     description "Action Value";
+                }
+                case setting-value {
+                    uses fpc:fpc-setting-value;
+                    description "Setting";
                 }
                 description "Policy Attributes";
             }
@@ -167,6 +180,7 @@ module ietf-dmm-fpc {
         key action-template-key;
         uses fpc:action-template-key;
         uses fpcbase:fpc-action-value;
+        uses fpc:fpc-setting-value;
         uses fpc:templatedef;
         description "Action Template";
       }
@@ -174,6 +188,7 @@ module ietf-dmm-fpc {
         key descriptor-template-key;
         uses fpc:descriptor-template-key;
         uses fpcbase:fpc-descriptor-value;
+        uses fpc:fpc-setting-value;
         uses fpc:templatedef;
         description "Descriptor Template";
       }
@@ -191,7 +206,7 @@ module ietf-dmm-fpc {
                     description "AND logic";
                 }
             }
-            default "and";
+            mandatory true;
             description "Type of Match (OR or AND) applied
                 to the descriptor-configurations";
         }
@@ -206,6 +221,7 @@ module ietf-dmm-fpc {
                 key index;
                 uses fpc:index;
                 uses fpcbase:fpc-descriptor-value;
+                uses fpc:fpc-setting-value;
                 description "Descriptor Attributes";
             }
             description "A set of Descriptor references";
@@ -222,6 +238,7 @@ module ietf-dmm-fpc {
                 key index;
                 uses fpc:index;
                 uses fpcbase:fpc-action-value;
+                uses fpc:fpc-setting-value;
                 description "Action Attributes";
             }
             description "A set of Action references";
@@ -533,7 +550,7 @@ module ietf-dmm-fpc {
             type string;
             description "Service Endpoint Interface Name";
         }
-        leaf-list roles {
+        leaf role {
             type identityref {
                 base "fpc:role";
             }
@@ -545,15 +562,15 @@ module ietf-dmm-fpc {
           }
           description "Supported protocols";
         }
-        list interface-settings {
+        list interface-setting {
          key policy-template-key;
          uses fpc:policy-template-key;
          uses fpc:policy-configuration;
          description "Interface settings";
        }
        description "DPN interfaces";
-     }
-      list dpn-settings {
+      }
+      list dpn-setting {
         key policy-template-key;
         uses fpc:policy-template-key;
         uses fpc:policy-configuration;

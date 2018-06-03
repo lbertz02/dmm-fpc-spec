@@ -308,6 +308,11 @@
 	<xref target="RFC2119"></xref>.</t>
 
     <t> <list hangIndent="24" style="hanging">
+        <t hangText="Attribute Expression: "> </t>
+        
+        <t hangText="Template Configuration "> </t>
+        
+        <t hangText="Setting: "> </t>
 
         <t hangText="Domain: "> One or more DPNs that form a logical partition
 	    of network resources (e.g., a data-plane network under common
@@ -321,16 +326,12 @@
 
 	<t hangText="DPN-Set: ">
 	    the set of DPNs in a network configuration</t>
-	<t hangText="Service-Endpoint-Set: ">
-	    a set of Service-Endpoint entities</t>
-        <t hangText="FPC Agent:"> An FPC Agent manages DPNs, thereby providing
-	    abstracted data-plane networks to FPC Clients. </t>
 
         <t hangText="FPC Client:"> An FPC Client is integrated with a mobility
 	    management system or related application, enabling control over
 	    forwarding policy, mobility sessions and DPNs via an FPC Agent.</t>
 
-	<t hangText="Service-Group-Set: ">
+	<t hangText="Service-Group: ">
 	    a set of DPN interfaces that support a specific data-plane
 	    purpose (inbound/outbound, roaming, subnetwork with common
 	    specific configuration, etc.) </t>
@@ -1097,7 +1098,7 @@ DPN         |                 DPN        |
       |     +-[Interface] <L-Key> <Set>
       |     |      +-[Role] <U-Key>
       |     |      +-[Protocol] <Set>
-      |     |      +-[Settings] (O)
+      |     |      +-[Setting] <Set> (O)
       |     +-[Domain-Key]
       |     +-[Service-Group-Key] <Set> (O)
       |     +-[DPN-Policy-Configuration] <List> (M)
@@ -1127,7 +1128,13 @@ DPN         |                 DPN        |
         <list>
             <t hangText="Role: ">
                 the role (MAG, LMA, PGW, AMF, etc.) of the DPN. </t>
-            <t> Settings (optional): configurable settings that
+            <t hangText="Protocol (Set):">The set of protocols supported by
+                this interface (e.g., PMIP, S5-GTP, S5-PMIP etc.).  The
+                protocol is MAY be 'gtp' but many protocols implement specific
+                message sets, e.g. s5-pmip, s8-pmip. When a protocol implements
+                such message sub-subsets the Protocol value MUST include this
+                information.</t>
+            <t> Setting (optional): configurable settings that
                 further determine the suitability of an interface for the specific
                 request.  For example: SequenceNumber=ON/OFF. </t>
         </list></t>
@@ -1145,12 +1152,12 @@ DPN         |                 DPN        |
 	Policy-Template.  Each Policy-Configuration also has been configured
 	to supply missing and non-default values to the desired Attributes
 	defined within the Policy-Template. </t>
-    <t hangText="DPN-Resident-Policy.Policy-Configuration:"> A Policy Key
+  <!--  <t hangText="DPN-Resident-Policy.Policy-Configuration:"> A Policy Key
 	providing access to Template from which the DPN-Resident-Policy was
 	instantiated, as well as an Attribute-Expression for this instantiation
 	from the Policy-Template, which supplies default values and statically
 	configured values for the Attributes, according to the
-	    syntax specified in <xref target="templates"/>. </t>
+	    syntax specified in <xref target="templates"/>. </t> -->
     <t hangText="DPN-Resource-Mapping-Reference (O):"> A reference to the
 	underlying implementation, e.g. physical node, software module,
 	etc.  that supports this DPN.  This value MUST be non-empty
@@ -1196,7 +1203,7 @@ DPN         |                 DPN        |
       +-[Policy Information Model]
       |      +-[Extensible:]
       |      +-[Policy-Template] <G-Key> (M) <Set>
-      |      |       +-[Policy-Status]
+ <!--     |      |       +-[Policy-Status] -->
       |      |       +-[Rule-Template-Key] <List> (M)
       |      |       |       +-[Precedence] (M)
       |      +-[Rule-Template] <L-Key> (M) <Set>
@@ -1207,10 +1214,10 @@ DPN         |                 DPN        |
       |      |       |       +-[Action-Order] (M)
       |      +-[Descriptor-Template] <L-Key> (M) <Set>
       |      |       +-[Descriptor-Type] (O)
-      |      |       +-[Attribute-Expression] <Set> (M)
+ <!--      |      |       +-[Attribute-Expression] <Set> (M) -->
       |      +-[Action-Template] <L-Key> (M) <Set>
       |              +-[Action-Type] (O)
-      |      |       +-[Attribute-Expression] <Set> (M)
+  <!--     |      |       +-[Attribute-Expression] <Set> (M) -->
       ]]></artwork>
             <postamble></postamble>
           </figure>
@@ -1227,8 +1234,6 @@ DPN         |                 DPN        |
         <list>
         <t hangText="Policy-Key: "> Identifies and enables reference
 	    to this Policy definition. </t>
-        <t hangText="Policy-Status: "> Either Initial, PartiallyConfigured,
-		Configured, or Active.  Default value is Initial. </t>
         <t hangText="Rule-Template-Key: "> Enables reference to a Rule
 	    template definition. </t>
         <t hangText="Rule-Precedence: ">
@@ -1283,12 +1288,12 @@ DPN         |                 DPN        |
         <list>
         <t hangText="Descriptor-Template-Key: "> Identifies and enables
 	    reference to this descriptor template definition. </t>
-	<t hangText="Attribute-Expression:"> An expression which defines an
+<!--	<t hangText="Attribute-Expression:"> An expression which defines an
 	    Attribute in the Descriptor-Template and also specifies whether
 	    the Template also defines a default value or a statically
 	    configured value for the Attribute of the Descriptor has,
 	    according to the
-	    syntax specified in <xref target="templates"/>. </t>
+	    syntax specified in <xref target="templates"/>. </t> -->
         <t hangText="Descriptor-Type: ">
             Identifies the type of descriptor, e.g. an IPv6 traffic selector
             per <xref target="RFC6088"></xref>.</t>
@@ -1298,12 +1303,12 @@ DPN         |                 DPN        |
     <list>
         <t hangText="Action-Template-Key: "> Identifies and enables
 	    reference to this action template definition. </t>
-	<t hangText="Attribute-Expression:"> An expression which defines an
+<!--	<t hangText="Attribute-Expression:"> An expression which defines an
 	    Attribute in the Action-Template and also specifies whether
 	    the Template also defines a default value or a statically
 	    configured value for the Attribute of the Action has,
 	    according to the
-	    syntax specified in <xref target="templates"/>. </t>
+	    syntax specified in <xref target="templates"/>. </t> -->
         <t hangText="Action-Type: ">
             Identifies the type of an action for unambiguous
 	    interpretation of an Action-Value entry.</t>
