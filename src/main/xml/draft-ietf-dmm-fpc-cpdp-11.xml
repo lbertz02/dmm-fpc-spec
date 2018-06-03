@@ -986,8 +986,8 @@ DPN         |                 DPN        |
  |           +-[Extensible: FALSE]
  |           +-[Role] <U-Key>
  |           +-[Protocol] <Set>
- |           +-[Features] <Set> (O)
- |           +-[Settings] <Set> (O)
+ |           +-[Feature] <Set> (O)
+ |           +-[Setting] <Set> (O)
  |           +-[DPN-Key] <Set>
  |           |           +-[Referenced-Interface] <Set>
  |           |           |       +-[Interface-Key] <L-Key>
@@ -1009,10 +1009,10 @@ DPN         |                 DPN        |
         message sets, e.g. s5-pmip, s8-pmip. When a protocol implements
         such message sub-subsets the Protocol value MUST include this
         information.</t>
-    <t hangText="Features (Set):">An optional set of static features
+    <t hangText="Feature (Set):">An optional set of static features
         which further determine the suitability of the interface to the
         desired operation for which selection is underway.</t>
-    <t hangText="Settings (Set):">An optional set of configurable
+    <t hangText="Setting (Set):">An optional set of configurable
         settings that further determine the suitability of an
         interface for the specific request.
         For example: SequenceNumber=ON/OFF.</t>

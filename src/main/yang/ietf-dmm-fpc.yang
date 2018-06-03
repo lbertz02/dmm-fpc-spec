@@ -454,7 +454,59 @@ module ietf-dmm-fpc {
         type fpc:fpc-identity;
         description "Tenant Key";
    }
-   container mobility-information-model {
+   container topology-information-model {
+     list service-group {
+        key "service-group-key role-key";
+        leaf service-group-key {
+            type fpc:fpc-identity;
+            mandatory true;
+            description "Service Group Key";
+        }
+        leaf service-group-name {
+            type string;
+            description "Service Group Name";
+        }
+        uses fpc:role-key;
+        leaf role-name {
+            type string;
+            description "Role Name";
+        }
+        leaf-list protocol {
+          type identityref {
+            base "interface-protocols";
+          }
+          min-elements 1;
+          description "Supported protocols";
+        }
+        leaf-list feature {
+            type identityref {
+                base "interface-protocols";
+            }
+            description "Supported features";
+        }
+        list setting {
+            key policy-template-key;
+            uses fpc:policy-template-key;
+            uses fpc:policy-configuration;
+            description "Service Configuration";
+        }
+        list dpn {
+            key dpn-key;
+            uses fpc:dpn-key;
+            min-elements 1;
+            list referenced-interface {
+                key interface-key;
+                uses fpc:interface-key;
+                leaf-list peer-service-group-key {
+                    type fpc:fpc-identity;
+                    description "Peer Service Group";
+                }
+                description "Referenced Interface";
+            }
+            description "DPN";
+        }
+        description "Service Group";
+    }
     list dpn {
       key dpn-key;
       uses fpc:dpn-key;
@@ -509,68 +561,6 @@ module ietf-dmm-fpc {
       }
       description "Set of DPNs";
     }
-    description "Mobility Information Model";
-   }
-   container dpn-checkpoint {
-        uses fpc:basename-info;
-        description "DPN Checkpoint information";
-   }
-   container service-group-checkpoint {
-        uses fpc:basename-info;
-        description "Service Group Checkpoint information";
-   }
-   container topology-information-model {
-     list service-group {
-        key "service-group-key role-key";
-        leaf service-group-key {
-            type fpc:fpc-identity;
-            mandatory true;
-            description "Service Group Key";
-        }
-        leaf service-group-name {
-            type string;
-            description "Service Group Name";
-        }
-        uses fpc:role-key;
-        leaf role-name {
-            type string;
-            description "Role Name";
-        }
-        leaf-list protocol {
-          type identityref {
-            base "interface-protocols";
-          }
-          min-elements 1;
-          description "Supported protocols";
-        }
-        leaf-list feature {
-            type identityref {
-                base "interface-protocols";
-            }
-            description "Supported features";
-        }
-        list settings {
-            key policy-template-key;
-            uses fpc:policy-template-key;
-            uses fpc:policy-configuration;
-            description "Service Configuration";
-        }
-        list dpn {
-            key dpn-key;
-            uses fpc:dpn-key;
-            list referenced-interface {
-                key interface-key;
-                uses fpc:interface-key;
-                leaf-list peer-service-group-key {
-                    type fpc:fpc-identity;
-                    description "Peer Service Group";
-                }
-                description "Referenced Interface";
-            }
-            description "DPN";
-        }
-        description "Service Group";
-    }
     list domain {
       key domain-key;
       leaf domain-key {
@@ -582,13 +572,21 @@ module ietf-dmm-fpc {
         type string;
         description "Domain displayname";
       }
-      list domain-settings {
+      list domain-setting {
         key policy-template-key;
         uses fpc:policy-template-key;
         uses fpc:policy-configuration;
         description "Domain Cofiguration";
       }
       description "List of Domains";
+    }
+    container dpn-checkpoint {
+        uses fpc:basename-info;
+        description "DPN Checkpoint information";
+    }
+    container service-group-checkpoint {
+        uses fpc:basename-info;
+        description "Service Group Checkpoint information";
     }
     uses fpc:basename-info;
     description "FPC Topology grouping";
