@@ -150,11 +150,8 @@ module ietf-dmm-fpc {
         description "FPC Setting Value";
     }
     // Configuration / Settings
-    grouping policy-configuration {
-        list policy-configuration {
-            key index;
-            uses fpc:index;
-            choice policy-configuration-value {
+    grouping policy-configuration-choice {
+           choice policy-configuration-value {
                 case descriptor-value {
                     uses fpcbase:fpc-descriptor-value;
                     description "Descriptor Value";
@@ -169,6 +166,13 @@ module ietf-dmm-fpc {
                 }
                 description "Policy Attributes";
             }
+            description "Policy Configuration Value Choice";
+    }
+    grouping policy-configuration {
+        list policy-configuration {
+            key index;
+            uses fpc:index;
+           uses fpc:policy-configuration-choice;
             description "Policy Configuration";
         }
         description "Policy Configuration Value";
@@ -180,7 +184,6 @@ module ietf-dmm-fpc {
         key action-template-key;
         uses fpc:action-template-key;
         uses fpcbase:fpc-action-value;
-        uses fpc:fpc-setting-value;
         uses fpc:templatedef;
         description "Action Template";
       }
@@ -188,7 +191,6 @@ module ietf-dmm-fpc {
         key descriptor-template-key;
         uses fpc:descriptor-template-key;
         uses fpcbase:fpc-descriptor-value;
-        uses fpc:fpc-setting-value;
         uses fpc:templatedef;
         description "Descriptor Template";
       }
@@ -221,9 +223,9 @@ module ietf-dmm-fpc {
                 key index;
                 uses fpc:index;
                 uses fpcbase:fpc-descriptor-value;
-                uses fpc:fpc-setting-value;
                 description "Descriptor Attributes";
             }
+            uses fpc:fpc-setting-value;
             description "A set of Descriptor references";
         }
         list action-configuration {
@@ -238,13 +240,18 @@ module ietf-dmm-fpc {
                 key index;
                 uses fpc:index;
                 uses fpcbase:fpc-action-value;
-                uses fpc:fpc-setting-value;
                 description "Action Attributes";
             }
+            uses fpc:fpc-setting-value;
             description "A set of Action references";
         }
         uses fpc:templatedef;
-        uses fpc:policy-configuration;
+        list rule-configuration {
+            key index;
+            uses fpc:index;
+           uses fpc:policy-configuration-choice;
+            description "Rule Configuration";
+        }
         description "Rule Template";
       }
       list policy-template {
@@ -332,7 +339,7 @@ module ietf-dmm-fpc {
             type fpcbase:imsi-type;
             description "IMSI";
         }
-        list mn-settings {
+        list mn-policy-configuration {
             key policy-template-key;
             uses fpc:policy-template-key;
             uses fpc:policy-configuration;
@@ -345,7 +352,7 @@ module ietf-dmm-fpc {
             type fpc:fpc-identity;
             description "Domain Key";
         }
-        list domain-settings {
+        list domain-policy-settings {
             key policy-template-key;
             uses fpc:policy-template-key;
             uses fpc:policy-configuration;
@@ -356,7 +363,7 @@ module ietf-dmm-fpc {
     list dpn {
         key dpn-key;
         uses fpc:dpn-key;
-        list dpn-settings {
+        list dpn-policy-configuration {
             key policy-template-key;
             uses fpc:policy-template-key;
             uses fpc:policy-configuration;
@@ -383,7 +390,7 @@ module ietf-dmm-fpc {
                 uses fpc:interface-key;
                 description "interface assigned";
             }
-            list flow-settings {
+            list service-data-flow-policy-configuration {
                 key policy-template-key;
                 uses fpc:policy-template-key;
                 uses fpc:policy-configuration;
@@ -419,11 +426,7 @@ module ietf-dmm-fpc {
       type string;
       description "target";
     }
-    container binding-information {
-        description "Placeholder for information helpful
-            to binding the monitor ot the correct target";
-    }
-    leaf deterrable {
+    leaf deferrable {
       type boolean;
       description "Indicates reports related to this
         config can be delayed.";
@@ -486,6 +489,7 @@ module ietf-dmm-fpc {
         uses fpc:role-key;
         leaf role-name {
             type string;
+            mandatory true;
             description "Role Name";
         }
         leaf-list protocol {
@@ -501,11 +505,11 @@ module ietf-dmm-fpc {
             }
             description "Supported features";
         }
-        list setting {
-            key policy-template-key;
-            uses fpc:policy-template-key;
-            uses fpc:policy-configuration;
-            description "Service Configuration";
+        list service-group-configuration {
+            key index;
+            uses fpc:index;
+          uses fpc:policy-configuration-choice;
+            description "Settings";
         }
         list dpn {
             key dpn-key;
@@ -535,7 +539,7 @@ module ietf-dmm-fpc {
         type string;
         description "Reference to underlying DPN resource(s)";
       }
-      leaf-list domain-key {
+      leaf domain-key {
         type fpc:fpc-identity;
         description "Domains";
       }
@@ -562,15 +566,15 @@ module ietf-dmm-fpc {
           }
           description "Supported protocols";
         }
-        list interface-setting {
-         key policy-template-key;
-         uses fpc:policy-template-key;
-         uses fpc:policy-configuration;
+        list interface-configuration {
+         key index;
+         uses fpc:index;
+         uses fpc:policy-configuration-choice;
          description "Interface settings";
        }
        description "DPN interfaces";
       }
-      list dpn-setting {
+      list dpn-policy-configuration {
         key policy-template-key;
         uses fpc:policy-template-key;
         uses fpc:policy-configuration;
@@ -589,7 +593,7 @@ module ietf-dmm-fpc {
         type string;
         description "Domain displayname";
       }
-      list domain-setting {
+      list domain-policy-configuration {
         key policy-template-key;
         uses fpc:policy-template-key;
         uses fpc:policy-configuration;
@@ -605,7 +609,10 @@ module ietf-dmm-fpc {
         uses fpc:basename-info;
         description "Service Group Checkpoint information";
     }
-    uses fpc:basename-info;
+    container domain-checkpoint {
+        uses fpc:basename-info;
+        description "Domain Checkpoint information";
+    }
     description "FPC Topology grouping";
    }
    container policy-information-model {
