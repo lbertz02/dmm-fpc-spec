@@ -456,6 +456,11 @@ policy-configuration-value:
 policy-configuration:
 |  |  |  +--rw policy-configuration* [index]
 |  |  |     +--rw index                           uint16
+|  |  |     +--rw extensible?             boolean
+|  |  |     +--rw static-attributes*      string
+|  |  |     +--rw mandatory-attributes*   string
+|  |  |     +--rw entity-state?           enumeration
+|  |  |     +--rw version?                uint32
 |  |  |     +--rw (policy-configuration-value)?
 |  |  |        ...
 

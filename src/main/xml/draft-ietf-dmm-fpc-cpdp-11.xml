@@ -3556,10 +3556,11 @@ activation system:
             <t>Generic attributes are distinguished by the "Settings" type (container) and holds ANY value.  It is an any data node under configurations.</t>
         </list>
     </t>
-    
     <t>The CONFIGURE and CONFIGURE-RESULT-NOTIFICATION use the yang-patch-status which is a container for edits.  This was done to maximize YANG reuse and not a part of the FPC specification.</t>
     <t>In the configure rpc operation-id is mapped to patch-id and in an edit the edit-type is
     mapped to operation.</t>
+    <t>The Result-Status attribute is mapped to the 'ok' (empty leaf) or errrors structure.</t>
+    <t>The Policy-Status is mapped to entity-state to reduce YANG size.</t>
 
     <t>Five modules are defined:
 
@@ -3795,10 +3796,16 @@ module ietf-dmm-fpc {
         list policy-configuration {
             key index;
             uses fpc:index;
-           uses fpc:policy-configuration-choice;
+            uses fpc:policy-configuration-choice;
             description "Policy Configuration";
         }
         description "Policy Configuration Value";
+    }
+    grouping ref-configuration {
+        uses fpc:policy-template-key;
+        uses fpc:policy-configuration;
+        uses fpc:templatedef;
+        description "Policy-Configuration Entry";
     }
 
     // FPC Policy
@@ -3872,7 +3879,7 @@ module ietf-dmm-fpc {
         list rule-configuration {
             key index;
             uses fpc:index;
-           uses fpc:policy-configuration-choice;
+            uses fpc:policy-configuration-choice;
             description "Rule Configuration";
         }
         description "Rule Template";
@@ -3964,9 +3971,8 @@ module ietf-dmm-fpc {
         }
         list mn-policy-configuration {
             key policy-template-key;
-            uses fpc:policy-template-key;
-            uses fpc:policy-configuration;
-            description "MN Policy Cofiguration";
+            uses fpc:ref-configuration;
+            description "MN Policy Configuration";
         }
         description "Mobile Node";
     }
@@ -3977,9 +3983,8 @@ module ietf-dmm-fpc {
         }
         list domain-policy-settings {
             key policy-template-key;
-            uses fpc:policy-template-key;
-            uses fpc:policy-configuration;
-            description "MN Policy Cofiguration";
+            uses fpc:ref-configuration;
+            description "MN Policy Configuration";
         }
         description "Domain";
     }
@@ -3988,9 +3993,8 @@ module ietf-dmm-fpc {
         uses fpc:dpn-key;
         list dpn-policy-configuration {
             key policy-template-key;
-            uses fpc:policy-template-key;
-            uses fpc:policy-configuration;
-            description "DPN Policy Cofiguration";
+            uses fpc:ref-configuration;
+            description "DPN Policy Configuration";
         }
         leaf role {
             type identityref {
@@ -4015,9 +4019,8 @@ module ietf-dmm-fpc {
             }
             list service-data-flow-policy-configuration {
                 key policy-template-key;
-                uses fpc:policy-template-key;
-                uses fpc:policy-configuration;
-                description "Flow Policy Cofiguration";
+                uses fpc:ref-configuration;
+                description "Flow Policy Configuration";
             }
             description "Service Dataflow";
         }
@@ -4131,7 +4134,7 @@ module ietf-dmm-fpc {
         list service-group-configuration {
             key index;
             uses fpc:index;
-          uses fpc:policy-configuration-choice;
+            uses fpc:policy-configuration-choice;
             description "Settings";
         }
         list dpn {
@@ -4199,8 +4202,7 @@ module ietf-dmm-fpc {
       }
       list dpn-policy-configuration {
         key policy-template-key;
-        uses fpc:policy-template-key;
-        uses fpc:policy-configuration;
+        uses fpc:ref-configuration;
         description "DPN Policy Configuration";
       }
       description "Set of DPNs";
@@ -4218,9 +4220,8 @@ module ietf-dmm-fpc {
       }
       list domain-policy-configuration {
         key policy-template-key;
-        uses fpc:policy-template-key;
-        uses fpc:policy-configuration;
-        description "Domain Cofiguration";
+        uses fpc:ref-configuration;
+        description "Domain Configuration";
       }
       description "List of Domains";
     }
@@ -6824,6 +6825,11 @@ policy-configuration-value:
 policy-configuration:
 |  |  |  +--rw policy-configuration* [index]
 |  |  |     +--rw index                           uint16
+|  |  |     +--rw extensible?             boolean
+|  |  |     +--rw static-attributes*      string
+|  |  |     +--rw mandatory-attributes*   string
+|  |  |     +--rw entity-state?           enumeration
+|  |  |     +--rw version?                uint32
 |  |  |     +--rw (policy-configuration-value)?
 |  |  |        ...
 

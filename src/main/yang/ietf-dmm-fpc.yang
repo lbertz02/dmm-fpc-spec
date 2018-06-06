@@ -172,10 +172,16 @@ module ietf-dmm-fpc {
         list policy-configuration {
             key index;
             uses fpc:index;
-           uses fpc:policy-configuration-choice;
+            uses fpc:policy-configuration-choice;
             description "Policy Configuration";
         }
         description "Policy Configuration Value";
+    }
+    grouping ref-configuration {
+        uses fpc:policy-template-key;
+        uses fpc:policy-configuration;
+        uses fpc:templatedef;
+        description "Policy-Configuration Entry";
     }
 
     // FPC Policy
@@ -249,7 +255,7 @@ module ietf-dmm-fpc {
         list rule-configuration {
             key index;
             uses fpc:index;
-           uses fpc:policy-configuration-choice;
+            uses fpc:policy-configuration-choice;
             description "Rule Configuration";
         }
         description "Rule Template";
@@ -341,9 +347,8 @@ module ietf-dmm-fpc {
         }
         list mn-policy-configuration {
             key policy-template-key;
-            uses fpc:policy-template-key;
-            uses fpc:policy-configuration;
-            description "MN Policy Cofiguration";
+            uses fpc:ref-configuration;
+            description "MN Policy Configuration";
         }
         description "Mobile Node";
     }
@@ -354,9 +359,8 @@ module ietf-dmm-fpc {
         }
         list domain-policy-settings {
             key policy-template-key;
-            uses fpc:policy-template-key;
-            uses fpc:policy-configuration;
-            description "MN Policy Cofiguration";
+            uses fpc:ref-configuration;
+            description "MN Policy Configuration";
         }
         description "Domain";
     }
@@ -365,9 +369,8 @@ module ietf-dmm-fpc {
         uses fpc:dpn-key;
         list dpn-policy-configuration {
             key policy-template-key;
-            uses fpc:policy-template-key;
-            uses fpc:policy-configuration;
-            description "DPN Policy Cofiguration";
+            uses fpc:ref-configuration;
+            description "DPN Policy Configuration";
         }
         leaf role {
             type identityref {
@@ -392,9 +395,8 @@ module ietf-dmm-fpc {
             }
             list service-data-flow-policy-configuration {
                 key policy-template-key;
-                uses fpc:policy-template-key;
-                uses fpc:policy-configuration;
-                description "Flow Policy Cofiguration";
+                uses fpc:ref-configuration;
+                description "Flow Policy Configuration";
             }
             description "Service Dataflow";
         }
@@ -508,7 +510,7 @@ module ietf-dmm-fpc {
         list service-group-configuration {
             key index;
             uses fpc:index;
-          uses fpc:policy-configuration-choice;
+            uses fpc:policy-configuration-choice;
             description "Settings";
         }
         list dpn {
@@ -576,8 +578,7 @@ module ietf-dmm-fpc {
       }
       list dpn-policy-configuration {
         key policy-template-key;
-        uses fpc:policy-template-key;
-        uses fpc:policy-configuration;
+        uses fpc:ref-configuration;
         description "DPN Policy Configuration";
       }
       description "Set of DPNs";
@@ -595,9 +596,8 @@ module ietf-dmm-fpc {
       }
       list domain-policy-configuration {
         key policy-template-key;
-        uses fpc:policy-template-key;
-        uses fpc:policy-configuration;
-        description "Domain Cofiguration";
+        uses fpc:ref-configuration;
+        description "Domain Configuration";
       }
       description "List of Domains";
     }
