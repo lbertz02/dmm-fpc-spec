@@ -552,7 +552,7 @@ revision 2018-05-17 {
 
   // Instructions
   grouping instructions {
-    container instructions {
+    container command-set {
       choice instr-type {
         leaf instr-3gpp-mob {
             type fpcbase:threegpp-instr;

@@ -706,7 +706,7 @@ module ietf-dmm-fpc {
         }
     }
     augment "/configure/input/yang-patch/edit" {
-        leaf op-ref-scope {
+        leaf reference-scope {
             type fpc:ref-scope;
             description "Reference Scope";
         }

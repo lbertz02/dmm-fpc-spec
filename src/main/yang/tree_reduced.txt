@@ -647,8 +647,8 @@ module: ietf-dmm-fpc
     |  |        +---w point?          target-resource-offset
     |  |        +---w where?          enumeration
     |  |        +---w value?          <anydata>
-    |  |        +---w op-ref-scope?   fpc:ref-scope
-    |  |        +---w instructions
+    |  |        +---w reference-scope?   fpc:ref-scope
+    |  |        +---w command-set
     |  |           +---w (instr-type)?
     |  |              +--:(instr-3gpp-mob)
     |  |              |  +---w instr-3gpp-mob? fpcbase:threegpp-instr

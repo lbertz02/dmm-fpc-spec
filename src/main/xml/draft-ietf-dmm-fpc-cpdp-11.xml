@@ -552,8 +552,6 @@ DPN         |                 DPN        |
      |
      +-[FPC Mobility Information Model]
      |          |
-     |          +-[DPN Information Model]
-     |          |
      |          +-[Topology Information Model]
      |          |
      |          +-[Policy Information Model]
@@ -3513,6 +3511,8 @@ activation system:
             <t>Generic attributes are distinguished by the "Settings" type (container) and holds ANY value.  It is an any data node under configurations.</t>
         </list>
     </t>
+    
+    <t>The CONFIGURE and CONFIGURE-RESULT-NOTIFICATION use the yang-patch-status which is a container for edits.  This was done to maximize YANG reuse and not a part of the FPC specification.</t>
 
     <t>Five modules are defined:
 
@@ -4282,7 +4282,7 @@ module ietf-dmm-fpc {
         }
     }
     augment "/configure/input/yang-patch/edit" {
-        leaf op-ref-scope {
+        leaf reference-scope {
             type fpc:ref-scope;
             description "Reference Scope";
         }
@@ -5170,7 +5170,7 @@ revision 2018-05-17 {
 
   // Instructions
   grouping instructions {
-    container instructions {
+    container command-set {
       choice instr-type {
         leaf instr-3gpp-mob {
             type fpcbase:threegpp-instr;
@@ -6968,8 +6968,8 @@ module: ietf-dmm-fpc
     |  |        +---w point?          target-resource-offset
     |  |        +---w where?          enumeration
     |  |        +---w value?          <anydata>
-    |  |        +---w op-ref-scope?   fpc:ref-scope
-    |  |        +---w instructions
+    |  |        +---w reference-scope?   fpc:ref-scope
+    |  |        +---w command-set
     |  |           +---w (instr-type)?
     |  |              +--:(instr-3gpp-mob)
     |  |              |  +---w instr-3gpp-mob? fpcbase:threegpp-instr
