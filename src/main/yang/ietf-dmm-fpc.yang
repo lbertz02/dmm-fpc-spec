@@ -834,7 +834,7 @@ module ietf-dmm-fpc {
     grouping op-header {
         uses client-id;
         uses execution-delay;
-        leaf op-id {
+        leaf operation-id {
             type uint64;
             mandatory true;
             description "Operation Identifier";
@@ -842,7 +842,7 @@ module ietf-dmm-fpc {
         description "Common Operation header";
     }
     grouping monitor-response {
-        leaf op-id {
+        leaf operation-id {
             type uint64;
             mandatory true;
             description "Operation Identifier";
@@ -869,11 +869,11 @@ module ietf-dmm-fpc {
     }
 
   // Common RPCs
-  rpc reg_monitor {
+  rpc register_monitor {
     description "Used to register monitoring of parameters/events";
     input {
       uses fpc:op-header;
-      list monitors {
+      list monitor {
         key monitor-key;
         uses fpc:monitor-config;
         description "Monitor Configuration";
@@ -883,7 +883,7 @@ module ietf-dmm-fpc {
         uses fpc:monitor-response;
     }
   }
-  rpc dereg_monitor {
+  rpc deregister_monitor {
     description "Used to de-register monitoring of
       parameters/events";
     input {

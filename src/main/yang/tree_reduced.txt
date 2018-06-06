@@ -696,12 +696,12 @@ module: ietf-dmm-fpc
                                         instance-identifier
     |                          +--ro error-message?   string
     |                          +--ro error-info?      <anydata>
-    +---x reg_monitor
+    +---x register_monitor
     |  +---w input
     |  |  +---w client-id          fpc:client-identifier
     |  |  +---w execution-delay?   uint32
-    |  |  +---w op-id              uint64
-    |  |  +---w monitors* [monitor-key]
+    |  |  +---w operation-id              uint64
+    |  |  +---w monitor* [monitor-key]
     |  |     +---w extensible?             boolean
     |  |     +---w static-attributes*      string
     |  |     +---w mandatory-attributes*   string
@@ -723,7 +723,7 @@ module: ietf-dmm-fpc
     |  |        +--:(event-ids)
     |  |           +---w event-ids*              uint32
     |  +--ro output
-    |     +--ro op-id     uint64
+    |     +--ro operation-id     uint64
     |     +--ro (edit-status-choice)?
     |        +--:(ok)
     |        |  +--ro ok?       empty
@@ -736,16 +736,16 @@ module: ietf-dmm-fpc
     |                 +--ro error-path?      instance-identifier
     |                 +--ro error-message?   string
     |                 +--ro error-info?      <anydata>
-    +---x dereg_monitor
+    +---x deregister_monitor
     |  +---w input
     |  |  +---w client-id          fpc:client-identifier
     |  |  +---w execution-delay?   uint32
-    |  |  +---w op-id              uint64
+    |  |  +---w operation-id              uint64
     |  |  +---w monitor* [monitor-key]
     |  |     +---w monitor-key    fpc:fpc-identity
     |  |     +---w send_data?     boolean
     |  +--ro output
-    |     +--ro op-id     uint64
+    |     +--ro operation-id     uint64
     |     +--ro (edit-status-choice)?
     |        +--:(ok)
     |        |  +--ro ok?       empty
@@ -762,11 +762,11 @@ module: ietf-dmm-fpc
        +---w input
        |  +---w client-id          fpc:client-identifier
        |  +---w execution-delay?   uint32
-       |  +---w op-id              uint64
+       |  +---w operation-id              uint64
        |  +---w monitor* [monitor-key]
        |     +---w monitor-key    fpc:fpc-identity
        +--ro output
-          +--ro op-id     uint64
+          +--ro operation-id     uint64
           +--ro (edit-status-choice)?
              +--:(ok)
              |  +--ro ok?       empty

@@ -1915,11 +1915,11 @@ DPN         |                 DPN        |
     title="Monitor Messages">
     <artwork align="center"><![CDATA[
    |
-   +-[Register-Monitors]
+   +-[Register-Monitor]
    |         +-[Client-Id:]
    |         +-[(Unsigned 32) Execution-Delay]
    |         +-[Operation-Id:]
-   |         +-[Monitors] <List>
+   |         +-[Monitor:] <List>
    |         |         +-[Extensible:]
    |         |         +-[Monitor-Key:] <U-Key>
    |         |         +-[Target:]
@@ -1927,11 +1927,11 @@ DPN         |                 DPN        |
    |         |         +-[Configuration:]
    
    |
-   +-[Deregister-Monitors]
+   +-[Deregister-Monitor]
    |         +-[Client-Id:]
    |         +-[(Unsigned 32) Execution-Delay]
    |         +-[Operation-Id:]
-   |         +-[Monitors:] <List>
+   |         +-[Monitor:] <List>
    |         |         +-[Monitor-Key:] <U-Key>
    |         |         +-[(Boolean) Send-Data ~ False]
    
@@ -2452,8 +2452,8 @@ DPN         |                 DPN        |
    |         |            "edit-type" : "merge",     |           |
    |         |            "target" : "/mobility-context/ctxt1    |
    |         |                /dpn/DPN1/service-data-flow/0      |
-   |         |                /flow-settings/dl-tunnel-with-qos  |
-   |         |                /0"                                |
+   |         |                /service-data-flow-policy-
+                               configuration/dl-tunnel-with-qos/1"
    |         |            "value" : {                |           |
    |         |                  "tunnel" : null      |           |
    |         |             } ] }                     |           |
@@ -2465,10 +2465,7 @@ DPN         |                 DPN        |
    |         |            |  "agent-id" : "agent1"," |           |
    |         |            |  "operation-id" : 5,     |           |
    |         |            |  "result-status" : "ok", |           |
-   |         |            |  "edit-status" : [       |           |
-   |         |            |    "edit-id" : 0,        |           |
-   |         |            |    "edit-status" : "ok"  |           |
-   |         |            | ] }                      |           |
+   |         |            | }                        |           |
    |         |            |                          |           |
    |         |  [ MinDelayBeforeBCEDelete expires ]  |           |
    |         |            |                          |           |
@@ -2487,10 +2484,7 @@ DPN         |                 DPN        |
    |         |            |  "agent-id" : "agent1"," |           |
    |         |            |  "operation-id" : 6,     |           |
    |         |            |  "result-status" : "ok", |           |
-   |         |            |  "edit-status" : [       |           |
-   |         |            |    "edit-id" : 0,        |           |
-   |         |            |    "edit-status" : "ok"  |           |
-   |         |            | ] }                      |           |
+   |         |            | }                        |           |
    |         |            |                          |-- route ->|
    |         |            |                          |   remove  |
    |         |            |                          |           |
@@ -2526,53 +2520,64 @@ DPN         |                 DPN        |
 [MN attach]  |            |                          |           |
    |-------------PBU----->|                          |           |
    |         |            |---(1)--Configure-------->|           |
-   |         |          "configure" : {              |--tun1 up->|
-   |         |           "client-identifier" : 0,    |           |
-   |         |           "operation-id" : 0,         |           |
-   |         |           "edit" : [                  |--tc qos-->|
-   |         |            "edit-id" : 0,             |           |
-   |         |            "edit-type" : "create",    |           |
-   |         |            "target" : "mobility-context",         |
-   |         |            "value" : {                            |
-   |         |              "mobility-context-key" : "ctxt1",    |
-   |         |              "delegating-ip-prefix" : [ <HNP> ],  |
-   |         |              "dpn" : "[ {                         |
-   |         |               "dpn-key" : "DPN1",                 |
-   |         |               "service-data-flow" : [
-   |         |                 "identifier" : 0,
-   |         |                 "flow-settings" : [
-   |         |                   ...
-   |         |                  {"policy-key" : "dl-tunnel-with-qos",
-   |         |                   "qos-template" : <QOS Settings...>,
-   |         |                   ...
-   |         |                   "tunnel" : <DL tunnel info...> },
-   |         |                  {"policy-key" : "ul-tunnel",
-   |         |                   ...
-   |         |                   "tunnel" : <UL tunnel info...> } ]
-   |         |               "dpn-key" : "DPN2",                 |
-   |         |               "service-data-flow" : [
-   |         |                 "identifier" : 0,
-   |         |                 "flow-settings" : [
-   |         |                   ...
-   |         |                  {"policy-key" : "dl-tunnel-with-qos",
-   |         |                   "qos-template" : <QOS Settings...>,
-   |         |                   ...
-   |         |                   "tunnel" : <DL tunnel info...> },
-   |         |                  {"policy-key" : "ul-tunnel",
-   |         |                   ...
-   |         |                   "tunnel" : <UL tunnel info...> } ]
-   |         |                } ] } ] }              |           |
+   |         |  "configure" : {                      |--tun1 up->|
+   |         |    "client-id" : 0,                   |           |
+   |         |    "operation-id" : 0,                |           |
+   |         |    "edit" : [                         |--tc qos-->|
+   |         |      "edit-id" : 0,                   |           |
+   |         |      "edit-type" : "create",          |           |
+   |         |      "target" : "/mobility-context",              |
+   |         |      "value" : {                                  |
+   |         |        "mobility-context-key" : "ctxt1",          |
+   |         |        "delegating-ip-prefix" : [ <HNP> ],        |
+   |         |        "dpn" : [ {                                |
+   |         |          "dpn-key" : "DPN1",                      |
+   |         |          "service-data-flow" : [ {
+   |         |            "identifier" : 0,
+   |         |            "interface" : [ "interface-key" : "ifc1" ],
+   |         |            "service-data-flow-policy-configuration" :[
+   |         |              {"policy-template-key" :
+                                     "dl-tunnel-with-qos",
+   |         |                "policy-status" : "active",
+   |         |                "policy-configuration" : [
+   |         |                  {"index" : 0,
+   |         |                   "qos-template" : <QOS Settings...>},
+   |         |                  {"index" : 1,
+   |         |                   "tunnel" : <DL tunnel info...>},
+   |         |               {"policy-template-key" : "ul-tunnel",
+   |         |                   "policy-status" : "active",
+   |         |                "policy-configuration" : [
+   |         |                  {"index" : 1,
+   |         |                   "tunnel" : <UL tunnel info...>}] }]
+   |         |              } ] } ] }, {
+   |         |          "dpn-key" : "DPN2",                         |
+   |         |          "service-data-flow" : [ {
+   |         |            "identifier" : 0,
+   |         |            "interface" : [ "interface-key" : "ifc2" ],
+   |         |            "service-data-flow-policy-configuration" :[
+   |         |              {"policy-template-key" :
+   "dl-tunnel-with-qos",
+   |         |                "policy-status" : "active",
+   |         |                "policy-configuration" : [
+   |         |                  {"index" : 0,
+   |         |                   "qos-template" : <QOS Settings...>},
+   |         |                  {"index" : 1,
+   |         |                   "tunnel" : <DL tunnel info...>},
+   |         |               {"policy-template-key" : "ul-tunnel",
+   |         |                   "policy-status" : "active",
+   |         |                "policy-configuration" : [
+   |         |                  {"index" : 1,
+   |         |                   "tunnel" : <UL tunnel info...>}] }]
+   |         |              } ] } ] }                |           |
+   |         |              ] } ] }                  |           |
    |         |            |                          |           |
    |         |            |<---(2)- Response --------|           |
    |         |            | {                        |-route add>|
    |         |            |  "agent-id" : "agent1"," |           |
-   |         |            |  "operation-id" : 3,     |           |
+   |         |            |  "operation-id" : 0,     |           |
    |         |            |  "result-status" : "ok", |           |
    |         |            |  "notify-follows" : "true",          |
-   |         |            |  "edit-status" : [       |           |
-   |         |            |    "edit-id" : 0,        |           |
-   |         |            |    "edit-status" : "ok"  |           |
-   |         |            | ] }                      |           |
+   |         |            | }                        |           |
    |         |            |                          |           |
    |<------------PBA------|                          |           |
    |         |            |                          |           |
@@ -2750,23 +2755,26 @@ DPN         |                 DPN        |
  |MAG-C1| |MAG-C2|     |LMA-C| Client|         | Agent | |   DPN   |
  +------+ +------+     +-----+-------+         +-------+ +---------+
  |         |            |---(1)--Configure-------->|           |
- |         |          "register-monitors" : {      |           |
+ |         |          "register-monitor" : {       |           |
  |         |           "client-id" : 0,            |           |
  |         |           "operation-id" : 0,         |           |
- |         |           "monitors" : [ {            |           |
+ |         |           "monitor" : [ {             |           |
  |         |            "monitor-key" : "ifc1-status",         |
  |         |            "target" : "/dpn/dpn1/interface/ifc1/status"
- |         |            "deferrable" : false,                  |
- |         |            "configuration" : {  }                 |
+ |         |            "deferrable" : false                   |
  |         |            }, {                                   |
  |         |            "monitor-key" : "ifc1-events",         |
  |         |            "target" : "/dpn/dpn1/interface/ifc1"  |
  |         |            "deferrable" : false,                  |
  |         |            "configuration" : {                    |
- |         |              "configuration" : {                  |
  |         |                "target-event-configuration" : [ 0,
- |         |                  1, 3, .. ] } } } ] }             |
+ |         |                  1, 3, .. ] } } ] }               |
  |         |            |<---(2)- Response --------|           |
+ |         |            | {                        |           |
+ |         |            |  "agent-id" : "agent1"," |           |
+ |         |            |  "operation-id" : 0,     |           |
+ |         |            |  "result-status" : "ok", |           |
+ |         |            | }                        |           |
  |         |            |                          |           |
           [ ifc1 goes down which is reported as event type 3 ]
  |         |            |<---(3)-- NOTIFY ---------|           |
@@ -2776,15 +2784,20 @@ DPN         |                 DPN        |
  |         |           "report" : [ {              |           |
  |         |            "monitor-key" : "ifc1-events",         |
  |         |            "trigger" : "subscribed-event-occurred",
- |         |            "value" : { 3 } } ] }      |           |
+ |         |            "report-value" : { 3 } } ] }           |
  |         |            |                          |           |
  |         |            |---(4)--  Probe  -------->|           |
  |         |          "probe" : {      |           |
  |         |           "client-id" : 0,            |           |
  |         |           "operation-id" : 1,         |           |
- |         |           "monitors" : [              |           |
+ |         |           "monitor" : [               |           |
  |         |            "monitor-key" : "ifc1-status" ] }      |
  |         |            |<---(5)- Response --------|           |
+ |         |            | {                        |           |
+ |         |            |  "agent-id" : "agent1"," |           |
+ |         |            |  "operation-id" : 1,     |           |
+ |         |            |  "result-status" : "ok", |           |
+ |         |            | }                        |           |
  |         |            |                          |           |
  |         |            |<---(6)-- NOTIFY ---------|           |
  |         |          "notify" : {                 |           |
@@ -2793,17 +2806,22 @@ DPN         |                 DPN        |
  |         |           "report" : [ {              |           |
  |         |            "monitor-key" : "ifc1-status",         |
  |         |            "trigger" : "probe",
- |         |            "value" : { "up" } } ] }   |           |
+ |         |            "repor-value" : { "up" } } ] }         |
  |         |            |                          |           |
  |         |            |---(7)- Deregister ------>|           |
- |         |          "deregister-monitors" : {    |           |
+ |         |          "deregister-monitor" : {     |           |
  |         |           "client-id" : 0,            |           |
- |         |           "operation-id" : 3,         |           |
- |         |           "monitors" : [              |           |
+ |         |           "operation-id" : 2,         |           |
+ |         |           "monitor" : [               |           |
  |         |            { "monitor-key" : "ifc1-events" },     |
  |         |            { "monitor-key" : "ifc1-status",       |
  |         |              "send-data" : true } ] }             |
  |         |            |<---(8)- Response --------|           |
+ |         |            | {                        |           |
+ |         |            |  "agent-id" : "agent1"," |           |
+ |         |            |  "operation-id" : 2,     |           |
+ |         |            |  "result-status" : "ok", |           |
+ |         |            | }                        |           |
  |         |            |                          |           |
  |         |            |<---(9)-- NOTIFY ---------|           |
  |         |          "notify" : {                 |           |
@@ -2812,7 +2830,7 @@ DPN         |                 DPN        |
  |         |           "report" : [ {              |           |
  |         |            "monitor-key" : "ifc1-status",         |
  |         |            "trigger" : "deregistration-final-value",
- |         |            "value" : { "up" } } ] }   |           |
+ |         |            "report-value" : { "up" } } ] }        |
             ]]></artwork>
         </figure>
         </section>
@@ -4439,7 +4457,7 @@ module ietf-dmm-fpc {
     grouping op-header {
         uses client-id;
         uses execution-delay;
-        leaf op-id {
+        leaf operation-id {
             type uint64;
             mandatory true;
             description "Operation Identifier";
@@ -4447,7 +4465,7 @@ module ietf-dmm-fpc {
         description "Common Operation header";
     }
     grouping monitor-response {
-        leaf op-id {
+        leaf operation-id {
             type uint64;
             mandatory true;
             description "Operation Identifier";
@@ -4474,11 +4492,11 @@ module ietf-dmm-fpc {
     }
 
   // Common RPCs
-  rpc reg_monitor {
+  rpc register_monitor {
     description "Used to register monitoring of parameters/events";
     input {
       uses fpc:op-header;
-      list monitors {
+      list monitor {
         key monitor-key;
         uses fpc:monitor-config;
         description "Monitor Configuration";
@@ -4488,7 +4506,7 @@ module ietf-dmm-fpc {
         uses fpc:monitor-response;
     }
   }
-  rpc dereg_monitor {
+  rpc deregister_monitor {
     description "Used to de-register monitoring of
       parameters/events";
     input {
@@ -7046,12 +7064,12 @@ module: ietf-dmm-fpc
                                         instance-identifier
     |                          +--ro error-message?   string
     |                          +--ro error-info?      <anydata>
-    +---x reg_monitor
+    +---x register_monitor
     |  +---w input
     |  |  +---w client-id          fpc:client-identifier
     |  |  +---w execution-delay?   uint32
-    |  |  +---w op-id              uint64
-    |  |  +---w monitors* [monitor-key]
+    |  |  +---w operation-id              uint64
+    |  |  +---w monitor* [monitor-key]
     |  |     +---w extensible?             boolean
     |  |     +---w static-attributes*      string
     |  |     +---w mandatory-attributes*   string
@@ -7073,7 +7091,7 @@ module: ietf-dmm-fpc
     |  |        +--:(event-ids)
     |  |           +---w event-ids*              uint32
     |  +--ro output
-    |     +--ro op-id     uint64
+    |     +--ro operation-id     uint64
     |     +--ro (edit-status-choice)?
     |        +--:(ok)
     |        |  +--ro ok?       empty
@@ -7086,16 +7104,16 @@ module: ietf-dmm-fpc
     |                 +--ro error-path?      instance-identifier
     |                 +--ro error-message?   string
     |                 +--ro error-info?      <anydata>
-    +---x dereg_monitor
+    +---x deregister_monitor
     |  +---w input
     |  |  +---w client-id          fpc:client-identifier
     |  |  +---w execution-delay?   uint32
-    |  |  +---w op-id              uint64
+    |  |  +---w operation-id              uint64
     |  |  +---w monitor* [monitor-key]
     |  |     +---w monitor-key    fpc:fpc-identity
     |  |     +---w send_data?     boolean
     |  +--ro output
-    |     +--ro op-id     uint64
+    |     +--ro operation-id     uint64
     |     +--ro (edit-status-choice)?
     |        +--:(ok)
     |        |  +--ro ok?       empty
@@ -7112,11 +7130,11 @@ module: ietf-dmm-fpc
        +---w input
        |  +---w client-id          fpc:client-identifier
        |  +---w execution-delay?   uint32
-       |  +---w op-id              uint64
+       |  +---w operation-id              uint64
        |  +---w monitor* [monitor-key]
        |     +---w monitor-key    fpc:fpc-identity
        +--ro output
-          +--ro op-id     uint64
+          +--ro operation-id     uint64
           +--ro (edit-status-choice)?
              +--:(ok)
              |  +--ro ok?       empty
