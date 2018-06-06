@@ -308,11 +308,9 @@
 	<xref target="RFC2119"></xref>.</t>
 
     <t> <list hangIndent="24" style="hanging">
-        <t hangText="Attribute Expression: "> </t>
-        
-        <t hangText="Template Configuration "> </t>
-        
-        <t hangText="Setting: "> </t>
+        <t hangText="Attribute Expression: ">The definition of a template
+        attribute.  This includes setting the type, current value,
+        default value and if the attribute is not mutable (static).</t>
 
         <t hangText="Domain: "> One or more DPNs that form a logical partition
 	    of network resources (e.g., a data-plane network under common
@@ -355,7 +353,7 @@
 	    Traffic to/from a mobile node that is expected to survive
 	    reconnection events. </t>
 
-	<t hangText="Monitor: ">
+	    <t hangText="Monitor: ">
 	    A reporting mechanism for a list of events that trigger
 	    notification messages from an FPC Agent to an FPC Client. </t>
 
@@ -378,6 +376,12 @@
 	    indexed set.  A template is used to create specific instances
 	    (e.g., specific policies) by assigning appropriate values into
 	    the template definition.  </t>
+
+        <t hangText="Template Configuration">The process by which a
+        Template is referenced (by name or by key) and Attribute
+        Expressions are created that change the value, default
+        value or static nature of the Attribute, if permitted.  If
+        the Template is Extensible, new attributes MAY be added.</t>
 
         <t hangText="Tenant:"> An operational entity that manages
             mobility management systems or applications which require
