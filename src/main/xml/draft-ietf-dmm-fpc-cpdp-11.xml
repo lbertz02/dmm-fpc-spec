@@ -1665,7 +1665,7 @@ DPN         |                 DPN        |
 |         +-[Client-Id:]
 |         +-[(Unsigned 32) Execution-Delay]
 |         +-[Operation-Id:]
-|         +-[Edits:] <List>
+|         +-[Edit:] <List>
 |         |    +-[Edit-Id:] <L-Key>
 |         |    +-[(Enumeration) Edit-Type:]
 |         |    +-[(BitSet) Command-Set]
@@ -2012,65 +2012,78 @@ DPN         |                 DPN        |
                 <artwork align="center"><![CDATA[
 "topology-nformation-model" : {
  "dpn" : [ {
-  "key" : "dpn1",
+  "dpn-key" : "dpn1",
   "interface" : [ {
-    "key" : "ifc1",
+    "interface-key" : "ifc1",
     "role" : "lma",
-    "protocol" : "pmip",
-    "settings" : [ "optionA" : "OFF" ]
+    "protocol" : [ "pmip" ],
+    "interface-configuration" : [ {
+        "index" : 0,
+        "setting" : [ "optionA" : "OFF" ]
+    } ]
   },{
-    "key" : "ifc2",
+    "interface-key" : "ifc2",
     "role" : "lma",
-    "protocol" : "pmip",
-    "settings" : [ "optionC" : "OFF" ]
+    "protocol" : [ "pmip" ],
+    "interface-configuration" : [ {
+        "index" : 0,
+        "setting" : [ "optionC" : "OFF"  ]
+     } ]
    },{
-    "key" : "ifc2-b",
+    "interface-key" : "ifc2-b",
     "role" : "mag",
-    "protocol" : "pmip"
+    "protocol" : [ "pmip" ]
     } ] },
   {
-  "key" : "dpn2",
+  "dpn-key" : "dpn2",
   "interface" : [ {
-    "key" : "ifc1",
+    "interface-key" : "ifc1",
     "role" : "mag",
-    "protocol" : "pmip",
-    "settings" : [ "optionA" : "OFF", "optionB" : "ON"]
+    "protocol" : [ "pmip" ],
+    "interface-configuration" : [ {
+      "index" : 0,
+      "settings" : [ "optionA" : "OFF", "optionB" : "ON" ]
+    } ]
   } ] }
  ],
  ...
  },
- "servicegroup" : [
- { "key" : "group1",
-   "name" : "Anchors-OptionA-OFF",
-   "role" : "lma",
-   "protocol" : "pmip",
-   "settings" : [ "optionA" : "OFF" ],
+ "service-group" : [
+ { "service-group-key" : "group1",
+   "service-group-name" : "Anchors-OptionA-OFF",
+   "role-key" : "lma",
+   "protocol" : [ "pmip" ],
+   "service-group-configuration" : [ {
+        "index" : 0,
+        "setting" : [ "optionA" : "OFF" ]
+   } ],
    "dpn" : [
-   { "key" : "dpn1",
-   "referenced-interfaces" : [ { "key" : "ifc1" } ] }
+   { "dpn-key" : "dpn1",
+     "referenced-interface" : [ { "interface-key" : "ifc1" } ] }
    ]
- },{ "key" : "group2",
-   "name" : "Anchors",
-   "role" : "lma",
-   "protocol" : "pmip",
+ },{ "service-group-key" : "group2",
+   "service-group-name" : "Anchors",
+   "role-role" : "lma",
+   "protocol" : [ "pmip" ],
    "dpn" : [
-   { "key" : "dpn1",
-     "referenced-interfaces" : [ { "key" : "ifc2" } ] }
+   { "dpn-key" : "dpn1",
+     "referenced-interface" : [ { "interface-key" : "ifc2" } ] }
    ]
-  },{ "key" : "group2",
-   "name" : "MAGs",
-   "role" : "mag",
-   "protocol" : "pmip",
+  },{ "service-group-key" : "group3",
+   "service-group-name" : "MAGs",
+   "role-role" : "mag",
+   "protocol" : [ "pmip" ],
    "dpn" : [
-   { "key" : "dpn2",
-   "referenced-interfaces" : [ { "key" : "ifc1" } ] },
-   { "key" : "dpn1",
-   "referenced-interfaces" : [ { "key" : "ifc2-b" } ] }
+   { "dpn-key" : "dpn2",
+     "referenced-interface" : [ { "interface-key" : "ifc1" } ] },
+   { "dpn-key" : "dpn1",
+     "referenced-interface" : [ { "interface-key" : "ifc2-b" } ] }
    ]
   }
 ]
                 ]]></artwork>
-                <postamble></postamble>
+                <postamble>NOTE - A Setting is, in this example, a list of
+                string attibutes.</postamble>
             </figure>
         <t>Two DPNs are present.  The first, dpn1, has 3 interfaces.  Two support
             the LMA role and both have settings.  The thrid support the MAG function.
@@ -2131,7 +2144,7 @@ DPN         |                 DPN        |
                            /action-template",                  |
  |         |            "value" : {                            |
  |         |              "action-template-key" : "action1",   |
- |         |              "action-type" : "deny" }             |
+ |         |              "action-type" : "drop" }             |
  |         |             }, {                                  |
  |         |            "edit-id" : 2,             |           |
  |         |            "edit-type" : "create",    |           |
@@ -2143,7 +2156,8 @@ DPN         |                 DPN        |
  |         |              "descriptor-configuration" : [{      |
  |         |              "descriptor-template-key" : "all" }],|
  |         |              "action-configuration" : [{          |
- |         |              "action-template-key" : "deny" }] }  |
+ |         |                "action-template-key" : "deny",    |
+ |         |                "action-order" : 0 }]              |
  |         |             }, {                                  |
  |         |            "edit-id" : 3,             |           |
  |         |            "edit-type" : "create",    |           |
@@ -2151,12 +2165,17 @@ DPN         |                 DPN        |
                            /policy-template",                  |
  |         |            "value" : {                            |
  |         |              "policy-template-key" : "policy1",   |
- |         |              "policy-status" : "configured",      |
+ |         |              "entity-state" : "configured",       |
  |         |              "rule-template" : [ {                |
  |         |              "rule-template-key" : "deny-all",    |
  |         |              "precedence" : 0 } ]                 |
  |         |             } } ] }                               |
  |         |            |<---(2)- Response --------|           |
+ |         |            | {                        |           |
+ |         |            |  "agent-id" : "agent1"," |           |
+ |         |            |  "operation-id" : 0,     |           |
+ |         |            |  "result-status" : "ok"  |           |
+ |         |            | }                        |           |
  |         |            |                          |           |
             ]]></artwork>
         </figure>
@@ -2182,16 +2201,21 @@ DPN         |                 DPN        |
  |         |            |---(1)--Configure-------->|           |
  |         |          "configure" : {              |           |
  |         |           "client-id" : 0,            |           |
- |         |           "operation-id" : 0,         |           |
+ |         |           "operation-id" : 1,         |           |
  |         |           "edit" : [ {                |           |
  |         |            "edit-id" : 0,             |           |
  |         |            "edit-type" : "create",    |           |
- |         |            "target" : "/policy-information-model/
+ |         |            "target" : "/topologuy-information-model/
                           /dpn/dpn1/dpn-policy-configuration", |
  |         |            "value" : {                            |
  |         |              "policy-template-key" : "policy1",   |
  |         |              "policy-status" : "active" } } ] }   |
  |         |            |<---(2)- Response --------|           |
+ |         |            | {                        |           |
+ |         |            |  "agent-id" : "agent1"," |           |
+ |         |            |  "operation-id" : 1,     |           |
+ |         |            |  "result-status" : "ok"  |           |
+ |         |            | }                        |           |
  |         |            |                          |           |
             ]]></artwork>
         </figure>
@@ -2277,30 +2301,36 @@ DPN         |                 DPN        |
 [MN attach]  |            |                          |           |
    |-------------PBU----->|                          |           |
    |         |            |---(1)--Configure-------->|           |
-   |         |          "configure" : {              |           |
-   |         |           "client-id" : 0,            |           |
-   |         |           "operation-id" : 0,         |           |
-   |         |           "edit" : [                  |           |
-   |         |            "edit-id" : 0,             |           |
-   |         |            "edit-type" : "create",    |           |
-   |         |            "target" : "/mobility-context",        |
-   |         |            "value" : {                            |
-   |         |              "mobility-context-key" : "ctxt1",    |
-   |         |              "delegating-ip-prefix" : [ <HNP> ],  |
-   |         |              "dpn" : "[ {                         |
-   |         |               "dpn-key" : "DPN1",                 |
-   |         |               "service-data-flow" : [
-   |         |                 "identifier" : 0,
-   |         |                 "flow-settings" : [
-   |         |                   ...
-   |         |                  {"policy-key" : "dl-tunnel-with-qos",
-   |         |                   "qos-template" : <QOS Settings...>,
-   |         |                   ...
-   |         |                   "tunnel" : <DL tunnel info...> },
-   |         |                  {"policy-key" : "ul-tunnel",
-   |         |                   ...
-   |         |                   "tunnel" : <UL tunnel info...> } ]
-   |         |           ] } ] } ] }                 |           |
+   |         |  "configure" : {                      |           |
+   |         |    "client-id" : 0,                   |           |
+   |         |    "operation-id" : 3,                |           |
+   |         |    "edit" : [                         |           |
+   |         |      "edit-id" : 0,                   |           |
+   |         |      "edit-type" : "create",          |           |
+   |         |      "target" : "/mobility-context",              |
+   |         |      "value" : {                                  |
+   |         |        "mobility-context-key" : "ctxt1",          |
+   |         |        "delegating-ip-prefix" : [ <HNP> ],        |
+   |         |        "dpn" : [ {                               |
+   |         |          "dpn-key" : "DPN1",                 |
+   |         |          "service-data-flow" : [ {
+   |         |            "identifier" : 0,
+   |         |            "interface" : [ "interface-key" : "ifc1" ],
+   |         |            "service-data-flow-policy-configuration" :[
+   |         |              {"policy-template-key" :
+                                "dl-tunnel-with-qos",
+   |         |                "policy-status" : "active",
+   |         |                "policy-configuration" : [
+   |         |                  {"index" : 0,
+   |         |                   "qos-template" : <QOS Settings...>},
+   |         |                  {"index" : 1,
+   |         |                   "tunnel" : <DL tunnel info...>},
+   |         |               {"policy-template-key" : "ul-tunnel",
+   |         |                   "policy-status" : "active",
+   |         |                "policy-configuration" : [
+   |         |                  {"index" : 1,
+   |         |                   "tunnel" : <UL tunnel info...>}] }]
+   |         |           } ] } ] } ] } ] }           |           |
    |         |            |                          |--tun1 up->|
    |         |            |                          |           |
    |         |            |                          |--tc qos-->|
@@ -2308,12 +2338,9 @@ DPN         |                 DPN        |
    |         |            |<---(2)- Response --------|-route add>|
    |         |            | {                        |           |
    |         |            |  "agent-id" : "agent1"," |           |
-   |         |            |  "operation-id" : 0,     |           |
+   |         |            |  "operation-id" : 3,     |           |
    |         |            |  "result-status" : "ok", |           |
-   |         |            |  "edit-status" : [       |           |
-   |         |            |    "edit-id" : 0,        |           |
-   |         |            |    "edit-status" : "ok"  |           |
-   |         |            | ] }                      |           |
+   |         |            |  }                       |           |
    |         |            |                          |           |
    |<------------PBA------|                          |           |
    |         |            |                          |           |
@@ -2327,34 +2354,34 @@ DPN         |                 DPN        |
    |   [MN handover]      |                          |           |
    |         |---PBU ---->|                          |           |
    |         |            |--(3)- CONFIG(MODIFY)---->|           |
-   |         |          "configure" : {              |-tun1 mod->|
-   |         |           "client-id" : 0,            |           |
-   |         |           "operation-id" : 1,         |           |
-   |         |           "edit" : [                  |           |
-   |         |            "edit-id" : 0,             |           |
-   |         |            "edit-type" : "merge",     |           |
-   |         |            "target" : "/mobility-context/ctxt1",  |
-   |         |            "value" : {                |           |
-   |         |              "dpn-set" : "[ {                     |
-   |         |               "dpn-key" : "DPN1",                 |
-   |         |               "service-data-flow" : [
-   |         |                 "identifier" : 0,
-   |         |                 "flow-settings" : [
-   |         |                   ...
-   |         |                  {"policy-key" : "dl-tunnel-with-qos",
-   |         |                  "tunnel" : <NEW tunnel info...> } ]
-   |         |           } ] } ] }                   |           |
+   |         |  "configure" : {                      |-tun1 mod->|
+   |         |    "client-id" : 0,                   |           |
+   |         |    "operation-id" : 4,                |           |
+   |         |    "edit" : [                         |           |
+   |         |      "edit-id" : 0,                   |           |
+   |         |      "edit-type" : "merge",           |           |
+   |         |      "target" : "/mobility-context/ctxt1",        |
+   |         |      "value" : {                                  |
+   |         |        "mobility-context-key" : "ctxt1",          |
+   |         |        "dpn" : "[ {                               |
+   |         |          "dpn-key" : "DPN1",                 |
+   |         |          "service-data-flow" : [ {
+   |         |            "identifier" : 0,
+   |         |            "service-data-flow-policy-configuration":[
+   |         |                {"policy-template-key" :
+                                     "dl-tunnel-with-qos",
+   |         |                "policy-configuration" : [
+   |         |                  {"index" : 1,
+   |         |                   "tunnel" : <NEW tunnel info...>}]}]
+   |         |           } ] } ] } ] }               |           |
    |         |<--PBA------|                          |           |
    |         |            |                          |-tun1 mod->|
    |         |            |<---(4)- OK --------------|           |
    |         |            | {                        |           |
    |         |            |  "agent-id" : "agent1"," |           |
-   |         |            |  "operation-id" : 1,     |           |
+   |         |            |  "operation-id" : 4,     |           |
    |         |            |  "result-status" : "ok", |           |
-   |         |            |  "edit-status" : [       |           |
-   |         |            |    "edit-id" : 0,        |           |
-   |         |            |    "edit-status" : "ok"  |           |
-   |         |            | ] }                      |           |
+   |         |            |  }                       |           |
    |         |  +----+    |                          |           |
    |         |  |Edge|    |                          |           |
    |         |  |DPN2|    |                          |           |
@@ -2419,7 +2446,7 @@ DPN         |                 DPN        |
    |         |            |---(1)--Configure-------->|           |
    |         |          "configure" : {              |           |
    |         |           "client-identifier" : 0,    |           |
-   |         |           "operation-id" : 3,         |           |
+   |         |           "operation-id" : 5,         |           |
    |         |           "edits" : [                 |           |
    |         |            "edit-id" : 0,             |           |
    |         |            "edit-type" : "merge",     |           |
@@ -2436,7 +2463,7 @@ DPN         |                 DPN        |
    |         |            |<---(2)- Response --------|           |
    |         |            | {                        |           |
    |         |            |  "agent-id" : "agent1"," |           |
-   |         |            |  "operation-id" : 3,     |           |
+   |         |            |  "operation-id" : 5,     |           |
    |         |            |  "result-status" : "ok", |           |
    |         |            |  "edit-status" : [       |           |
    |         |            |    "edit-id" : 0,        |           |
@@ -2448,7 +2475,7 @@ DPN         |                 DPN        |
    |         |            |---(3)--Configure-------->|-- tun1 -->|
    |         |          "configure" : {              |  delete   |
    |         |           "client-identifier" : 0,    |           |
-   |         |           "operation-id" : 4,         |           |
+   |         |           "operation-id" : 6,         |           |
    |         |           "edits" : [                 |           |
    |         |            "edit-id" : 0,             |           |
    |         |            "edit-type" : "delete",    |           |
@@ -2458,7 +2485,7 @@ DPN         |                 DPN        |
    |         |            |<---(4)- Response --------|           |
    |         |            | {                        |           |
    |         |            |  "agent-id" : "agent1"," |           |
-   |         |            |  "operation-id" : 4,     |           |
+   |         |            |  "operation-id" : 6,     |           |
    |         |            |  "result-status" : "ok", |           |
    |         |            |  "edit-status" : [       |           |
    |         |            |    "edit-id" : 0,        |           |
@@ -3513,6 +3540,8 @@ activation system:
     </t>
     
     <t>The CONFIGURE and CONFIGURE-RESULT-NOTIFICATION use the yang-patch-status which is a container for edits.  This was done to maximize YANG reuse and not a part of the FPC specification.</t>
+    <t>In the configure rpc operation-id is mapped to patch-id and in an edit the edit-type is
+    mapped to operation.</t>
 
     <t>Five modules are defined:
 
@@ -6833,8 +6862,9 @@ module: ietf-dmm-fpc
   |  +--rw service-group-checkpoint
   |  |  +--rw basename?          fpc:fpc-identity
   |  |  +--rw base-checkpoint?   string
-  |  +--rw basename?                   fpc:fpc-identity
-  |  +--rw base-checkpoint?            string
+  |  +--rw dpn-checkpoint
+  |  |  +--rw basename?                   fpc:fpc-identity
+  |  |  +--rw base-checkpoint?            string
   +--rw policy-information-model
   |  +--rw action-template* [action-template-key]
   |  |  +--rw action-template-key        fpc:fpc-identity

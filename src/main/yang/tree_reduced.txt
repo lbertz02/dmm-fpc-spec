@@ -512,8 +512,9 @@ module: ietf-dmm-fpc
   |  +--rw service-group-checkpoint
   |  |  +--rw basename?          fpc:fpc-identity
   |  |  +--rw base-checkpoint?   string
-  |  +--rw basename?                   fpc:fpc-identity
-  |  +--rw base-checkpoint?            string
+  |  +--rw domain-checkpoint
+  |  |  +--rw basename?                   fpc:fpc-identity
+  |  |  +--rw base-checkpoint?            string
   +--rw policy-information-model
   |  +--rw action-template* [action-template-key]
   |  |  +--rw action-template-key        fpc:fpc-identity
