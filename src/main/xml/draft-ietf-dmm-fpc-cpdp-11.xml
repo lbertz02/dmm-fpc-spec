@@ -222,11 +222,11 @@
         This document describes a way, called Forwarding Policy Configuration
         (FPC) to manage the separation of data-plane and control-plane. FPC
         defines a flexible mobility management system using FPC agent and FPC
-        client functions. An FPC agent provides an abstract interface to the
+        client functions. A FPC agent provides an abstract interface to the
         data-plane. The FPC client configures data-plane nodes by using the
         functions and abstractions provided by the FPC agent for the data-plane
         nodes. The data-plane abstractions presented in this document are
-        extensible, in order to support many different types of mobility
+        extensible in order to support many different types of mobility
         management systems and data-plane functions.
       </t>
     </abstract>
@@ -237,23 +237,22 @@
 
     <t> This document describes Forwarding Policy Configuration (FPC), a
         system for managing the separation of control-plane and data-plane.
-	FPC enables flexible mobility management using FPC client and FPC agent
-        functions. An FPC agent exports an abstract interface representing the
-	data-plane.  To configure data-plane nodes and functions, the FPC
-	client uses the interface to the data-plane offered by the FPC agent.
+	    FPC enables flexible mobility management using FPC client and FPC agent
+        functions. A FPC agent exports an abstract interface representing the
+	    data-plane.  To configure data-plane nodes and functions, the FPC
+	    client uses the interface to the data-plane offered by the FPC agent.
     </t>
 
     <t> Control planes of mobility management systems, or related applications
         which require data-plane control, can utilize the FPC client at various
-	levels of abstraction.  FPC operations are capable of directly
-	configuring a single Data-Plane Node (DPN), as well as multiple DPNs,
-	as determined by the data-plane models exported by the FPC agent.</t>
+        levels of abstraction.  FPC operations are capable of directly
+        configuring a single Data-Plane Node (DPN), as well as multiple DPNs,
+        as determined by the data-plane models exported by the FPC agent.</t>
 
     <t> A FPC agent represents the data-plane operation according to several
-	basic information models.
-            An FPC agent also provides access to Monitors, which produce
-	    reports when triggered by events regarding
-	    Mobility Contexts, DPNs or the Agent.</t>
+        basic information models. A FPC agent also provides access to Monitors,
+        which produce reports when triggered by events or FPC Client requests
+        regarding Mobility Contexts, DPNs or the Agent.</t>
 
     <t> To manage mobility sessions, the FPC client assembles applicable sets
 	of forwarding policies from the data model, and configures them on the
@@ -261,8 +260,6 @@
         into specific configurations for each DPN at which mobile nodes are
         attached.  The specific protocols and configurations to configure a
 	DPN from a FPC Agent are outside the scope of this document.</t>
-<!--  CEP: But there needs to be some real-life examples... -->
-<!--  CEP: And probably some cross-references to relevant DMM documents.  -->
 
     <t> A DPN is a logical entity that performs data-plane operations (packet
 	movement and management).  It may represent a physical DPN unit, a
@@ -274,7 +271,7 @@
 	regard for whether the implementation is virtual or physical.
 	DPNs are connected to provide mobility management systems such as
 	access networks, anchors and domains. The FPC agent interface
-        enables establishment of a topology for the forwarding plane. </t>
+    enables establishment of a topology for the forwarding plane. </t>
 
     <t> When a DPN is mapped to physical data-plane equipment, the FPC client
 	can have complete knowledge of the DPN architecture, and use that
@@ -297,10 +294,6 @@
 
     </section>
 
-    <!-- <section anchor="pcmodel"
-         title="Reference Architecture and Information Model"> -->
-<!--  CEP: What happened to this section?  -->
-
     <section anchor="terminology" title="Terminology">
     <t> The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
         "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
@@ -309,12 +302,13 @@
 
     <t> <list hangIndent="24" style="hanging">
         <t hangText="Attribute Expression: ">The definition of a template
-        attribute.  This includes setting the type, current value,
-        default value and if the attribute is not mutable (static).</t>
+        Property.  This includes setting the type, current value,
+        default value and if the attribute is static, i.e. can no longer be
+        changed.</t>
 
         <t hangText="Domain: "> One or more DPNs that form a logical partition
 	    of network resources (e.g., a data-plane network under common
-	    network administration).  An FPC client (e.g., a mobility
+	    network administration).  A FPC client (e.g., a mobility
 	    management system) may utilize a single or multiple domains.</t>
 
         <t hangText="DPN: "> A data-plane node (DPN) is capable of performing
@@ -322,17 +316,9 @@
 	    regardless of whether they are realized as hardware or purely
 	    in software.  </t>
 
-	<t hangText="DPN-Set: ">
-	    the set of DPNs in a network configuration</t>
-
-        <t hangText="FPC Client:"> An FPC Client is integrated with a mobility
+        <t hangText="FPC Client:"> A FPC Client is integrated with a mobility
 	    management system or related application, enabling control over
-	    forwarding policy, mobility sessions and DPNs via an FPC Agent.</t>
-
-	<t hangText="Service-Group: ">
-	    a set of DPN interfaces that support a specific data-plane
-	    purpose (inbound/outbound, roaming, subnetwork with common
-	    specific configuration, etc.) </t>
+	    forwarding policy, mobility sessions and DPNs via a FPC Agent.</t>
 
         <t hangText="Mobility Context:">
 	    A Mobility Context contains the data-plane information necessary
@@ -355,7 +341,7 @@
 
 	    <t hangText="Monitor: ">
 	    A reporting mechanism for a list of events that trigger
-	    notification messages from an FPC Agent to an FPC Client. </t>
+	    notification messages from a FPC Agent to a FPC Client. </t>
 
         <t hangText="Policy:">
             A Policy determines the mechanisms for managing specific traffic
@@ -365,17 +351,21 @@
             in a rule identifies packets (e.g., traffic flows), and the
 	    Actions apply treatments to packets that match the Descriptor in
 	    the rule.  Policies can apply to Domains, DPNs, Mobile Nodes,
-	    Service Groups, or particular Flows on a Mobile Node.
+	    Service-Groups, or particular Flows on a Mobile Node.
         </t>
 
         <t hangText="Property:">
-	    An attribute-value pair for an instance of an FPC entity </t>
+	    An attribute-value pair for an instance of a FPC entity.</t>
+
+    <t hangText="Service-Group: "> A set of DPN interfaces that support
+    a specific data-plane purpose, e.g. inbound/outbound, roaming, subnetwork
+    with common specific configuration, etc. </t>
 
         <t hangText="Template:"> A recipe for instantiating FPC entities.
 	    Template definitions are accessible (by name or by a key) in an
-	    indexed set.  A template is used to create specific instances
+	    indexed set.  A Template is used to create specific instances
 	    (e.g., specific policies) by assigning appropriate values into
-	    the template definition.  </t>
+	    the Template definition via Attribute Expression.  </t>
 
         <t hangText="Template Configuration">The process by which a
         Template is referenced (by name or by key) and Attribute
@@ -385,13 +375,15 @@
 
         <t hangText="Tenant:"> An operational entity that manages
             mobility management systems or applications which require
-            data-plane functions. </t>
-<!--  CEP: Still do not understand why this is here.  -->
+            data-plane functions. A Tenant defines a global namespace
+            for all entities owned by the Tenant enabling
+            its entities to be used by multiple FPC Clients across multiple
+            FPC Agents.</t>
 
         <t hangText="Topology: ">
 	    The DPNs and the links between them.
-	    For example, access nodes may be assigned to a Service Group
-	    which peers to a Service Group of anchor nodes. </t>
+	    For example, access nodes may be assigned to a Service-Group
+	    which peers to a Service-Group of anchor nodes. </t>
         </list></t>
     </section>
 
@@ -418,14 +410,11 @@
 	    data plane, the DPNs in the topology
 	    are available for further configuration. The FPC Agent connects
 	    those DPNs to manage their configurations.</t>
-<!--  CEP: Is it intended that there is only one FPC Agent per data-plane?  -->
-<!--  CEP: I think there should be multiple, and so this needs rewording.  -->
 
-    <t> An FPC Agent configures and manages its
-	    DPN(s) according to forwarding policies requested by the FPC
-	    Client.
-<!--  CEP: Not clear that policies are the *only* configuration needs.  -->
-		    Configuration commands used by the FPC agent to configure
+    <t> A FPC Agent configures and manages its
+	    DPN(s) according to forwarding policies requested and Attributes
+        provided by the FPC Client.
+        Configuration commands used by the FPC agent to configure
 	    its DPN node(s) may be specific to the DPN
 	    implementation; consequently the method by which the FPC Agent
 	    carries out the specific configuration for its DPN(s) is out of
@@ -433,20 +422,15 @@
 	    FPC Client (on behalf of control-plane and applications) requests
 	    that the Agent configures Policies prior to the time when the DPNs
 	    start forwarding data for their mobility sessions. </t>
-<!--  CEP: I think that we should define the methods and allow specialization
-           for the needs of particular vendor's equipment.  -->
 
     <t> This architecture is illustrated in <xref target="fig_refarch"/>.
-            An FPC Agent may be implemented in a network controller that
+            A FPC Agent may be implemented in a network controller that
 	    handles multiple DPNs, or (more simply) an
 	    FPC Agent may itself be integrated into a DPN.</t>
 
     <t> This document does not specify a protocol for the FPC interface;
             it is out of scope. However, an implementation must support the
 	    FPC transactions described in <xref target="protocol"/>. </t>
-<!--  CEP: This makes it problematic for the document to refer to anything
-           called an "FPC protocol".  -->
-<!--  CEP: It would be better to actually have a protocol.  -->
 
     <t> 
         <figure anchor="fig_refarch"
@@ -494,44 +478,30 @@ DPN         |                 DPN        |
             <postamble></postamble>
           </figure>
         </t>
-<!--  CEP: While we cannot prevent out-of-band southbound protocols, it seems
-           improper to include them as part of the architecture.  And maybe
-           even we should prohibit them
-		***as interfaces between FPC function entities***.
-           In other words, if they are out-of-band, they should truly be
-           out-of-band.          -->
 
-    <t> The FPC architecture supports multi-tenancy; an FPC enabled
+
+    <t> The FPC architecture supports multi-tenancy; a FPC enabled
             data-plane supports tenants of multiple mobile operator networks
             and/or applications. It means that the FPC Client of each tenant
             connects to the FPC Agent and it MUST partition namespace and data
             for their data-planes. DPNs on the data-plane may fulfill multiple
             data-plane roles which are defined per session, domain and
             tenant.</t>
-<!--  CEP: After all this time I still do not understand why tenancy
-           is relevant to FPC.  -->
+    <t> Multi-tenancy permits the paritioning of data-plane entities as well
+        as a common namespace requirement upon FPC Agents and Clients when
+        they use the same Tenant for a common data-plane entity.</t>
 
     <t> FPC information models often configuration to fit the specific needs
 	for DPN management of a mobile node's traffic. The FPC interfaces in
             <xref target="fig_refarch"/> are the only interfaces required to
 	    handle runtime data in a Mobility Context.
-<!--  CEP: Notably, in the figure there is more than one FPC interface.  -->
-<!--  CEP: Also I have replaced "FPC interface protocol" by "FPC interface".-->
-<!--  CEP: A predefined mobility context *might* brought into
-           a virtual machine when a mobile node arrives, contradicting
-	   the abovementioned requirement for real-time operation.  -->
-	    The Topology and some Policy FPC models may be pre-configured; in
+	    The Topology and some Policy FPC models MAY be pre-configured; in
 	    that case real-time protocol exchanges are not required for them.
-<!--  CEP: The next sentence really does not belong.  -->
-
-<!--
-            Operators that are tenants in the FPC data-plane could configure
-            Topology and Policy on the Agent through other means, such as
-	    <xref target="I-D.ietf-netconf-restconf">Restconf</xref> or
-	    <xref target="RFC6241">Netconf</xref>.
-    -->
 							</t>
-<!--  CEP: Also, Restconf etc. could be used regardless of tenancy.  -->
+    
+    <t> The informaiton model provides an extensibility mechansim through Templates
+        that permits specialization for the needs of a particular vendor's equipment
+        or future extension of the model presented in this specification.</t>
 
     </section>
 
@@ -604,18 +574,16 @@ DPN         |                 DPN        |
         <t hangText="Name:"> a human-readable string </t>
         <t hangText="Key:"> a unique value. We distinguish 3 types of keys:
         <list>
-            <t hangText="U-Key:"> a key unique across all tenants.
+            <t hangText="U-Key:"> a key unique across all Tenants.
 		U-Key spaces typically involve the use of registries or
 		language specific mechanisms that guarantee universal
 		uniqueness of values. </t>
-            <t hangText="G-Key:"> a key unique within a tenant </t>
+            <t hangText="G-Key:"> a key unique within a Tenant </t>
             <t hangText="L-Key:"> a key unique within a
 		local namespace.  For example, there may exist interfaces with
 		the same name, e.g. "if0", in two different DPNs
 		but there can only be one "if0" within each
 		DPN (i.e. its local Interface-Key L-Key space). </t>
-<!--  CEP: L-Key makes better sense without referring to a tenant.  -->
-<!--  CEP: Need to see why distinction between U-Key and G-Key is needed.  -->
             </list></t>
         </list></t>
 
@@ -642,10 +610,10 @@ DPN         |                 DPN        |
         </t>
 
     <t> When expanding entity1 into a modeling language such as YANG it
-	would result in two values: entity1-GKey and entity1-Name.</t>
+	would result in two values: entity1-Key and entity1-Name.</t>
 
     <t> To encourage re-use, FPC defines indexed sets of various entity
-	templates.  Other model elements that need access to an indexed model
+	Templates.  Other model elements that need access to an indexed model
 	entity contain an attribute
 	which is always denoted as "entity-Key".  When a Key attribute is
 	encountered, the referencing model element may supply
@@ -684,9 +652,10 @@ DPN         |                 DPN        |
 	    <t> Domain (See <xref target="domain" />) </t>
 	    <t> DPN (See <xref target="dpn" />) </t>
 	    <t> Policy (See <xref target="policy-InfoModel" />) </t>
+        <t> Rule (See <xref target="policy-InfoModel" />) </t>
 	    <t> Descriptor (See <xref target="fig-policy-InfoModel" />) </t>
 	    <t> Action (See <xref target="fig-policy-InfoModel" />) </t>
-	    <t> Service Group (See <xref target="srv-group" />, and </t>
+	    <t> Service-Group (See <xref target="srv-group" />, and </t>
 	    <t> Mobility-Context (See <xref target="mobility-InfoModel" />)</t>
 	</list>
 <?rfc subcompact="no" ?>  <!-- keep a blank line between list items -->
@@ -704,7 +673,7 @@ DPN         |                 DPN        |
 	FPC entity is instantiated according to a template definition,
 	specific values need to be configured for each such attribute.
 	For instance, suppose an entity Template has an Attribute named
-	"IPv4-Address", and also suppose that an FPC Client instantiates the
+	"IPv4-Address", and also suppose that a FPC Client instantiates the
 	entity and requests that it be installed on a DPN.  An IPv4 address
 	will be needed for the value of that Attribute before the entity can
 	be used.
@@ -723,8 +692,7 @@ DPN         |                 DPN        |
         <t hangText="Attributes:">
 		A set of Attribute names MAY be included when
 		defining a Template for instantiating FPC entities.
-		Any instantiation from a Template MUST have at least one
-		Attribute in order to be a useful entity.  </t>
+        </t>
         <t hangText="Extensible:"> Determines whether or not entities
 		instantiated from the Template can be extended with new
 		non-mandatory Attributes not originally defined for the
@@ -737,7 +705,7 @@ DPN         |                 DPN        |
 		about how the Entity-Status changes during the configuration
 		steps of the Entity.  </t>
         <t hangText="Version:"> Provides a version tag for the
-        template.</t>
+        Template.</t>
 	</list> 
     </t>
 
@@ -762,8 +730,8 @@ DPN         |                 DPN        |
     <section anchor="Att-Expr" title="Attribute-Expressions">
     <t>
 	The syntax of the Attribute definition
-	is formatted to make it clear, for every Attribute in the Entity
-	Template, which of the six possibilities is specified, as follows:
+	is formatted to make it clear. For every Attribute in the Entity
+	Template, six possibilities are specified as follows:
 
 	<list  style="hanging">
         <t hangText="'[Att-Name: ]'">
@@ -788,7 +756,7 @@ DPN         |                 DPN        |
 	attribute would be denoted by [IPv4-Address ~ 127.0.0.1]. </t>
 
     <t> 
-	After an FPC Client identifies which additional Attributes have been
+	After a FPC Client identifies which additional Attributes have been
 	configured to be included in an instantiated entity, those
 	configured Attributes MUST NOT be deleted by the FPC Agent.
 	Similarly, any statically configured value for an entity Attribute
@@ -824,16 +792,17 @@ DPN         |                 DPN        |
     <!--  CEP: We could delete the section without undue hardship.  -->
     <t>
         The identifiers and names in FPC models which reside in the same
-        namespace must be unique.  That uniqueness must be maintained by all
-	Clients, Agents and DPNs that support the tenant.  The tenant
+        Tenant must be unique.  That uniqueness must be maintained by all
+	Clients, Agents and DPNs that support the Tenant.  The Tenant
 	namespace uniqueness MUST be applied to all elements of the tenant
 	model, i.e.  Topology, Policy and Mobility models. </t>
    
-   <t>  When a Policy needs to be applied to Contexts in all tenants on an
-        Agent, the Agent SHOULD define that policy to be visible from all the
-        tenants.  In this case, the Agent assigns an unique identifier in the
-        agent namespace and effectively creates a U-Key although only a G-Key
-        is required. </t>
+   <t>  When a Policy needs to be applied to Mobility-Contexts in all Tenants on an
+        Agent, the Agent SHOULD define that policy to be visible by all
+        Tenants.  In this case, the Agent assigns an unique identifier in the
+        Agent namespace and copies the values to each Tenant.
+        This effectively creates a U-Key although only a G-Key is required
+        within the Tenant. </t>
    
    <t>  The notation for identifiers can utilize any format with agreement
         between data-plane agent and client operators.  The formats include
@@ -861,19 +830,19 @@ DPN         |                 DPN        |
     <t>
 	When the FPC Client instantiates a Policy from a Template, the
 	Policy-Status is "Initial".  When the FPC Client sends
-	the policy to an FPC Agent for installation on a DPN, the Client often
+	the policy to a FPC Agent for installation on a DPN, the Client often
 	will configure appropriate attribute values for the installation,
 	and accordingly changes the Policy-Status to "PartiallyConfigured"
 	or "Configured".
 	The FPC Agent will also configure Domain-specific policies and
-	DPN-specific policies (if any) on the DPN.  When configured to provide
+	DPN-specific policies on the DPN.  When configured to provide
 	particular services for mobile nodes, the FPC Agent will apply
 	whatever service-specific policies are needed on the DPN.  When
 	a mobile node attaches to the network data-plane within the
-	topology under the jurisdiction of an FPC Agent, the Agent
+	topology under the jurisdiction of a FPC Agent, the Agent
 	may apply policies and settings as appropriate for that mobile node.
 	Finally, when the mobile node launches new flows, or quenches
-	existing flows, the DPN Agent, on behalf of the FPC Client, applies
+	existing flows, the FPC Agent, on behalf of the FPC Client, applies
 	or deactivates whatever policies and attribute values are appropriate
 	for managing the flows of the mobile node.
 	When a "Configured" policy is de-activated, Policy-Status is changed to
@@ -882,29 +851,30 @@ DPN         |                 DPN        |
 	be "Configured".
     </t>
 
-    <t> Attribute values in DPN-resident Policies may be configured
+    <t> Attribute values in DPN resident Policies may be configured
 	by the FPC Agent as follows:
 	<list style="hanging">
-        <t hangText="Domain-Settings:">
+        <t hangText="Domain-Policy-Configuration:">
 		Values for Policy attributes that are required for every
 		DPN in the domain. </t>
-        <t hangText="DPN-Settings:">
+        <t hangText="DPN-Policy-Configuration:">
 		Values for Policy attributes that are required for every
 		policy configured on this DPN. </t>
-        <t hangText="Service-Settings:">
+        <t hangText="Service-Group-Policy-Configuration:">
 		Values for Policy attributes that are required to carry out
 		the intended Service of the Service Group. </t>
-        <t hangText="MN-Settings:">
+        <t hangText="MN-Policy-Configuration:">
 		Values for Policy attributes that are required for all
 		traffic to/from a particular mobile node. </t>
-        <t hangText="Flow-Settings:">
+        <t hangText="Service-Data-Flow-Policy-Configuration:">
 		Values for Policy attributes that are required for traffic
 		belonging to a particular set of flows on the mobile node. </t>
 	</list>
-	Any of these configuration steps may also supply updated values for
+	Any of these configuration steps MAY also supply updated values for
 	existing default attribute values that may have been previously
-	configured on the DPN-resident policy.
+	configured on the DPN resident policy.
     </t>
+    <t>Entity blocks describe the format of the policy configurations.</t>
     </section>        <!-- end section title="Attribute Application"  -->
     
      <section anchor="entity-cfg" title="Entity Configuration Blocks">
@@ -954,17 +924,17 @@ DPN         |                 DPN        |
     <t> DPN-Policy-Configuration </t>
     <t> Policy-Configuration </t>
     <t> MN-Policy-Configuration </t>
-    <t> Flow-Policy-Configuration </t>
+    <t> Service-Data-Flow-Policy-Configuration </t>
     </list></t>
     </section> <!-- End section "Entity Configuration Blocks" -->
      
     <section anchor="checkpoint"
-	title="Infomation Model Checkpoint">
+	title="Information Model Checkpoint">
         <t> The Information Model Checkpoint permits Clients and
-            tenants with common scopes, referred to in this specification
+            Tenants with common scopes, referred to in this specification
             as Checkpoint BaseNames, to track the state of provisioned
 	    information on an Agent. The Agent records the Checkpoint BaseName
-	    and Checkpoint value set by a Client. If a new Client
+	    and Checkpoint value set by a Client. When a Client
             attaches to the Agent it can query to determine
             the amount of work that must be executed to configure the Agent
             to a specific BaseName / checkpoint revision.</t>
@@ -2228,9 +2198,9 @@ DPN         |                 DPN        |
             set.</t>
         </section>
         <section anchor="simple" title="Simple RPC Operation">
-        <t> An FPC Client and Agent MUST identify themselves using the Client
+        <t> A Client and Agent MUST identify themselves using the Client
             Identifier and Agent Identifier respectively to ensure that for all
-            transactions a recipient of an FPC message can unambiguously identify
+            transactions a recipient of a FPC message can unambiguously identify
             the sender of the FPC message.</t>
 
         <t> A Client MAY direct the Agent to enforce a rule in a particular
@@ -3360,7 +3330,7 @@ activation system:
 
     <t> Detailed protocol implementations for DMM Forwarding Policy
         Configuration must ensure integrity of the information exchanged
-        between an FPC Client and an FPC Agent. Required Security Associations
+        between a FPC Client and a FPC Agent. Required Security Associations
         may be derived from co-located functions, which utilize the FPC Client
         and FPC Agent respectively.</t>
 
@@ -3571,7 +3541,7 @@ activation system:
     <list style="symbols">
     <t> ietf-dmm-fpc (fpc) - Defines the base model and messages for FPC
         that are meant to be static in FPC.</t>
-    <t> ietf-dmm-fpc-settingsext - An FPC module that defines the information
+    <t> ietf-dmm-fpc-settingsext - A FPC module that defines the information
         model elements that are likely to be extended in FPC.</t>
     <t> ietf-pmip-qos (pmip-qos) - Defines proxy mobile IPv6 QoS parameters
         per RFC 7222</t>
