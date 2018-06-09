@@ -2764,7 +2764,7 @@ DPN         |                 DPN        |
  |         |           "report" : [ {              |           |
  |         |            "monitor-key" : "ifc1-status",         |
  |         |            "trigger" : "probe",
- |         |            "report-valuerporte" : { "up" } } ] }         |
+ |         |            "report-valuerporte" : { "up" } } ] }  |
  |         |            |                          |           |
  |         |            |---(7)- Deregister ------>|           |
  |         |          "deregister-monitor" : {     |           |
