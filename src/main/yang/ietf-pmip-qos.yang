@@ -166,7 +166,7 @@ module ietf-pmip-qos {
    }
 
    grouping Allocation-Retention-Priority-Value {
-     leaf prioirty-level {
+     leaf priority-level {
        type uint8 {
          range "0..15";
        }
@@ -178,7 +178,7 @@ module ietf-pmip-qos {
         admission control of Guaranteed Bit Rate traffic in case of
         resource limitations.";
      }
-     leaf premption-capability {
+     leaf preemption-capability {
        type enumeration {
         enum enabled {
           value 0;
@@ -204,7 +204,7 @@ module ietf-pmip-qos {
         assigned to another service data flow with a lower priority
         level.";
      }
-     leaf premption-vulnerability {
+     leaf preemption-vulnerability {
        type enumeration {
         enum enabled {
           value 0;

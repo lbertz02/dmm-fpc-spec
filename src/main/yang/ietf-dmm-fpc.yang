@@ -933,7 +933,7 @@ module ietf-dmm-fpc {
   identity notification-cause {
     description "Notification Cause";
   }
-  identity subscribed-event-occured {
+  identity subscribed-event-occurred {
     base "notification-cause";
     description "Subscribed Event Occurence";
   }

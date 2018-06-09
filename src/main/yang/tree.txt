@@ -408,9 +408,9 @@ module: ietf-dmm-fpc
        |  |  |     |        |  +--rw max-rate        uint32
        |  |  |     |        |  +--rw service-flag    boolean
        |  |  |     |        |  +--rw exclude-flag    boolean
-       |  |  |     |        +--rw prioirty-level                  uint8
-       |  |  |     |        +--rw premption-capability            enumeration
-       |  |  |     |        +--rw premption-vulnerability         enumeration
+       |  |  |     |        +--rw priority-level                  uint8
+       |  |  |     |        +--rw preemption-capability            enumeration
+       |  |  |     |        +--rw preemption-vulnerability         enumeration
        |  |  |     |        +--rw agg-max-dl?                     qos-pmip:Aggregate-Max-DL-Bit-Rate-Value
        |  |  |     |        +--rw agg-max-ul?                     qos-pmip:Aggregate-Max-UL-Bit-Rate-Value
        |  |  |     |        +--rw gbr-dl?                         qos-pmip:Guaranteed-DL-Bit-Rate-Value
@@ -835,9 +835,9 @@ module: ietf-dmm-fpc
        |  |  |        |        |  +--rw max-rate        uint32
        |  |  |        |        |  +--rw service-flag    boolean
        |  |  |        |        |  +--rw exclude-flag    boolean
-       |  |  |        |        +--rw prioirty-level                  uint8
-       |  |  |        |        +--rw premption-capability            enumeration
-       |  |  |        |        +--rw premption-vulnerability         enumeration
+       |  |  |        |        +--rw priority-level                  uint8
+       |  |  |        |        +--rw preemption-capability            enumeration
+       |  |  |        |        +--rw preemption-vulnerability         enumeration
        |  |  |        |        +--rw agg-max-dl?                     qos-pmip:Aggregate-Max-DL-Bit-Rate-Value
        |  |  |        |        +--rw agg-max-ul?                     qos-pmip:Aggregate-Max-UL-Bit-Rate-Value
        |  |  |        |        +--rw gbr-dl?                         qos-pmip:Guaranteed-DL-Bit-Rate-Value
@@ -1248,9 +1248,9 @@ module: ietf-dmm-fpc
        |  |     |     |        |  +--rw max-rate        uint32
        |  |     |     |        |  +--rw service-flag    boolean
        |  |     |     |        |  +--rw exclude-flag    boolean
-       |  |     |     |        +--rw prioirty-level                  uint8
-       |  |     |     |        +--rw premption-capability            enumeration
-       |  |     |     |        +--rw premption-vulnerability         enumeration
+       |  |     |     |        +--rw priority-level                  uint8
+       |  |     |     |        +--rw preemption-capability            enumeration
+       |  |     |     |        +--rw preemption-vulnerability         enumeration
        |  |     |     |        +--rw agg-max-dl?                     qos-pmip:Aggregate-Max-DL-Bit-Rate-Value
        |  |     |     |        +--rw agg-max-ul?                     qos-pmip:Aggregate-Max-UL-Bit-Rate-Value
        |  |     |     |        +--rw gbr-dl?                         qos-pmip:Guaranteed-DL-Bit-Rate-Value
@@ -1669,9 +1669,9 @@ module: ietf-dmm-fpc
        |  |     |     |        |  +--rw max-rate        uint32
        |  |     |     |        |  +--rw service-flag    boolean
        |  |     |     |        |  +--rw exclude-flag    boolean
-       |  |     |     |        +--rw prioirty-level                  uint8
-       |  |     |     |        +--rw premption-capability            enumeration
-       |  |     |     |        +--rw premption-vulnerability         enumeration
+       |  |     |     |        +--rw priority-level                  uint8
+       |  |     |     |        +--rw preemption-capability            enumeration
+       |  |     |     |        +--rw preemption-vulnerability         enumeration
        |  |     |     |        +--rw agg-max-dl?                     qos-pmip:Aggregate-Max-DL-Bit-Rate-Value
        |  |     |     |        +--rw agg-max-ul?                     qos-pmip:Aggregate-Max-UL-Bit-Rate-Value
        |  |     |     |        +--rw gbr-dl?                         qos-pmip:Guaranteed-DL-Bit-Rate-Value
@@ -1913,9 +1913,9 @@ module: ietf-dmm-fpc
        |  |  |     |  +--rw max-rate        uint32
        |  |  |     |  +--rw service-flag    boolean
        |  |  |     |  +--rw exclude-flag    boolean
-       |  |  |     +--rw prioirty-level             uint8
-       |  |  |     +--rw premption-capability       enumeration
-       |  |  |     +--rw premption-vulnerability    enumeration
+       |  |  |     +--rw priority-level             uint8
+       |  |  |     +--rw preemption-capability       enumeration
+       |  |  |     +--rw preemption-vulnerability    enumeration
        |  |  |     +--rw agg-max-dl?                qos-pmip:Aggregate-Max-DL-Bit-Rate-Value
        |  |  |     +--rw agg-max-ul?                qos-pmip:Aggregate-Max-UL-Bit-Rate-Value
        |  |  |     +--rw gbr-dl?                    qos-pmip:Guaranteed-DL-Bit-Rate-Value
@@ -2522,9 +2522,9 @@ module: ietf-dmm-fpc
        |  |  |  |        |  +--rw max-rate        uint32
        |  |  |  |        |  +--rw service-flag    boolean
        |  |  |  |        |  +--rw exclude-flag    boolean
-       |  |  |  |        +--rw prioirty-level             uint8
-       |  |  |  |        +--rw premption-capability       enumeration
-       |  |  |  |        +--rw premption-vulnerability    enumeration
+       |  |  |  |        +--rw priority-level             uint8
+       |  |  |  |        +--rw preemption-capability       enumeration
+       |  |  |  |        +--rw preemption-vulnerability    enumeration
        |  |  |  |        +--rw agg-max-dl?                qos-pmip:Aggregate-Max-DL-Bit-Rate-Value
        |  |  |  |        +--rw agg-max-ul?                qos-pmip:Aggregate-Max-UL-Bit-Rate-Value
        |  |  |  |        +--rw gbr-dl?                    qos-pmip:Guaranteed-DL-Bit-Rate-Value
@@ -2937,9 +2937,9 @@ module: ietf-dmm-fpc
        |  |        |        |  +--rw max-rate        uint32
        |  |        |        |  +--rw service-flag    boolean
        |  |        |        |  +--rw exclude-flag    boolean
-       |  |        |        +--rw prioirty-level                  uint8
-       |  |        |        +--rw premption-capability            enumeration
-       |  |        |        +--rw premption-vulnerability         enumeration
+       |  |        |        +--rw priority-level                  uint8
+       |  |        |        +--rw preemption-capability            enumeration
+       |  |        |        +--rw preemption-vulnerability         enumeration
        |  |        |        +--rw agg-max-dl?                     qos-pmip:Aggregate-Max-DL-Bit-Rate-Value
        |  |        |        +--rw agg-max-ul?                     qos-pmip:Aggregate-Max-UL-Bit-Rate-Value
        |  |        |        +--rw gbr-dl?                         qos-pmip:Guaranteed-DL-Bit-Rate-Value
@@ -3358,9 +3358,9 @@ module: ietf-dmm-fpc
        |  |        |        |  +--rw max-rate        uint32
        |  |        |        |  +--rw service-flag    boolean
        |  |        |        |  +--rw exclude-flag    boolean
-       |  |        |        +--rw prioirty-level                  uint8
-       |  |        |        +--rw premption-capability            enumeration
-       |  |        |        +--rw premption-vulnerability         enumeration
+       |  |        |        +--rw priority-level                  uint8
+       |  |        |        +--rw preemption-capability            enumeration
+       |  |        |        +--rw preemption-vulnerability         enumeration
        |  |        |        +--rw agg-max-dl?                     qos-pmip:Aggregate-Max-DL-Bit-Rate-Value
        |  |        |        +--rw agg-max-ul?                     qos-pmip:Aggregate-Max-UL-Bit-Rate-Value
        |  |        |        +--rw gbr-dl?                         qos-pmip:Guaranteed-DL-Bit-Rate-Value
@@ -3781,9 +3781,9 @@ module: ietf-dmm-fpc
        |  |     |     |        |  +--rw max-rate        uint32
        |  |     |     |        |  +--rw service-flag    boolean
        |  |     |     |        |  +--rw exclude-flag    boolean
-       |  |     |     |        +--rw prioirty-level                  uint8
-       |  |     |     |        +--rw premption-capability            enumeration
-       |  |     |     |        +--rw premption-vulnerability         enumeration
+       |  |     |     |        +--rw priority-level                  uint8
+       |  |     |     |        +--rw preemption-capability            enumeration
+       |  |     |     |        +--rw preemption-vulnerability         enumeration
        |  |     |     |        +--rw agg-max-dl?                     qos-pmip:Aggregate-Max-DL-Bit-Rate-Value
        |  |     |     |        +--rw agg-max-ul?                     qos-pmip:Aggregate-Max-UL-Bit-Rate-Value
        |  |     |     |        +--rw gbr-dl?                         qos-pmip:Guaranteed-DL-Bit-Rate-Value
@@ -4201,9 +4201,9 @@ module: ietf-dmm-fpc
        |  |     |     |        |  +--rw max-rate        uint32
        |  |     |     |        |  +--rw service-flag    boolean
        |  |     |     |        |  +--rw exclude-flag    boolean
-       |  |     |     |        +--rw prioirty-level                  uint8
-       |  |     |     |        +--rw premption-capability            enumeration
-       |  |     |     |        +--rw premption-vulnerability         enumeration
+       |  |     |     |        +--rw priority-level                  uint8
+       |  |     |     |        +--rw preemption-capability            enumeration
+       |  |     |     |        +--rw preemption-vulnerability         enumeration
        |  |     |     |        +--rw agg-max-dl?                     qos-pmip:Aggregate-Max-DL-Bit-Rate-Value
        |  |     |     |        +--rw agg-max-ul?                     qos-pmip:Aggregate-Max-UL-Bit-Rate-Value
        |  |     |     |        +--rw gbr-dl?                         qos-pmip:Guaranteed-DL-Bit-Rate-Value
@@ -4621,9 +4621,9 @@ module: ietf-dmm-fpc
        |     |  |     |        |  +--rw max-rate        uint32
        |     |  |     |        |  +--rw service-flag    boolean
        |     |  |     |        |  +--rw exclude-flag    boolean
-       |     |  |     |        +--rw prioirty-level                  uint8
-       |     |  |     |        +--rw premption-capability            enumeration
-       |     |  |     |        +--rw premption-vulnerability         enumeration
+       |     |  |     |        +--rw priority-level                  uint8
+       |     |  |     |        +--rw preemption-capability            enumeration
+       |     |  |     |        +--rw preemption-vulnerability         enumeration
        |     |  |     |        +--rw agg-max-dl?                     qos-pmip:Aggregate-Max-DL-Bit-Rate-Value
        |     |  |     |        +--rw agg-max-ul?                     qos-pmip:Aggregate-Max-UL-Bit-Rate-Value
        |     |  |     |        +--rw gbr-dl?                         qos-pmip:Guaranteed-DL-Bit-Rate-Value
@@ -5045,9 +5045,9 @@ module: ietf-dmm-fpc
        |           |     |        |  +--rw max-rate        uint32
        |           |     |        |  +--rw service-flag    boolean
        |           |     |        |  +--rw exclude-flag    boolean
-       |           |     |        +--rw prioirty-level                  uint8
-       |           |     |        +--rw premption-capability            enumeration
-       |           |     |        +--rw premption-vulnerability         enumeration
+       |           |     |        +--rw priority-level                  uint8
+       |           |     |        +--rw preemption-capability            enumeration
+       |           |     |        +--rw preemption-vulnerability         enumeration
        |           |     |        +--rw agg-max-dl?                     qos-pmip:Aggregate-Max-DL-Bit-Rate-Value
        |           |     |        +--rw agg-max-ul?                     qos-pmip:Aggregate-Max-UL-Bit-Rate-Value
        |           |     |        +--rw gbr-dl?                         qos-pmip:Guaranteed-DL-Bit-Rate-Value

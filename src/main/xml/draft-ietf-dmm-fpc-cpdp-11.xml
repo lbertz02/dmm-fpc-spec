@@ -461,7 +461,7 @@
     +-------|----------|------+
             |          |
   Other     |          | FPC interface
-  southband |          | protocol
+ southbound |          | protocol
   protocols |          |
             |          +-----------------+
             |                            |
@@ -499,7 +499,7 @@ DPN         |                 DPN        |
 	    that case real-time protocol exchanges are not required for them.
 							</t>
     
-    <t> The informaiton model provides an extensibility mechansim through Templates
+    <t> The information model provides an extensibility mechanism through Templates
         that permits specialization for the needs of a particular vendor's equipment
         or future extension of the model presented in this specification.</t>
 
@@ -567,19 +567,19 @@ DPN         |                 DPN        |
 	side of the element definition in angle-brackets. Common types
 	include:
         <list style="hanging">
-        <t hangText="List:"> a collection of entities (some could be
+        <t hangText="List:"> A collection of entities (some could be
 			duplicated)</t>
-        <t hangText="Set:"> a nonempty collection of entities
+        <t hangText="Set:"> A nonempty collection of entities
 		without duplications </t>
-        <t hangText="Name:"> a human-readable string </t>
-        <t hangText="Key:"> a unique value. We distinguish 3 types of keys:
+        <t hangText="Name:"> A human-readable string </t>
+        <t hangText="Key:"> A unique value. We distinguish 3 types of keys:
         <list>
-            <t hangText="U-Key:"> a key unique across all Tenants.
+            <t hangText="U-Key:"> A key unique across all Tenants.
 		U-Key spaces typically involve the use of registries or
 		language specific mechanisms that guarantee universal
 		uniqueness of values. </t>
-            <t hangText="G-Key:"> a key unique within a Tenant </t>
-            <t hangText="L-Key:"> a key unique within a
+            <t hangText="G-Key:"> A key unique within a Tenant </t>
+            <t hangText="L-Key:"> A key unique within a
 		local namespace.  For example, there may exist interfaces with
 		the same name, e.g. "if0", in two different DPNs
 		but there can only be one "if0" within each
@@ -721,7 +721,8 @@ DPN         |                 DPN        |
 	It is possible for a Template to provide values for all of its
 	Attributes, so that no additional values are needed before the entity
 	can made Active.  Any instantiation from a Template MUST have at least
-	one Attribute in order to be a useful entity.
+	one Attribute in order to be a useful entity unless the Template
+    has none.
     </t>
 
     </section>        <!-- end section title="Templates and Attributes"  -->
@@ -796,7 +797,7 @@ DPN         |                 DPN        |
    
    <t>  When a Policy needs to be applied to Mobility-Contexts in all Tenants on an
         Agent, the Agent SHOULD define that policy to be visible by all
-        Tenants.  In this case, the Agent assigns an unique identifier in the
+        Tenants.  In this case, the Agent assigns a unique identifier in the
         Agent namespace and copies the values to each Tenant.
         This effectively creates a U-Key although only a G-Key is required
         within the Tenant. </t>
@@ -915,7 +916,7 @@ DPN         |                 DPN        |
     <t> Descriptor-Configuration </t>
     <t> Action-Configuration </t>
     <t> Rule-Configuration </t>
-    <t> Interface-Configuraiton </t>
+    <t> Interface-Configuration </t>
     <t> Service-Group-Configuration </t>
     <t> Domain-Policy-Configuration </t>
     <t> DPN-Policy-Configuration </t>
@@ -999,7 +1000,7 @@ DPN         |                 DPN        |
 |           +-[Role] <U-Key>
 |           +-[Protocol] <Set>
 |           +-[Feature] <Set> (O)
-|           +-[Serfice-Group-Configuration] <Set> (O)
+|           +-[Service-Group-Configuration] <Set> (O)
 |           +-[DPN-Key] <Set>
 |           |           +-[Referenced-Interface] <Set>
 |           |           |       +-[Interface-Key] <L-Key>
@@ -1024,7 +1025,7 @@ DPN         |                 DPN        |
                 <t hangText="Feature-Set:">An optional set of static features
                     which further determine the suitability of the interface to the
                     desired operation.</t>
-                <t hangText="Serfice-Group-Configuration-Set:">An optional set of
+                <t hangText="Service-Group-Configuration-Set:">An optional set of
                     configurations that further determine the suitability of an
                     interface for the specific request.
                     For example: SequenceNumber=ON/OFF.</t>
@@ -1033,7 +1034,7 @@ DPN         |                 DPN        |
                     peer Service-Groups associated with them.  Each entry contains
                     <list style="hanging">
                         <t hangText="Interface-Key: ">
-                            a key that is used together with the DPN-Key, to create a
+                            A key that is used together with the DPN-Key, to create a
                             key that is refers to a specific DPN interface definition.</t>
                         <t hangText="Peer-Service-Group-Key: ">
                             Enables location of the peer Service-Group for this
@@ -1104,16 +1105,16 @@ DPN         |                 DPN        |
 	attribute values that are specific to that interface, for
 	example, the MTU size.  These do not affect the DPN selection
 	of active or enabled interfaces. Interfaces contain the following
-    informaiton:
+    information:
         <list>
             <t hangText="Role: ">
-                the role (MAG, LMA, PGW, AMF, etc.) of the DPN. </t>
+                The role (MAG, LMA, PGW, AMF, etc.) of the DPN. </t>
             <t hangText="Protocol (Set):">The set of protocols supported by
                 this interface (e.g., PMIP, S5-GTP, S5-PMIP etc.).  The
                 protocol MAY implement specific message sets, e.g. s5-pmip,
                 s8-pmip. When a protocol implements such message sub-subsets
                 the Protocol value MUST include this information.</t>
-            <t> Interface-Configuration-Set: configurable settings that
+            <t hangText="Interface-Configuration-Set:"> Configurable settings that
                 further determine the suitability of an interface for the specific
                 request.  For example: SequenceNumber=ON/OFF. </t>
         </list></t>
@@ -1326,7 +1327,7 @@ DPN         |                 DPN        |
     <list style="hanging">
     <t hangText="Mobility-Context-Key: "> Identifies a Mobility-Context </t>
     <t hangText="Delegating-IP-Prefix-Set: "> Delegated IP Prefixes
-    assigned to the Mobilty-Context</t>
+    assigned to the Mobility-Context</t>
     <t hangText="Parent-Context: "> If present, a Mobility Context from which
 	the Attributes and Attribute Values of this Mobility Context are
 	inherited. </t>
@@ -1478,11 +1479,11 @@ DPN         |                 DPN        |
         </list>
     </t>
 
-    <t> An Agent will respond with an ERROR, indicating one or more Errors have occured,
+    <t> An Agent will respond with an ERROR, indicating one or more Errors have occurred,
         or an OK.</t>
     
     <t> For Configure messages, an OK
-        status for an edit MAY include subsquent edits in the response that were
+        status for an edit MAY include subsequent edits in the response that were
         required to properly execute the edit.  It MAY also indicate that the
         final status and any final edits required to fulfill the request will be sent
         via a Configure Result Notification from the Agent to the Client, see
@@ -1676,7 +1677,7 @@ DPN         |                 DPN        |
             containment hierarchy provided for all caches.</t>
         <t>
             <figure anchor="fig_cache_ex"
-                title="Exemple Hierarchical Cache">
+                title="Example Hierarchical Cache">
                 <artwork align="center"><![CDATA[
              +---------------+
              | Global Cache  |
@@ -1716,7 +1717,7 @@ DPN         |                 DPN        |
             </t>
             <t>An edit response, Edit-Status, is comprised of the following:
             <list>
-                <t>Edit-Id: Edit Indentifier.</t>
+                <t>Edit-Id: Edit Identifier.</t>
                 <t>Edit-Status: OK.</t>
                 <t>When the Edit-Status is OK the following values MAY be present
                     <list>
@@ -1778,14 +1779,14 @@ DPN         |                 DPN        |
                 communication from the Agent to the Client.</t>
             <t>It is identical to the immediate response with the exception that
                 the Notify-Follows, if present, MUST be false.  As this value
-                is unnecessary it SHOULD be ommitted.
+                is unnecessary it SHOULD be omitted.
             </t>
             </section>        <!-- end section "Asynchronous Notification" -->
           </section>        <!-- end section "Operation Response" -->
         
             <section anchor="reservedidentities" title="Reserved Identities">
                 <t> Several identities are reserved in the Policy Information
-                    Model and Mobility-Context to faciliate specfic uses cases.</t>
+                    Model and Mobility-Context to facilitate specific uses cases.</t>
                 <t> Agents and tenants express their support for descriptors and
                     actions using the following Key patterns
                     <list>
@@ -1913,7 +1914,7 @@ DPN         |                 DPN        |
             upon a Monitor Configuration or a Probe.   A Report is comprised
             of the Monitor Key the report applies to, the Trigger for the report, a
             timestamp of when the report's associated event occurs and
-            data that is specific to the monitored value's type.</t>
+            data, Report-Value, that is specific to the monitored value's type.</t>
         <t>Triggers include but are not limited to
             <list style="symbols">
                 <t> Subscribed Event occurred</t>
@@ -1925,7 +1926,7 @@ DPN         |                 DPN        |
                 <t> Deregistration Final Value</t>
                 <t> Monitoring Suspended</t>
                 <t> Monitoring Resumed</t>
-                <t> DPN Availabile</t>
+                <t> DPN Available</t>
                 <t> DPN Unavailable</t>
             </list>
         </t>
@@ -1943,7 +1944,7 @@ DPN         |                 DPN        |
 |         +-[Report:] <List>
 |         |    +-[Trigger:]
 |         |    +-[Monitor-Key:]
-|         |    +-[Value]
+|         |    +-[Report-Value]
                 ]]></artwork>
                 <postamble></postamble>
             </figure>
@@ -1960,16 +1961,16 @@ DPN         |                 DPN        |
             <t>In order to assign a DPN to a Mobility Context, the Client
                 or Agent requires topology information.  The Service-Group
                 provides information, e.g. function, role, protocol,
-                features and configuraiton, to determine suitable DPN
+                features and configuration, to determine suitable DPN
                 interfaces.</t>
             <t>Consider a Client attempting to select DPN interfaces that
                 are served by a single Agent.  In this example interfaces
-                are present with different protcols, settings and features
+                are present with different protocols, settings and features
                 as shown in the following figure.</t>
             <figure anchor="fig-servicegroup"
                 title="Monitor Messages">
                 <artwork align="center"><![CDATA[
-"topology-nformation-model" : {
+"topology-information-model" : {
  "dpn" : [ {
   "dpn-key" : "dpn1",
   "interface" : [ {
@@ -2042,7 +2043,7 @@ DPN         |                 DPN        |
 ]
                 ]]></artwork>
                 <postamble>NOTE - A Setting is, in this example, a list of
-                string attibutes in a Configuration.</postamble>
+                string attributes in a Configuration.</postamble>
             </figure>
         <t>Two DPNs are present.  The first, dpn1, has 3 interfaces.  Two support
             the LMA role and both have settings.  The third supports the MAG function.
@@ -2055,13 +2056,13 @@ DPN         |                 DPN        |
         <t> The second group is comprised of interfaces
             that support the PMIP protocol and LMA function.  It only contains ifc2 from
             dpn1.  An interface that has setting(s) or feature(s) that must appear in a ServiceGroup
-            SHOULD NOT appear in ServiceGroups that do no have those setting(s) or feature(s)
+            SHOULD NOT appear in ServiceGroups that do not have those setting(s) or feature(s)
             present.  Thus, ifc1 of dpn1 should not be present in this second Service-Group.</t>
         
         <t>A third group is comprised of interfaces that support the MAG function of the LMA
         protocol.  It contains the MAG interfaces form both dpn1 and dpn2.</t>
         
-        <t>Given the task to find a LMA that supports the PMIP protoocl the Client can
+        <t>Given the task to find a LMA that supports the PMIP protocol the Client can
             determine that dpn1 is its only option and, depending on its requirement of
             OptionA, can appropriately determine which interface to select.</t>
         </section>
@@ -2070,7 +2071,7 @@ DPN         |                 DPN        |
             the selected dpn(s).  This requires construction of the Action(s),
             Descriptor(s) and Rule(s) used by the Policy.</t>
         
-        <t>The CONFIGURE message permits editing all informaiton elements except
+        <t>The CONFIGURE message permits editing all information elements except
         monitors.  The following figure shows use of a CONFIGURE message to install
         policy information on the Agent.</t>
         
@@ -2162,7 +2163,7 @@ DPN         |                 DPN        |
  |         |           "edit" : [ {                |           |
  |         |            "edit-id" : 0,             |           |
  |         |            "edit-type" : "create",    |           |
- |         |            "target" : "/topologuy-information-model/
+ |         |            "target" : "/topology-information-model/
                           /dpn/dpn1/dpn-policy-configuration", |
  |         |            "value" : {                            |
  |         |              "policy-template-key" : "policy1",   |
@@ -2208,7 +2209,7 @@ DPN         |                 DPN        |
             completion or failure of the operation, respond with an asynchronous
             Configuration-Result-Notification to the Client.</t>
 
-        <t> A Client MAY add a property to a Mobilty-Context without providing all
+        <t> A Client MAY add a property to a Mobility-Context without providing all
             required details of the attribute's value. In such case the Agent 
             SHOULD determine the missing details and provide the completed 
             property description, via Subsequent-Edit(s), back to the Client.
@@ -2243,7 +2244,7 @@ DPN         |                 DPN        |
             name.  Alternatively, the Target could have included the
             DPN-Key and Policy-Key to further reduce the amount of information
             exchanged.  Setting the Target's value to the most specific node
-            SHOULD be followed whenever practicle.</t>
+            SHOULD be followed whenever practical.</t>
         
         <t>
         <figure anchor="fig_msc_example"
@@ -2464,7 +2465,7 @@ DPN         |                 DPN        |
             tunnel and route on the DPN and responds to the Client (4).</t>
 
         <t> When a multi-DPN Agent is used the DPN list permits several DPNs
-            to be provisioned in a single message for the single Mobility-Conext.</t>
+            to be provisioned in a single message for the single Mobility-Context.</t>
         <t>
           <figure anchor="fig_multidpn_example"
             title="Exemplary Message Sequence for Multi-DPN Agent">
@@ -2487,7 +2488,7 @@ DPN         |                 DPN        |
    |         |        "mobility-context-key" : "ctxt1",          |
    |         |        "delegating-ip-prefix" : [ <HNP> ],        |
    |         |        "dpn" : [ {                                |
-  |         |          "role" : "lma",                          |
+   |         |          "role" : "lma",                          |
    |         |          "dpn-key" : "DPN1",                      |
    |         |          "service-data-flow" : [ {
    |         |            "identifier" : 0,
@@ -2572,13 +2573,13 @@ DPN         |                 DPN        |
             shows the DPN Set with all entries.  Each entry identifies the DPN.</t>
 
         <t> The Agent responds with an OK and Notify-Follows indication while
-            it simultaneoulsy provisions both DPNs. Upon successful completion,
+            it simultaneously provisions both DPNs. Upon successful completion,
             the Agent responds to the Client with a Configuration-Result-Notification
             indicating the operation status.
         </t>
         </section>
 
-        <section anchor="policy_ex" title="Policy And Mobility on the Agent">
+        <section anchor="policy_ex" title="Policy and Mobility on the Agent">
 
         <t> A Client may build Policy and Topology using Configure messages.</t>
 
@@ -2646,10 +2647,10 @@ DPN         |                 DPN        |
 	    on the Data-Plane.
         </t>
         <t> <xref target="fig_context"/> illustrates the generic context
-            configuration model as used between a Client and a Agent.
+            configuration model as used between a Client and an Agent.
         </t>
         <t>
-            <figure anchor="fig_context" title="Mobility Context Heirarchy">
+            <figure anchor="fig_context" title="Mobility Context Hierarchy">
               <artwork align="center"><![CDATA[
   <Policy 1>
         ^
@@ -2675,7 +2676,7 @@ DPN         |                 DPN        |
 	    <postamble></postamble>
             </figure>
         </t>
-	<t> The figure <xref target="fig_context"/> represents
+	<t> <xref target="fig_context"/> represents
             a mobility session hierarchy.  A Client and Agent directly assigns
             values such as downlink traffic descriptors, QoS information, etc.
             A Client and Agent use the context identifiers to access the
@@ -2683,7 +2684,7 @@ DPN         |                 DPN        |
             From the viewpoint of packet processing, arriving packets are
             matched against traffic Descriptors and processed according to the
             qos or other mobility profile related Actions specified in the
-            Mobilty-Context's and Service-Data-Flow's' properties. If present, a
+            Mobility-Context's and Service-Data-Flow's' properties. If present, a
             Policy could contain tunnel information to encapsulate and forward the packet.
         </t>
 
@@ -2763,7 +2764,7 @@ DPN         |                 DPN        |
  |         |           "report" : [ {              |           |
  |         |            "monitor-key" : "ifc1-status",         |
  |         |            "trigger" : "probe",
- |         |            "repor-value" : { "up" } } ] }         |
+ |         |            "report-valuerporte" : { "up" } } ] }         |
  |         |            |                          |           |
  |         |            |---(7)- Deregister ------>|           |
  |         |          "deregister-monitor" : {     |           |
@@ -2795,7 +2796,7 @@ DPN         |                 DPN        |
     
 </section>
 
-<section anchor="derived_attrs" title="Templates And Command Sets">
+<section anchor="derived_attrs" title="Templates and Command Sets">
         <t>Configuration templates are shown below.</t>
         
  <section title="Monitor Configuration Templates">
@@ -3061,9 +3062,9 @@ DPN         |                 DPN        |
 |     |     |    +-[(Boolean) service-flag:]
 |     |     |    +-[(Boolean) exclude-flag:]
 |     |     +-[allocation-retention-priority]
-|     |     |    +-[(Unsigned 8) prioirty-level:]
-|     |     |    +-[(Enumeration) premption-capability:]
-|     |     |    +-[(Enumeration) premption-vulnerability:]
+|     |     |    +-[(Unsigned 8) priority-level:]
+|     |     |    +-[(Enumeration) preemption-capability:]
+|     |     |    +-[(Enumeration) preemption-vulnerability:]
 |     |     +-[(Unsigned 32) agg-max-dl]
 |     |     +-[(Unsigned 32) agg-max-ul]
 |     |     +-[(Unsigned 32) gbr-dl]
@@ -3075,7 +3076,7 @@ DPN         |                 DPN        |
     <t> The following Command Set values are supported for IETF PMIP.
       <list style="symbols">
         <t> assign-ip - Assign the IP Address for the mobile session.</t>
-        <t> assign-dpn - Assign the Dataplane Node.</t>
+        <t> assign-dpn - Assign the Data-plane Node.</t>
         <t> session - Assign values for the Session Level.</t>
         <t> uplink - Command applies to uplink.</t>
         <t> downlink - Command applies to downlink.</t>
@@ -3165,7 +3166,7 @@ DPN         |                 DPN        |
 	      the values are part of the default bearer. </t>
           <t> uplink - Command applies to uplink.</t>
           <t> downlink - Command applies to downlink.</t>
-          <t> assign-dpn - Assign the Dataplane Node.</t>
+          <t> assign-dpn - Assign the Data-plane Node.</t>
         </list>
     </t>
     </section>
@@ -3178,7 +3179,7 @@ DPN         |                 DPN        |
         OpenDaylight plug-ins developed in Java by Sprint.  Version 04 is now
         primarily enhanced by GS Labs.  Version 03 was
         known as fpcagent and version 04's implementation is simply referred to
-        as 'fpc'.  A third has been devloped on an ONOS Controller for use in
+        as 'fpc'.  A third has been developed on an ONOS Controller for use in
         MCORD projects.</t>
     <t> fpcagent's intent was to provide a proof of concept for FPC Version 03
         Model 1 in January 2016 and research various errors, corrections and
@@ -3220,7 +3221,7 @@ DPN         |                 DPN        |
             It has reduced unnecessary cache lookups.  It also has the
             additional benefit of allowing an Agent to become cacheless and
             effectively act as a FPC protocol adapter remotely with multi-DPN
-            support or colocated on the DPN in a single-DPN support model.</t>
+            support or co-located on the DPN in a single-DPN support model.</t>
         <t> Multi-tenant support allows for Cache searches to be partitioned
             for clustering and performance improvements. This has not been
             capitalized upon by the current implementation but is part of the
@@ -3353,7 +3354,7 @@ activation system:
         <list>
         <t> IP address assignments in the Mobility-Context along with their associated
             tunnel configurations/identifiers (from the FPC base module)</t>
-        <t> Internaional Mobile Subscriber Identity (IMSI) and bearer
+        <t> Internaitonal Mobile Subscriber Identity (IMSI) and bearer
             identifiers in the Context when using the FPC base model</t>
         </list></t>
 
@@ -3365,11 +3366,11 @@ activation system:
         <t> Configure sends Mobility-Context information which can include
             information of a sensitive or vulnerable nature in some network
             environments as described above.</t>
-        <t> Monitor related RPC operations do not specicially provide sensitive
+        <t> Monitor related RPC operations do not specifically provide sensitive
             or vulnerable information but care must be taken by users to avoid
             identifier values that expose sensitive or vulnerable
             information.</t>
-        <t> Notications MUST be treated with same level of protection and
+        <t> Notifications MUST be treated with same level of protection and
             scrutiny as the operations they correspond to.  For example, a
             Configure-Result-Notification provides the same information
             that is sent as part of the input and output of the Configure
@@ -3378,8 +3379,8 @@ activation system:
 
     <t> General usage of FPC MUST consider the following:
         <list>
-        <t> FPC Naming <xref target="naming"/> permits arbirtrary string values
-            but a users MUST avoid placing sensitive or vulnerable information
+        <t> FPC Naming <xref target="naming"/> permits arbitrary string values
+            but a user MUST avoid placing sensitive or vulnerable information
             in those values.</t>
         <t> Policies that are very narrow and permit the identification of
             specific traffic, e.g. that of a single user, SHOULD be avoided.</t>
@@ -3513,7 +3514,7 @@ activation system:
     <t>The CONFIGURE and CONFIGURE-RESULT-NOTIFICATION use the yang-patch-status which is a container for edits.  This was done to maximize YANG reuse.</t>
     <t>In the configure rpc, operation-id is mapped to patch-id and in an edit the edit-type is
     mapped to operation.</t>
-    <t>The Result-Status attribute is mapped to the 'ok' (empty leaf) or errrors structure.</t>
+    <t>The Result-Status attribute is mapped to the 'ok' (empty leaf) or errors structure.</t>
     <t>The Policy-Status is mapped to entity-state to reduce YANG size.</t>
 
     <t>Five modules are defined:
@@ -4511,7 +4512,7 @@ module ietf-dmm-fpc {
   identity notification-cause {
     description "Notification Cause";
   }
-  identity subscribed-event-occured {
+  identity subscribed-event-occurred {
     base "notification-cause";
     description "Subscribed Event Occurence";
   }
@@ -5368,7 +5369,7 @@ module ietf-pmip-qos {
    }
 
    grouping Allocation-Retention-Priority-Value {
-     leaf prioirty-level {
+     leaf priority-level {
        type uint8 {
          range "0..15";
        }
@@ -5380,7 +5381,7 @@ module ietf-pmip-qos {
         admission control of Guaranteed Bit Rate traffic in case of
         resource limitations.";
      }
-     leaf premption-capability {
+     leaf preemption-capability {
        type enumeration {
         enum enabled {
           value 0;
@@ -5406,7 +5407,7 @@ module ietf-pmip-qos {
         assigned to another service data flow with a lower priority
         level.";
      }
-     leaf premption-vulnerability {
+     leaf preemption-vulnerability {
        type enumeration {
         enum enabled {
           value 0;
@@ -6751,9 +6752,9 @@ action_value:
 |        |  +--rw max-rate        uint32
 |        |  +--rw service-flag    boolean
 |        |  +--rw exclude-flag    boolean
-|        +--rw prioirty-level                  uint8
-|        +--rw premption-capability            enumeration
-|        +--rw premption-vulnerability         enumeration
+|        +--rw priority-level                  uint8
+|        +--rw preemption-capability            enumeration
+|        +--rw preemption-vulnerability         enumeration
 |        +--rw agg-max-dl?
                  qos-pmip:Aggregate-Max-DL-Bit-Rate-Value
 |        +--rw agg-max-ul?
