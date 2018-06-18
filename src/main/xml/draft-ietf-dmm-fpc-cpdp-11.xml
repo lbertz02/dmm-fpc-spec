@@ -6,6 +6,8 @@
     "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2119.xml">
 <!ENTITY RFC3775 SYSTEM
     "http://xml.resource.org/public/rfc/bibxml/reference.RFC.3775.xml">
+<!ENTITY RFC3775 SYSTEM
+    "http://xml.resource.org/public/rfc/bibxml/reference.RFC.3958.xml">
 <!ENTITY RFC4225 SYSTEM
     "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4225.xml">
 <!ENTITY RFC4866 SYSTEM
@@ -825,6 +827,16 @@ DPN         |                 DPN        |
 	template instantiation is fully configured.
 	</t>
 
+    <t>Entity-Status indicates when an Entity is usable within a DPN.
+    This permits DPN design tradeoffs amongst local storage (or other
+    resources), over the wire request size and the speed of request
+    processing.  For example, DPN designers with constrained systems MAY
+    only house entities whose status is Active which may result in sending
+    over all policy information with a Mobility-Context request.  Storing
+    information elements with an entity status of "PartiallyConfigured" on
+    the DPN requires more resources but can result in smaller over the
+    wire FPC communication and request processing efficiency.</t>
+
     <t>
 	When the FPC Client instantiates a Policy from a Template, the
 	Policy-Status is "Initial".  When the FPC Client sends
@@ -868,7 +880,7 @@ DPN         |                 DPN        |
 		Values for Policy attributes that are required for traffic
 		belonging to a particular set of flows on the mobile node. </t>
 	</list>
-	Any of these configuration steps MAY also supply updated values for
+	Any configuration changes MAY also supply updated values for
 	existing default attribute values that may have been previously
 	configured on the DPN resident policy.
     </t>
@@ -3482,6 +3494,7 @@ activation system:
     <references title="Informative References">
     &I-D.ietf-dmm-deployment-models;
     &I-D.bertz-dime-policygroups;
+    &RFC3958;
     &RFC5213;
     &RFC7222;
     &RFC7333;
@@ -3564,9 +3577,18 @@ activation system:
     <t>The YANG modules in this document conform to the Network
     Management Datastore Architecture (NMDA) defined in <xref target="RFC8342"/>.</t>
     
-    <t>DPNs conformant to NMDA MAY only have policies, installed policies, topology and
+    <t>DPNs conformant to NMDA MAY only have policies, installed policies, topology, domains and
         mobility session information that has been assigned to it in its intended
-        and operational datastores.</t>
+        and operational datastores.  What is housed in the operational datastore MAY be determined on
+        a per DPN basis and using the Entity-Status as a guideline based upon tradeoffs described in
+        <xref target="att_appl"/>.</t>
+    
+    <t>ServiceGroups are not expected to appear in operational datastores of DPNs as they
+        remain in and are used by FPC Agents and Clients.  They MAY be operationally present in
+        DNS when using the Dynamic Delegation and Discovery System (DDDS) as defined in
+        <xref target="RFC3958"/> or the operational datastore of systems that provide
+        equivalent functionality.</t>
+    
     
 <!-- template for YANG model, start -->
     <section anchor="fpc-yang-model" title="FPC YANG Model">
